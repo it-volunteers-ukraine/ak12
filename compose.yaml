@@ -1,0 +1,72 @@
+services:
+  # Development service
+  dev:
+    image: node:20-alpine
+    working_dir: /workspace
+    restart: unless-stopped
+    volumes:
+      - .:/workspace
+      - node_modules:/workspace/node_modules
+    command: sh -c "npm ci && npm run dev"
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
+      - HOSTNAME=0.0.0.0
+    env_file:
+      - .env
+    depends_on:
+      - database
+    profiles:
+      - dev
+
+  # Production service
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - HOSTNAME=0.0.0.0
+      - PORT=3000
+    env_file:
+      - .env
+    depends_on:
+      - database
+
+  # Database service
+  database:
+    image: mongo:7-jammy
+    restart: unless-stopped
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD:-password}
+      - MONGO_INITDB_DATABASE=${MONGO_DATABASE:-ak12}
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - default
+
+volumes:
+  mongo_data:
+  node_modules:
+
+networks:
+  default:
+    name: ak12-network
