@@ -9,7 +9,7 @@ export default defineConfig([
     ignores: ['.next/**', 'node_modules/**', 'coverage/**', 'dist/**'],
   },
   {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    files: ['**/*.{ts,mts,cts,tsx}'],
     languageOptions: {
       globals: globals.browser,
       parser: tseslint.parser,
@@ -76,6 +76,27 @@ export default defineConfig([
       'no-console': 'warn',
       curly: 'error',
       'no-debugger': 'error',
+      'no-duplicate-imports': 'error',
+    },
+  },
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: globals.browser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    plugins: {
+      react: pluginReact,
+    },
+    settings: {
+      react: { version: 'detect' },
+    },
+    rules: {
+      'no-console': 'warn',
+      'no-debugger': 'error',
+      eqeqeq: 'error',
+      curly: 'error',
       'no-duplicate-imports': 'error',
     },
   },
