@@ -46,7 +46,7 @@ jobs:
 
       - name: Create build archive
         run: |
-          tar -czf build-artifact-${{ github.sha }}.tar.gz \
+          tar --ignore-failed-read -czf build-artifact-${{ github.sha }}.tar.gz \
             .next/ \
             node_modules/ \
             public/ \
