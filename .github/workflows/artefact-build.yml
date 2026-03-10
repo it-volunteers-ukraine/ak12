@@ -46,10 +46,10 @@ jobs:
 
       - name: Create build archive
         run: |
-          tar --ignore-failed-read -czf build-artifact-${{ github.sha }}.tar.gz \
+          tar -czf build-artifact-${{ github.sha }}.tar.gz \
             .next/ \
             node_modules/ \
-            public/ \
+            $( [ -d public ] && echo public/ ) \
             package.json \
             package-lock.json \
             next.config.ts \
