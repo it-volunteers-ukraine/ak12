@@ -1,0 +1,75 @@
+name: "Artifact Build"
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'next.config.ts'
+      - 'tsconfig.json'
+      - '.github/workflows/artefact-build.yml'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --include=optional
+        env:
+          NODE_ENV: development
+
+      - name: Run linter
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Build project
+        run: npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Create build archive
+        run: |
+          tar -czf build-artifact-${{ github.sha }}.tar.gz \
+            .next/ \
+            node_modules/ \
+            public/ \
+            package.json \
+            package-lock.json \
+            next.config.ts \
+            tsconfig.json \
+            src/
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build-${{ github.ref_name }}-${{ github.sha }}
+          path: build-artifact-${{ github.sha }}.tar.gz
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Generate artifact summary
+        run: |
+          echo "## Build Artifact Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Retention:** 7 days" >> $GITHUB_STEP_SUMMARY
+          echo "- **Size:** $(du -h build-artifact-${{ github.sha }}.tar.gz | cut -f1)" >> $GITHUB_STEP_SUMMARY
