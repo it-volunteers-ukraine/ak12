@@ -95,6 +95,9 @@ export default defineConfig([
     rules: {
       'no-console': 'warn',
       'no-debugger': 'error',
+      eqeqeq: 'error',
+      curly: 'error',
+      'no-duplicate-imports': 'error',
     },
   },
 ]);
