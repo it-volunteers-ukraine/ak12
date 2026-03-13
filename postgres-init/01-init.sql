@@ -8,6 +8,27 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create Site Content table
+CREATE TABLE IF NOT EXISTS site_content (
+    id SERIAL PRIMARY KEY,
+    section_key TEXT UNIQUE NOT NULL, 
+    content JSONB NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Documentation for the table and columns
+COMMENT ON TABLE site_content IS 'Stores dynamic content sections for the landing page.';
+COMMENT ON COLUMN site_content.section_key IS 'Unique identifier for a content section (e.g., "hero", "vacancies").';
+COMMENT ON COLUMN site_content.content IS 'JSON payload containing the section content.';
+COMMENT ON COLUMN site_content.is_active IS 'Soft-deletion flag; use "WHERE is_active = true" to fetch content.';
+
+-- Create an optimized view to ensure we always fetch only active content
+CREATE OR REPLACE VIEW active_site_content AS
+SELECT id, section_key, content, updated_at
+FROM site_content
+WHERE is_active = true;
+
 -- Create Vacancies table
 CREATE TABLE IF NOT EXISTS vacancies (
   id SERIAL PRIMARY KEY,
