@@ -8,6 +8,15 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create Site Content table
+CREATE TABLE IF NOT EXISTS site_content (
+    id SERIAL PRIMARY KEY,
+    section_key VARCHAR(50) UNIQUE NOT NULL, 
+    content JSONB NOT NULL, 
+    is_active BOOLEAN DEFAULT true,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Create Vacancies table
 CREATE TABLE IF NOT EXISTS vacancies (
   id SERIAL PRIMARY KEY,
@@ -44,4 +53,6 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_vacancies_created_by ON vacancies(created_by);
 CREATE INDEX IF NOT EXISTS idx_vacancies_status ON vacancies(status);
 CREATE INDEX IF NOT EXISTS idx_vacancies_company_name ON vacancies(company_name);
+
+CREATE INDEX idx_site_content_key ON site_content(section_key);
 
