@@ -11,11 +11,23 @@ CREATE TABLE IF NOT EXISTS users (
 -- Create Site Content table
 CREATE TABLE IF NOT EXISTS site_content (
     id SERIAL PRIMARY KEY,
-    section_key VARCHAR(50) UNIQUE NOT NULL, 
-    content JSONB NOT NULL, 
+    section_key TEXT UNIQUE NOT NULL, 
+    content JSONB NOT NULL,
     is_active BOOLEAN DEFAULT true,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Documentation for the table and columns
+COMMENT ON TABLE site_content IS 'Stores dynamic content sections for the landing page.';
+COMMENT ON COLUMN site_content.section_key IS 'Unique identifier for a content section (e.g., "hero", "vacancies").';
+COMMENT ON COLUMN site_content.content IS 'JSON payload containing the section content.';
+COMMENT ON COLUMN site_content.is_active IS 'Soft-deletion flag; use "WHERE is_active = true" to fetch content.';
+
+-- Create an optimized view to ensure we always fetch only active content
+CREATE OR REPLACE VIEW active_site_content AS
+SELECT id, section_key, content, updated_at
+FROM site_content
+WHERE is_active = true;
 
 -- Create Vacancies table
 CREATE TABLE IF NOT EXISTS vacancies (
@@ -53,6 +65,4 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_vacancies_created_by ON vacancies(created_by);
 CREATE INDEX IF NOT EXISTS idx_vacancies_status ON vacancies(status);
 CREATE INDEX IF NOT EXISTS idx_vacancies_company_name ON vacancies(company_name);
-
-CREATE INDEX idx_site_content_key ON site_content(section_key);
 
