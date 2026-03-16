@@ -50,7 +50,7 @@ COMMENT ON COLUMN vacancy.position IS 'Vacancy position title.';
 COMMENT ON COLUMN vacancy.slug IS 'Optional URL-friendly identifier unique within a language.';
 COMMENT ON COLUMN vacancy.description IS 'Short vacancy description.';
 COMMENT ON COLUMN vacancy.type IS 'Vacancy type: frontline or backline.';
-COMMENT ON COLUMN vacancy.salary IS 'Salary value if published. Clarify whether it is stored as a full amount or in thousands.';
+COMMENT ON COLUMN vacancy.salary IS 'Monthly salary in thousands of UAH. Example: 45.00 represents 45,000 UAH.';
 COMMENT ON COLUMN vacancy.image_url IS 'Image URL for vacancy presentation.';
 COMMENT ON COLUMN vacancy.is_active IS 'Controls whether the vacancy is visible on the site.';
 COMMENT ON COLUMN vacancy.sort_order IS 'Manual display order. Lower values appear first.';
