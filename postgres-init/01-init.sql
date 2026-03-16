@@ -84,6 +84,7 @@ CREATE INDEX IF NOT EXISTS idx_site_content_section_key ON site_content(section_
 CREATE INDEX IF NOT EXISTS idx_vacancy_language_id ON vacancy(language_id);
 CREATE INDEX IF NOT EXISTS idx_vacancy_type ON vacancy(type);
 CREATE INDEX IF NOT EXISTS idx_vacancy_is_active_sort_order ON vacancy(is_active, sort_order);
+CREATE INDEX IF NOT EXISTS idx_vacancy_active_type_order ON vacancy(is_active, type, sort_order);
 CREATE INDEX IF NOT EXISTS idx_subdivision_language_id ON subdivision(language_id);
 CREATE INDEX IF NOT EXISTS idx_subdivision_is_active_sort_order ON subdivision(is_active, sort_order);
 
