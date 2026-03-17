@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS vacancy (
     slug VARCHAR(100),
     description VARCHAR(255) NOT NULL,
     type vacancy_type NOT NULL,
-    salary_min INTEGER,
+    salary_min INTEGER NOT NULL,
     salary_max INTEGER,
     image_url VARCHAR(255) NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT true,
