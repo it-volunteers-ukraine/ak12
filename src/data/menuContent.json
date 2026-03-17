@@ -1,0 +1,97 @@
+{
+	"uk": {
+		"navigation": [
+			{
+				"id": "about",
+				"label": "Про корпус"
+			},
+			{
+				"id": "divisions",
+				"label": "Підрозділи"
+			},
+			{
+				"id": "join",
+				"label": "Як долучитись"
+			},
+			{
+				"id": "vacancies",
+				"label": "Вакансії"
+			},
+			{
+				"id": "contacts",
+				"label": "Контакти"
+			}
+		],
+		"social": [
+			{
+				"id": "facebook",
+				"label": "Facebook",
+				"url": "https://facebook.com/"
+			},
+			{
+				"id": "youtube",
+				"label": "YouTube",
+				"url": "https://www.youtube.com/"
+			}
+		],
+		"contacts": [
+			{
+				"id": "phone",
+				"label": "Телефон",
+				"value": "+380 123 456 789",
+				"url": "tel:+380123456789"
+			},
+			{
+				"id": "location",
+				"label": "Локація",
+				"value": "Київ, Україна",
+				"url": "https://www.google.com/maps/place/Kyiv,+Ukraine"
+			}
+		]
+	},
+	"en": {
+		"navigation": [
+			{
+				"id": "about",
+				"label": "About the complex"
+			},
+			{
+				"id": "divisions",
+				"label": "Divisions"
+			},
+			{
+				"id": "join",
+				"label": "How to Join"
+			},
+			{
+				"id": "vacancies",
+				"label": "Vacancies"
+			},
+			{
+				"id": "contacts",
+				"label": "Contacts"
+			}
+		],
+		"social": [
+			{
+				"id": "facebook",
+				"label": "Facebook",
+				"url": "https://facebook.com/"
+			},
+			{
+				"id": "youtube",
+				"label": "YouTube",
+				"url": "https://www.youtube.com/"
+			}
+		],
+		"contacts": [
+			{ "id": "phone", "label": "Phone", "value": "+380 123 456 789", "url": "tel:+380123456789" },
+			{
+				"id": "location",
+				"label": "Location",
+				"value": "Kyiv, Ukraine",
+				"url": "https://www.google.com/maps/place/Kyiv,+Ukraine"
+			}
+		]
+	}
+}

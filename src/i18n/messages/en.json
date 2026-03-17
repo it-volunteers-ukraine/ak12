@@ -1,1 +1,9 @@
-{ "test": "test" }
+{
+	"test": "test",
+	"footer": {
+		"navigation": "Navigation",
+		"contact": "Contact",
+		"social": "Social",
+		"copyright": "All rights reserved."
+	}
+}
