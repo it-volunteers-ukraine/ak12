@@ -1,7 +1,9 @@
+import { AdminPage } from "@/components/page";
+
 function AdminDashboard() {
     return (
         <div>
-            <h1>Admin Dashboard</h1>
+            <AdminPage />
         </div>
     );
 }

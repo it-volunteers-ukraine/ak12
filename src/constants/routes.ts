@@ -4,5 +4,6 @@ export const routes = {
     },
     admin: {
         dashboard: "/admin",
+        vacancies: "/admin/vacancies",
     },
 };

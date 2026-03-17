@@ -1,0 +1,39 @@
+{
+  "vacancies": [
+    {
+      "id": 8,
+      "title": "Frontend Developer (Updated)",
+      "description": "React / Next.js developer for admin panel (Updated)",
+      "location": "Kyiv, Ukraine",
+      "salary": "1500$ - 2000$"
+    },
+    {
+      "id": 11,
+      "title": "Frontend Developer (Updated)",
+      "description": "React / Next.js developer for admin panel (Updated)",
+      "location": "Kyiv, Ukraine",
+      "salary": "1500$ - 2000$"
+    },
+    {
+      "title": "Frontend Developer",
+      "description": "React / Next.js developer for admin panel",
+      "location": "Kyiv, Ukraine",
+      "salary": "1500$ - 2000$",
+      "id": 12
+    },
+    {
+      "title": "Frontend Developer",
+      "description": "React / Next.js developer for admin panel",
+      "location": "Kyiv, Ukraine",
+      "salary": "1500$ - 2000$",
+      "id": 13
+    },
+    {
+      "title": "Frontend Developer",
+      "description": "React / Next.js developer for admin panel",
+      "location": "Kyiv, Ukraine",
+      "salary": "1500$ - 2000$",
+      "id": 15
+    }
+  ]
+}
