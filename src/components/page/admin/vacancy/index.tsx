@@ -14,9 +14,9 @@ interface Vacancy {
 
 export const VacancyPage = () => {
     const params = useParams();
-    const [vacancy, setVacancy] = useState<Vacancy | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [vacancy, setVacancy] = useState<Vacancy | null>(null);
 
     useEffect(() => {
         const fetchVacancy = async () => {
@@ -41,7 +41,6 @@ export const VacancyPage = () => {
                 }
                 setVacancy(found);
             } catch (error) {
-                console.error("Error fetching vacancy:", error);
                 setError(
                     error instanceof Error ? error.message : "Unknown error",
                 );
