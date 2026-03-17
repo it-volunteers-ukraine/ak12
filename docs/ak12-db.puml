@@ -1,0 +1,77 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity "language" as language {
+  *id : uuid
+  --
+  *code : varchar(2)
+}
+
+entity "site_content" as site_content {
+  *id : uuid
+  --
+  *section_key : text
+  *content : jsonb
+  *is_active : boolean
+  *language_id : uuid
+  *updated_at : timestamp
+}
+
+entity "vacancy" as vacancy {
+  *id : uuid
+  --
+  *position : varchar(50)
+  slug : varchar(100)
+  *description : varchar(255)
+  *type : vacancy_type
+  salary : numeric(10,2)
+  *image_url : varchar(255)
+  *is_active : boolean
+  *sort_order : integer
+  *language_id : uuid
+}
+
+entity "subdivision" as subdivision {
+  *id : uuid
+  --
+  *name : varchar(50)
+  slug : varchar(100)
+  *description : varchar(255)
+  site_url : varchar(255)
+  *image_url : varchar(255)
+  *is_active : boolean
+  *sort_order : integer
+  *language_id : uuid
+}
+
+language ||--o{ site_content : language_id
+language ||--o{ vacancy : language_id
+language ||--o{ subdivision : language_id
+
+note right of vacancy
+  type enum:
+  - frontline
+  - backline
+end note
+
+note right of language
+  Allowed values:
+  - uk
+  - en
+end note
+
+note bottom of site_content
+  Unique per:
+  - section_key
+  - language_id
+end note
+
+note bottom of vacancy
+  slug is unique per language
+end note
+
+note bottom of subdivision
+  slug is unique per language
+end note
+@enduml
