@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@next/eslint-plugin-next": "^16.1.6",
+    "@supabase/supabase-js": "^2.99.2",
     "@swc/helpers": "^0.5.19",
     "clsx": "^2.1.1",
     "globals": "^17.4.0",
@@ -29,8 +30,8 @@
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
-    "eslint-plugin-react": "^7.37.5",
     "eslint-config-next": "16.1.6",
+    "eslint-plugin-react": "^7.37.5",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
