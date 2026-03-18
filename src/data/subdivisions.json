@@ -1,0 +1,136 @@
+{
+  "subdivisions": [
+    {
+      "id": "1",
+      "name": "Підрозділ БПЛА",
+      "slug": "pidrozdil-bpla",
+      "description": "Працює з аеророзвідкою, спостереженням, виявленням цілей та підтримкою бойових дій.",
+      "siteUrl": "https://example.local/uav-unit",
+      "imageUrl": "/images/subdivisions/uav-unit.jpg",
+      "isActive": true,
+      "sortOrder": 10,
+      "languageCode": "uk"
+    },
+    {
+      "id": "2",
+      "name": "Штурмовий підрозділ",
+      "slug": "shturmovyi-pidrozdil",
+      "description": "Виконує складні бойові завдання, діє в активній фазі операцій та потребує вмотивованих кандидатів.",
+      "siteUrl": "https://example.local/assault-unit",
+      "imageUrl": "/images/subdivisions/assault-unit.jpg",
+      "isActive": true,
+      "sortOrder": 20,
+      "languageCode": "uk"
+    },
+    {
+      "id": "3",
+      "name": "Медичний підрозділ",
+      "slug": "medychnyi-pidrozdil",
+      "description": "Забезпечує стабілізацію, допомогу пораненим та евакуацію в зоні виконання завдань.",
+      "siteUrl": "https://example.local/medical-unit",
+      "imageUrl": "/images/subdivisions/medical-unit.jpg",
+      "isActive": true,
+      "sortOrder": 30,
+      "languageCode": "uk"
+    },
+    {
+      "id": "4",
+      "name": "Підрозділ зв’язку",
+      "slug": "pidrozdil-zviazku",
+      "description": "Підтримує канали зв’язку, технічні засоби комунікації та координацію між групами.",
+      "siteUrl": "https://example.local/comms-unit",
+      "imageUrl": "/images/subdivisions/comms-unit.jpg",
+      "isActive": true,
+      "sortOrder": 40,
+      "languageCode": "uk"
+    },
+    {
+      "id": "5",
+      "name": "Логістичний підрозділ",
+      "slug": "lohistychnyi-pidrozdil",
+      "description": "Відповідає за постачання, переміщення ресурсів та внутрішню організацію забезпечення.",
+      "siteUrl": null,
+      "imageUrl": "/images/subdivisions/logistics-unit.jpg",
+      "isActive": true,
+      "sortOrder": 50,
+      "languageCode": "uk"
+    },
+    {
+      "id": "6",
+      "name": "Кіберпідрозділ",
+      "slug": "kiberpidrozdil",
+      "description": "Працює над цифровою безпекою, захистом систем і стійкістю інформаційної інфраструктури.",
+      "siteUrl": "https://example.local/cyber-unit",
+      "imageUrl": "/images/subdivisions/cyber-unit.jpg",
+      "isActive": false,
+      "sortOrder": 60,
+      "languageCode": "uk"
+    },
+    {
+      "id": "7",
+      "name": "UAV Unit",
+      "slug": "uav-unit",
+      "description": "Works with aerial reconnaissance, observation, target detection and operational support.",
+      "siteUrl": "https://example.local/uav-unit",
+      "imageUrl": "/images/subdivisions/uav-unit.jpg",
+      "isActive": true,
+      "sortOrder": 10,
+      "languageCode": "en"
+    },
+    {
+      "id": "8",
+      "name": "Assault Unit",
+      "slug": "assault-unit",
+      "description": "Handles demanding combat tasks, operates in active phases of missions and needs highly motivated candidates.",
+      "siteUrl": "https://example.local/assault-unit",
+      "imageUrl": "/images/subdivisions/assault-unit.jpg",
+      "isActive": true,
+      "sortOrder": 20,
+      "languageCode": "en"
+    },
+    {
+      "id": "9",
+      "name": "Medical Unit",
+      "slug": "medical-unit",
+      "description": "Provides stabilization, casualty care and evacuation support in operational areas.",
+      "siteUrl": "https://example.local/medical-unit",
+      "imageUrl": "/images/subdivisions/medical-unit.jpg",
+      "isActive": true,
+      "sortOrder": 30,
+      "languageCode": "en"
+    },
+    {
+      "id": "10",
+      "name": "Communications Unit",
+      "slug": "communications-unit",
+      "description": "Maintains communication channels, technical equipment and coordination between groups.",
+      "siteUrl": "https://example.local/comms-unit",
+      "imageUrl": "/images/subdivisions/comms-unit.jpg",
+      "isActive": true,
+      "sortOrder": 40,
+      "languageCode": "en"
+    },
+    {
+      "id": "11",
+      "name": "Logistics Unit",
+      "slug": "logistics-unit",
+      "description": "Responsible for supply operations, movement of resources and internal support organization.",
+      "siteUrl": null,
+      "imageUrl": "/images/subdivisions/logistics-unit.jpg",
+      "isActive": true,
+      "sortOrder": 50,
+      "languageCode": "en"
+    },
+    {
+      "id": "12",
+      "name": "Cyber Unit",
+      "slug": "cyber-unit",
+      "description": "Focused on digital security, system protection and resilience of information infrastructure.",
+      "siteUrl": "https://example.local/cyber-unit",
+      "imageUrl": "/images/subdivisions/cyber-unit.jpg",
+      "isActive": false,
+      "sortOrder": 60,
+      "languageCode": "en"
+    }
+  ]
+}
