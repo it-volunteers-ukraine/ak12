@@ -10,9 +10,9 @@ export default async function Home({ params }: PageProps) {
     const { locale } = await params;
 
     return (
-        <main>
+        <>
             <HomePage />
             <SubdivisionsSection locale={locale} />
-        </main>
+        </>
     );
 }

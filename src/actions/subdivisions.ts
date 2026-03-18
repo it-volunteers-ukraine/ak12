@@ -1,6 +1,6 @@
 'use server'
 
-import { readFile, writeFile, access, mkdir } from 'fs/promises'
+import { readFile, writeFile, mkdir } from 'fs/promises'
 import path from 'path'
 import { revalidatePath } from 'next/cache'
 import { Locale, Subdivision } from '@/types'
@@ -12,8 +12,7 @@ import { Locale, Subdivision } from '@/types'
 const DB_PATH = path.join(process.cwd(), 'src/data/subdivisions.json')
 
 async function readDb(): Promise<{ subdivisions: Subdivision[] }> {
-  try {
-    await access(DB_PATH)
+    try {
     const raw = await readFile(DB_PATH, 'utf-8')
 
     return JSON.parse(raw)
@@ -23,14 +22,7 @@ async function readDb(): Promise<{ subdivisions: Subdivision[] }> {
 }
 
 async function writeDb(data: { subdivisions: Subdivision[] }): Promise<void> {
-  const dir = path.dirname(DB_PATH)
-
-  try {
-    await access(dir)
-  } catch {
-    await mkdir(dir, { recursive: true })
-  }
-
+  await mkdir(path.dirname(DB_PATH), { recursive: true })
   await writeFile(DB_PATH, JSON.stringify(data, null, 2), 'utf-8')
 }
 
