@@ -1,5 +1,4 @@
-/* 
-import { getHeaderContentByLocale, saveHeaderAction } from "@/actions/header";
+/* import { getHeaderContentByLocale, saveHeaderAction } from "@/actions/header";
 import { HeaderContent } from "@/components/Header";
 import { Locale } from "@/types";
 
@@ -138,5 +137,15 @@ export default async function AdminPage() {
 			</div>
 		</main>
 	);
+} */
+
+export default function AdminPage() {
+	return (
+		<main className="mx-auto max-w-5xl p-6">
+			<h1 className="text-3xl font-bold">Admin example</h1>
+			<p className="mt-2 text-sm text-neutral-600">
+				The implementation is intentionally left in comments as an example.
+			</p>
+		</main>
+	);
 }
- */

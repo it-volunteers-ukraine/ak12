@@ -1,8 +1,18 @@
-/* import { revalidatePath } from "next/cache";
+import { revalidatePath } from "next/cache";
 
-import { HeaderContent, HeaderLink } from "@/components/Header";
 import { supabaseServer } from "@/lib/supabase-server";
 import { Locale } from "@/types";
+
+export type HeaderLink = {
+    label: string;
+    href: string;
+};
+
+export type HeaderContent = {
+    logoText: string;
+    links: HeaderLink[];
+    cta: HeaderLink;
+};
 
 type LanguageRow = {
     id: string;
@@ -171,4 +181,3 @@ export const saveHeaderAction = async (formData: FormData) => {
     revalidatePath("/");
     revalidatePath("/admin");
 };
- */
