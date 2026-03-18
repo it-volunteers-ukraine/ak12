@@ -1,4 +1,7 @@
-import Image from 'next/image' 
+'use client'
+
+import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import { Subdivision } from '@/types'
 
 interface SubdivisionCardProps {
@@ -6,18 +9,20 @@ interface SubdivisionCardProps {
 }
 
 export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
+
+  const t = useTranslations('subdivisions')
+
   return (
     <article className="flex flex-col h-full border border-slate-200 rounded-lg overflow-hidden bg-white transition-shadow hover:shadow-md">
-     
+      
       <div className="relative h-48 w-full bg-slate-100">
         <Image
           src={subdivision.imageUrl}
-          alt={`Фото підрозділу: ${subdivision.name}`}
+          alt={t('imageAlt', { name: subdivision.name })}
           fill 
           className="object-cover" 
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
-          priority={subdivision.sortOrder <= 3} 
-          loading={subdivision.sortOrder > 3 ? "lazy" : "eager"} 
+          priority={subdivision.sortOrder <= 3}
         />
       </div>
 
@@ -38,7 +43,8 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
               rel="noopener noreferrer"
               className="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors group"
             >
-              Відвідати сайт підрозділу
+            
+              {t('visitSite')}
               <svg 
                 className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-0.5" 
                 fill="none" 

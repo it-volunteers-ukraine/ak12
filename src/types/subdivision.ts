@@ -1,7 +1,7 @@
 import { Locale } from "./locale";
 
 export interface Subdivision {
-  id: string;
+  id: string; 
   name: string;
   slug: string | null;
   description: string;
@@ -10,4 +10,5 @@ export interface Subdivision {
   isActive: boolean;       
   sortOrder: number;       
   languageCode: Locale;    
+  languageId: string;      
 }
