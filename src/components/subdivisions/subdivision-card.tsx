@@ -8,21 +8,30 @@ interface SubdivisionCardProps {
   subdivision: Subdivision
 }
 
-export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
+const buildPlaceholder = (name: string) => {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480"><rect width="800" height="480" fill="#e2e8f0" /><rect x="24" y="24" width="752" height="432" rx="24" fill="#cbd5e1" /><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#334155" font-family="Arial, sans-serif" font-size="36">${name}</text></svg>`
 
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
+}
+
+export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
   const t = useTranslations('subdivisions')
+  const imageSrc = subdivision.imageUrl.startsWith('/images/subdivisions/')
+    ? buildPlaceholder(subdivision.name)
+    : subdivision.imageUrl
 
   return (
     <article className="flex flex-col h-full border border-slate-200 rounded-lg overflow-hidden bg-white transition-shadow hover:shadow-md">
       
       <div className="relative h-48 w-full bg-slate-100">
         <Image
-          src={subdivision.imageUrl}
+          src={imageSrc}
           alt={t('imageAlt', { name: subdivision.name })}
-          fill 
-          className="object-cover" 
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" 
-          priority={subdivision.sortOrder <= 3}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          unoptimized={imageSrc.startsWith('data:image/')}
+          preload={subdivision.sortOrder <= 30}
         />
       </div>
 

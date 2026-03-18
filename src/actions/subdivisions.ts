@@ -1,14 +1,21 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { locales } from '@/constants'
 import { supabaseServer } from '@/lib/supabase-server'
 import { Locale, Subdivision } from '@/types'
 
 // HELPERS
 
+const isLocale = (value: string): value is Locale => locales.includes(value as Locale)
+
 // Gets language row id by locale code (e.g. 'uk' -> UUID)
 // Same pattern as in header.ts ensureLanguage
-const getLanguageId = async (locale: Locale): Promise<string> => {
+const getLanguageId = async (locale: string): Promise<string | null> => {
+  if (!isLocale(locale)) {
+    return null
+  }
+
   const { data, error } = await supabaseServer
     .from('language')
     .select('id')
@@ -43,6 +50,10 @@ const mapRow = (row: Record<string, unknown>, languageCode: Locale): Subdivision
 export async function getSubdivisions(locale: Locale): Promise<Subdivision[]> {
   const languageId = await getLanguageId(locale)
 
+  if (!languageId) {
+    return []
+  }
+
   const { data, error } = await supabaseServer
     .from('subdivision')
     .select('*')
@@ -64,6 +75,10 @@ export async function getSubdivisionBySlug(
   locale: Locale,
 ): Promise<Subdivision | null> {
   const languageId = await getLanguageId(locale)
+
+  if (!languageId) {
+    return null
+  }
 
   const { data, error } = await supabaseServer
     .from('subdivision')
@@ -90,6 +105,10 @@ export async function getSubdivisionBySlug(
 export async function getAllSubdivisions(locale: Locale): Promise<Subdivision[]> {
   const languageId = await getLanguageId(locale)
 
+  if (!languageId) {
+    return []
+  }
+
   const { data, error } = await supabaseServer
     .from('subdivision')
     .select('*')
@@ -108,6 +127,10 @@ export async function createSubdivision(
   data: Omit<Subdivision, 'id'>,
 ): Promise<Subdivision> {
   const languageId = await getLanguageId(data.languageCode)
+
+  if (!languageId) {
+    throw new Error(`Language not found for locale: ${data.languageCode}`)
+  }
 
   const { data: inserted, error } = await supabaseServer
     .from('subdivision')
