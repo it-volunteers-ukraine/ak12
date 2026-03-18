@@ -1,110 +1,182 @@
 'use server'
 
-import { readFile, writeFile, mkdir } from 'fs/promises'
-import path from 'path'
 import { revalidatePath } from 'next/cache'
+import { supabaseServer } from '@/lib/supabase-server'
 import { Locale, Subdivision } from '@/types'
 
-/**
- * TEMPORARY: Database path for JSON-based storage.
- * To be replaced with PostgreSQL connection in the future.
- */
-const DB_PATH = path.join(process.cwd(), 'src/data/subdivisions.json')
+// HELPERS
 
-/**
- * Reads the JSON database. Handles missing files (ENOENT) safely.
- */
-async function readDb(): Promise<{ subdivisions: Subdivision[] }> {
-  try {
-    const raw = await readFile(DB_PATH, 'utf-8')
+// Gets language row id by locale code (e.g. 'uk' -> UUID)
+// Same pattern as in header.ts ensureLanguage
+const getLanguageId = async (locale: Locale): Promise<string> => {
+  const { data, error } = await supabaseServer
+    .from('language')
+    .select('id')
+    .eq('code', locale)
+    .single()
 
-    return JSON.parse(raw)
-  } catch (error: any) {
-    if (error.code === 'ENOENT') {
-      return { subdivisions: [] }
-    }
-    
-    throw error
+  if (error || !data?.id) {
+    throw new Error(`Language not found for locale: ${locale}`)
   }
+
+  return data.id
 }
 
-/**
- * Persists data to the JSON file and ensures the directory exists.
- */
-async function writeDb(data: { subdivisions: Subdivision[] }): Promise<void> {
-  const dir = path.dirname(DB_PATH)
+// Maps a raw Supabase row to our Subdivision type
+const mapRow = (row: Record<string, unknown>, languageCode: Locale): Subdivision => ({
+  id: row.id as string,
+  name: row.name as string,
+  slug: row.slug as string | null,
+  description: row.description as string,
+  siteUrl: row.site_url as string | null,
+  imageUrl: row.image_url as string,
+  isActive: row.is_active as boolean,
+  sortOrder: row.sort_order as number,
+  languageCode,
+  languageId: row.language_id as string,
+})
 
-  await mkdir(dir, { recursive: true })
+// PUBLIC (frontend)
 
-  await writeFile(DB_PATH, JSON.stringify(data, null, 2), 'utf-8')
-}
-
-/**
- * Revalidates all localized routes under the [locale] segment.
- * Essential for sync between Admin panel and multi-language Frontend.
- */
-function revalidateFrontend(): void {
-  // Using 'layout' ensures all sub-routes like /[locale]/(site)/... are refreshed
-  revalidatePath('/[locale]', 'layout')
-}
-
-// PUBLIC (FRONTEND)
-
+// Returns only active subdivisions for the given locale, sorted by sort_order.
+// Used in SubdivisionsSection component on the landing page.
 export async function getSubdivisions(locale: Locale): Promise<Subdivision[]> {
-  const db = await readDb()
+  const languageId = await getLanguageId(locale)
 
-  return db.subdivisions
-    .filter((s) => s.isActive && s.languageCode === locale)
-    .sort((a, b) => a.sortOrder - b.sortOrder)
+  const { data, error } = await supabaseServer
+    .from('subdivision')
+    .select('*')
+    .eq('language_id', languageId)
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  if (error) {
+    throw new Error(`Failed to load subdivisions for ${locale}: ${error.message}`)
+  }
+
+  return (data ?? []).map((row) => mapRow(row, locale))
 }
 
-//ADMIN (MANAGEMENT)
+// Returns a single subdivision by slug and locale.
+// Reserved for detail card or modal — not yet used in the frontend.
+export async function getSubdivisionBySlug(
+  slug: string,
+  locale: Locale,
+): Promise<Subdivision | null> {
+  const languageId = await getLanguageId(locale)
 
+  const { data, error } = await supabaseServer
+    .from('subdivision')
+    .select('*')
+    .eq('language_id', languageId)
+    .eq('slug', slug)
+    .maybeSingle()
+
+  if (error) {
+    throw new Error(`Failed to load subdivision ${slug} for ${locale}: ${error.message}`)
+  }
+
+  if (!data) {
+    return null
+  }
+
+  return mapRow(data, locale)
+}
+
+// ─── ADMIN ────────────────────────────────────────────────────────────────────
+
+// Returns ALL subdivisions for the given locale, including inactive ones.
+// Used in the admin panel table view.
+export async function getAllSubdivisions(locale: Locale): Promise<Subdivision[]> {
+  const languageId = await getLanguageId(locale)
+
+  const { data, error } = await supabaseServer
+    .from('subdivision')
+    .select('*')
+    .eq('language_id', languageId)
+    .order('sort_order', { ascending: true })
+
+  if (error) {
+    throw new Error(`Failed to load all subdivisions for ${locale}: ${error.message}`)
+  }
+
+  return (data ?? []).map((row) => mapRow(row, locale))
+}
+
+// Creates a new subdivision.
 export async function createSubdivision(
   data: Omit<Subdivision, 'id'>,
 ): Promise<Subdivision> {
-  const db = await readDb()
+  const languageId = await getLanguageId(data.languageCode)
 
-  const newItem: Subdivision = {
-    ...data,
-    id: crypto.randomUUID(),
+  const { data: inserted, error } = await supabaseServer
+    .from('subdivision')
+    .insert({
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      site_url: data.siteUrl,
+      image_url: data.imageUrl,
+      is_active: data.isActive,
+      sort_order: data.sortOrder,
+      language_id: languageId,
+    })
+    .select()
+    .single()
+
+  if (error || !inserted) {
+    throw new Error(`Failed to create subdivision: ${error?.message}`)
   }
 
-  db.subdivisions.push(newItem)
+  revalidatePath('/')
 
-  await writeDb(db)
-
-  revalidateFrontend()
-
-  return newItem
+  return mapRow(inserted, data.languageCode)
 }
 
+// Updates an existing subdivision by id.
+// Accepts only the fields that need to change (Partial).
 export async function updateSubdivision(
   id: string,
   data: Partial<Omit<Subdivision, 'id'>>,
 ): Promise<Subdivision> {
-  const db = await readDb()
-  const index = db.subdivisions.findIndex((s) => s.id === id)
+  const updatePayload: Record<string, unknown> = {}
 
-  if (index === -1) {
-    throw new Error(`Subdivision with id "${id}" not found`)
+  if (data.name !== undefined) { updatePayload.name = data.name }
+  if (data.slug !== undefined) { updatePayload.slug = data.slug }
+  if (data.description !== undefined) { updatePayload.description = data.description }
+  if (data.siteUrl !== undefined) { updatePayload.site_url = data.siteUrl }
+  if (data.imageUrl !== undefined) { updatePayload.image_url = data.imageUrl }
+  if (data.isActive !== undefined) { updatePayload.is_active = data.isActive }
+  if (data.sortOrder !== undefined) { updatePayload.sort_order = data.sortOrder }
+
+  const { data: updated, error } = await supabaseServer
+    .from('subdivision')
+    .update(updatePayload)
+    .eq('id', id)
+    .select()
+    .single()
+
+  if (error || !updated) {
+    throw new Error(`Failed to update subdivision ${id}: ${error?.message}`)
   }
 
-  db.subdivisions[index] = { ...db.subdivisions[index], ...data }
+  revalidatePath('/')
 
-  await writeDb(db)
+  const locale = (data.languageCode ?? 'uk') as Locale
 
-  revalidateFrontend()
-
-  return db.subdivisions[index]
+  return mapRow(updated, locale)
 }
 
+// Deletes a subdivision by id.
 export async function deleteSubdivision(id: string): Promise<void> {
-  const db = await readDb()
+  const { error } = await supabaseServer
+    .from('subdivision')
+    .delete()
+    .eq('id', id)
 
-  db.subdivisions = db.subdivisions.filter((s) => s.id !== id)
+  if (error) {
+    throw new Error(`Failed to delete subdivision ${id}: ${error.message}`)
+  }
 
-  await writeDb(db)
-
-  revalidateFrontend()
+  revalidatePath('/')
 }
