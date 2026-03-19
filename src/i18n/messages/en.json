@@ -1,1 +1,8 @@
-{ "test": "test" }
+{
+  "test": "test",
+  "subdivisions": {
+    "title": "Our Units",
+    "visitSite": "Visit unit website",
+    "imageAlt": "Photo of unit: {name}"
+  }
+}

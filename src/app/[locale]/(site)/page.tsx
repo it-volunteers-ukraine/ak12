@@ -1,11 +1,18 @@
 import { HomePage } from "@/components";
+import { SubdivisionsSection } from "@/components/subdivisions/subdivisions-section";
+import { Locale } from "@/types";
 
-export default function Home() {
+interface PageProps {
+    params: Promise<{ locale: Locale }>;
+}
+
+export default async function Home({ params }: PageProps) {
+    const { locale } = await params;
+
     return (
-        <div>
-            <main className="text-3xl p-6">
-                <HomePage />
-            </main>
-        </div>
+        <main>
+            <HomePage />
+            <SubdivisionsSection locale={locale} />
+        </main>
     );
 }
