@@ -1,4 +1,4 @@
-'use client';
+import Link from 'next/link';
 
 import { MenuContent } from '@/types';
 import LanguageSwitcher from '../language-switcher';
@@ -16,7 +16,7 @@ export const Header = ({ content }: HeaderProps) => {
 					{content.navigation.map((item) => {
 						return (
 							<li key={item.id}>
-								<a href={`#${item.id}`}>{item.label}</a>
+								<Link href={`#${item.id}`}>{item.label}</Link>
 							</li>
 						);
 					})}

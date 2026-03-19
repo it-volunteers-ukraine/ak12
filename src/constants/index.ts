@@ -1,3 +1,3 @@
 export { routes } from "./routes";
 export { media } from "./media-endpoint";
-export { locales, cookiesLocale } from "./locales";
+export { locales, cookiesLocale, defaultLocale } from "./locales";

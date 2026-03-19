@@ -1,33 +1,37 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 
 import { MenuContent } from '@/types';
 
+type FooterTranslations = {
+	navigation: string;
+	contact: string;
+	social: string;
+	copyright: string;
+}
+
 type FooterProps = {
 	content: MenuContent;
+	footerTranslations: FooterTranslations;
 };
 
-export const Footer = ({ content }: FooterProps) => {
-	const title = useTranslations('footer');
-
+export const Footer = ({ content, footerTranslations }: FooterProps) => {
 	return (
 		<footer className='px-40 '>
 			<div className='flex justify-between'>
 				<nav>
-					<p className='uppercase text-xl mb-3 font-bold'>{title('navigation')}</p>
+					<p className='uppercase text-xl mb-3 font-bold'>{footerTranslations.navigation}</p>
 					<ul className='flex flex-col gap-2'>
 						{content.navigation.map((item) => {
 							return (
 								<li key={item.id}>
-									<a href={`#${item.id}`}>{item.label}</a>
+									<Link href={`#${item.id}`}>{item.label}</Link>
 								</li>
 							);
 						})}
 					</ul>
 				</nav>
 				<div>
-					<p className='uppercase text-xl mb-3 font-bold'>{title('contact')}</p>
+					<p className='uppercase text-xl mb-3 font-bold'>{footerTranslations.contact}</p>
 					<ul className='flex flex-col gap-2'>
 						{content.contacts.map((item) => {
 							return (
@@ -42,7 +46,7 @@ export const Footer = ({ content }: FooterProps) => {
 					</ul>
 				</div>
 				<div>
-					<p className='uppercase text-xl mb-3 font-bold'>{title('social')}</p>
+					<p className='uppercase text-xl mb-3 font-bold'>{footerTranslations.social}</p>
 					<ul className='flex flex-col gap-2'>
 						{content.social.map((item) => {
 							return (
@@ -56,7 +60,7 @@ export const Footer = ({ content }: FooterProps) => {
 					</ul>
 				</div>
 			</div>
-			<p className='text-center'>© 2026. {title('copyright')}</p>
+			<p className='text-center'>© 2026. {footerTranslations.copyright}</p>
 		</footer>
 	);
 };
