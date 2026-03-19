@@ -1,18 +1,30 @@
-import { HomePage } from "@/components";
-import { SubdivisionsSection } from "@/components/subdivisions/subdivisions-section";
-import { Locale } from "@/types";
+import { getTranslations } from "next-intl/server";
 
-interface PageProps {
-    params: Promise<{ locale: Locale }>;
-}
+import { Locale, MenuContent } from "@/types";
+import menuContentJson from "@/data/menuContent.json";
+import { Footer, Header, HomePage, SubdivisionsSection } from "@/components";
 
-export default async function Home({ params }: PageProps) {
-    const { locale } = await params;
+const getMenuContent = (locale: Locale): MenuContent => {
+  return menuContentJson[locale] || menuContentJson.uk;
+};
 
-    return (
-        <main>
-            <HomePage />
-            <SubdivisionsSection locale={locale} />
-        </main>
-    );
+export default async function Home({ params }: { params: { locale: Locale } }) {
+  const { locale } = await params;
+  const menuContent = getMenuContent(locale);
+
+  const t = await getTranslations({
+    locale: locale,
+    namespace: "footer",
+  });
+
+  return (
+    <>
+      <Header content={menuContent} />
+      <main className="text-3xl p-6">
+        <HomePage />
+        <SubdivisionsSection locale={locale} />
+      </main>
+      <Footer content={menuContent} translations={t} />
+    </>
+  );
 }
