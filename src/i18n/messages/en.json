@@ -5,5 +5,10 @@
     "contact": "Contact",
     "social": "Social",
     "copyright": "All rights reserved."
+  },
+  "subdivisions": {
+    "title": "Our Units",
+    "visitSite": "Visit unit website",
+    "imageAlt": "Photo of unit: {name}"
   }
 }
