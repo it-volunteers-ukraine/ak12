@@ -1,11 +1,15 @@
-import { HomePage } from "@/components";
+import { supabaseServer } from "@/lib/supabase-server";
 
-export default function Home() {
+export default async function HomePage() {
+    const { data: vacancies } = await supabaseServer
+        .from("vacancy")
+        .select("*");
+
     return (
         <div>
-            <main className="text-3xl p-6">
-                <HomePage />
-            </main>
+            {vacancies?.map((v) => (
+                <div key={v.id}>{v.position}</div>
+            ))}
         </div>
     );
 }

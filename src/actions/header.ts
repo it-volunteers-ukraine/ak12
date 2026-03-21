@@ -1,21 +1,18 @@
 import { revalidatePath } from "next/cache";
 
-import { supabaseServer } from "@/lib/supabase-server";
 import { Locale } from "@/types";
+import { supabaseServer } from "@/lib/supabase-server";
+
+import { ensureLanguage } from "./ensureLanguage";
 
 export type HeaderLink = {
-    label: string;
     href: string;
+    label: string;
 };
-
 export type HeaderContent = {
+    cta: HeaderLink;
     logoText: string;
     links: HeaderLink[];
-    cta: HeaderLink;
-};
-
-type LanguageRow = {
-    id: string;
 };
 
 const isHeaderLink = (value: unknown): value is HeaderLink => {
@@ -36,39 +33,11 @@ const isHeaderContent = (value: unknown): value is HeaderContent => {
     const content = value as HeaderContent;
 
     return (
-        typeof content.logoText === "string"
-        && Array.isArray(content.links)
-        && content.links.every(isHeaderLink)
-        && isHeaderLink(content.cta)
+        typeof content.logoText === "string" &&
+        Array.isArray(content.links) &&
+        content.links.every(isHeaderLink) &&
+        isHeaderLink(content.cta)
     );
-};
-
-const ensureLanguage = async (locale: Locale): Promise<LanguageRow> => {
-    const { data: existingLanguage, error: selectError } = await supabaseServer
-        .from("language")
-        .select("id")
-        .eq("code", locale)
-        .maybeSingle();
-
-    if (selectError) {
-        throw new Error(`Failed to read language ${locale}: ${selectError.message}`);
-    }
-
-    if (existingLanguage?.id) {
-        return existingLanguage;
-    }
-
-    const { data: insertedLanguage, error: insertError } = await supabaseServer
-        .from("language")
-        .insert({ code: locale })
-        .select("id")
-        .single();
-
-    if (insertError || !insertedLanguage?.id) {
-        throw new Error(`Failed to create language ${locale}: ${insertError?.message}`);
-    }
-
-    return insertedLanguage;
 };
 
 export const getHeaderContentByLocale = async (
@@ -86,7 +55,9 @@ export const getHeaderContentByLocale = async (
         .limit(1);
 
     if (sectionError) {
-        throw new Error(`Failed to load header for ${locale}: ${sectionError.message}`);
+        throw new Error(
+            `Failed to load header for ${locale}: ${sectionError.message}`,
+        );
     }
 
     const sectionRow = sectionRows?.[0];
@@ -111,6 +82,14 @@ const buildHeaderFromForm = (formData: FormData): HeaderContent => {
         {
             label: String(formData.get("link3Label") ?? "").trim(),
             href: String(formData.get("link3Href") ?? "").trim(),
+        },
+        {
+            label: String(formData.get("link4Label") ?? "").trim(),
+            href: String(formData.get("link4Href") ?? "").trim(),
+        },
+        {
+            label: String(formData.get("link5Label") ?? "").trim(),
+            href: String(formData.get("link5Href") ?? "").trim(),
         },
     ].filter((link) => link.label && link.href);
 
@@ -145,7 +124,9 @@ export const saveHeaderAction = async (formData: FormData) => {
         .limit(1);
 
     if (existingError) {
-        throw new Error(`Failed to read existing header for ${locale}: ${existingError.message}`);
+        throw new Error(
+            `Failed to read existing header for ${locale}: ${existingError.message}`,
+        );
     }
 
     const existingRow = existingRows?.[0];
@@ -161,7 +142,9 @@ export const saveHeaderAction = async (formData: FormData) => {
             .eq("id", existingRow.id);
 
         if (updateError) {
-            throw new Error(`Failed to update header for ${locale}: ${updateError.message}`);
+            throw new Error(
+                `Failed to update header for ${locale}: ${updateError.message}`,
+            );
         }
     } else {
         const { error: insertError } = await supabaseServer
@@ -174,10 +157,28 @@ export const saveHeaderAction = async (formData: FormData) => {
             });
 
         if (insertError) {
-            throw new Error(`Failed to create header for ${locale}: ${insertError.message}`);
+            throw new Error(
+                `Failed to create header for ${locale}: ${insertError.message}`,
+            );
         }
     }
 
     revalidatePath("/");
     revalidatePath("/admin");
+};
+
+export const getAllSections = async (locale: Locale) => {
+    const languageRow = await ensureLanguage(locale);
+
+    const { data, error } = await supabaseServer
+        .from("site_content")
+        .select("id, section_key, content")
+        .eq("language_id", languageRow.id)
+        .eq("is_active", true);
+
+    if (error) {
+        throw new Error(error.message);
+    }
+
+    return data;
 };
