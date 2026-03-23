@@ -2,27 +2,27 @@ name: "CodeQL Analysis"
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
-      - '!**/node_modules/**'
-      - '!**/.next/**'
-      - '!**/coverage/**'
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
+      - "!**/node_modules/**"
+      - "!**/.next/**"
+      - "!**/coverage/**"
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
     paths:
-      - 'src/**'
-      - 'package.json'
-      - 'package-lock.json'
+      - "src/**"
+      - "package.json"
+      - "package-lock.json"
 
 jobs:
   analyze:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    
+
     permissions:
       actions: read
       contents: read
@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['javascript-typescript']
+        language: ["javascript-typescript"]
 
     steps:
       - name: Checkout repository
@@ -60,7 +60,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
 
       - name: Cache node modules
         uses: actions/cache@v4

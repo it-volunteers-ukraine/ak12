@@ -9,10 +9,10 @@ type FooterProps = {
 
 export const Footer = ({ content, translations }: FooterProps) => {
   return (
-    <footer className="px-40 ">
+    <footer className="px-40">
       <div className="flex justify-between">
         <nav>
-          <p className="uppercase text-xl mb-3 font-bold">{translations("navigation")}</p>
+          <p className="mb-3 text-xl font-bold uppercase">{translations("navigation")}</p>
           <ul className="flex flex-col gap-2">
             {content.navigation.map((item) => {
               return (
@@ -24,12 +24,12 @@ export const Footer = ({ content, translations }: FooterProps) => {
           </ul>
         </nav>
         <div>
-          <p className="uppercase text-xl mb-3 font-bold">{translations("contact")}</p>
+          <p className="mb-3 text-xl font-bold uppercase">{translations("contact")}</p>
           <ul className="flex flex-col gap-2">
             {content.contacts.map((item) => {
               return (
                 <li key={item.id}>
-                  <p className="uppercase text-base font-bold">{item.label}</p>
+                  <p className="text-base font-bold uppercase">{item.label}</p>
                   <a href={item.url} target="_blank" rel="noopener noreferrer">
                     {item.value}
                   </a>
@@ -39,7 +39,7 @@ export const Footer = ({ content, translations }: FooterProps) => {
           </ul>
         </div>
         <div>
-          <p className="uppercase text-xl mb-3 font-bold">{translations("social")}</p>
+          <p className="mb-3 text-xl font-bold uppercase">{translations("social")}</p>
           <ul className="flex flex-col gap-2">
             {content.social.map((item) => {
               return (

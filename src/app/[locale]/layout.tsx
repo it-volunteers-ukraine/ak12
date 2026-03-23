@@ -9,60 +9,47 @@ import { WidthToast } from "./with-toast";
 import "@/styles/globals.css";
 
 type RootLayoutProps = {
-    children: ReactNode;
-    params: Promise<{
-        locale: string;
-}>;
+  children: ReactNode;
+  params: Promise<{
+    locale: string;
+  }>;
 };
 
 const roboto = Roboto({
-    weight: ["400", "500", "700"],
-    style: ["normal", "italic"],
-    variable: "--font-roboto",
-    subsets: ["latin", "cyrillic"],
-    display: "swap",
+  weight: ["400", "500", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-roboto",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
 });
 
 const robotoCondensed = Roboto_Condensed({
-    weight: ["400", "500", "700"],
-    style: ["normal", "italic"],
-    variable: "--font-robotoCondensed",
-    subsets: ["latin", "cyrillic"],
-    display: "swap",
+  weight: ["400", "500", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-robotoCondensed",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
 });
 
 const scada = Scada({
-    weight: ["400", "700"],
-    style: ["normal", "italic"],
-    variable: "--font-scada",
-    subsets: ["latin", "cyrillic"],
-    display: "swap",
+  weight: ["400", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-scada",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
 });
 
-export default async function RootLayout({
-    children,
-    params,
-}: RootLayoutProps) {
-    const { locale } = await params;
-    const messages = await getMessages({ locale });
+export default async function RootLayout({ children, params }: RootLayoutProps) {
+  const { locale } = await params;
+  const messages = await getMessages({ locale });
 
-    return (
-        <html
-            lang={locale}
-            suppressHydrationWarning
-            data-scroll-behavior="smooth"
-        >
-            <body
-                suppressHydrationWarning
-                className={`${roboto.variable} ${robotoCondensed.variable} ${scada.variable}`}
-            >
-                <NextIntlClientProvider
-                    locale={locale}
-                    messages={messages}
-                >
-                    <WidthToast>{children}</WidthToast>
-                </NextIntlClientProvider>
-            </body>
-        </html>
-    );
+  return (
+    <html lang={locale} suppressHydrationWarning data-scroll-behavior="smooth">
+      <body suppressHydrationWarning className={`${roboto.variable} ${robotoCondensed.variable} ${scada.variable}`}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <WidthToast>{children}</WidthToast>
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  );
 }

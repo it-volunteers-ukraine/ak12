@@ -9,7 +9,7 @@ type HeaderProps = {
 
 export const Header = ({ content }: HeaderProps) => {
   return (
-    <header className="px-40 flex justify-between">
+    <header className="flex justify-between px-40">
       <p>logo</p>
       <nav>
         <ul className="flex gap-10">

@@ -20,7 +20,7 @@ export default async function Home({ params }: { params: { locale: Locale } }) {
   return (
     <>
       <Header content={menuContent} />
-      <main className="text-3xl p-6">
+      <main className="p-6 text-3xl">
         <HomePage />
         <SubdivisionsSection locale={locale} />
         <VacanciesSection />

@@ -1,4 +1,4 @@
 export enum ActiveLanguage {
-	EN = 'en',
-	UK = 'uk',
+  EN = "en",
+  UK = "uk",
 }
