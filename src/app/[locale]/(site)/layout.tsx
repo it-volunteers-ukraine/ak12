@@ -1,5 +1,9 @@
 import { ReactNode } from "react";
 
+import { Locale, MenuContent } from "@/types";
+import menuContentJson from "@/data/menuContent.json";
+import { Footer, Header } from "@/components";
+
 type SiteLayoutProps = {
     children: ReactNode;
     params: Promise<{
@@ -7,24 +11,23 @@ type SiteLayoutProps = {
     }>;
 };
 
+const getMenuContent = (locale: Locale): MenuContent => {
+    return menuContentJson[locale] || menuContentJson.uk;
+};
+
 export default async function SiteLayout({
     children,
     params,
 }: SiteLayoutProps) {
-    await params;
-/*   const normalizedLocale: Locale = locale === "uk" ? "uk" : "en";
-     const headerContent = await getHeaderContentByLocale(normalizedLocale); */
+    const { locale } = await params;
+    const normalizedLocale: Locale = locale === "uk" ? "uk" : "en";
+    const menuContent = getMenuContent(normalizedLocale);
 
     return (
         <>
-{/*             {headerContent && (
-                <Header
-                    locale={normalizedLocale}
-                    siteContent={headerContent}
-                />
-                
-            )} */}
+            <Header content={menuContent} />
             {children}
+            <Footer content={menuContent} locale={normalizedLocale} />
         </>
     );
 }

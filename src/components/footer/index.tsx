@@ -1,13 +1,16 @@
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
-import { MenuContent } from "@/types";
+import { Locale, MenuContent } from "@/types";
 
 type FooterProps = {
   content: MenuContent;
-  translations: (key: string) => string;
+  locale: Locale;
 };
 
-export const Footer = ({ content, translations }: FooterProps) => {
+export const Footer = async ({ content, locale }: FooterProps) => {
+  const translations = await getTranslations({ locale, namespace: "footer" });
+
   return (
     <footer className="px-40 ">
       <div className="flex justify-between">
