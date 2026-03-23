@@ -21,6 +21,8 @@ export const vacancyService = {
     const from = page * limit;
     const to = from + limit - 1;
 
+    // Recommended index:
+    // CREATE INDEX idx_vacancy_active_lang_type_sort ON vacancy(type, is_active, language_id, sort_order);
     let query = supabaseServer
       .from("vacancy")
       .select(
@@ -30,14 +32,11 @@ export const vacancyService = {
       `,
         { count: "exact" },
       )
+      .eq("type", type)
       .eq("is_active", true)
       .eq("language.code", locale)
       .order("sort_order", { ascending: true })
       .range(from, to);
-
-    if (type) {
-      query = query.eq("type", type);
-    }
 
     const { data, error, count } = await query;
 
