@@ -1,5 +1,5 @@
 import { Locale } from "@/types/locale";
-import { DEFAULT_PAGE, DEFAULT_LIMIT } from "@/constants/pagination";
+import { DEFAULT_PAGE, DEFAULT_LIMIT, DEFAULT_TYPE } from "@/constants/pagination";
 import { VacancyType, VacancyWithLanguage } from "@/types/vacancy";
 import { supabaseServer } from "@/lib/supabase-server";
 import { logger } from "@/lib/logger";
@@ -14,7 +14,7 @@ interface Params {
 export const vacancyService = {
   async getAll({
     locale,
-    type,
+    type = DEFAULT_TYPE,
     page = DEFAULT_PAGE,
     limit = DEFAULT_LIMIT,
   }: Params): Promise<{ data: VacancyWithLanguage[]; count: number }> {
