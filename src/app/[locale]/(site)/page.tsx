@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 
 import { Locale, MenuContent } from "@/types";
 import menuContentJson from "@/data/menuContent.json";
-import { Footer, Header, HomePage, SubdivisionsSection } from "@/components";
+import { Footer, Header, HomePage, SubdivisionsSection, VacanciesSection } from "@/components";
 
 const getMenuContent = (locale: Locale): MenuContent => {
   return menuContentJson[locale] || menuContentJson.uk;
@@ -23,6 +23,7 @@ export default async function Home({ params }: { params: { locale: Locale } }) {
       <main className="text-3xl p-6">
         <HomePage />
         <SubdivisionsSection locale={locale} />
+        <VacanciesSection />
       </main>
       <Footer content={menuContent} translations={t} />
     </>
