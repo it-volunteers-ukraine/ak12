@@ -5,18 +5,8 @@ import { Locale } from "@/types";
 import { ensureLanguage } from "./ensureLanguage";
 import { supabaseServer } from "@/lib/supabase-server";
 
-type GetSectionContentParams = {
-  section: string;
-  locale: Locale;
-};
 
-type GetSafeSectionContentParams<Schema extends z.ZodTypeAny> = {
-  section: string;
-  locale: Locale;
-  schema: Schema;
-};
-
-export const getSectionContent = cache(async <T>({ section, locale }: GetSectionContentParams): Promise<T | null> => {
+export const getSectionContent = cache(async <T>(section: string, locale: Locale): Promise<T | null> => {
   const languageRow = await ensureLanguage(locale);
 
   const { data, error } = await supabaseServer
@@ -36,21 +26,24 @@ export const getSectionContent = cache(async <T>({ section, locale }: GetSection
   return data.content as T;
 });
 
-export const getSafeSectionContent = cache(
-  async <Schema extends z.ZodTypeAny>({
-    section,
-    locale,
-    schema,
-  }: GetSafeSectionContentParams<Schema>): Promise<z.infer<Schema> | null> => {
-    const data = await getSectionContent<z.infer<Schema>>({ section, locale });
-    const parsed = schema.safeParse(data);
+export const getSectionContent = cache(
+  async <T>(section: string, locale: Locale): Promise<T | null> => {
+    const languageRow = await ensureLanguage(locale);
 
-    if (!parsed.success) {
-      console.error(`Invalid content for ${section}:`, parsed.error);
+    const { data, error } = await supabaseServer
+      .from("site_content")
+      .select("content")
+      .eq("section_key", section)
+      .eq("is_active", true)
+      .eq("language_id", languageRow.id)
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
 
+    if (error || !data?.content) {
       return null;
     }
 
-    return parsed.data;
+    return data.content as T;
   },
 );

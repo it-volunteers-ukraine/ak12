@@ -31,7 +31,7 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
         <ul className="flex gap-10">
           {socialLinks.map((item) => {
             return (
-              <a key={item.platform} href={item.href} target="_blank" rel="noopener noreferrer">
+            <li key={item.id}><a key={item.platform} href={item.href} target="_blank" rel="noopener noreferrer"></li>
                 {item.platform}
               </a>
             );

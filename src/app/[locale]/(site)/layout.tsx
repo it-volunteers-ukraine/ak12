@@ -14,16 +14,8 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
   const { locale } = await params;
   const validLocale = locale === "en" ? "en" : "uk";
 
-  const contentHeader = await getSafeSectionContent({
-    locale: validLocale,
-    schema: headerContentSchema,
-    section: SECTION_KEYS.HEADER,
-  });
-  const contentContacts = await getSafeSectionContent({
-    locale: validLocale,
-    schema: contactsContentSchema,
-    section: SECTION_KEYS.CONTACTS,
-  });
+const contentHeader = await getSafeSectionContent(SECTION_KEYS.HEADER, validLocale, headerContentSchema);
+const contentContacts = await getSafeSectionContent(SECTION_KEYS.CONTACTS, validLocale, contactsContentSchema);
 
   const t = await getTranslations({
     locale: locale,

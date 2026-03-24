@@ -22,8 +22,8 @@ export const saveHeaderAction = async ({ locale, rawContent }: SaveHeaderActionP
   });
 
   if (result.success) {
-    revalidatePath("/");
-    revalidatePath("/admin");
+    revalidatePath("/{locale}");
+    revalidatePath("{locale}/admin");
   }
 
   return result;
