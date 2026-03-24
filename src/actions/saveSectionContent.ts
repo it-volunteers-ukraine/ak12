@@ -48,7 +48,7 @@ export const saveSectionContent = async <Schema extends z.ZodTypeAny>({
     if (existingId) {
       const { error } = await supabaseServer
         .from("site_content")
-        .update({ section_key: sectionKey, content, is_active: true, updated_at: new Date().toISOString() })
+        .update({ content, is_active: true, updated_at: new Date().toISOString() })
         .eq("id", existingId);
 
       if (error) {

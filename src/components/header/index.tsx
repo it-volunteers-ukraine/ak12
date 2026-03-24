@@ -9,7 +9,7 @@ type HeaderProps = {
   content: z.infer<typeof headerContentSchema> | null;
 };
 
-export const Header = async ({ content, socialLinks }: HeaderProps) => {
+export const Header = ({ content, socialLinks }: HeaderProps) => {
   return (
     <header className="px-40 flex justify-between">
       <p>{content?.logoText || "Logo"}</p>

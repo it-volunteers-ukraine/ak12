@@ -1,10 +1,9 @@
 import { revalidatePath } from "next/cache";
 
 import { Locale } from "@/types";
-import { headerContentSchema } from "@/schemas";
-
-import { saveSectionContent } from "./saveSectionContent";
 import { SECTION_KEYS } from "@/constants";
+import { contactsContentSchema } from "@/schemas";
+import { saveSectionContent } from "./saveSectionContent";
 
 type SaveContactsActionParams = {
   locale: Locale;
@@ -17,7 +16,7 @@ export const saveContactsAction = async ({ locale, rawContent }: SaveContactsAct
   const result = await saveSectionContent({
     locale,
     rawContent,
-    schema: headerContentSchema,
+    schema: contactsContentSchema,
     sectionKey: SECTION_KEYS.CONTACTS,
   });
 

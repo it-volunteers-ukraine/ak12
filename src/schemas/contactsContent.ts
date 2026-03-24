@@ -19,7 +19,7 @@ export const contactSchema = z.object({
 });
 
 export const socialLinkSchema = z.object({
-  platform: z.enum(SocialPlatform, "Invalid social platform"),
+  platform: z.enum(SocialPlatform, { message: "Invalid social platform" }),
   href: z.string().min(1, "Href is required"),
 });
 
