@@ -1,14 +1,14 @@
+import { SubdivisionsSection, VacanciesSection } from "@/components";
 import { Locale } from "@/types";
-import { HomePage, SubdivisionsSection } from "@/components";
 
 export default async function Home({ params }: { params: { locale: Locale } }) {
   const { locale } = await params;
 
   return (
     <>
-      <main className="text-3xl p-6">
-        <HomePage />
+      <main className="p-6 text-3xl">
         <SubdivisionsSection locale={locale} />
+        <VacanciesSection />
       </main>
     </>
   );

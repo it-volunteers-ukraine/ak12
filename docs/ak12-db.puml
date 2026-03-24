@@ -25,7 +25,8 @@ entity "vacancy" as vacancy {
   slug : varchar(100)
   *description : varchar(255)
   *type : vacancy_type
-  salary : numeric(10,2)
+  *salary_min : integer
+  salary_max : integer
   *image_url : varchar(255)
   *is_active : boolean
   *sort_order : integer
