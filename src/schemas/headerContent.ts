@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const headerLinkSchema = z.object({
   id: z.string().optional(),
-  href: z.string().min(0, "Href is required"),
+  href: z.string().trim().min(1, "Href is required"),
   label: z.string().min(0, "Link label is required"),
 });
 
