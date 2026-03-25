@@ -2,8 +2,8 @@ import { getTranslations } from "next-intl/server";
 
 import { SECTION_KEYS } from "@/constants";
 import { Footer, Header } from "@/components";
-import { getSafeSectionContent } from "@/actions";
 import { contactsContentSchema, headerContentSchema } from "@/schemas";
+import { contentService } from "@/lib/content/content.service";
 
 type SiteLayoutProps = {
   children: React.ReactNode;
@@ -14,8 +14,17 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
   const { locale } = await params;
   const validLocale = locale === "en" ? "en" : "uk";
 
-const contentHeader = await getSafeSectionContent(SECTION_KEYS.HEADER, validLocale, headerContentSchema);
-const contentContacts = await getSafeSectionContent(SECTION_KEYS.CONTACTS, validLocale, contactsContentSchema);
+  const contentHeader = await contentService.get({
+    locale: validLocale,
+    schema: headerContentSchema,
+    section: SECTION_KEYS.HEADER,
+  });
+
+  const contentContacts = await contentService.get({
+    locale: validLocale,
+    schema: contactsContentSchema,
+    section: SECTION_KEYS.CONTACTS,
+  });
 
   const t = await getTranslations({
     locale: locale,

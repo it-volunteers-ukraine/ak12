@@ -11,7 +11,7 @@ type HeaderProps = {
 
 export const Header = ({ content, socialLinks }: HeaderProps) => {
   return (
-    <header className="px-40 flex justify-between">
+    <header className="flex justify-between px-40">
       <p>{content?.logoText || "Logo"}</p>
       <nav>
         {content?.links && (
@@ -31,9 +31,11 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
         <ul className="flex gap-10">
           {socialLinks.map((item) => {
             return (
-            <li key={item.id}><a key={item.platform} href={item.href} target="_blank" rel="noopener noreferrer"></li>
-                {item.platform}
-              </a>
+              <li key={item.href}>
+                <a key={item.platform} href={item.href} target="_blank" rel="noopener noreferrer">
+                  {item.platform}
+                </a>
+              </li>
             );
           })}
         </ul>
