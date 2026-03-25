@@ -20,8 +20,6 @@ export default async function SiteLayout({
     const normalizedLocale: Locale = locale === "uk" ? "uk" : "en";
     const headerContent = await getHeaderContentByLocale(normalizedLocale);
 
-    console.log(headerContent);
-
     return (
         <>
             {headerContent && (

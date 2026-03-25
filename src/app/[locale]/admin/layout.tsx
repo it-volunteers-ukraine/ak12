@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 
 import Sidebar from "@/components/admin/sidebar";
-import { getAllSections, getHeaderContentByLocale } from "@/actions/header";
+import { getAllSections } from "@/actions/get-all-sections";
+import { getHeaderContentByLocale } from "@/actions/header";
 
 type SiteLayoutProps = {
     children: ReactNode;
@@ -24,11 +25,11 @@ export default async function SidebarPage({
     const sections = await getAllSections(normalizedLocale);
 
     console.log("sections", sections);
+    console.log("headerContent", headerContent);
 
     return (
         <div className="max-w-292 mx-auto pl-64">
-            <Sidebar menu={headerContent} />
-
+            <Sidebar />
             <main>{children}</main>
         </div>
     );

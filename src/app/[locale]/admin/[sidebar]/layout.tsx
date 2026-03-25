@@ -6,7 +6,7 @@ export default async function SectionLayout({
     children,
 }: {
     children: React.ReactNode;
-    params: Promise<{ sidebar: string; subsidebar: string }>;
+    params: Promise<{ sidebar: string }>;
 }) {
     const { sidebar } = await params;
 

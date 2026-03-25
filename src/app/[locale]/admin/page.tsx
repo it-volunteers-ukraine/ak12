@@ -1,5 +1,7 @@
 import { redirect } from "next/navigation";
 
+import { sidebarToSubmenuMap } from "@/components/admin/header-menu/mok";
+
 export default async function AdminPage({
     params,
 }: {
@@ -7,7 +9,11 @@ export default async function AdminPage({
 }) {
     const { locale } = await params;
 
-    redirect(`/${locale}/admin/contacts/header`);
+    const sections = Object.keys(sidebarToSubmenuMap);
 
-    return null;
+    const firstSection = sections[0];
+
+    const firstSub = sidebarToSubmenuMap[firstSection]?.[0]?.id || "index";
+
+    redirect(`/${locale}/admin/${firstSection}/${firstSub}`);
 }

@@ -10,11 +10,9 @@ interface PageProps {
 }
 
 export default async function AdminPage({ params }: PageProps) {
-    const { sidebar, subsidebar } = await params;
+    const { subsidebar } = await params;
 
     const SelectedForm = FORM_COMPONENTS[subsidebar];
-
-    console.log("PARAMS ON PAGE:", sidebar);
 
     return (
         <div className="bg-white p-8 rounded-xl shadow-sm border">
@@ -22,7 +20,7 @@ export default async function AdminPage({ params }: PageProps) {
                 Редагування: {subsidebar}
             </h1>
 
-            {SelectedForm ? <SelectedForm /> : <p>Компонент не знайдено</p>}
+            {SelectedForm && <SelectedForm />}
         </div>
     );
 }

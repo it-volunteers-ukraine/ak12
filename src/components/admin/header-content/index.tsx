@@ -1,6 +1,6 @@
 import { Locale } from "@/types";
 import Input from "@/components/input";
-import { HeaderContent, saveHeaderAction } from "@/actions/header";
+import { HeaderContent } from "@/actions/header";
 
 export type HeaderFormProps = {
     locale: Locale;
@@ -9,10 +9,7 @@ export type HeaderFormProps = {
 
 export const HeaderForm = ({ locale, content }: HeaderFormProps) => {
     return (
-        <form
-            action={saveHeaderAction}
-            className="rounded-lg border border-neutral-200 bg-white p-6"
-        >
+        <form className="rounded-lg border border-neutral-200 bg-white p-6">
             <input
                 type="hidden"
                 name="locale"

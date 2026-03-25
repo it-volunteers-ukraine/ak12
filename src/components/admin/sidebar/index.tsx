@@ -3,15 +3,9 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-import { HeaderLink, HeaderContent } from "@/actions/header";
+import { mainAdminNavigation, sidebarToSubmenuMap } from "../header-menu/mok";
 
-import { sidebarToSubmenuMap } from "../header-menu/mok";
-
-interface ISidebarProps {
-    menu: HeaderContent | null;
-}
-
-export default function Sidebar({ menu }: ISidebarProps) {
+export default function Sidebar() {
     const params = useParams();
     const activeSegment = params.sidebar as string;
 
@@ -21,14 +15,14 @@ export default function Sidebar({ menu }: ISidebarProps) {
                 ADMIN
             </div>
             <nav className="p-4 space-y-1">
-                {menu?.links.map((link: HeaderLink) => {
-                    const slug = link.href.replace("#", "").toLowerCase();
+                {mainAdminNavigation?.map((item) => {
+                    const slug = item.id.toLowerCase();
                     const firstSub = sidebarToSubmenuMap[slug]?.[0] || "index";
-                    const href = `/admin/${slug}/${firstSub.section_key?.toLowerCase()}`;
+                    const href = `/admin/${slug}/${firstSub.id?.toLowerCase()}`;
 
                     return (
                         <Link
-                            key={link.label}
+                            key={item.label}
                             href={href}
                             className={`flex px-4 py-2 rounded-lg ${
                                 activeSegment === slug
@@ -36,7 +30,7 @@ export default function Sidebar({ menu }: ISidebarProps) {
                                     : "hover:bg-gray-100"
                             }`}
                         >
-                            {link.label}
+                            {item.label}
                         </Link>
                     );
                 })}

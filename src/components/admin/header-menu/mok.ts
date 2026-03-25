@@ -1,27 +1,33 @@
 export type SubmenuItem = {
     id: string;
-    section_key: string;
+    label: string;
+    status?: string;
 };
 
+export const mainAdminNavigation = [
+    { id: "content", label: "Контент" },
+    { id: "divisions", label: "Підрозділи" },
+    { id: "careers", label: "Вакансії" },
+    { id: "ceo", label: "CEO" },
+];
+
 export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {
-    contacts: [
-        { id: "header", section_key: "Header" },
-        { id: "footer", section_key: "Footer" },
-    ],
     content: [
-        { id: "openings", section_key: "Openings" },
-        { id: "openings2", section_key: "Openings2" },
+        { id: "banner", label: "Банер головної сторінки", status: "1min" },
+        { id: "mobilization", label: "Блок: мобілізація", status: "1min" },
+        { id: "contract", label: "Блок: контракт 18-24", status: "1min" },
+        { id: "transfer", label: "Блок: переведення ", status: "1min" },
     ],
     divisions: [
-        { id: "division1", section_key: "Division1" },
-        { id: "division2", section_key: "Division2" },
+        { id: "list", label: "Всі підрозділи ", status: "1min" },
+        { id: "new", label: "Новий підрозділ ", status: "1min" },
+    ],
+    careers: [
+        { id: "combat", label: "Бойові вакансії", status: "1min" },
+        { id: "logistics", label: "Тилові вакансії", status: "1min" },
     ],
     ceo: [
-        { id: "ceo1", section_key: "ceo1" },
-        { id: "ceo2", section_key: "ceo2" },
-    ],
-    job: [
-        { id: "job1", section_key: "Job1" },
-        { id: "job2", section_key: "Job2" },
+        { id: "general", label: "Загальні", status: "1min" },
+        { id: "users", label: "Користувачі", status: "1min" },
     ],
 };
