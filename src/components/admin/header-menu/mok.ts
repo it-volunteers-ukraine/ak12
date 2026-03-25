@@ -13,7 +13,7 @@ export const mainAdminNavigation = [
 
 export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {
     content: [
-        { id: "banner", label: "Банер головної сторінки", status: "1min" },
+        { id: "hero", label: "Банер головної сторінки", status: "1min" },
         { id: "mobilization", label: "Блок: мобілізація", status: "1min" },
         { id: "contract", label: "Блок: контракт 18-24", status: "1min" },
         { id: "transfer", label: "Блок: переведення ", status: "1min" },

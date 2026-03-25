@@ -1,7 +1,11 @@
+import { Locale } from "@/types";
+import { HeroSchema } from "@/schema/heroSchema";
+import { getHeroSectionContentAction } from "@/actions/heroActions";
+
 import { FORM_COMPONENTS } from "./config-admin-forms";
 
 export type AdminPageParams = {
-    locale: string;
+    locale: Locale;
     sidebar: string;
     subsidebar: string;
 };
@@ -10,7 +14,9 @@ interface PageProps {
 }
 
 export default async function AdminPage({ params }: PageProps) {
-    const { subsidebar } = await params;
+    const { locale, subsidebar } = await params;
+
+    const sectionData = await getHeroSectionContentAction<HeroSchema>(locale);
 
     const SelectedForm = FORM_COMPONENTS[subsidebar];
 
@@ -20,7 +26,12 @@ export default async function AdminPage({ params }: PageProps) {
                 Редагування: {subsidebar}
             </h1>
 
-            {SelectedForm && <SelectedForm />}
+            {SelectedForm && (
+                <SelectedForm
+                    data={sectionData}
+                    locale={locale}
+                />
+            )}
         </div>
     );
 }
