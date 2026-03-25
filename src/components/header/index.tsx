@@ -1,37 +1,45 @@
+import { z } from "zod";
 import Link from "next/link";
 
-import { MenuContent } from "@/types";
 import LanguageSwitcher from "../language-switcher";
+import { headerContentSchema, SocialLink } from "@/schemas";
 
 type HeaderProps = {
-  content: MenuContent;
+  socialLinks: SocialLink[] | null;
+  content: z.infer<typeof headerContentSchema> | null;
 };
 
-export const Header = ({ content }: HeaderProps) => {
+export const Header = ({ content, socialLinks }: HeaderProps) => {
   return (
-    <header className="px-40 flex justify-between">
-      <p>logo</p>
+    <header className="flex justify-between px-40">
+      <p>{content?.logoText || "Logo"}</p>
       <nav>
+        {content?.links && (
+          <ul className="flex gap-10">
+            {content.links.map((item) => {
+              return (
+                <li key={item.href}>
+                  <Link href={item.href}>{item.label}</Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </nav>
+      <LanguageSwitcher />
+      {socialLinks && (
         <ul className="flex gap-10">
-          {content.navigation.map((item) => {
+          {socialLinks.map((item) => {
             return (
-              <li key={item.id}>
-                <Link href={`#${item.id}`}>{item.label}</Link>
+              <li key={item.href}>
+                <a key={item.platform} href={item.href} target="_blank" rel="noopener noreferrer">
+                  {item.platform}
+                </a>
               </li>
             );
           })}
         </ul>
-      </nav>
-      <LanguageSwitcher />
-      <ul className="flex gap-10">
-        {content.social.map((item) => {
-          return (
-            <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer">
-              {item.label}
-            </a>
-          );
-        })}
-      </ul>
+      )}
     </header>
   );
 };
