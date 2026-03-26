@@ -1,19 +1,44 @@
+import { getTranslations } from "next-intl/server";
 import { getVacancies } from "@/actions/vacancies/getVacancies";
+import { VacancyCard } from "./VacancyCard";
+import { VacancyTabs } from "./VacancyTabs";
+import { VacancyType } from "@/types/vacancy";
+import { LoadMoreLink } from "./LoadMoreLink";
+import { DEFAULT_LIMIT } from "@/constants/pagination";
 
-export async function VacanciesSection() {
-  const { data, count } = await getVacancies();
+export interface Props {
+  type: VacancyType;
+  page: number;
+}
+
+export async function VacanciesSection({ type, page }: Props) {
+  const t = await getTranslations("vacancies");
+
+  const { vacancies, total } = await getVacancies(type, page, DEFAULT_LIMIT);
+
+  const loadedVacancies = (page + 1) * DEFAULT_LIMIT;
+  const remainingVacancies = total - loadedVacancies;
 
   return (
-    <section>
-      <h2>Vacancies</h2>
+    <section className="border border-gray-200 px-4 py-16 shadow-sm" id="vacancy">
+      <div className="mx-auto max-w-7xl">
+        <h2 className="mb-12 text-center text-3xl font-bold">{t("title")}</h2>
 
-      <p>Total: {count}</p>
+        <VacancyTabs currentType={type} />
 
-      <ul>
-        {data.map((v) => (
-          <li key={v.id}>{v.position}</li>
-        ))}
-      </ul>
+        {vacancies.length > 0 ? (
+          <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
+            {vacancies.map((v) => (
+              <VacancyCard key={v.id} vacancy={v} />
+            ))}
+          </ul>
+        ) : (
+          <p className="text-center">{t("noResults")}</p>
+        )}
+        {remainingVacancies > 0 && (
+          <LoadMoreLink type={type} nextPage={page + 1} remainingVacancies={remainingVacancies} />
+        )}
+      </div>
     </section>
   );
 }
