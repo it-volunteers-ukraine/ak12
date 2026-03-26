@@ -59,7 +59,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: 'npm'
 
       - name: Cache node modules
@@ -68,9 +68,9 @@ jobs:
           path: |
             ~/.npm
             node_modules
-          key: ${{ runner.os }}-node-20-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-24-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-node-20-
+            ${{ runner.os }}-node-24-
             ${{ runner.os }}-node-
 
       - name: Install dependencies
