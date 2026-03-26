@@ -140,12 +140,12 @@ export default async function AdminPage() {
 } */
 
 export default function AdminPage() {
-	return (
-		<main className="mx-auto max-w-5xl p-6">
-			<h1 className="text-3xl font-bold">Admin example</h1>
-			<p className="mt-2 text-sm text-neutral-600">
-				The implementation is intentionally left in comments as an example.
-			</p>
-		</main>
-	);
+  return (
+    <main className="mx-auto max-w-5xl p-6">
+      <h1 className="text-3xl font-bold">Admin example</h1>
+      <p className="mt-2 text-sm text-neutral-600">
+        The implementation is intentionally left in comments as an example.
+      </p>
+    </main>
+  );
 }

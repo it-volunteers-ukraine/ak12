@@ -1,14 +1,31 @@
 import { SubdivisionsSection, VacanciesSection } from "@/components";
+import { DEFAULT_TYPE } from "@/constants/vacancies/filters";
+import { DEFAULT_PAGE } from "@/constants/vacancies/pagination";
 import { Locale } from "@/types";
+import { VacancyType } from "@/types/vacancy";
 
-export default async function Home({ params }: { params: { locale: Locale } }) {
+export interface SearchParamsProps {
+  type?: VacancyType;
+  page?: string;
+}
+
+export default async function Home({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: Locale }>;
+  searchParams: Promise<SearchParamsProps>;
+}) {
   const { locale } = await params;
+
+  const type = (await searchParams).type || DEFAULT_TYPE;
+  const page = Number((await searchParams).page) || DEFAULT_PAGE;
 
   return (
     <>
-      <main className="p-6 text-3xl">
+      <main className="p-6">
         <SubdivisionsSection locale={locale} />
-        <VacanciesSection />
+        <VacanciesSection type={type} page={page} />
       </main>
     </>
   );
