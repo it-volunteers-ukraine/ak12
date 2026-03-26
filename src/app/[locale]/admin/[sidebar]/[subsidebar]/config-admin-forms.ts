@@ -3,7 +3,7 @@ import { HeroSchema } from "@/schema/heroSchema";
 import { HeroSection } from "@/components/admin/hero-section";
 import HeaderContent from "@/components/admin/contacts/header";
 
-type TAdminData = HeroSchema | null;
+type TAdminData = [HeroSchema | null, HeroSchema | null];
 export interface IAdminFormProps {
     locale: Locale;
     data: TAdminData;

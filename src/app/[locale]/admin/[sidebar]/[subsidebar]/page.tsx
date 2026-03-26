@@ -14,11 +14,15 @@ interface PageProps {
 }
 
 export default async function AdminPage({ params }: PageProps) {
-    const { locale, subsidebar } = await params;
-
-    const sectionData = await getHeroSectionContentAction<HeroSchema>(locale);
+    const { subsidebar } = await params;
+    const data = await Promise.all([
+        getHeroSectionContentAction<HeroSchema>("uk"),
+        getHeroSectionContentAction<HeroSchema>("en"),
+    ]);
 
     const SelectedForm = FORM_COMPONENTS[subsidebar];
+
+    console.log(data);
 
     return (
         <div className="bg-white p-8 rounded-xl shadow-sm border">
@@ -28,8 +32,8 @@ export default async function AdminPage({ params }: PageProps) {
 
             {SelectedForm && (
                 <SelectedForm
-                    data={sectionData}
-                    locale={locale}
+                    data={data}
+                    locale={"uk"}
                 />
             )}
         </div>

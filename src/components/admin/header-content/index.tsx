@@ -46,11 +46,6 @@ export const HeaderForm = ({ locale, content }: HeaderFormProps) => {
                             required
                             defaultValue={link.label ?? ""}
                         />
-                        <Input
-                            name={`link${index + 1}Href`}
-                            required
-                            defaultValue={link.href ?? ""}
-                        />
                     </div>
                 ))}
             </div>
