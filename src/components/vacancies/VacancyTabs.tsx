@@ -1,3 +1,4 @@
+import { VACANCY_TYPES } from "@/constants/vacancies/filters";
 import { VacancyType } from "@/types/vacancy";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
@@ -13,21 +14,16 @@ export async function VacancyTabs({ currentType }: { currentType: VacancyType })
 
   return (
     <div className="mb-6 flex justify-center">
-      <Link
-        href="?type=backline"
-        className={`${base} ${currentType === "backline" ? active : inactive}`}
-        scroll={false}
-      >
-        {t("backline")}
-      </Link>
-
-      <Link
-        href="?type=frontline"
-        className={`${base} ${currentType === "frontline" ? active : inactive}`}
-        scroll={false}
-      >
-        {t("frontline")}
-      </Link>
+      {VACANCY_TYPES.map((type) => (
+        <Link
+          key={type}
+          href={`?type=${type}`}
+          className={`${base} ${currentType === type ? active : inactive}`}
+          scroll={false}
+        >
+          {t(type)}
+        </Link>
+      ))}
     </div>
   );
 }

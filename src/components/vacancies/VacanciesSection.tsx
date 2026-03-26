@@ -4,7 +4,7 @@ import { VacancyCard } from "./VacancyCard";
 import { VacancyTabs } from "./VacancyTabs";
 import { VacancyType } from "@/types/vacancy";
 import { LoadMoreLink } from "./LoadMoreLink";
-import { DEFAULT_LIMIT } from "@/constants/pagination";
+import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
 
 export interface Props {
   type: VacancyType;
