@@ -1,5 +1,6 @@
 import { SubdivisionsSection, VacanciesSection } from "@/components";
-import { DEFAULT_PAGE, DEFAULT_TYPE } from "@/constants/pagination";
+import { DEFAULT_TYPE } from "@/constants/vacancies/filters";
+import { DEFAULT_PAGE } from "@/constants/vacancies/pagination";
 import { Locale } from "@/types";
 import { VacancyType } from "@/types/vacancy";
 
