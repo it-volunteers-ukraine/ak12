@@ -1,5 +1,5 @@
 export const routes = {
-    general: {
-        home: "/",
-    },
+  general: {
+    home: "/",
+  },
 };

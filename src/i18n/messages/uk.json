@@ -13,8 +13,8 @@
   },
   "vacancies": {
     "title": "Вакансії",
-    "backline": "Бойові посади",
-    "frontline": "Тилові посади",
+    "frontline": "Бойові посади",
+    "backline": "Тилові посади",
     "salary": "Зарплата",
     "from": "Від",
     "currency": "грн",
