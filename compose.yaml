@@ -1,7 +1,7 @@
 services:
   # Development service
   dev:
-    image: node:20-alpine
+    image: node:24-alpine
     working_dir: /workspace
     restart: unless-stopped
     volumes:
