@@ -1,1 +1,26 @@
-{ "test": "test" }
+{
+  "test": "test",
+  "footer": {
+    "navigation": "Navigation",
+    "contact": "Contact",
+    "social": "Social",
+    "copyright": "All rights reserved."
+  },
+  "subdivisions": {
+    "title": "Our Units",
+    "visitSite": "Visit unit website",
+    "imageAlt": "Photo of unit: {name}"
+  },
+  "vacancies": {
+    "title": "Vacancies",
+    "frontline": "Frontline positions",
+    "backline": "Backline positions",
+    "salary": "Salary",
+    "currency": "UAH",
+    "requirements": "Requirements",
+    "showMore": "Show more",
+    "readLess": "Show less",
+    "apply": "Apply",
+    "noResults": "No vacancies available at the moment"
+  }
+}

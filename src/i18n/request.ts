@@ -8,7 +8,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     const locale = await requestLocale;
     const supportedLocale = locales.includes(locale as Locale)
         ? locale
-        : ActiveLanguage.UA;
+        : ActiveLanguage.UK;
 
     if (!supportedLocale) {
         notFound();

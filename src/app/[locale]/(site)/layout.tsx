@@ -1,40 +1,44 @@
-import { ReactNode } from "react";
+import { getTranslations } from "next-intl/server";
 
-import Link from "next/link";
-
-import { Locale } from "@/types";
-import { getHeaderContentByLocale } from "@/actions/header";
+import { SECTION_KEYS } from "@/constants";
+import { Footer, Header } from "@/components";
+import { contentService } from "@/lib/content/content.service";
+import { headerContentSchema, contactsContentSchema } from "@/schemas";
 
 type SiteLayoutProps = {
-    children: ReactNode;
-    params: Promise<{
-        locale: string;
-    }>;
+  children: React.ReactNode;
+  params: Promise<{
+  locale: string 
+
+}>;
 };
 
-export default async function SiteLayout({
-    params,
-    children,
-}: SiteLayoutProps) {
-    const locale = (await params).locale as Locale;
-    const normalizedLocale: Locale = locale === "uk" ? "uk" : "en";
-    const headerContent = await getHeaderContentByLocale(normalizedLocale);
+export default async function SiteLayout({ children, params }: SiteLayoutProps) {
+  const { locale } = await params;
+  const validLocale = locale === "en" ? "en" : "uk";
 
-    return (
-        <>
-            {headerContent && (
-                <div className="flex gap-3 items-center justify-between px-4 py-3">
-                    {headerContent.links.map((link) => (
-                        <Link
-                            key={link.label}
-                            href={link.href}
-                        >
-                            {link.label}
-                        </Link>
-                    ))}
-                </div>
-            )}
-            {children}
-        </>
-    );
+  const contentHeader = await contentService.get({
+    locale: validLocale,
+    schema: headerContentSchema,
+    section: SECTION_KEYS.HEADER,
+  });
+
+  const contentContacts = await contentService.get({
+    locale: validLocale,
+    schema: contactsContentSchema,
+    section: SECTION_KEYS.CONTACTS,
+  });
+
+  const t = await getTranslations({
+    locale: locale,
+    namespace: "footer",
+  });
+
+  return (
+    <>
+      <Header content={contentHeader} socialLinks={contentContacts?.socialLinks || null} />
+      {children}
+      <Footer contactsContent={contentContacts} menu={contentHeader?.links || null} translations={t} />
+    </>
+  );
 }

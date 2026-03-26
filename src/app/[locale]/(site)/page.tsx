@@ -1,15 +1,15 @@
-import { supabaseServer } from "@/lib/supabase-server";
+import { Locale } from "@/types";
+import { VacanciesSection, SubdivisionsSection } from "@/components";
 
-export default async function HomePage() {
-    const { data: vacancies } = await supabaseServer
-        .from("vacancy")
-        .select("*");
+export default async function Home({ params }: { params: { locale: Locale } }) {
+  const { locale } = await params;
 
-    return (
-        <div>
-            {vacancies?.map((v) => (
-                <div key={v.id}>{v.position}</div>
-            ))}
-        </div>
-    );
+  return (
+    <>
+      <main className="p-6 text-3xl">
+        <SubdivisionsSection locale={locale} />
+        <VacanciesSection />
+      </main>
+    </>
+  );
 }

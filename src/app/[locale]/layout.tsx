@@ -50,7 +50,7 @@ export default async function RootLayout({
         <html
             lang={locale}
             suppressHydrationWarning
-            className="scroll-smooth"
+            data-scroll-behavior="smooth"
         >
             <body
                 suppressHydrationWarning
