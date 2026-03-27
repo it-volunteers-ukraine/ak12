@@ -6,7 +6,7 @@ export const loginSchema = z.object({
     .trim()
     .min(1, "Field is mandatory")
     .max(50, "Maximum length is 50 characters")
-    .email("Must be in email format (example@domain.com)"),
+    .pipe(z.email("Must be in email format (example@domain.com)")),
   password: z
     .string()
     .min(1, "Field is mandatory")

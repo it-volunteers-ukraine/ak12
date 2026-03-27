@@ -3,6 +3,8 @@
 import { createSession, validateAdmin } from "@/lib/auth/session.service";
 import { loginSchema } from "@/schemas";
 import { redirect } from "next/navigation";
+import type { FieldErrors } from "@/types";
+import { z } from "zod";
 
 export async function adminLogin(formData: FormData) {
   const data = {
@@ -14,7 +16,13 @@ export async function adminLogin(formData: FormData) {
   const parsed = loginSchema.safeParse(data);
 
   if (!parsed.success) {
-    return { error: "Validation failed" };
+    const tree = z.treeifyError(parsed.error);
+    const fieldErrors: FieldErrors = {
+      email: tree.properties?.email?.errors ?? [],
+      password: tree.properties?.password?.errors ?? [],
+    };
+
+    return { fieldErrors };
   }
 
   const isValid = validateAdmin(data.email, data.password);
