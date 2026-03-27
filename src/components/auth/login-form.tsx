@@ -8,6 +8,7 @@ export function LoginForm() {
   const params = useParams();
   const locale = params.locale as string;
   const [serverError, setServerError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   async function action(formData: FormData) {
     formData.append("locale", locale);
@@ -39,14 +40,23 @@ export function LoginForm() {
         <label htmlFor="password" className="mb-1 block text-sm font-medium">
           Password
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          className="w-full rounded border p-2"
-          required
-        />
+        <div className="relative">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className="w-full rounded border p-2 pr-10"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute top-1/2 right-2 -translate-y-1/2 text-sm text-gray-500"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
       </div>
       {serverError && <p className="text-sm text-red-600">{serverError}</p>}
       <button type="submit" className="w-full rounded bg-black p-2 text-white">
