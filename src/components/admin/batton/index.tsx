@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import { Locale } from "@/types";
 
-export const RestoreButton = ({ locale }: { locale: Locale }) => {
+export const Button = ({ locale }: { locale: Locale }) => {
     return (
         <button
             onClick={() => console.log(locale)}
