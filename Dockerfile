@@ -1,5 +1,5 @@
 # Build-time node version configuration
-ARG NODE_VERSION=20
+ARG NODE_VERSION=24
 
 # Stage 1: Install dependencies
 FROM node:${NODE_VERSION}-alpine AS dependencies
