@@ -63,6 +63,22 @@ export function verifySession(token?: string) {
   }
 }
 
+import crypto from "crypto";
+
 export function validateAdmin(email: string, password: string) {
-  return email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD;
+  const expectedEmail = process.env.ADMIN_EMAIL || '';
+  const expectedPassword = process.env.ADMIN_PASSWORD || '';
+  
+  // Use crypto.timingSafeEqual for constant-time comparison
+  // Note: Buffer.from expects strings, but we need equal-length buffers
+  const emailMatch = crypto.timingSafeEqual(
+    Buffer.from(email.padEnd(expectedEmail.length), 'utf8'),
+    Buffer.from(expectedEmail.padEnd(email.length), 'utf8')
+  );
+  const passwordMatch = crypto.timingSafeEqual(
+    Buffer.from(password.padEnd(expectedPassword.length), 'utf8'),
+    Buffer.from(expectedPassword.padEnd(password.length), 'utf8')
+  );
+  
+  return emailMatch && passwordMatch;
 }
