@@ -12,7 +12,7 @@ type TAdminFormComponent = React.ComponentType<IAdminFormProps>;
 
 export const FORM_COMPONENTS: Record<string, TAdminFormComponent> = {
   hero: HeroSection,
-  mobilization: HeroSection,
   contract: HeroSection,
   transfer: HeroSection,
+  mobilization: HeroSection,
 };

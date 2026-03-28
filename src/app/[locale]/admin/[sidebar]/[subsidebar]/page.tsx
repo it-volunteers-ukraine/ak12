@@ -24,8 +24,6 @@ export default async function AdminPage({ params }: PageProps) {
 
   const SelectedForm = FORM_COMPONENTS[subsidebar];
 
-  console.log({ contentEn: contentEn, contentUk: contentUk });
-
   return (
     <div className="rounded-xl border bg-white p-8 shadow-sm">
       <h1 className="mb-6 text-2xl font-bold">Редагування: {subsidebar}</h1>

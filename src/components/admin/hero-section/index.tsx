@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+import Input from "@/components/input";
+import { Button } from "@/components/button";
 import { HeroSchema } from "@/schemas/heroSchema";
 import { updateHeroMultiLangAction } from "@/actions/heroActions";
 
@@ -28,27 +30,22 @@ export const HeroSection = ({ data }: IHeroSection) => {
 
   return (
     <div className="space-y-4 rounded border bg-white p-6 text-black shadow">
-      <form onSubmit={() => console.log(data)} action={handleSubmit}>
+      <form action={handleSubmit} className="flex flex-col gap-y-4">
         <div>
-          <input name="titleUk" defaultValue={dataUK?.title} className="w-full rounded border p-2 text-black" />
-          <input name="subtitleUk" defaultValue={dataUK?.subtitle} className="w-full rounded border p-2 text-black" />
+          <Input name="titleUk" defaultValue={dataUK?.title} label="titleUk" />
+          <Input name="subtitleUk" defaultValue={dataUK?.subtitle} label="subtitleUk" />
         </div>
         <div>
-          <input name="titleEn" defaultValue={dataEN?.title} className="w-full rounded border p-2 text-black" />
-          <input name="subtitleEn" defaultValue={dataEN?.subtitle} className="w-full rounded border p-2 text-black" />
+          <Input name="titleEn" defaultValue={dataEN?.title} label="titleEn" />
+          <Input name="subtitleEn" defaultValue={dataEN?.subtitle} label="subtitleEn" />
         </div>
 
-        <input
+        <Input
           name="backgroundImage"
           defaultValue={dataUK?.backgroundImage || dataEN?.backgroundImage}
           placeholder="https://example.com/image.jpg"
-          className="mb-4 w-full rounded border p-2 text-black"
+          label="backgroundImage"
         />
-        {!data && (
-          <div className="rounded bg-yellow-50 p-4 text-yellow-700">
-            Дані для цієї локалі ({dataUK?.title || dataEN?.title}) ще не створені в базі.
-          </div>
-        )}
         <Image
           className="rounded-lg object-cover"
           alt="main-banner"
@@ -61,21 +58,11 @@ export const HeroSection = ({ data }: IHeroSection) => {
           }
         />
         <div>
-          <input
-            name="primaryButtonTextEn"
-            defaultValue={dataEN?.primaryButton?.text}
-            className="w-full rounded border p-2 text-black"
-          />
-          <input
-            name="primaryButtonTextUk"
-            defaultValue={dataUK?.primaryButton?.text}
-            className="w-full rounded border p-2 text-black"
-          />
+          <Input name="primaryButtonTextEn" defaultValue={dataEN?.primaryButton?.text} label="primaryButtonTextEn" />
+          <Input name="primaryButtonTextUk" defaultValue={dataUK?.primaryButton?.text} label="primaryButtonTextUk" />
         </div>
 
-        <button type="submit" className="rounded bg-blue-600 px-4 py-2 text-white disabled:bg-gray-400">
-          submit
-        </button>
+        <Button title="submit" />
       </form>
     </div>
   );
