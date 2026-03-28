@@ -4,16 +4,16 @@ export const loginSchema = z.object({
   email: z
     .string()
     .trim()
-    .min(1, "Field is mandatory")
-    .max(50, "Maximum length is 50 characters")
-    .pipe(z.email("Must be in email format (example@domain.com)")),
+    .min(1, "Поле є обов'язковим")
+    .max(50, "Максимальна довжина - 50 символів")
+    .pipe(z.email("Повинен відповідати формату email (example@domain.com)")),
   password: z
     .string()
-    .min(1, "Field is mandatory")
-    .min(12, "Minimum length is 12 characters")
-    .max(64, "Maximum length is 64 characters")
-    .regex(/[A-Z]/, "Must contain at least one uppercase letter")
-    .regex(/[a-z]/, "Must contain at least one lowercase letter")
-    .regex(/[0-9]/, "Must contain at least one number")
-    .regex(/[!@#$%^&*()_+\-=\[\]{}|\\:;"'<>,.?/]/, "Must contain at least one special character"),
+    .min(1, "Поле є обов'язковим")
+    .min(12, "Мінімальна довжина - 12 символів")
+    .max(64, "Максимальна довжина - 64 символи")
+    .regex(/[A-Z]/, "Повинен містити щонайменше одну велику літеру")
+    .regex(/[a-z]/, "Повинен містити щонайменше одну малу літеру")
+    .regex(/[0-9]/, "Повинен містити щонайменше одну цифру")
+    .regex(/[!@#$%^&*()_+\-=\[\]{}|\\:;"'<>,.?/]/, "Повинен містити щонайменше один спеціальний символ"),
 });
