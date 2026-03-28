@@ -1,9 +1,16 @@
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
 
 function sign(value: string) {
-  const secret = process.env.SESSION_SECRET!;
+  const secret = process.env.SESSION_SECRET_KEY;
+
+  if (!secret || secret.length < 32) {
+    throw new Error(
+      "SESSION_SECRET_KEY environment variable is missing or too short. It must be at least 32 characters.",
+    );
+  }
 
   return crypto.createHmac("sha256", secret).update(value).digest("hex");
 }
@@ -63,22 +70,13 @@ export function verifySession(token?: string) {
   }
 }
 
-import crypto from "crypto";
+export async function validateAdmin(email: string, password: string): Promise<boolean> {
+  const expectedEmail = process.env.ADMIN_EMAIL;
+  const expectedPasswordHash = process.env.ADMIN_PASSWORD_HASH;
 
-export function validateAdmin(email: string, password: string) {
-  const expectedEmail = process.env.ADMIN_EMAIL || '';
-  const expectedPassword = process.env.ADMIN_PASSWORD || '';
-  
-  // Use crypto.timingSafeEqual for constant-time comparison
-  // Note: Buffer.from expects strings, but we need equal-length buffers
-  const emailMatch = crypto.timingSafeEqual(
-    Buffer.from(email.padEnd(expectedEmail.length), 'utf8'),
-    Buffer.from(expectedEmail.padEnd(email.length), 'utf8')
-  );
-  const passwordMatch = crypto.timingSafeEqual(
-    Buffer.from(password.padEnd(expectedPassword.length), 'utf8'),
-    Buffer.from(expectedPassword.padEnd(password.length), 'utf8')
-  );
-  
-  return emailMatch && passwordMatch;
+  if (!expectedEmail || !expectedPasswordHash) {
+    return false;
+  }
+
+  return email === expectedEmail && (await bcrypt.compare(password, expectedPasswordHash));
 }
