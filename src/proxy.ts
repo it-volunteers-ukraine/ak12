@@ -1,5 +1,5 @@
 import createMiddleware from "next-intl/middleware";
-import { NextResponse, NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { locales } from "./constants";
 import { verifySession } from "@/lib/auth/session.service";
 import { SESSION_COOKIE_NAME } from "@/constants";
@@ -18,9 +18,25 @@ export default function proxy(request: NextRequest) {
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const isValid = verifySession(token);
 
-  if (token && !isValid) {
+  if (isAdminRoute && !isValid && !isLoginRoute) {
     const response = NextResponse.redirect(new URL(`/${locale}/login`, request.url));
 
+    if (token) {
+      response.cookies.set(SESSION_COOKIE_NAME, "", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 0,
+        path: "/",
+      });
+    }
+
+    return response;
+  }
+
+  const response = intlMiddleware(request);
+
+  if (token && !isValid) {
     response.cookies.set(SESSION_COOKIE_NAME, "", {
       httpOnly: true,
       secure: true,
@@ -28,15 +44,9 @@ export default function proxy(request: NextRequest) {
       maxAge: 0,
       path: "/",
     });
-
-    return response;
   }
 
-  if (isAdminRoute && !isValid && !isLoginRoute) {
-    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
-  }
-
-  return intlMiddleware(request);
+  return response;
 }
 
 export const config = {
