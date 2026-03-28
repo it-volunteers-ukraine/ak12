@@ -25,7 +25,7 @@ export async function adminLogin(formData: FormData) {
     return { fieldErrors };
   }
 
-  const isValid = validateAdmin(data.email, data.password);
+  const isValid = await validateAdmin(data.email, data.password);
 
   if (!isValid) {
     return { error: "Invalid credentials" };
