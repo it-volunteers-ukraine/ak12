@@ -2,12 +2,15 @@ import { getTranslations } from "next-intl/server";
 
 import { SECTION_KEYS } from "@/constants";
 import { Footer, Header } from "@/components";
-import { contactsContentSchema, headerContentSchema } from "@/schemas";
 import { contentService } from "@/lib/content/content.service";
+import { headerContentSchema, contactsContentSchema } from "@/schemas";
 
 type SiteLayoutProps = {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{
+  locale: string 
+
+}>;
 };
 
 export default async function SiteLayout({ children, params }: SiteLayoutProps) {

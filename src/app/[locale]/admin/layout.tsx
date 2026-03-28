@@ -1,0 +1,21 @@
+import { ReactNode } from "react";
+
+import Sidebar from "@/components/admin/sidebar";
+
+type SiteLayoutProps = {
+  children: ReactNode;
+  params: Promise<{
+    locale: string;
+    section?: string;
+    subsidebar?: string;
+  }>;
+};
+
+export default async function SidebarPage({ children }: SiteLayoutProps) {
+  return (
+    <div className="mx-auto max-w-292 pl-64">
+      <Sidebar />
+      <main>{children}</main>
+    </div>
+  );
+}

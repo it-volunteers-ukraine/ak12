@@ -1,5 +1,5 @@
-import { SubdivisionsSection, VacanciesSection } from "@/components";
 import { Locale } from "@/types";
+import { VacanciesSection, SubdivisionsSection } from "@/components";
 
 export default async function Home({ params }: { params: { locale: Locale } }) {
   const { locale } = await params;
