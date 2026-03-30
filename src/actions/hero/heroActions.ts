@@ -2,16 +2,14 @@
 
 import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
+import { SUPPORTED_LOCALES } from "@/constants/locales";
 
-import { saveContentAction } from "./content";
+import { saveContentAction } from "../content";
 
 export const updateHeroMultiLangAction = async (formData: FormData) => {
   const rawData = Object.fromEntries(formData.entries());
 
-  const languages = [
-    { locale: "uk" as const, suffix: "Uk" },
-    { locale: "en" as const, suffix: "En" },
-  ];
+  const languages = SUPPORTED_LOCALES;
 
   try {
     const savePromises = languages.map((lang) => {

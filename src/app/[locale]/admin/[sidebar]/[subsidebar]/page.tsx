@@ -1,6 +1,6 @@
 import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
-import { heroContentSchema } from "@/schemas/heroSchema";
+import { heroContentSchema } from "@/schemas/heroContent";
 import { contentService } from "@/lib/content/content.service";
 
 import { FORM_COMPONENTS } from "./config-admin-forms";

@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 
 import Input from "@/components/input";
 import { Button } from "@/components/button";
-import { HeroSchema } from "@/schemas/heroSchema";
-import { updateHeroMultiLangAction } from "@/actions/heroActions";
+import { HeroSchema } from "@/schemas/heroContent";
+import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 
 interface TAdminData {
   en: HeroSchema | null;
@@ -53,7 +53,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
           height={100}
           src={
             dataUK?.backgroundImage ||
-            dataUK?.backgroundImage ||
+            dataEN?.backgroundImage ||
             "https://i.pinimg.com/736x/24/11/42/241142e0b2024e219879c624a153264a.jpg"
           }
         />

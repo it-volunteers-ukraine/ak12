@@ -1,4 +1,4 @@
-import { HeroSchema } from "@/schemas/heroSchema";
+import { HeroSchema } from "@/schemas/heroContent";
 import { HeroSection } from "@/components/admin/hero-section";
 
 interface TAdminData {
@@ -12,7 +12,4 @@ type TAdminFormComponent = React.ComponentType<IAdminFormProps>;
 
 export const FORM_COMPONENTS: Record<string, TAdminFormComponent> = {
   hero: HeroSection,
-  contract: HeroSection,
-  transfer: HeroSection,
-  mobilization: HeroSection,
 };

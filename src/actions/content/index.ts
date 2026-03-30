@@ -5,9 +5,8 @@ import { revalidatePath } from "next/cache";
 
 import { Locale } from "@/types";
 import { SectionKey, SECTION_KEYS } from "@/constants";
-import { heroContentSchema } from "@/schemas/heroSchema";
 import { contentService } from "@/lib/content/content.service";
-import { headerContentSchema, contactsContentSchema } from "@/schemas";
+import { heroContentSchema, headerContentSchema, contactsContentSchema } from "@/schemas";
 
 type SaveContentAction = {
   locale: Locale;
