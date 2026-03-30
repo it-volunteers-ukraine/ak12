@@ -14,10 +14,17 @@ export interface Props {
 export async function VacanciesSection({ type, page }: Props) {
   const t = await getTranslations("vacancies");
 
-  const { vacancies, total } = await getVacancies(type, page, DEFAULT_LIMIT);
+  const { vacancies } = await getVacancies();
 
-  const loadedVacancies = (page + 1) * DEFAULT_LIMIT;
-  const remainingVacancies = total - loadedVacancies;
+  const filteredVacancies = vacancies.filter((v) => v.type === type);
+
+  const visibleVacancies = filteredVacancies.slice(0, (page + 1) * DEFAULT_LIMIT);
+
+  const total = filteredVacancies.length;
+
+  const loaded = visibleVacancies.length;
+
+  const remainingVacancies = total - loaded;
 
   return (
     <section className="border border-gray-200 px-4 py-16 shadow-sm" id="vacancy">
@@ -26,9 +33,9 @@ export async function VacanciesSection({ type, page }: Props) {
 
         <VacancyTabs currentType={type} />
 
-        {vacancies.length > 0 ? (
+        {visibleVacancies.length > 0 ? (
           <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
-            {vacancies.map((v) => (
+            {visibleVacancies.map((v) => (
               <VacancyCard key={v.id} vacancy={v} />
             ))}
           </ul>
