@@ -2,16 +2,10 @@
 
 import { getLocale } from "next-intl/server";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
-import { VacancyType } from "@/types/vacancy";
 import { Locale } from "@/types/locale";
 
-export async function getVacancies(type?: VacancyType, page?: number, limit?: number) {
+export async function getVacancies() {
   const locale = (await getLocale()) as Locale;
 
-  return vacancyService.getAll({
-    locale,
-    type,
-    page,
-    limit,
-  });
+  return vacancyService.getAll({ locale });
 }

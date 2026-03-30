@@ -1,6 +1,6 @@
 import { Locale } from "@/types/locale";
 
-export type VacancyType = 'frontline' | 'backline';
+export type VacancyType = "frontline" | "backline";
 
 export interface Vacancy {
   id: string;
@@ -16,7 +16,23 @@ export interface Vacancy {
   language_id: string;
 }
 
-export interface VacancyWithLanguage extends Omit<Vacancy, 'language_id'> {
+export interface VacancyWithLanguage extends Omit<Vacancy, "language_id"> {
+  language: {
+    code: Locale;
+  };
+}
+
+export interface VacancyMapped {
+  id: string;
+  position: string;
+  slug: string | null;
+  description: string;
+  type: VacancyType;
+  salaryMin: number;
+  salaryMax: number | null;
+  imageUrl: string;
+  isActive: boolean;
+  sortOrder: number;
   language: {
     code: Locale;
   };
