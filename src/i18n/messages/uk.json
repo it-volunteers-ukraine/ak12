@@ -16,9 +16,10 @@
     "frontline": "Бойові посади",
     "backline": "Тилові посади",
     "salary": "Зарплата",
+    "from": "Від",
     "currency": "грн",
     "requirements": "Вимоги",
-    "showMore": "Показати більше",
+    "showMore": "Показати ще",
     "readLess": "Згорнути",
     "apply": "Подати заявку",
     "noResults": "Наразі вакансії відсутні"
