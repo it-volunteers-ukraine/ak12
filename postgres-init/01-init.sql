@@ -39,10 +39,12 @@ CREATE TABLE IF NOT EXISTS vacancy (
     type vacancy_type NOT NULL,
     salary_min INTEGER NOT NULL,
     salary_max INTEGER,
-    image_url VARCHAR(255) NOT NULL,
+    image_url VARCHAR(255),
     is_active BOOLEAN NOT NULL DEFAULT true,
     sort_order INTEGER NOT NULL DEFAULT 0,
     language_id UUID NOT NULL REFERENCES language(id) ON DELETE RESTRICT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uq_vacancy_slug_language UNIQUE (slug, language_id)
 );
 

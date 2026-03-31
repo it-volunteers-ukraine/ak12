@@ -12,4 +12,6 @@ export const mapVacancy = (vacancy: VacancyWithLanguage): VacancyMapped => ({
   isActive: vacancy.is_active,
   sortOrder: vacancy.sort_order,
   language: vacancy.language,
+  createdAt: vacancy.created_at,
+  updatedAt: vacancy.updated_at,
 });

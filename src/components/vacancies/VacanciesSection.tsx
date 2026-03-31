@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { getVacancies } from "@/actions/vacancies/getVacancies";
+import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
 import { VacancyCard } from "./VacancyCard";
 import { VacancyTabs } from "./VacancyTabs";
 import { VacancyType } from "@/types/vacancy";
