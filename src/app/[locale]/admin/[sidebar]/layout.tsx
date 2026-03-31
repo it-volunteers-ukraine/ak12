@@ -1,4 +1,4 @@
-import AdminHeader from "@/components/admin/header-menu";
+import { AdminHeader } from "@/components/admin";
 import { sidebarToSubmenuMap } from "@/components/admin/header-menu/mok";
 
 export default async function SectionLayout({

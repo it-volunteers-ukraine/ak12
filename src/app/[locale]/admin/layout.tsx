@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import Sidebar from "@/components/admin/sidebar";
+import { Sidebar } from "@/components/admin";
 
 type SiteLayoutProps = {
   children: ReactNode;

@@ -7,7 +7,7 @@ import { LogoutForm } from "@/components/auth/logout-form";
 
 import { mainAdminNavigation, sidebarToSubmenuMap } from "../header-menu/mok";
 
-export default function Sidebar() {
+export const Sidebar = () => {
   const params = useParams();
   const activeSegment = params.sidebar as string;
 
@@ -38,4 +38,4 @@ export default function Sidebar() {
       </div>
     </aside>
   );
-}
+};

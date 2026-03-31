@@ -10,7 +10,7 @@ interface IAdminHeaderProps {
   contentMenu: SubmenuItem[];
 }
 
-export default function AdminHeader({ contentMenu, sidebarSegment }: IAdminHeaderProps) {
+export const AdminHeader = ({ contentMenu, sidebarSegment }: IAdminHeaderProps) => {
   const params = useParams();
 
   const activeSubsection = params.subsidebar as string;
@@ -38,4 +38,4 @@ export default function AdminHeader({ contentMenu, sidebarSegment }: IAdminHeade
       })}
     </header>
   );
-}
+};
