@@ -1,39 +1,32 @@
 "use client";
 
-import { useState } from "react";
 import { useParams } from "next/navigation";
+import { useActionState, useState, useEffect } from "react";
 import { adminLogin } from "@/actions/auth/login";
-import type { FieldErrors } from "@/types";
+import type { State } from "@/types";
+
+const initialState: State = {
+  fieldErrors: {},
+  error: "",
+};
 
 export function LoginForm() {
   const params = useParams();
   const locale = params.locale as string;
-  const [serverError, setServerError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  async function action(formData: FormData) {
-    setServerError("");
-    setFieldErrors({});
-
+  const [state, action, isPending] = useActionState<State, FormData>((prevState, formData) => {
     formData.append("locale", locale);
 
-    const res = await adminLogin(formData);
+    return adminLogin(prevState, formData);
+  }, initialState);
 
-    if (res?.fieldErrors) {
-      setFieldErrors(res.fieldErrors);
-
-      return;
+  useEffect(() => {
+    if (state.error === "Invalid credentials") {
+      setPassword("");
     }
-
-    if (res?.error) {
-      setServerError(res.error);
-
-      return;
-    }
-  }
+  }, [state.error]);
 
   return (
     <form action={action} className="mx-auto mt-20 max-w-md space-y-4" noValidate>
@@ -52,7 +45,7 @@ export function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        {fieldErrors.email?.[0] && <p className="mt-1 text-sm text-red-600">{fieldErrors.email[0]}</p>}
+        {state.fieldErrors.email?.[0] && <p className="mt-1 text-sm text-red-600">{state.fieldErrors.email[0]}</p>}
       </div>
       <div>
         <label htmlFor="password" className="mb-1 block text-sm font-medium">
@@ -77,10 +70,12 @@ export function LoginForm() {
             {showPassword ? "Hide" : "Show"}
           </button>
         </div>
-        {fieldErrors.password?.[0] && <p className="mt-1 text-sm text-red-600">{fieldErrors.password[0]}</p>}
+        {state.fieldErrors.password?.[0] && (
+          <p className="mt-1 text-sm text-red-600">{state.fieldErrors.password[0]}</p>
+        )}
       </div>
-      {serverError && <p className="text-sm text-red-600">{serverError}</p>}
-      <button type="submit" className="w-full rounded bg-black p-2 text-white">
+      {state.error && <p className="text-sm text-red-600">{state.error}</p>}
+      <button type="submit" disabled={isPending} className="w-full rounded bg-black p-2 text-white disabled:opacity-50">
         Login
       </button>
     </form>

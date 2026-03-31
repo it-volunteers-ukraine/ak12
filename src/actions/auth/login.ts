@@ -3,10 +3,10 @@
 import { createSession, validateAdmin } from "@/lib/auth/session.service";
 import { loginSchema } from "@/schemas";
 import { redirect } from "next/navigation";
-import type { FieldErrors } from "@/types";
+import type { FieldErrors, State } from "@/types";
 import { z } from "zod";
 
-export async function adminLogin(formData: FormData) {
+export async function adminLogin(_prevState: State, formData: FormData): Promise<State> {
   const data = {
     email: String(formData.get("email")),
     password: String(formData.get("password")),
@@ -22,16 +22,27 @@ export async function adminLogin(formData: FormData) {
       password: tree.properties?.password?.errors ?? [],
     };
 
-    return { fieldErrors };
+    return {
+      fieldErrors,
+      error: "",
+    };
   }
 
   const isValid = await validateAdmin(data.email, data.password);
 
   if (!isValid) {
-    return { error: "Invalid credentials" };
+    return {
+      error: "Invalid credentials",
+      fieldErrors: {},
+    };
   }
 
   await createSession();
 
   redirect(`/${locale}/admin`);
+
+  return {
+    error: "",
+    fieldErrors: {},
+  };
 }
