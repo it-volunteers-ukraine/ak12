@@ -12,7 +12,6 @@ export interface Vacancy {
   type: VacancyType;
   salary_min: number;
   salary_max: number | null;
-  image_url: string | null;
   is_active: boolean;
   sort_order: number;
   language_id: string;
@@ -34,7 +33,6 @@ export interface VacancyMapped {
   type: VacancyType;
   salaryMin: number;
   salaryMax: number | null;
-  imageUrl: string | null;
   isActive: boolean;
   sortOrder: number;
   language: {

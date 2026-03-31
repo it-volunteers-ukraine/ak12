@@ -3,7 +3,7 @@ import { VacancyMapped } from "@/types/vacancy";
 import { supabaseServer } from "@/lib/supabase-server";
 import { logger } from "@/lib/logger";
 import { mapVacancy } from "@/utils/vacancies/map-vacancy";
-import { CreateVacancyDto } from "./schemas/create-vacancy.schema";
+import { CreateVacancyDto } from "../../schemas/create-vacancy.schema";
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
 import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
 

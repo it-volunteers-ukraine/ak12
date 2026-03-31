@@ -366,7 +366,7 @@ VALUES
     )
 ON CONFLICT (section_key, language_id) DO NOTHING;
 
-INSERT INTO vacancy (position, slug, description, type, salary_min, salary_max, image_url, is_active, sort_order, language_id)
+INSERT INTO vacancy (position, slug, description, type, salary_min, salary_max, is_active, sort_order, language_id)
 VALUES
     (
         'Оператор БПЛА',
@@ -375,7 +375,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/uav-operator.jpg',
         true,
         10,
         (SELECT id FROM language WHERE code = 'uk')
@@ -387,7 +386,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/assault.jpg',
         true,
         20,
         (SELECT id FROM language WHERE code = 'uk')
@@ -399,7 +397,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/combat-medic.jpg',
         true,
         30,
         (SELECT id FROM language WHERE code = 'uk')
@@ -411,7 +408,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/communications.jpg',
         true,
         40,
         (SELECT id FROM language WHERE code = 'uk')
@@ -423,7 +419,6 @@ VALUES
         'backline',
         20000,
         NULL,
-        '/images/vacancies/driver-mechanic.jpg',
         true,
         50,
         (SELECT id FROM language WHERE code = 'uk')
@@ -435,7 +430,6 @@ VALUES
         'backline',
         20000,
         170000,
-        '/images/vacancies/cybersecurity.jpg',
         true,
         60,
         (SELECT id FROM language WHERE code = 'uk')
@@ -447,7 +441,6 @@ VALUES
         'backline',
         20000,
         170000,
-        '/images/vacancies/logistics.jpg',
         true,
         70,
         (SELECT id FROM language WHERE code = 'uk')
@@ -459,7 +452,6 @@ VALUES
         'backline',
         20000,
         170000,
-        '/images/vacancies/recruiter.jpg',
         false,
         80,
         (SELECT id FROM language WHERE code = 'uk')
@@ -471,7 +463,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/uav-operator.jpg',
         true,
         10,
         (SELECT id FROM language WHERE code = 'en')
@@ -483,7 +474,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/assault.jpg',
         true,
         20,
         (SELECT id FROM language WHERE code = 'en')
@@ -495,7 +485,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/combat-medic.jpg',
         true,
         30,
         (SELECT id FROM language WHERE code = 'en')
@@ -507,7 +496,6 @@ VALUES
         'frontline',
         20000,
         170000,
-        '/images/vacancies/communications.jpg',
         true,
         40,
         (SELECT id FROM language WHERE code = 'en')
@@ -519,7 +507,6 @@ VALUES
         'backline',
         20000,
         NULL,
-        '/images/vacancies/driver-mechanic.jpg',
         true,
         50,
         (SELECT id FROM language WHERE code = 'en')
@@ -531,7 +518,6 @@ VALUES
         'backline',
         20000,
         170000,
-        '/images/vacancies/cybersecurity.jpg',
         true,
         60,
         (SELECT id FROM language WHERE code = 'en')
@@ -543,7 +529,6 @@ VALUES
         'backline',
         20000,
         170000,
-        '/images/vacancies/logistics.jpg',
         true,
         70,
         (SELECT id FROM language WHERE code = 'en')
@@ -555,7 +540,6 @@ VALUES
         'backline',
         20000,
         170000,
-        '/images/vacancies/recruiter.jpg',
         false,
         80,
         (SELECT id FROM language WHERE code = 'en')
