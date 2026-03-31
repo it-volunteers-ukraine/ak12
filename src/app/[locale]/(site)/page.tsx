@@ -1,12 +1,11 @@
-import { SubdivisionsSection, VacanciesSection } from "@/components";
-import { DEFAULT_TYPE } from "@/constants/vacancies/filters";
-import { DEFAULT_PAGE } from "@/constants/vacancies/pagination";
 import { Locale } from "@/types";
 import { VacancyType } from "@/types/vacancy";
+import { DEFAULT_PAGE, DEFAULT_TYPE } from "@/constants/vacancies";
+import { VacanciesSection, SubdivisionsSection } from "@/components";
 
 export interface SearchParamsProps {
-  type?: VacancyType;
   page?: string;
+  type?: VacancyType;
 }
 
 export default async function Home({

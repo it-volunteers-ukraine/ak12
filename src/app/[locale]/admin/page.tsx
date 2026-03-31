@@ -1,14 +1,15 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { LogoutForm } from "@/components/auth/logout-form";
+import { sidebarToSubmenuMap } from "@/components/admin/header-menu/mok";
 
-export default function AdminPage() {
-  return (
-    <main className="mx-auto max-w-5xl p-6">
-      <h1 className="text-3xl font-bold">Admin Page</h1>
-      <div className="mt-4">
-        <LogoutForm />
-      </div>
-    </main>
-  );
+export default async function AdminPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+
+  const sections = Object.keys(sidebarToSubmenuMap);
+
+  const firstSection = sections[0];
+
+  const firstSub = sidebarToSubmenuMap[firstSection]?.[0]?.id || "index";
+
+  redirect(`/${locale}/admin/${firstSection}/${firstSub}`);
 }
