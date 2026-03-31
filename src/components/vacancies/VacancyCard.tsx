@@ -1,5 +1,5 @@
 import { VacancyMapped } from "@/types/vacancy";
-import { formatSalary } from "@/utils/vacancies/formatSalary";
+import { formatSalary } from "@/utils/vacancies/format-salary";
 import { getTranslations } from "next-intl/server";
 
 interface Props {

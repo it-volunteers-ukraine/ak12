@@ -39,10 +39,11 @@ CREATE TABLE IF NOT EXISTS vacancy (
     type vacancy_type NOT NULL,
     salary_min INTEGER NOT NULL,
     salary_max INTEGER,
-    image_url VARCHAR(255) NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT true,
     sort_order INTEGER NOT NULL DEFAULT 0,
     language_id UUID NOT NULL REFERENCES language(id) ON DELETE RESTRICT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uq_vacancy_slug_language UNIQUE (slug, language_id)
 );
 
@@ -53,7 +54,6 @@ COMMENT ON COLUMN vacancy.description IS 'Short vacancy description.';
 COMMENT ON COLUMN vacancy.type IS 'Vacancy type: frontline or backline.';
 COMMENT ON COLUMN vacancy.salary_min IS 'Monthly minimum salary in UAH. Example: 20000 represents 20,000 UAH.';
 COMMENT ON COLUMN vacancy.salary_max IS 'Monthly maximum salary in UAH. Example: 170000 represents 170,000 UAH.';
-COMMENT ON COLUMN vacancy.image_url IS 'Image URL for vacancy presentation.';
 COMMENT ON COLUMN vacancy.is_active IS 'Controls whether the vacancy is visible on the site.';
 COMMENT ON COLUMN vacancy.sort_order IS 'Manual display order. Lower values appear first.';
 COMMENT ON COLUMN vacancy.language_id IS 'Reference to the content language.';
