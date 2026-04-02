@@ -70,4 +70,18 @@ export const vacancyService = {
 
     return updatedVacancies.map(mapVacancy);
   },
+
+  async delete(ids: { ukId: string; enId: string }): Promise<void> {
+    const { error } = await supabaseServer.rpc("delete_vacancy_atomic", {
+      uk_id: ids.ukId,
+      en_id: ids.enId,
+    });
+
+    if (error) {
+      logger.error({ error, ids }, "Failed to delete vacancies");
+      throw new Error(error.message);
+    }
+
+    logger.info(`Vacancies '${ids.ukId}' and '${ids.enId}' successfully deleted`);
+  },
 };
