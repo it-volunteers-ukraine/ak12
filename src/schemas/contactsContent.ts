@@ -1,17 +1,6 @@
 import { z } from "zod";
 
-export enum SocialPlatform {
-  X = "x",
-  VIBER = "viber",
-  TIKTOK = "tiktok",
-  DISCORD = "discord",
-  YOUTUBE = "youtube",
-  FACEBOOK = "facebook",
-  LINKEDIN = "linkedin",
-  TELEGRAM = "telegram",
-  WHATSAPP = "whatsapp",
-  INSTAGRAM = "instagram",
-}
+import { SocialPlatform } from "@/constants";
 
 export const contactSchema = z.object({
   label: z.string().min(1, "Label is required"),

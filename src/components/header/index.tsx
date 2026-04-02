@@ -1,5 +1,4 @@
 import { z } from "zod";
-import Link from "next/link";
 
 import LanguageSwitcher from "../language-switcher";
 import { headerContentSchema, SocialLink } from "@/schemas";
@@ -18,8 +17,8 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
           <ul className="flex gap-10">
             {content.links.map((item) => {
               return (
-                <li key={item.href}>
-                  <Link href={item.href}>{item.label}</Link>
+                <li key={item.idSection}>
+                  <a href={`#${item.idSection}`}>{item.label}</a>
                 </li>
               );
             })}

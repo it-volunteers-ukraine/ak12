@@ -1,10 +1,13 @@
 {
   "test": "test",
   "footer": {
+    "title": "12th Army Corps",
+    "description": "Army of the Armed Forces of Ukraine. Professional training, modern equipment, team of like-minded individuals.",
     "navigation": "Navigation",
     "contact": "Contact",
     "social": "Social",
-    "copyright": "All rights reserved."
+    "copyright": "12th Army Corps. All rights reserved.",
+    "copyrightOwner": "Army of the Armed Forces of Ukraine"
   },
   "subdivisions": {
     "title": "Our Units",
