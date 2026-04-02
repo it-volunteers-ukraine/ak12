@@ -1,27 +1,39 @@
 "use client";
 
+import z from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import Input from "@/components/input";
 import { Button } from "@/components/button";
-import { HeroSchema } from "@/schemas/heroContent";
+import { InputTest } from "@/components/inputtest";
+import { heroContentSchema } from "@/schemas/heroContent";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 
-interface TAdminData {
-  en: HeroSchema | null;
-  uk: HeroSchema | null;
-}
+import { FormWrapper } from "../form";
+
 interface IHeroSection {
-  data: TAdminData;
+  data: AdminData;
 }
+type AdminData = z.infer<typeof adminSchema>;
+
+const adminSchema = z.object({
+  uk: heroContentSchema,
+  en: heroContentSchema,
+});
 
 export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();
-  const { uk: dataUK, en: dataEN } = data;
 
-  const handleSubmit = async (formData: FormData) => {
-    const res = await updateHeroMultiLangAction(formData);
+  const handleSubmit = async (values: AdminData) => {
+    const enrichedValues = {
+      ...values,
+      en: {
+        ...values.en,
+        backgroundImage: values.uk.backgroundImage,
+      },
+    };
+
+    const res = await updateHeroMultiLangAction(enrichedValues);
 
     if (res.success) {
       router.refresh();
@@ -29,41 +41,40 @@ export const HeroSection = ({ data }: IHeroSection) => {
   };
 
   return (
-    <div className="space-y-4 rounded border bg-white p-6 text-black shadow">
-      <form action={handleSubmit} className="flex flex-col gap-y-4">
-        <div>
-          <Input name="titleUk" defaultValue={dataUK?.title} label="titleUk" />
-          <Input name="subtitleUk" defaultValue={dataUK?.subtitle} label="subtitleUk" />
-        </div>
-        <div>
-          <Input name="titleEn" defaultValue={dataEN?.title} label="titleEn" />
-          <Input name="subtitleEn" defaultValue={dataEN?.subtitle} label="subtitleEn" />
-        </div>
+    <FormWrapper
+      formConfig={{
+        type: "hero",
+        schema: adminSchema,
+        data: data,
+      }}
+      onSubmit={handleSubmit}
+    >
+      <div>
+        <InputTest name="uk.title" label="titleUk" />
+        <InputTest name="uk.subtitle" label="subtitleUk" />
+      </div>
+      <div>
+        <InputTest name="en.title" label="titleEn" />
+        <InputTest name="en.subtitle" label="subtitleEn" />
+      </div>
 
-        <Input
-          name="backgroundImage"
-          defaultValue={dataUK?.backgroundImage || dataEN?.backgroundImage}
-          placeholder="https://example.com/image.jpg"
-          label="backgroundImage"
-        />
-        <Image
-          className="rounded-lg object-cover"
-          alt="main-banner"
-          width={100}
-          height={100}
-          src={
-            dataUK?.backgroundImage ||
-            dataEN?.backgroundImage ||
-            "https://i.pinimg.com/736x/24/11/42/241142e0b2024e219879c624a153264a.jpg"
-          }
-        />
-        <div>
-          <Input name="primaryButtonTextEn" defaultValue={dataEN?.primaryButton?.text} label="primaryButtonTextEn" />
-          <Input name="primaryButtonTextUk" defaultValue={dataUK?.primaryButton?.text} label="primaryButtonTextUk" />
-        </div>
-
-        <Button title="submit" />
-      </form>
-    </div>
+      <InputTest name="uk.backgroundImage" placeholder="https://example.com/image.jpg" label="backgroundImage" />
+      <Image
+        className="rounded-lg object-cover"
+        alt="main-banner"
+        width={100}
+        height={100}
+        src={
+          data.uk?.backgroundImage ||
+          data.en?.backgroundImage ||
+          "https://i.pinimg.com/736x/24/11/42/241142e0b2024e219879c624a153264a.jpg"
+        }
+      />
+      <div className="grid grid-cols-2 gap-4">
+        <InputTest name="uk.primaryButton.text" label="primaryButtonTextUK " />
+        <InputTest name="en.primaryButton.text" label="primaryButtonTextEn " />
+      </div>
+      <Button title="Зберегти" />
+    </FormWrapper>
   );
 };
