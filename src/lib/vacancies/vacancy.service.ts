@@ -6,6 +6,8 @@ import { mapVacancy } from "@/utils/vacancies/map-vacancy";
 import { CreateVacancyDto } from "../../schemas/create-vacancy.schema";
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
 import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
+import { UpdateVacancyDto } from "@/schemas/update-vacancy.schema";
+import { buildUpdateVacancyArgs } from "@/utils/vacancies/build-update-vacancy-args";
 
 interface Params {
   locale: Locale;
@@ -52,5 +54,20 @@ export const vacancyService = {
     logger.info("Vacancy successfully created");
 
     return createdVacancy.map(mapVacancy);
+  },
+
+  async update(ids: { ukId: string; enId: string }, data: UpdateVacancyDto): Promise<VacancyMapped[]> {
+    const args = buildUpdateVacancyArgs(ids, data);
+
+    const { data: updatedVacancies, error } = await supabaseServer.rpc("update_vacancy_atomic", args);
+
+    if (error) {
+      logger.error({ error, ids }, "Failed to update vacancies");
+      throw new Error(error.message);
+    }
+
+    logger.info(`Vacancies '${ids.ukId}' and '${ids.enId}' successfully updated`);
+
+    return updatedVacancies.map(mapVacancy);
   },
 };

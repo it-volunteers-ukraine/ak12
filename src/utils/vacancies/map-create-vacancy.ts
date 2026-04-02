@@ -18,8 +18,8 @@ export function mapCreateVacancy(data: CreateVacancyDto, langMap: Record<ActiveL
       slug: slugify(data.uk.position),
       description: data.uk.description,
       type: data.type,
-      salary_min: data.salary_min,
-      salary_max: data.salary_max ?? null,
+      salary_min: data.salaryMin,
+      salary_max: data.salaryMax ?? null,
       language_id: ukLanguageId,
     },
     {
@@ -27,8 +27,8 @@ export function mapCreateVacancy(data: CreateVacancyDto, langMap: Record<ActiveL
       slug: slugify(data.en.position),
       description: data.en.description,
       type: data.type,
-      salary_min: data.salary_min,
-      salary_max: data.salary_max ?? null,
+      salary_min: data.salaryMin,
+      salary_max: data.salaryMax ?? null,
       language_id: enLanguageId,
     },
   ];
