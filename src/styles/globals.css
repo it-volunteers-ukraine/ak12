@@ -7,6 +7,7 @@
   --color-medium-gray: #828282;
   --color-dark-gray: #3b3f32;
   --color-light-gray: #f2f2f2;
+  --color-accent: #ffd700;
 
   --breakpoint-mobile: 23.4375rem; /* 375px */
   --breakpoint-tablet: 48rem; /* 768px */

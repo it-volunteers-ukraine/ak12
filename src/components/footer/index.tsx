@@ -51,7 +51,7 @@ export const Footer = ({ contactsContent, menu, translations, locale }: FooterPr
             {listMenu.map((item) => {
               return (
                 <li key={item.label}>
-                  <a href={`#${item.idSection}`} className={styles.text}>
+                  <a href={`#${item.idSection}`} className={styles.link}>
                     {item.label}
                   </a>
                 </li>
@@ -95,8 +95,8 @@ export const Footer = ({ contactsContent, menu, translations, locale }: FooterPr
 
                 return (
                   <li className="h-6 w-6" key={item.href}>
-                    <a href={item.href} target="_blank" rel="noopener noreferrer">
-                      <Icon className="text-light-gray h-full w-full" />
+                    <a className={styles.socialLink} href={item.href} target="_blank" rel="noopener noreferrer">
+                      <Icon className="h-full w-full" />
                     </a>
                   </li>
                 );
