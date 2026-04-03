@@ -6,14 +6,8 @@ import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { VacancyMapped } from "@/types/vacancy";
 import { ZodIssue } from "zod";
 
-interface UpdateBody {
-  ukId: string;
-  enId: string;
-  data: unknown;
-}
-
-export async function updateVacancy(body: UpdateBody): Promise<VacancyMapped[] | ZodIssue[]> {
-  const result = updateVacancySchema.safeParse(body.data);
+export async function updateVacancy(data: unknown): Promise<VacancyMapped[] | ZodIssue[]> {
+  const result = updateVacancySchema.safeParse(data);
 
   if (!result.success) {
     logger.error(
@@ -29,5 +23,5 @@ export async function updateVacancy(body: UpdateBody): Promise<VacancyMapped[] |
     return result.error.issues;
   }
 
-  return vacancyService.update({ ukId: body.ukId, enId: body.enId }, result.data);
+  return vacancyService.update(result.data);
 }

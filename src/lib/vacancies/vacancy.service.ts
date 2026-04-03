@@ -8,6 +8,7 @@ import { getLanguageMap } from "@/utils/vacancies/get-language-map";
 import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
 import { UpdateVacancyDto } from "@/schemas/update-vacancy.schema";
 import { buildUpdateVacancyArgs } from "@/utils/vacancies/build-update-vacancy-args";
+import { DeleteVacancyDto } from "@/schemas/delete-vacancy.schema";
 
 interface Params {
   locale: Locale;
@@ -51,27 +52,27 @@ export const vacancyService = {
       throw new Error(error.message);
     }
 
-    logger.info("Vacancy successfully created");
+    logger.info("Vacancies successfully created");
 
     return createdVacancy.map(mapVacancy);
   },
 
-  async update(ids: { ukId: string; enId: string }, data: UpdateVacancyDto): Promise<VacancyMapped[]> {
-    const args = buildUpdateVacancyArgs(ids, data);
+  async update(data: UpdateVacancyDto): Promise<VacancyMapped[]> {
+    const args = buildUpdateVacancyArgs(data);
 
     const { data: updatedVacancies, error } = await supabaseServer.rpc("update_vacancy_atomic", args);
 
     if (error) {
-      logger.error({ error, ids }, "Failed to update vacancies");
+      logger.error({ error, ukId: data.ukId, enId: data.enId }, "Failed to update vacancies");
       throw new Error(error.message);
     }
 
-    logger.info(`Vacancies '${ids.ukId}' and '${ids.enId}' successfully updated`);
+    logger.info(`Vacancies '${data.ukId}' and '${data.enId}' successfully updated`);
 
     return updatedVacancies.map(mapVacancy);
   },
 
-  async delete(ids: { ukId: string; enId: string }): Promise<void> {
+  async delete(ids: DeleteVacancyDto): Promise<void> {
     const { error } = await supabaseServer.rpc("delete_vacancy_atomic", {
       uk_id: ids.ukId,
       en_id: ids.enId,
