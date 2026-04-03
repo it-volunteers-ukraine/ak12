@@ -4,8 +4,8 @@ import { vacancyTypes } from "@/types/vacancy";
 export const createVacancySchema = z.object({
   type: z.enum(vacancyTypes, `Vacancy type must be ${vacancyTypes.join(" or ")}`),
 
-  salary_min: z.number().int().positive(),
-  salary_max: z.number().int().positive().optional(),
+  salaryMin: z.number().int().positive(),
+  salaryMax: z.number().int().positive().optional(),
 
   uk: z.object({
     position: z
