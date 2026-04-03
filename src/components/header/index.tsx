@@ -15,9 +15,9 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
       <nav>
         {content?.links && (
           <ul className="flex gap-10">
-            {content.links.map((item) => {
+            {content.links.map((item, index) => {
               return (
-                <li key={item.idSection}>
+                <li key={item.idSection || index}>
                   <a href={`#${item.idSection}`}>{item.label}</a>
                 </li>
               );

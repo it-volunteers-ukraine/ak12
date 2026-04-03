@@ -1,64 +1,41 @@
-import { Locale } from "@/types";
 import { getStyles } from "./styles";
 import { socialPlatformsIconsMap } from "@/constants";
 import { ContactsContent, HeaderLink } from "@/schemas";
 
 type FooterProps = {
-  locale: Locale;
   menu: HeaderLink[] | null;
   translations: (key: string) => string;
   contactsContent: ContactsContent | null;
 };
 
-export const defaultMenu = {
-  uk: [
-    {
-      idSection: "aboutthebuilding",
-      label: "Про корпус",
-    },
-    { idSection: "subdivisions", label: "Підрозділи" },
-    { idSection: "services", label: "Як долучитись" },
-    { idSection: "careers", label: "Вакансії" },
-    { idSection: "contact", label: "Контакти" },
-  ],
-  en: [
-    {
-      idSection: "aboutthebuilding",
-      label: "About the casern",
-    },
-    { idSection: "subdivisions", label: "Subdivisions" },
-    { idSection: "services", label: "How to join" },
-    { idSection: "careers", label: "Vacancies" },
-    { idSection: "contact", label: "Contacts" },
-  ],
-};
-
-export const Footer = ({ contactsContent, menu, translations, locale }: FooterProps) => {
+export const Footer = ({ contactsContent, menu, translations }: FooterProps) => {
   const styles = getStyles();
-  const listMenu = menu ? menu : defaultMenu[locale];
 
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div>
-          <h2 className={styles.title}>{translations("title")}</h2>
-          <p className={styles.text}>{translations("description")}</p>
+          <h2 className={styles.title}>{contactsContent?.title}</h2>
+          <p className={styles.text}>{contactsContent?.description}</p>
         </div>
-        <nav>
-          <p className={styles.subTitle}>{translations("navigation")}</p>
 
-          <ul className={styles.menuList}>
-            {listMenu.map((item) => {
-              return (
-                <li key={item.label}>
-                  <a href={`#${item.idSection}`} className={styles.link}>
-                    {item.label}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+        {menu && menu.length > 0 && (
+          <nav>
+            <p className={styles.subTitle}>{translations("navigation")}</p>
+
+            <ul className={styles.menuList}>
+              {menu.map((item, index) => {
+                return (
+                  <li key={item.idSection || index}>
+                    <a href={`#${item.idSection}`} className={styles.link}>
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+        )}
 
         {contactsContent?.contacts && contactsContent?.contacts.length > 0 && (
           <div>
@@ -107,9 +84,9 @@ export const Footer = ({ contactsContent, menu, translations, locale }: FooterPr
       </div>
       <div className={styles.containerCopyright}>
         <p className={styles.text}>
-          © {new Date().getFullYear()}. {translations("copyright")}
+          © {new Date().getFullYear()}. {contactsContent?.copyright}
         </p>
-        <p className={styles.text}>{translations("copyrightOwner")}</p>
+        <p className={styles.text}>{contactsContent?.copyrightOwner}</p>
       </div>
     </footer>
   );

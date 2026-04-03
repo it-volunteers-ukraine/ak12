@@ -37,12 +37,7 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
     <>
       <Header content={contentHeader} socialLinks={contentContacts?.socialLinks || null} />
       {children}
-      <Footer
-        translations={t}
-        locale={validLocale}
-        contactsContent={contentContacts}
-        menu={contentHeader?.links || null}
-      />
+      <Footer translations={t} contactsContent={contentContacts} menu={contentHeader?.links || null} />
     </>
   );
 }
