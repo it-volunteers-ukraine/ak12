@@ -68,7 +68,7 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
       </section>
     );
   } catch (error) {
-    logger.error("LifeOfTheUnit render error:", error instanceof Error ? error.message : String(error));
+    logger.error({ error }, "LifeOfTheUnit rendering failed");
 
     return null;
   }
