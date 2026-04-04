@@ -19,9 +19,11 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
     return null;
   }
 
+  const validLocale = locale === "en" ? "en" : "uk";
+
   try {
     const content = await contentService.get({
-      locale: locale as any,
+      locale: validLocale,
       section: SECTION_KEYS.LIFE_OF_UNIT,
       schema: lifeOfUnitSchema,
     });
@@ -66,7 +68,7 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
       </section>
     );
   } catch (error) {
-    logger.error("LifeOfTheUnit render error:", error);
+    logger.error("LifeOfTheUnit render error:", error instanceof Error ? error.message : String(error));
 
     return null;
   }
