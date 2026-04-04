@@ -4,4 +4,5 @@ export const SECTION_KEYS = {
   HEADER: "header",
   CONTACTS: "contacts",
   HERO: "hero",
+  LIFE_OF_UNIT: "life_of_unit",
 } as const;
