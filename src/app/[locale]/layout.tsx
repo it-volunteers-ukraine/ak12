@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 import { getMessages } from "next-intl/server";
 import { NextIntlClientProvider } from "next-intl";
-import { Scada, Roboto, Roboto_Condensed } from "next/font/google";
+import localeFont from "next/font/local";
 
 import { WidthToast } from "./with-toast";
 
@@ -15,28 +15,18 @@ type RootLayoutProps = {
   }>;
 };
 
-const roboto = Roboto({
-  weight: ["400", "500", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-roboto",
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
+const roadUI = localeFont({
+  src: [
+    { path: "../../fonts/road_ui/RoadUI-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../../fonts/road_ui/RoadUI-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../../fonts/road_ui/RoadUI-Bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-road-ui",
 });
 
-const robotoCondensed = Roboto_Condensed({
-  weight: ["400", "500", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-robotoCondensed",
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
-});
-
-const scada = Scada({
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-scada",
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
+const ermilov = localeFont({
+  src: [{ path: "../../fonts/ermilov/Ermilov-bold.woff2", weight: "700", style: "normal" }],
+  variable: "--font-ermilov",
 });
 
 export default async function RootLayout({ children, params }: RootLayoutProps) {
@@ -45,7 +35,7 @@ export default async function RootLayout({ children, params }: RootLayoutProps) 
 
   return (
     <html lang={locale} suppressHydrationWarning data-scroll-behavior="smooth">
-      <body suppressHydrationWarning className={`${roboto.variable} ${robotoCondensed.variable} ${scada.variable}`}>
+      <body suppressHydrationWarning className={`${roadUI.variable} ${ermilov.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <WidthToast>{children}</WidthToast>
         </NextIntlClientProvider>
