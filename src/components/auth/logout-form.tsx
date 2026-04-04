@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { logout } from "@/actions/auth/logout";
+import { LogoutIcon } from "@/assets/icon";
 
 export function LogoutForm() {
   const params = useParams();
@@ -14,8 +15,8 @@ export function LogoutForm() {
 
   return (
     <form action={action}>
-      <button type="submit" className="rounded bg-black px-4 py-2 text-white">
-        Logout
+      <button type="submit" className="flex h-8 w-8 items-center justify-center bg-transparent">
+        <LogoutIcon className="h-8 w-8" />
       </button>
     </form>
   );

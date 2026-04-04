@@ -33,7 +33,7 @@ export const Sidebar = () => {
           );
         })}
       </nav>
-      <div className="p-4">
+      <div className="flex justify-center px-4 pt-16 pb-6">
         <LogoutForm />
       </div>
     </aside>
