@@ -3,8 +3,8 @@
 import z from "zod";
 
 import { Button } from "@/components/button";
-import { InputTest } from "@/components/inputtest";
 import { mobilizationSchema } from "@/schemas/testContent";
+import { FormField } from "@/components/form-elements/form-field";
 
 import { FormWrapper } from "../form";
 
@@ -30,8 +30,8 @@ export const TestSection = ({ data }: { data: AdminData }) => {
       onSubmit={onSubmit}
     >
       <div className="grid grid-cols-2 gap-4">
-        <InputTest name="uk.title" label="Заголовок (UA)" />
-        <InputTest name="en.title" label="Title (EN)" />
+        <FormField name="uk.title" label="Заголовок (UA)" />
+        <FormField name="en.title" label="Title (EN)" />
       </div>
       <Button title="Зберегти" />
     </FormWrapper>

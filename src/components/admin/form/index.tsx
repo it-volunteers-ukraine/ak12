@@ -1,25 +1,10 @@
 "use client";
 
-import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider, DefaultValues } from "react-hook-form";
 
-import { HeroSchema, heroContentSchema } from "@/schemas";
-import { TestSchema, mobilizationSchema } from "@/schemas/testContent";
+import { AllAdminForms } from "./types";
 
-type MultiLang<S extends z.ZodRawShape, D> = {
-  data: {
-    en: D;
-    uk: D;
-  };
-  schema: z.ZodObject<{
-    en: z.ZodObject<S>;
-    uk: z.ZodObject<S>;
-  }>;
-};
-export type AllAdminForms =
-  | ({ type: "hero" } & MultiLang<typeof heroContentSchema.shape, HeroSchema>)
-  | ({ type: "mobilization" } & MultiLang<typeof mobilizationSchema.shape, TestSchema>);
 interface IFormWrapperProps<T extends AllAdminForms> {
   formConfig: T;
   children: React.ReactNode;
@@ -30,9 +15,9 @@ export const FormWrapper = <T extends AllAdminForms>({ formConfig, onSubmit, chi
   const { schema, data } = formConfig;
 
   const methods = useForm<T["data"]>({
+    mode: "onBlur",
     resolver: zodResolver(schema),
     defaultValues: data as DefaultValues<T["data"]>,
-    mode: "onChange",
   });
 
   return (
