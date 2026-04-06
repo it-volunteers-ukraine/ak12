@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24">
+<circle cx="12" cy="2" r="2" fill="currentColor">
+<animate attributeName="r" begin="0" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+<circle cx="12" cy="2" r="2" fill="currentColor" transform="rotate(45 12 12)">
+<animate attributeName="r" begin="0.094s" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+<circle cx="12" cy="2" r="2" fill="currentColor" transform="rotate(90 12 12)">
+<animate attributeName="r" begin="0.188s" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+<circle cx="12" cy="2" r="2" fill="currentColor" transform="rotate(135 12 12)">
+<animate attributeName="r" begin="0.281s" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+<circle cx="12" cy="2" r="2" fill="currentColor" transform="rotate(180 12 12)">
+<animate attributeName="r" begin="0.375s" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+<circle cx="12" cy="2" r="2" fill="currentColor" transform="rotate(225 12 12)">
+<animate attributeName="r" begin="0.469s" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+<circle cx="12" cy="2" r="2" fill="currentColor" transform="rotate(270 12 12)">
+<animate attributeName="r" begin="0.563s" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+<circle cx="12" cy="2" r="2" fill="currentColor" transform="rotate(315 12 12)">
+<animate attributeName="r" begin="0.656s" calcMode="spline" dur="1.3s" keySplines="0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8;0.2 0.2 0.4 0.8" repeatCount="indefinite" values="0;2;0;0"/></circle>
+</svg>

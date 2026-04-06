@@ -7,11 +7,17 @@ import { AllAdminForms } from "./types";
 
 interface IFormWrapperProps<T extends AllAdminForms> {
   formConfig: T;
+  className?: string;
   children: React.ReactNode;
   onSubmit: (data: T["data"]) => Promise<void> | void;
 }
 
-export const FormWrapper = <T extends AllAdminForms>({ formConfig, onSubmit, children }: IFormWrapperProps<T>) => {
+export const FormWrapper = <T extends AllAdminForms>({
+  onSubmit,
+  children,
+  className,
+  formConfig,
+}: IFormWrapperProps<T>) => {
   const { schema, data } = formConfig;
 
   const methods = useForm<T["data"]>({
@@ -22,7 +28,7 @@ export const FormWrapper = <T extends AllAdminForms>({ formConfig, onSubmit, chi
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={methods.handleSubmit(onSubmit)} className={className}>
         {children}
       </form>
     </FormProvider>

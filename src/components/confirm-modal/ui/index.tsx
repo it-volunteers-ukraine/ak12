@@ -1,42 +1,30 @@
 "use client";
 
-import { useRef } from "react";
+import { Modal } from "@/components/modal";
 
-import { useOutsideClick } from "@/hooks";
-import { Overlay } from "@/components/overlay";
-
-import { ModalBody, ModalFooter, ModalHeader } from "./modal-parts";
+import { ModalTitle, ModalFooter, ModalContent } from "./modal-parts";
 
 interface IConfirmModal {
   isOpen: boolean;
+  onClose: () => void;
   children?: React.ReactNode;
-  setIsOpen: (isOpen: boolean) => void;
 }
 type TConfirmModal = React.FC<IConfirmModal> & {
-  ModalBody: typeof ModalBody;
+  ModalTitle: typeof ModalTitle;
   ModalFooter: typeof ModalFooter;
-  ModalHeader: typeof ModalHeader;
+  ModalContent: typeof ModalContent;
 };
 
-export const ConfirmModal: TConfirmModal = ({ isOpen, children, setIsOpen }: IConfirmModal) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  useOutsideClick(() => setIsOpen(false), modalRef);
-
+export const ConfirmModal: TConfirmModal = ({ isOpen, children, onClose }: IConfirmModal) => {
   return (
-    <Overlay isOpen={isOpen}>
-      <div className="flex min-h-screen items-center justify-center">
-        <div
-          ref={modalRef}
-          className="flex w-100 -translate-y-16 flex-col gap-8 rounded-md border border-green-100 bg-green-50 p-8 shadow-md shadow-green-200"
-        >
-          {children}
-        </div>
+    <Modal isOpen={isOpen} closeModal={onClose} className="flex min-h-screen items-center justify-center">
+      <div className="flex w-100 -translate-y-16 flex-col gap-8 rounded-md border border-green-100 bg-green-50 p-8 shadow-md shadow-green-200">
+        {children}
       </div>
-    </Overlay>
+    </Modal>
   );
 };
 
-ConfirmModal.ModalBody = ModalBody;
-ConfirmModal.ModalHeader = ModalHeader;
+ConfirmModal.ModalTitle = ModalTitle;
 ConfirmModal.ModalFooter = ModalFooter;
+ConfirmModal.ModalContent = ModalContent;
