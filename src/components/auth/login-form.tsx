@@ -36,7 +36,7 @@ export function LoginForm() {
       noValidate
     >
       <h1 className="text-auth-text mb-12 w-130 text-center text-[42px] leading-[1.1] font-bold">Вхід до системи</h1>
-      <div className="mb-9 flex w-130 flex-col">
+      <div className="mb-4 flex w-130 flex-col">
         <div className="flex flex-col gap-2">
           <label htmlFor="email" className="text-auth-text text-[14px] leading-[1.4] font-normal">
             Email
