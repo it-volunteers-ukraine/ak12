@@ -43,23 +43,17 @@ export default async function AdminPage({ params }: PageProps) {
     return <div>Дані для секції {subsidebar} відсутні або ще не створені.</div>;
   }
 
-  const renderForm = <K extends keyof SectionDataMap>(
-    key: K,
-    data: { uk: SectionDataMap[K]; en: SectionDataMap[K] },
-  ) => {
-    const Component = FORM_COMPONENTS[key] as TAdminFormComponent<K>;
+  const Component = FORM_COMPONENTS[sectionKey] as TAdminFormComponent<typeof sectionKey>;
 
-    return <Component data={data} />;
+  const data = { uk: contentUk, en: contentEn } as {
+    uk: SectionDataMap[typeof sectionKey];
+    en: SectionDataMap[typeof sectionKey];
   };
 
   return (
     <div className="rounded-xl border bg-white p-8 shadow-sm">
       <h1 className="mb-6 text-2xl font-bold">Редагування: {subsidebar}</h1>
-
-      {renderForm(sectionKey, {
-        uk: contentUk,
-        en: contentEn,
-      })}
+      {Component && <Component data={data} />}
     </div>
   );
 }

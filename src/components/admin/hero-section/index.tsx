@@ -55,7 +55,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         }}
         onSubmit={handleSubmit}
       >
-        {(setIsOpen) => <HeroForm setIsOpen={setIsOpen} data={data} />}
+        {(setIsOpen, status) => <HeroForm setIsOpen={setIsOpen} data={data} isValid={status.isValid} />}
       </WrapperWithModal>
     </>
   );

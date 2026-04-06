@@ -5,11 +5,16 @@ import { useForm, FormProvider, DefaultValues } from "react-hook-form";
 
 import { AllAdminForms } from "./types";
 
+export type FormStatus = {
+  isDirty: boolean;
+  isValid: boolean;
+  isSubmitting: boolean;
+};
 interface IFormWrapperProps<T extends AllAdminForms> {
   formConfig: T;
   className?: string;
-  children: React.ReactNode;
   onSubmit: (data: T["data"]) => Promise<void> | void;
+  children: React.ReactNode | ((status: FormStatus) => React.ReactNode);
 }
 
 export const FormWrapper = <T extends AllAdminForms>({
@@ -21,15 +26,17 @@ export const FormWrapper = <T extends AllAdminForms>({
   const { schema, data } = formConfig;
 
   const methods = useForm<T["data"]>({
-    mode: "onBlur",
+    mode: "onChange",
     resolver: zodResolver(schema),
     defaultValues: data as DefaultValues<T["data"]>,
   });
 
+  const { isValid, isDirty, isSubmitting } = methods.formState;
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)} className={className}>
-        {children}
+        {typeof children === "function" ? children({ isValid, isDirty, isSubmitting }) : children}{" "}
       </form>
     </FormProvider>
   );

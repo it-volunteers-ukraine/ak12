@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 
@@ -8,10 +8,15 @@ import { Button } from "@/components/button";
 import { FormWrapper } from "../form";
 import { AllAdminForms } from "../form/types";
 
+export interface IFormStatus {
+  isDirty: boolean;
+  isValid: boolean;
+  isSubmitting: boolean;
+}
 interface IWrapperWithModal<T extends AllAdminForms> {
   formConfig: T;
   onSubmit: (data: T["data"]) => Promise<void> | void;
-  children: (setIsOpen: (isOpen: boolean) => void) => React.ReactNode | React.ReactNode;
+  children: (setIsOpen: (isOpen: boolean) => void, status: IFormStatus) => React.ReactNode;
 }
 
 export const WrapperWithModal = <T extends AllAdminForms>({ formConfig, onSubmit, children }: IWrapperWithModal<T>) => {
@@ -43,7 +48,7 @@ export const WrapperWithModal = <T extends AllAdminForms>({ formConfig, onSubmit
   return (
     <>
       <FormWrapper formConfig={formConfig} onSubmit={onFormSubmit}>
-        {typeof children === "function" ? children(setIsOpen) : children}
+        {(status) => children(setIsOpen, status)}
       </FormWrapper>
 
       <ConfirmModal isOpen={isOpen} onClose={onClose}>
@@ -56,11 +61,11 @@ export const WrapperWithModal = <T extends AllAdminForms>({ formConfig, onSubmit
             variant="primary"
             isLoading={isLoading}
             onClick={handleConfirm}
-            className="rounded-full w-full"
+            className="w-full rounded-full"
           >
             Yes
           </Button>
-          <Button variant="danger" onClick={onClose} className="rounded-full w-full" isLoading={isLoading}>
+          <Button variant="danger" onClick={onClose} className="w-full rounded-full" isLoading={isLoading}>
             No
           </Button>
         </ConfirmModal.ModalFooter>
