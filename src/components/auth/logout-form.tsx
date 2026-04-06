@@ -15,7 +15,12 @@ export function LogoutForm() {
 
   return (
     <form action={action}>
-      <button type="submit" className="flex h-8 w-8 items-center justify-center bg-transparent">
+      <button
+        type="submit"
+        className="flex h-8 w-8 items-center justify-center bg-transparent"
+        aria-label="Вийти"
+        title="Вийти"
+      >
         <LogoutIcon className="h-8 w-8" />
       </button>
     </form>

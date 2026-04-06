@@ -32,13 +32,13 @@ export function LoginForm() {
   return (
     <form
       action={action}
-      className="m-auto flex w-170 flex-col rounded-xs border border-[#dde1e6] bg-white p-20"
+      className="border-auth-surface-border m-auto flex w-170 flex-col rounded-xs border bg-white p-20"
       noValidate
     >
-      <h1 className="mb-12 w-130 text-center text-[42px] leading-[1.1] font-bold text-[#21272a]">Вхід до системи</h1>
+      <h1 className="text-auth-text mb-12 w-130 text-center text-[42px] leading-[1.1] font-bold">Вхід до системи</h1>
       <div className="mb-9 flex w-130 flex-col">
         <div className="flex flex-col gap-2">
-          <label htmlFor="email" className="text-[14px] leading-[1.4] font-normal text-[#21272a]">
+          <label htmlFor="email" className="text-auth-text text-[14px] leading-[1.4] font-normal">
             Email
           </label>
           <input
@@ -46,19 +46,17 @@ export function LoginForm() {
             name="email"
             type="email"
             placeholder="Почніть писати..."
-            className="border border-[#c1c7cd] bg-[#f2f4f8] px-4 py-3 text-base leading-[1.4] text-[#21272a]"
+            className="text-auth-text border-auth-input-border bg-auth-input-bg border px-4 py-3 text-base leading-[1.4]"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          <p className="flex items-center text-xs leading-[1.2] text-red-400">
+            {state.fieldErrors.email?.[0] ?? "\u00A0"}
+          </p>
         </div>
-        {state.fieldErrors.email?.[0] ? (
-          <p className="flex min-h-4 items-center text-xs leading-[1.2] text-red-400">{state.fieldErrors.email[0]}</p>
-        ) : (
-          <div className="min-h-4" />
-        )}
         <div className="flex flex-col gap-2">
-          <label htmlFor="password" className="text-[14px] leading-[1.4] font-normal text-[#21272a]">
+          <label htmlFor="password" className="text-auth-text text-[14px] leading-[1.4] font-normal">
             Пароль
           </label>
           <div className="relative flex flex-col">
@@ -67,7 +65,7 @@ export function LoginForm() {
               name="password"
               type={showPassword ? "text" : "password"}
               placeholder="Почніть писати..."
-              className="border border-[#c1c7cd] bg-[#f2f4f8] px-4 py-3 text-base leading-[1.4] text-[#21272a]"
+              className="text-auth-text border-auth-input-border bg-auth-input-bg border py-3 pr-10 pl-4 text-base leading-[1.4]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -76,23 +74,23 @@ export function LoginForm() {
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
               className="absolute top-1/2 right-3 -translate-y-1/2"
+              aria-label={showPassword ? "Приховати пароль" : "Показати пароль"}
             >
               {showPassword ? <LoginEyeOffIcon className="h-6 w-6" /> : <LoginEyeOnIcon className="h-6 w-6" />}
             </button>
           </div>
-        </div>
-        {state.fieldErrors.password?.[0] || state.error ? (
-          <p className="flex min-h-4 items-center text-xs leading-[1.2] text-red-400">
-            {state.fieldErrors.password?.[0] || state.error}
+          <p className="flex items-center text-xs leading-[1.2] text-red-400">
+            {state.fieldErrors.password?.[0] || "\u00A0"}
           </p>
-        ) : (
-          <div className="min-h-4" />
-        )}
+        </div>
+        <p className="flex items-center text-xs leading-[1.2] text-red-400">
+          {state.error && !state.fieldErrors.password?.[0] ? state.error : "\u00A0"}
+        </p>
       </div>
       <button
         type="submit"
         disabled={isPending}
-        className="flex h-12 w-130 items-center justify-center border-2 border-[#0f62fe] bg-[#0f62fe] px-3 py-4 text-base font-medium text-white disabled:opacity-50"
+        className="border-auth-primary bg-auth-primary flex h-12 w-130 items-center justify-center border-2 px-3 py-4 text-base font-medium text-white disabled:opacity-50"
       >
         Увійти
       </button>
