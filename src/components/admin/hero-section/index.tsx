@@ -1,24 +1,13 @@
 "use client";
 
-import z from "zod";
 import { useRouter } from "next/navigation";
 
 import { showMessage } from "@/components/toastify";
-import { heroContentSchema } from "@/schemas/heroContent";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 
 import { HeroForm } from "./hero-form";
 import { WrapperWithModal } from "../form-wrapper-with-modal";
-
-interface IHeroSection {
-  data: AdminData;
-}
-export type AdminData = z.infer<typeof adminSchema>;
-
-const adminSchema = z.object({
-  uk: heroContentSchema,
-  en: heroContentSchema,
-});
+import { AdminData, adminSchema, IHeroSection } from "./config";
 
 export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();
