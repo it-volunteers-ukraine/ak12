@@ -8,6 +8,11 @@
   --color-dark-gray: #3b3f32;
   --color-light-gray: #f2f2f2;
   --color-accent: #ffd700;
+  --color-auth-text: #21272a;
+  --color-auth-input-border: #c1c7cd;
+  --color-auth-input-bg: #f2f4f8;
+  --color-auth-surface-border: #dde1e6;
+  --color-auth-primary: #0f62fe;
 
   --breakpoint-mobile: 23.4375rem; /* 375px */
   --breakpoint-tablet: 48rem; /* 768px */

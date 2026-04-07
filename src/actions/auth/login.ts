@@ -32,8 +32,10 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
 
   if (!isValid) {
     return {
-      error: "Invalid credentials",
-      fieldErrors: {},
+      fieldErrors: {
+        password: ["Невірний email або пароль"],
+      },
+      error: "",
     };
   }
 
