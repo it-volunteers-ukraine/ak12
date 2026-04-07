@@ -20,6 +20,7 @@ export const FormImg = ({ src }: IFormImg) => {
         {displayImage ? (
           <div className="relative aspect-352/202 w-full overflow-hidden rounded-2xl border border-gray-200">
             <Image
+              priority
               src={src}
               width={352}
               height={202}
