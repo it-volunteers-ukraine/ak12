@@ -1,7 +1,7 @@
 import z from "zod";
 
 import { HeroSchema, heroContentSchema } from "@/schemas";
-import { TestSchema, mobilizationSchema } from "@/schemas/testContent";
+import { MobilizationSchema, mobilizationSchema } from "@/schemas/mobilizationSchema";
 
 type MultiLang<S extends z.ZodRawShape, D> = {
   data: {
@@ -15,4 +15,4 @@ type MultiLang<S extends z.ZodRawShape, D> = {
 };
 export type AllAdminForms =
   | ({ type: "hero" } & MultiLang<typeof heroContentSchema.shape, HeroSchema>)
-  | ({ type: "mobilization" } & MultiLang<typeof mobilizationSchema.shape, TestSchema>);
+  | ({ type: "mobilization" } & MultiLang<typeof mobilizationSchema.shape, MobilizationSchema>);

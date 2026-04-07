@@ -2,11 +2,11 @@ import { SECTION_KEYS } from "@/constants";
 import { HeroSection } from "@/components/admin/hero-section";
 import { TestSection } from "@/components/admin/test-section";
 import { HeroSchema, heroContentSchema } from "@/schemas/heroContent";
-import { TestSchema, mobilizationSchema } from "@/schemas/testContent";
+import { MobilizationSchema, mobilizationSchema } from "@/schemas/mobilizationSchema";
 
 export type SectionDataMap = {
   hero: HeroSchema;
-  mobilization: TestSchema;
+  mobilization: MobilizationSchema;
 };
 export interface IAdminFormProps<K extends keyof SectionDataMap> {
   data: {

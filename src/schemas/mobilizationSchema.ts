@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export type TestSchema = z.infer<typeof mobilizationSchema>;
+export type MobilizationSchema = z.infer<typeof mobilizationSchema>;
 
 export const mobilizationSchema = z.object({
   title: z.string().min(1, "A title is required"),

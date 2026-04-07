@@ -3,8 +3,8 @@
 import z from "zod";
 
 import { Button } from "@/components/button";
-import { mobilizationSchema } from "@/schemas/testContent";
 import { FormField } from "@/components/form-elements/form-field";
+import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 
 import { FormWrapper } from "../form";
 
