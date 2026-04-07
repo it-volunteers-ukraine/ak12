@@ -3,12 +3,14 @@ import { VacancyMapped } from "@/types/vacancy";
 import { supabaseServer } from "@/lib/supabase-server";
 import { logger } from "@/lib/logger";
 import { mapVacancy } from "@/utils/vacancies/map-vacancy";
-import { CreateVacancyDto } from "../../schemas/create-vacancy.schema";
+import { CreateVacancyDto } from "../../schemas/vacancies/create-vacancy.schema";
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
 import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
-import { UpdateVacancyDto } from "@/schemas/update-vacancy.schema";
+import { UpdateVacancyDto } from "@/schemas/vacancies/update-vacancy.schema";
 import { buildUpdateVacancyArgs } from "@/utils/vacancies/build-update-vacancy-args";
-import { DeleteVacancyDto } from "@/schemas/delete-vacancy.schema";
+import { DeleteVacancyDto } from "@/schemas/vacancies/delete-vacancy.schema";
+import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-status.schema";
+import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
 
 interface Params {
   locale: Locale;
@@ -63,7 +65,7 @@ export const vacancyService = {
     const { data: updatedVacancies, error } = await supabaseServer.rpc("update_vacancy_atomic", args);
 
     if (error) {
-      logger.error({ error, ukId: data.ukId, enId: data.enId }, "Failed to update vacancies");
+      logger.error({ error, ids: { ukId: data.ukId, enId: data.enId } }, "Failed to update vacancies");
       throw new Error(error.message);
     }
 
@@ -84,5 +86,34 @@ export const vacancyService = {
     }
 
     logger.info(`Vacancies '${ids.ukId}' and '${ids.enId}' successfully deleted`);
+  },
+
+  async updateStatus(data: UpdateVacancyStatusDto): Promise<void> {
+    const { ukId, enId } = data;
+
+    const { error } = await supabaseServer.rpc("update_vacancy_status_atomic", {
+      uk_id: ukId,
+      en_id: enId,
+      new_status: data.isActive,
+    });
+
+    if (error) {
+      logger.error({ error, ids: { ukId, enId } }, "Failed to update status of vacancies");
+      throw new Error(error.message);
+    }
+
+    logger.info(`Status of vacancies '${ukId}' and '${enId}' successfully updated`);
+  },
+
+  async reorder(data: ReorderVacanciesDto): Promise<void> {
+    const { error } = await supabaseServer.rpc("reorder_vacancies_atomic", {
+      payload: data,
+    });
+
+    if (error) {
+      logger.error({ error, data }, "Failed to reorder vacancies");
+      throw new Error(error.message);
+    }
+    logger.info("Vacancies successfully reordered");
   },
 };

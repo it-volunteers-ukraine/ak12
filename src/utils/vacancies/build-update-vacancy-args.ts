@@ -1,4 +1,4 @@
-import { UpdateVacancyDto } from "@/schemas/update-vacancy.schema";
+import { UpdateVacancyDto } from "@/schemas/vacancies/update-vacancy.schema";
 
 export function buildUpdateVacancyArgs(data: UpdateVacancyDto) {
   return {
