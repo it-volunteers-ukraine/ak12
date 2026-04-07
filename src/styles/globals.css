@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
 @theme {
+  --color-black: #0a0a0a;
+  --color-soft-blush: #f9efec;
+  --color-warm-gray: #b3b3b2;
+  --color-medium-gray: #828282;
+  --color-dark-gray: #3b3f32;
+  --color-light-gray: #f2f2f2;
+  --color-accent: #ffd700;
+  --color-auth-text: #21272a;
+  --color-auth-input-border: #c1c7cd;
+  --color-auth-input-bg: #f2f4f8;
+  --color-auth-surface-border: #dde1e6;
+  --color-auth-primary: #0f62fe;
+
   --breakpoint-mobile: 23.4375rem; /* 375px */
   --breakpoint-tablet: 48rem; /* 768px */
   --breakpoint-desktop: 62rem; /* 992px */
@@ -48,6 +61,8 @@
       opacity: 0;
     }
   }
+  --font-road-ui: var(--font-road-ui), sans-serif;
+  --font-ermilov: var(--font-ermilov), sans-serif;
 }
 
 @layer base {
@@ -59,9 +74,13 @@
 
 @layer components {
   * {
-    @apply font-roboto box-border text-base font-normal text-inherit;
+    @apply font-road-ui box-border text-base font-normal text-inherit;
   }
   input {
     @apply outline-none;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }

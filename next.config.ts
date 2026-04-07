@@ -1,17 +1,9 @@
+import { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  reactCompiler: true,
-  turbopack: {
-    rules: {
-      "*.svg": {
-        loaders: ["@svgr/webpack"],
-        as: "*.js",
-      },
-    },
-  },
+const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
@@ -28,6 +20,14 @@ const nextConfig = {
       },
     ],
   },
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
+  },
 };
 
-export default withNextIntl(nextConfig as any);
+export default withNextIntl(nextConfig);

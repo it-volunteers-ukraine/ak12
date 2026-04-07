@@ -8,9 +8,8 @@ import { headerContentSchema, contactsContentSchema } from "@/schemas";
 type SiteLayoutProps = {
   children: React.ReactNode;
   params: Promise<{
-  locale: string 
-
-}>;
+    locale: string;
+  }>;
 };
 
 export default async function SiteLayout({ children, params }: SiteLayoutProps) {
@@ -38,7 +37,7 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
     <>
       <Header content={contentHeader} socialLinks={contentContacts?.socialLinks || null} />
       {children}
-      <Footer contactsContent={contentContacts} menu={contentHeader?.links || null} translations={t} />
+      <Footer translations={t} contactsContent={contentContacts} menu={contentHeader?.links || null} />
     </>
   );
 }

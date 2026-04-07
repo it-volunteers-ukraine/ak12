@@ -7,6 +7,7 @@ import { Locale } from "@/types";
 import { SectionKey, SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
 import { heroContentSchema, headerContentSchema, contactsContentSchema } from "@/schemas";
+import { lifeOfUnitSchema } from "@/schemas/life-of-the-unit.schema";
 
 type SaveContentAction = {
   locale: Locale;
@@ -18,6 +19,7 @@ const schemasMap: Record<SectionKey, z.ZodType> = {
   [SECTION_KEYS.CONTACTS]: contactsContentSchema,
   [SECTION_KEYS.HEADER]: headerContentSchema,
   [SECTION_KEYS.HERO]: heroContentSchema,
+  [SECTION_KEYS.LIFE_OF_UNIT]: lifeOfUnitSchema
 };
 
 export const saveContentAction = async ({ locale, sectionKey, rawContent }: SaveContentAction) => {
