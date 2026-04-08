@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { ConfirmModal } from "@/components";
 import { Button } from "@/components/button";
+import { showMessage, ConfirmModal } from "@/components";
 
 import { FormWrapper } from "../form";
 import { AllAdminForms } from "../form/types";
@@ -15,8 +15,8 @@ export interface IFormStatus {
 }
 interface IWrapperWithModal<T extends AllAdminForms> {
   formConfig: T;
+  children: (status: IFormStatus) => React.ReactNode;
   onSubmit: (data: T["data"]) => Promise<void> | void;
-  children: (setIsOpen: (isOpen: boolean) => void, status: IFormStatus) => React.ReactNode;
 }
 
 export const WrapperWithModal = <T extends AllAdminForms>({ formConfig, onSubmit, children }: IWrapperWithModal<T>) => {
@@ -34,21 +34,28 @@ export const WrapperWithModal = <T extends AllAdminForms>({ formConfig, onSubmit
     setCurrentData(values);
     setIsOpen(true);
   };
+
   const handleConfirm = async () => {
     if (!currentData) {
       return;
     }
-
     setIsLoading(true);
-    await onSubmit(currentData);
-    setIsOpen(false);
-    setIsLoading(false);
+    try {
+      await onSubmit(currentData);
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Form submission failed:", error);
+
+      showMessage.error("Не вдалося оновити дані");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <>
       <FormWrapper formConfig={formConfig} onSubmit={onFormSubmit}>
-        {(status) => children(setIsOpen, status)}
+        {(status) => children(status)}
       </FormWrapper>
 
       <ConfirmModal isOpen={isOpen} onClose={onClose}>

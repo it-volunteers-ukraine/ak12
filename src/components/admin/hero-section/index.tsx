@@ -29,9 +29,6 @@ export const HeroSection = ({ data }: IHeroSection) => {
     } else {
       showMessage.error("Не вдалося оновити дані");
     }
-    if (res.success) {
-      router.refresh();
-    }
   };
 
   return (
@@ -44,7 +41,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         }}
         onSubmit={handleSubmit}
       >
-        {(setIsOpen, status) => <HeroForm setIsOpen={setIsOpen} data={data} isValid={status.isValid} />}
+        {(status) => <HeroForm data={data} isValid={status.isValid} />}
       </WrapperWithModal>
     </>
   );

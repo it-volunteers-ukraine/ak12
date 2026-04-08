@@ -25,10 +25,15 @@ export const FormWrapper = <T extends AllAdminForms>({
 }: IFormWrapperProps<T>) => {
   const { schema, data } = formConfig;
 
+  const safeData = {
+    en: data?.en ?? {},
+    uk: data?.uk ?? {},
+  };
+
   const methods = useForm<T["data"]>({
     mode: "onChange",
     resolver: zodResolver(schema),
-    defaultValues: data as DefaultValues<T["data"]>,
+    defaultValues: safeData as DefaultValues<T["data"]>,
   });
 
   const { isValid, isDirty, isSubmitting } = methods.formState;

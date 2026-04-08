@@ -1,7 +1,7 @@
 import { Locale } from "@/types";
 import { contentService } from "@/lib/content/content.service";
 
-import { SectionDataMap, FORM_COMPONENTS, TAdminFormComponent, ADMIN_SECTIONS_CONFIG } from "./config-admin-forms";
+import { ADMIN_CONFIG, SectionDataMap, TAdminFormComponent } from "./config-admin-forms";
 
 export type AdminPageParams = {
   locale: Locale;
@@ -13,14 +13,14 @@ interface PageProps {
     subsidebar: string;
   }>;
 }
-export type AdminSectionKey = keyof typeof ADMIN_SECTIONS_CONFIG;
+export type AdminSectionKey = keyof typeof ADMIN_CONFIG;
 
 export default async function AdminPage({ params }: PageProps) {
   const { subsidebar } = await params;
 
   const sectionKey = subsidebar as AdminSectionKey;
 
-  const config = ADMIN_SECTIONS_CONFIG[sectionKey];
+  const config = ADMIN_CONFIG[sectionKey];
 
   if (!config) {
     return <div className="p-8 text-red-500">Секцію "{subsidebar}" не знайдено</div>;
@@ -43,7 +43,7 @@ export default async function AdminPage({ params }: PageProps) {
     return <div>Дані для секції {subsidebar} відсутні або ще не створені.</div>;
   }
 
-  const Component = FORM_COMPONENTS[sectionKey] as TAdminFormComponent<typeof sectionKey>;
+  const Component = config.component as TAdminFormComponent<AdminSectionKey>;
 
   const data = { uk: contentUk, en: contentEn } as {
     uk: SectionDataMap[typeof sectionKey];

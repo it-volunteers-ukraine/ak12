@@ -9,17 +9,23 @@ interface IMountedProps {
 export const useMounted = ({ isOpened, duration = 300 }: IMountedProps) => {
     const [isUnmounted, setIsUnmounted] = useState<boolean>(false);
 
-    if (isOpened && !isUnmounted) {
-        setIsUnmounted(true);
+    useEffect(() => {
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    if (isOpened) {
+      setIsUnmounted(true);
+    } else {
+      timeoutId = setTimeout(() => {
+        setIsUnmounted(false);
+      }, duration);
     }
 
-    useEffect(() => {
-        if (!isOpened && isUnmounted) {
-            setTimeout(() => {
-                setIsUnmounted(false);
-            }, duration);
-        }
-    }, [isOpened, duration, isUnmounted]);
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [isOpened, duration]);
 
-    return { isUnmounted };
+  return { isUnmounted };
 };

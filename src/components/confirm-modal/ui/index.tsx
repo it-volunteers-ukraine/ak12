@@ -17,8 +17,8 @@ type TConfirmModal = React.FC<IConfirmModal> & {
 
 export const ConfirmModal: TConfirmModal = ({ isOpen, children, onClose }: IConfirmModal) => {
   return (
-    <Modal isOpen={isOpen} closeModal={onClose} className="flex min-h-screen items-center justify-center">
-      <div className="flex w-100 -translate-y-16 flex-col gap-8 rounded-md border border-green-100 bg-green-50 p-8 shadow-md shadow-green-200">
+    <Modal isOpen={isOpen} closeModal={onClose} className="-translate-y-16">
+      <div className="flex w-100 flex-col gap-8 rounded-md border border-green-100 bg-green-50 p-8 shadow-md shadow-green-200">
         {children}
       </div>
     </Modal>

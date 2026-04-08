@@ -8,10 +8,9 @@ import { AdminData } from "../config";
 interface IHeroForm {
   data: AdminData;
   isValid: boolean;
-  setIsOpen: (isOpen: boolean) => void;
 }
 
-export const HeroForm = ({ data, isValid, setIsOpen }: IHeroForm) => {
+export const HeroForm = ({ data, isValid }: IHeroForm) => {
   const { reset } = useFormContext();
 
   const bannerImg = data.uk?.backgroundImage || data.en?.backgroundImage;
@@ -33,7 +32,7 @@ export const HeroForm = ({ data, isValid, setIsOpen }: IHeroForm) => {
         <FormField name="en.primaryButton.text" label="primaryButtonTextEn " />
       </div>
 
-      <Button variant="primary" type="submit" onClick={() => setIsOpen(true)} disabled={!isValid}>
+      <Button variant="primary" type="submit" disabled={!isValid}>
         Зберегти
       </Button>
       <Button variant="outline" type="reset" onClick={() => reset(data)}>

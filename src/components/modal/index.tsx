@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 import { useMounted, useOutsideClick } from "@/hooks";
 
@@ -22,10 +22,35 @@ export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
 
   const style = getStyles({ isOpen });
 
+  const getScrollbarWidth = () => {
+    return window.innerWidth - document.documentElement.clientWidth;
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      const scrollWidth = getScrollbarWidth();
+
+      document.body.style.overflow = "hidden";
+      document.body.style.paddingRight = `${scrollWidth}px`;
+    } else {
+      const timer = setTimeout(() => {
+        document.body.style.overflow = "unset";
+        document.body.style.paddingRight = "0px";
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+      document.body.style.paddingRight = "0px";
+    };
+  }, [isOpen]);
+
   return (
     <Portal opened={isUnmounted}>
       <div className={style.overlay} onClick={closeModal}>
-        <div ref={modalRef} className={className}>
+        <div ref={modalRef} className={className} onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
       </div>
