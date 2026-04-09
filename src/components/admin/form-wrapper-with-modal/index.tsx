@@ -13,10 +13,16 @@ export interface IFormStatus {
   isValid: boolean;
   isSubmitting: boolean;
 }
+
+type SubmitResult = {
+  success: boolean;
+  error?: string;
+};
+
 interface IWrapperWithModal<T extends AllAdminForms> {
   formConfig: T;
   children: (status: IFormStatus) => React.ReactNode;
-  onSubmit: (data: T["data"]) => Promise<void> | void;
+  onSubmit: (data: T["data"]) => Promise<SubmitResult | void> | SubmitResult | void;
 }
 
 export const WrapperWithModal = <T extends AllAdminForms>({ formConfig, onSubmit, children }: IWrapperWithModal<T>) => {
@@ -39,9 +45,16 @@ export const WrapperWithModal = <T extends AllAdminForms>({ formConfig, onSubmit
     if (!currentData) {
       return;
     }
+
     setIsLoading(true);
+
     try {
-      await onSubmit(currentData);
+      const result = await onSubmit(currentData);
+
+      if (result && !result.success) {
+        return;
+      }
+
       setIsOpen(false);
     } catch (error) {
       console.error("Form submission failed:", error);

@@ -29,6 +29,8 @@ export const HeroSection = ({ data }: IHeroSection) => {
     } else {
       showMessage.error("Не вдалося оновити дані");
     }
+
+    return res;
   };
 
   return (
