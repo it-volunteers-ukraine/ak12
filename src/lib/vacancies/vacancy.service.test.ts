@@ -5,6 +5,7 @@ import { supabaseServer } from "@/lib/supabase-server";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-status.schema";
 import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
+import { PostgrestSingleResponse, PostgrestError } from "@supabase/postgrest-js";
 
 jest.mock("@/lib/supabase-server", () => ({
   supabaseServer: {
@@ -26,12 +27,13 @@ describe("vacancyService", () => {
       isActive: true,
     };
 
-    const mockSuccessResponse = {
-      data: null,
+    const mockSuccessResponse: PostgrestSingleResponse<null> = {
+      success: true,
       error: null,
+      data: null,
+      count: null,
       status: 204,
       statusText: "No Content",
-      count: null,
     };
 
     mockedSupabase.rpc.mockResolvedValue(mockSuccessResponse);
@@ -53,20 +55,21 @@ describe("vacancyService", () => {
       isActive: true,
     };
 
-    const mockFailureResponse = {
+    const mockFailureResponse: PostgrestSingleResponse<null> = {
+      success: false,
+      error: new PostgrestError({
+        message: "Only one vacancy found, expected two",
+        details: "",
+        hint: "",
+        code: "P0001",
+      }),
       data: null,
       count: null,
-      error: {
-        message: "Only one vacancy found, expected two",
-        details: null,
-        hint: null,
-        code: "P0001",
-      },
       status: 404,
       statusText: "Not Found",
     };
 
-    mockedSupabase.rpc.mockResolvedValue(mockFailureResponse as unknown as ReturnType<typeof mockedSupabase.rpc>);
+    mockedSupabase.rpc.mockResolvedValue(mockFailureResponse);
 
     const { error } = mockFailureResponse;
 
@@ -91,12 +94,13 @@ describe("vacancyService", () => {
       ],
     };
 
-    const mockSuccessResponse = {
-      data: null,
+    const mockSuccessResponse: PostgrestSingleResponse<null> = {
+      success: true,
       error: null,
+      data: null,
+      count: null,
       status: 204,
       statusText: "No Content",
-      count: null,
     };
 
     mockedSupabase.rpc.mockResolvedValue(mockSuccessResponse);
@@ -120,20 +124,21 @@ describe("vacancyService", () => {
       ],
     };
 
-    const mockFailureResponse = {
+    const mockFailureResponse: PostgrestSingleResponse<null> = {
+      success: false,
+      error: new PostgrestError({
+        message: "Some vacancy ids not found",
+        details: "",
+        hint: "",
+        code: "P0001",
+      }),
       data: null,
       count: null,
-      error: {
-        message: "Some vacancy ids not found",
-        details: null,
-        hint: null,
-        code: "P0001",
-      },
       status: 404,
       statusText: "Not Found",
     };
 
-    mockedSupabase.rpc.mockResolvedValue(mockFailureResponse as unknown as ReturnType<typeof mockedSupabase.rpc>);
+    mockedSupabase.rpc.mockResolvedValue(mockFailureResponse);
 
     const { error } = mockFailureResponse;
 
