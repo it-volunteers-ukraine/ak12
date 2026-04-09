@@ -13,6 +13,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@next/eslint-plugin-next": "^16.2.1",
     "@supabase/supabase-js": "^2.100.1",
     "@swc/helpers": "^0.5.20",
@@ -24,6 +25,7 @@
     "pino": "^10.3.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hook-form": "^7.72.0",
     "react-toastify": "^11.0.5",
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.5.0",
@@ -38,7 +40,7 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24",
+    "@types/node": "^24.12.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",

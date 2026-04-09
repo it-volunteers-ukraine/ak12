@@ -1,34 +1,25 @@
 "use server";
 
 import { logger } from "@/lib/logger";
+import { HeroSchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants";
-import { SUPPORTED_LOCALES } from "@/constants/locales";
 
 import { saveContentAction } from "../content";
 
-export const updateHeroMultiLangAction = async (formData: FormData) => {
-  const rawData = Object.fromEntries(formData.entries());
+interface MultiLangHeroValues {
+  en: HeroSchema;
+  uk: HeroSchema;
+}
 
-  const languages = SUPPORTED_LOCALES;
-
+export const updateHeroMultiLangAction = async (values: MultiLangHeroValues) => {
   try {
-    const savePromises = languages.map((lang) => {
-      const btnText = rawData[`primaryButtonText${lang.suffix}`];
-      const btnLink = rawData[`primaryButtonLink${lang.suffix}`];
-      const rawContent = {
-        title: rawData[`title${lang.suffix}`],
-        subtitle: rawData[`subtitle${lang.suffix}`],
-        backgroundImage: rawData["backgroundImage"],
-        primaryButton: btnText
-          ? {
-              text: String(btnText),
-              link: String(btnLink || ""),
-            }
-          : undefined,
-      };
+    const languages = Object.keys(values) as (keyof MultiLangHeroValues)[];
+
+    const savePromises = languages.map((locale) => {
+      const rawContent = values[locale];
 
       return saveContentAction({
-        locale: lang.locale,
+        locale: locale,
         sectionKey: SECTION_KEYS.HERO,
         rawContent,
       });
