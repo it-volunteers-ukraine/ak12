@@ -87,8 +87,10 @@ html {
 }
 
 .animation-marquee {
-  animation: marquee 30s linear infinite alternate;
+  animation: marquee 30s linear infinite; 
   will-change: transform;
+  display: flex;
+  width: max-content; 
 }
 
 @keyframes marquee {
@@ -96,6 +98,6 @@ html {
     transform: translateX(0);
   }
   to {
-    transform: translateX(calc(-100% + 100vw));
+    transform: translateX(-50%);
   }
 }
