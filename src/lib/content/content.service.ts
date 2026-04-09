@@ -1,25 +1,25 @@
+import { cache } from "react";
+
 import z from "zod";
 
 import { Locale } from "@/types";
-import { logger } from "../logger";
 import { SectionKey } from "@/constants";
+
+import { logger } from "../logger";
 import { supabaseServer } from "../supabase-server";
 import { languageService } from "../language/language.service";
-import { cache } from "react";
 
 export type ActionResponse<T = void> = { success: true; data?: T } | { success: false; error: string };
-
 interface GetSafeParams<Schema extends z.ZodTypeAny> {
-  section: SectionKey;
   locale: Locale;
   schema: Schema;
+  section: SectionKey;
 }
-
 interface SaveParams<Schema extends z.ZodTypeAny> {
-  sectionKey: SectionKey;
   locale: Locale;
   schema: Schema;
   rawContent: unknown;
+  sectionKey: SectionKey;
 }
 
 const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) => {

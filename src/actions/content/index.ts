@@ -6,8 +6,9 @@ import { revalidatePath } from "next/cache";
 import { Locale } from "@/types";
 import { SectionKey, SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
-import { heroContentSchema, headerContentSchema, contactsContentSchema } from "@/schemas";
+import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 import { lifeOfUnitSchema } from "@/schemas/life-of-the-unit.schema";
+import { heroContentSchema, headerContentSchema, contactsContentSchema } from "@/schemas";
 
 type SaveContentAction = {
   locale: Locale;
@@ -16,10 +17,11 @@ type SaveContentAction = {
 };
 
 const schemasMap: Record<SectionKey, z.ZodType> = {
-  [SECTION_KEYS.CONTACTS]: contactsContentSchema,
-  [SECTION_KEYS.HEADER]: headerContentSchema,
   [SECTION_KEYS.HERO]: heroContentSchema,
-  [SECTION_KEYS.LIFE_OF_UNIT]: lifeOfUnitSchema
+  [SECTION_KEYS.HEADER]: headerContentSchema,
+  [SECTION_KEYS.LIFE_OF_UNIT]: lifeOfUnitSchema,
+  [SECTION_KEYS.CONTACTS]: contactsContentSchema,
+  [SECTION_KEYS.MOBILIZATION]: mobilizationSchema,
 };
 
 export const saveContentAction = async ({ locale, sectionKey, rawContent }: SaveContentAction) => {
