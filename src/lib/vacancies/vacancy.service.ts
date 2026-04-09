@@ -114,6 +114,7 @@ export const vacancyService = {
       logger.error({ error, data }, "Failed to reorder vacancies");
       throw new Error(error.message);
     }
+
     logger.info("Vacancies successfully reordered");
   },
 };
