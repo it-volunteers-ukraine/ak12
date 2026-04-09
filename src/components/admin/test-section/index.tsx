@@ -33,7 +33,7 @@ export const TestSection = ({ data }: { data: AdminData }) => {
         <FormField name="uk.title" label="Заголовок (UA)" />
         <FormField name="en.title" label="Title (EN)" />
       </div>
-      <Button title="Зберегти" />
+      <Button type="submit" title="Зберегти" />
     </FormWrapper>
   );
 };
