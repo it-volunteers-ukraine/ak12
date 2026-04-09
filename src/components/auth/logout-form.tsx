@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { logout } from "@/actions/auth/logout";
-import { LogoutIcon } from "@/assets/icon";
+import { LogoutIcon } from "../../../public/icons";
 
 export function LogoutForm() {
   const params = useParams();

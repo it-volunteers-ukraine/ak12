@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 import { cn } from "@/utils";
-import { BbmIcon, HelicopterIcon, TanksIcon } from "@/assets/icon";
+import { MarqueeItem } from "../marquee-item";
 
-const ICONS = [HelicopterIcon, BbmIcon, TanksIcon];
 const WIDTH_MULTIPLIER = 1.5;
 
 interface Props {
@@ -59,38 +59,28 @@ export const RunningLine = ({ itemList }: Props) => {
   }
 
   return (
-    <a
-      href="#vacancy"
-      ref={containerRef}
-      className="box-marquee bg-accent flex h-16 w-full items-center overflow-hidden hover:cursor-pointer"
-    >
-      <div aria-hidden="true" className="pointer-events-none absolute top-0 left-0 -z-10 whitespace-nowrap opacity-0">
-        <div ref={contentRef} className="flex items-center gap-8 px-8">
-          {itemList.map((item, index) => {
-            const Icon = ICONS[index % ICONS.length];
-
-            return (
-              <div key={`measure-${index}`} className="flex items-center gap-8">
-                <Icon className="h-[50px] w-[50px]" />
-                <span className="text-[24px] font-bold">{item}</span>
-              </div>
-            );
-          })}
+    <div className="relative w-full overflow-hidden">
+      <div
+        ref={contentRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute flex whitespace-nowrap opacity-0"
+      >
+        {itemList.map((item, index) => (
+          <MarqueeItem key={`measure-${index}`} item={item} index={index} />
+        ))}
+      </div>
+      <Link href="#vacancy" ref={containerRef} className="box-marquee bg-accent group flex h-16 w-full items-center">
+        <div
+          className={cn(
+            "flex items-center whitespace-nowrap group-hover:[animation-play-state:paused]",
+            isRunningAnimation && "animation-marquee",
+          )}
+        >
+          {items.map((item, index) => (
+            <MarqueeItem key={`item-${index}`} item={item} index={index} />
+          ))}
         </div>
-      </div>
-
-      <div className={cn("flex items-center gap-8 whitespace-nowrap", isRunningAnimation && "animation-marquee")}>
-        {items.map((item, index) => {
-          const Icon = ICONS[index % ICONS.length];
-
-          return (
-            <div key={`${index}-${item}`} className="flex items-center gap-8">
-              <Icon className="text-neutral h-[50px] w-[50px]" />
-              <span className="text-neutral text-[24px] font-bold">{item}</span>
-            </div>
-          );
-        })}
-      </div>
-    </a>
+      </Link>
+    </div>
   );
 };

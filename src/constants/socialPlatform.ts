@@ -1,4 +1,4 @@
-import { FacebookIcon, YoutubeIcon } from "@/assets/icon";
+import { FacebookIcon, YoutubeIcon } from "../../public/icons";
 import { ComponentType, SVGProps } from "react";
 
 export enum SocialPlatform {
