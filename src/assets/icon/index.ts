@@ -1,5 +1,8 @@
+export { default as BbmIcon } from "./bbm.svg";
 export { default as FacebookIcon } from "./facebook.svg";
-export { default as YoutubeIcon } from "./youtube.svg";
-export { default as LogoutIcon } from "./logout.svg";
+export { default as HelicopterIcon } from "./helicopter.svg";
 export { default as LoginEyeOffIcon } from "./eye-off.svg";
 export { default as LoginEyeOnIcon } from "./eye-on.svg";
+export { default as LogoutIcon } from "./logout.svg";
+export { default as TanksIcon } from "./tanks.svg";
+export { default as YoutubeIcon } from "./youtube.svg";
