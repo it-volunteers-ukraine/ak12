@@ -1,5 +1,5 @@
 import { logger } from "@/lib/logger";
-import { CreateVacancyDto } from "@/schemas/create-vacancy.schema";
+import { CreateVacancyDto } from "@/schemas/vacancies/create-vacancy.schema";
 import { ActiveLanguage } from "@/types/enum";
 import { slugify } from "transliteration";
 
