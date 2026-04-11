@@ -1,76 +1,106 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import { useTranslations } from 'next-intl'
-import { Subdivision } from '@/types'
+import Image from "next/image";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { Subdivision } from "@/types";
 
 interface SubdivisionCardProps {
-  subdivision: Subdivision
-}
-
-const buildPlaceholder = (name: string) => {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480"><rect width="800" height="480" fill="#e2e8f0" /><rect x="24" y="24" width="752" height="432" rx="24" fill="#cbd5e1" /><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#334155" font-family="Arial, sans-serif" font-size="36">${name}</text></svg>`
-
-  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`
+  subdivision: Subdivision;
 }
 
 export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
-  const t = useTranslations('subdivisions')
-  const imageSrc = subdivision.imageUrl.startsWith('/images/subdivisions/')
-    ? buildPlaceholder(subdivision.name)
-    : subdivision.imageUrl
+  const t = useTranslations("subdivisions");
+  const [hovered, setHovered] = useState(false);
+
+  const descriptionParts = subdivision.description.split(". ").filter(Boolean);
 
   return (
-    <article className="flex flex-col h-full border border-slate-200 rounded-lg overflow-hidden bg-white transition-shadow hover:shadow-md">
-      
-      <div className="relative h-48 w-full bg-slate-100">
-        <Image
-          src={imageSrc}
-          alt={t('imageAlt', { name: subdivision.name })}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          unoptimized={imageSrc.startsWith('data:image/')}
-          preload={subdivision.sortOrder <= 30}
-        />
-      </div>
-
-      <div className="flex flex-col flex-1 p-5">
-        <h3 className="text-xl font-bold text-slate-900 mb-2">
-          {subdivision.name}
-        </h3>
-
-        <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-1 line-clamp-3">
-          {subdivision.description}
-        </p>
-
-        {subdivision.siteUrl && (
-          <div className="mt-auto pt-4 border-t border-slate-100">
-            <a
-              href={subdivision.siteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center text-sm font-semibold text-blue-700 hover:text-blue-800 transition-colors group"
-            >
-            
-              {t('visitSite')}
-              <svg 
-                className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-0.5" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  strokeWidth={2} 
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" 
-                />
-              </svg>
-            </a>
+    <article
+      className="border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {/* ── DEFAULT STATE ── */}
+      {!hovered && (
+        <>
+          <div className="border-dark-gray bg-surface-main relative flex h-[303px] w-[365px] flex-shrink-0 items-center justify-center overflow-hidden border">
+            <Image
+              src={subdivision.imageUrl}
+              alt={t("imageAlt", { name: subdivision.name })}
+              width={363}
+              height={269}
+              className="object-contain"
+              unoptimized
+            />
           </div>
-        )}
-      </div>
+
+          <div className="mt-4 flex h-full flex-col items-center justify-start">
+            <h3 className="font-ermilov text-accent mb-1 text-center text-[20px] leading-[140%] font-bold uppercase">
+              {subdivision.name}
+            </h3>
+
+            <div className="flex flex-col gap-1">
+              {descriptionParts.map((part, index) => (
+                <p
+                  key={index}
+                  className="font-road-ui text-warm-gray text-center text-[12px] leading-[125%] font-normal"
+                >
+                  {part}
+                  {index === 0 && descriptionParts.length > 1 ? "." : ""}
+                </p>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── HOVER STATE ── */}
+      {hovered && (
+        <div className="relative h-[394px] w-[366px] flex-shrink-0 self-center overflow-hidden">
+          {subdivision.hoverImageUrl && (
+            <Image
+              src={subdivision.hoverImageUrl}
+              alt={t("hoverImageAlt", { name: subdivision.hoverName ?? subdivision.name })}
+              fill
+              className="object-cover object-bottom"
+              unoptimized
+            />
+          )}
+
+          <div
+            className="absolute inset-0 flex flex-col justify-end p-[16px] pb-4"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(59, 63, 50, 0) 0%, rgba(13, 13, 13, 0.7) 50%, rgba(0, 0, 0, 0.8) 100%)",
+            }}
+          >
+            <h3 className="font-ermilov text-accent mb-1 text-center text-[20px] leading-[140%] font-bold uppercase">
+              {subdivision.hoverName ?? subdivision.name}
+            </h3>
+
+            <p className="font-road-ui text-warm-gray mb-1 line-clamp-4 text-center text-[12px] leading-[125%] font-normal">
+              {subdivision.hoverDescription ?? subdivision.description}
+            </p>
+
+            {subdivision.siteUrl ? (
+              <a
+                href={subdivision.siteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="font-road-ui text-accent decoration-skip-ink-none mt-1 block text-center text-[12px] leading-[125%] font-normal underline"
+              >
+                {t("visitSite")}
+              </a>
+            ) : (
+              <span className="font-road-ui text-accent decoration-skip-ink-none mt-1 block text-center text-[12px] leading-[125%] font-normal underline">
+                {t("visitSite")}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </article>
-  )
-}
+  );
+};

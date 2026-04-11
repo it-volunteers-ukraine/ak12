@@ -23,9 +23,9 @@ export default async function Home({
 
   return (
     <>
-      <main className="p-6">
-        <SubdivisionsSection locale={locale} />
+      <main>
         <LifeOfTheUnit locale={locale} />
+        <SubdivisionsSection locale={locale} />
         <VacanciesSection type={type} page={page} />
       </main>
     </>

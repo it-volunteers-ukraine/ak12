@@ -6,9 +6,11 @@
     "social": "Social"
   },
   "subdivisions": {
-    "title": "Our Units",
-    "visitSite": "Visit unit website",
-    "imageAlt": "Photo of unit: {name}"
+     "title": "Choose a Unit",
+    "subtitle": "Hover over a unit to get more information*",
+    "visitSite": "Our website",
+    "imageAlt": "Unit emblem: {name}",
+    "hoverImageAlt": "Unit photo: {name}"
   },
   "vacancies": {
     "title": "Vacancies",
