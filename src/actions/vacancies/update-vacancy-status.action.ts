@@ -2,11 +2,11 @@
 
 import { logger } from "@/lib/logger";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
-import { deleteVacancySchema } from "@/schemas/vacancies/delete-vacancy.schema";
+import { updateVacancyStatusSchema } from "@/schemas/vacancies/update-vacancy-status.schema";
 import { ZodIssue } from "zod";
 
-export async function deleteVacancy(data: unknown): Promise<void | ZodIssue[]> {
-  const result = deleteVacancySchema.safeParse(data);
+export async function updateVacancyStatus(data: unknown): Promise<void | ZodIssue[]> {
+  const result = updateVacancyStatusSchema.safeParse(data);
 
   if (!result.success) {
     logger.error(
@@ -16,11 +16,11 @@ export async function deleteVacancy(data: unknown): Promise<void | ZodIssue[]> {
           message: i.message,
         })),
       },
-      "Delete vacancy data validation failed",
+      "Update vacancy status data validation failed",
     );
 
     return result.error.issues;
   }
 
-  await vacancyService.delete(result.data);
+  await vacancyService.updateStatus(result.data);
 }

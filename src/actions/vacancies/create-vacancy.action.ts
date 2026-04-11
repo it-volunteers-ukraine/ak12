@@ -1,7 +1,7 @@
 "use server";
 
 import { logger } from "@/lib/logger";
-import { createVacancySchema } from "@/schemas/create-vacancy.schema";
+import { createVacancySchema } from "@/schemas/vacancies/create-vacancy.schema";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { VacancyMapped } from "@/types/vacancy";
 import { ZodIssue } from "zod";
