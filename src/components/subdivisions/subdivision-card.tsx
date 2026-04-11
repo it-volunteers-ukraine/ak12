@@ -13,8 +13,6 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
   const t = useTranslations("subdivisions");
   const [hovered, setHovered] = useState(false);
 
-  const descriptionParts = subdivision.description.split(". ").filter(Boolean);
-
   return (
     <article
       className="border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300"
@@ -31,7 +29,6 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
               width={363}
               height={269}
               className="object-contain"
-              unoptimized
             />
           </div>
 
@@ -41,15 +38,12 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
             </h3>
 
             <div className="flex flex-col gap-1">
-              {descriptionParts.map((part, index) => (
-                <p
-                  key={index}
-                  className="font-road-ui text-warm-gray text-center text-[12px] leading-[125%] font-normal"
-                >
-                  {part}
-                  {index === 0 && descriptionParts.length > 1 ? "." : ""}
-                </p>
-              ))}
+              <p
+                className="font-road-ui text-warm-gray text-center text-[12px] leading-[125%] font-normal"
+                dangerouslySetInnerHTML={{
+                  __html: subdivision.description.replace(/\.\s+/g, ".<br>"),
+                }}
+              />
             </div>
           </div>
         </>
@@ -64,7 +58,6 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
               alt={t("hoverImageAlt", { name: subdivision.hoverName ?? subdivision.name })}
               fill
               className="object-cover object-bottom"
-              unoptimized
             />
           )}
 
