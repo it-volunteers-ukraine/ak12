@@ -18,7 +18,10 @@ VALUES
             "label": "Підрозділи",
             "href": "/subdivisions"
           },
-          "backgroundImage": "/images/hero/hero-main.jpg"
+          "backgroundImage": {
+            "publicId": "hero-background",
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+          }
         }'::jsonb,
         true,
         (SELECT id FROM language WHERE code = 'uk')
@@ -37,7 +40,10 @@ VALUES
             "label": "Subdivisions",
             "href": "/subdivisions"
           },
-          "backgroundImage": "/images/hero/hero-main.jpg"
+          "backgroundImage": {
+            "publicId": "hero-background",
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+          }
         }'::jsonb,
         true,
         (SELECT id FROM language WHERE code = 'en')

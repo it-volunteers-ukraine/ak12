@@ -50,11 +50,17 @@ function sanitizeFileName(fileName: string) {
     throw new Error("Назва файлу є обов’язковою");
   }
 
-  if (!/^[a-zA-Z0-9_-]+$/.test(normalized)) {
-    throw new Error("Назва файлу містить недопустимі символи");
+  const safeName = normalized
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9_-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  if (!safeName) {
+    throw new Error("Не вдалося сформувати коректну назву файлу");
   }
 
-  return normalized;
+  return safeName;
 }
 
 export async function validateImageFile(file: File) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { Upload } from "@/assets/icons";
 import { TrashIcon, EditIcon } from "@/assets/icon";
@@ -28,14 +28,15 @@ export const FormImg = ({ src, file, onFileChange, onRemove, disabled = false }:
     return URL.createObjectURL(file);
   }, [file]);
 
-  const remoteUrl = useMemo(() => {
-    if (!src) {
-      return null;
-    }
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
-    return `${src}${src.includes("?") ? "&" : "?"}t=${encodeURIComponent(src)}`;
-  }, [src]);
-
+  const remoteUrl = src || null;
   const imageSrc = previewUrl || remoteUrl || null;
   const displayImage = Boolean(imageSrc) && !hasError;
 
