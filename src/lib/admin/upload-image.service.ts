@@ -28,16 +28,18 @@ type UploadResult = {
   secure_url: string;
 };
 
-function createSignature(params: Record<string, string | number>) {
+type SignatureParams = Record<string, string | number | boolean>;
+
+function createSignature(params: SignatureParams) {
   const { apiSecret } = getUploadEnv();
   const serializedParams = Object.keys(params)
     .sort()
-    .map((key) => `${key}=${params[key]}`)
+    .map((key) => `${key}=${String(params[key])}`)
     .join("&");
 
   return crypto
-    .createHash("sha1")
-    .update(serializedParams + apiSecret)
+    .createHash("sha256")
+    .update(serializedParams + apiSecret, "utf8")
     .digest("hex");
 }
 
@@ -79,8 +81,8 @@ export async function uploadImage(params: { file: File; fileName: string }): Pro
   const paramsToSign = {
     folder,
     public_id: safeFileName,
-    overwrite: "true",
-    invalidate: "true",
+    overwrite: true,
+    invalidate: true,
     timestamp,
   };
 
