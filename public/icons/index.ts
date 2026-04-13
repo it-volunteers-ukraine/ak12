@@ -8,3 +8,5 @@ export { default as LogoutIcon } from "./logout.svg";
 export { default as TanksIcon } from "./tanks.svg";
 export { default as Upload } from "./upload.svg";
 export { default as YoutubeIcon } from "./youtube.svg";
+export { default as TrashIcon } from "./trash.svg";
+export { default as EditIcon } from "./edit.svg";

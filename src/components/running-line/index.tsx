@@ -12,7 +12,7 @@ interface Props {
   itemList: string[];
 }
 
-export const RunningLine = ({ itemList }: Props) => {
+export const MarqueeLine = ({ itemList }: Props) => {
   const containerRef = useRef<HTMLAnchorElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -69,11 +69,11 @@ export const RunningLine = ({ itemList }: Props) => {
           <MarqueeItem key={`measure-${index}`} item={item} index={index} />
         ))}
       </div>
-      <Link href="#vacancy" ref={containerRef} className="box-marquee bg-accent group flex h-16 w-full items-center">
+      <Link href="#vacancy" ref={containerRef} className="bg-accent flex h-16 w-full items-center">
         <div
           className={cn(
-            "flex items-center whitespace-nowrap group-hover:[animation-play-state:paused]",
-            isRunningAnimation && "animation-marquee",
+            "flex items-center whitespace-nowrap",
+            isRunningAnimation && "animate-marquee flex w-max will-change-transform",
           )}
         >
           {items.map((item, index) => (

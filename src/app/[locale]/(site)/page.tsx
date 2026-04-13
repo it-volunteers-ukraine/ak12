@@ -3,7 +3,7 @@ import { VacancyType } from "@/types/vacancy";
 import { LifeOfTheUnit } from "@/components/life-of-the-unit";
 import { DEFAULT_PAGE, DEFAULT_TYPE } from "@/constants/vacancies";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
-import { VacanciesSection, SubdivisionsSection, RunningLine } from "@/components";
+import { VacanciesSection, SubdivisionsSection, MarqueeLine } from "@/components";
 
 export interface SearchParamsProps {
   page?: string;
@@ -33,7 +33,7 @@ export default async function Home({
         <SubdivisionsSection locale={locale} />
         <LifeOfTheUnit locale={locale} />
         <VacanciesSection type={type} page={page} vacancies={vacancies} />
-        <RunningLine itemList={vacanciesTitleList} />
+        <MarqueeLine itemList={vacanciesTitleList} />
       </main>
     </>
   );

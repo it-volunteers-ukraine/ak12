@@ -13,7 +13,9 @@
   --color-auth-input-bg: #f2f4f8;
   --color-auth-surface-border: #dde1e6;
   --color-auth-primary: #0f62fe;
-  --color-neutral: #0d0d0d;
+  --color-surface-main: #0d0d0d;
+  --color-stroke-green: #46614f;
+  --color-card-bg: #1a1a1a;
 
   --breakpoint-mobile: 23.4375rem; /* 375px */
   --breakpoint-tablet: 48rem; /* 768px */
@@ -28,6 +30,7 @@
   --animate-fade-out: fade-out 300ms ease-in forwards;
   --animate-fade-in-opacity: fade-in-opacity 300ms ease-out forwards;
   --animate-fade-out-opacity: fade-out-opacity 300ms ease-in forwards;
+  --animate-marquee: marquee 30s linear infinite alternate;
 
   @keyframes fade-in {
     from {
@@ -62,6 +65,14 @@
       opacity: 0;
     }
   }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
   --font-road-ui: var(--font-road-ui), sans-serif;
   --font-ermilov: var(--font-ermilov), sans-serif;
 }
@@ -84,20 +95,4 @@
 
 html {
   scroll-behavior: smooth;
-}
-
-.animation-marquee {
-  animation: marquee 30s linear infinite; 
-  will-change: transform;
-  display: flex;
-  width: max-content; 
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
 }

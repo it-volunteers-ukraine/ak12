@@ -65,22 +65,28 @@ CREATE TABLE IF NOT EXISTS subdivision (
     description VARCHAR(255) NOT NULL,
     site_url VARCHAR(255),
     image_url VARCHAR(255) NOT NULL,
+    hover_image_url TEXT,
+    hover_name TEXT,
+    hover_description TEXT,
     is_active BOOLEAN NOT NULL DEFAULT true,
     sort_order INTEGER NOT NULL DEFAULT 0,
     language_id UUID NOT NULL REFERENCES language(id) ON DELETE RESTRICT,
     CONSTRAINT uq_subdivision_slug_language UNIQUE (slug, language_id)
 );
-
+ 
 COMMENT ON TABLE subdivision IS 'Military subdivisions displayed on the site.';
 COMMENT ON COLUMN subdivision.name IS 'Subdivision name.';
 COMMENT ON COLUMN subdivision.slug IS 'Optional URL-friendly identifier unique within a language.';
 COMMENT ON COLUMN subdivision.description IS 'Short subdivision description.';
 COMMENT ON COLUMN subdivision.site_url IS 'Optional subdivision website URL.';
-COMMENT ON COLUMN subdivision.image_url IS 'Image URL for subdivision presentation.';
+COMMENT ON COLUMN subdivision.image_url IS 'Image URL for subdivision emblem.';
+COMMENT ON COLUMN subdivision.hover_image_url IS 'Image URL shown on hover state.';
+COMMENT ON COLUMN subdivision.hover_name IS 'Full subdivision name shown on hover state.';
+COMMENT ON COLUMN subdivision.hover_description IS 'Full subdivision description shown on hover state.';
 COMMENT ON COLUMN subdivision.is_active IS 'Controls whether the subdivision is visible on the site.';
 COMMENT ON COLUMN subdivision.sort_order IS 'Manual display order. Lower values appear first.';
 COMMENT ON COLUMN subdivision.language_id IS 'Reference to the content language.';
-
+ 
 CREATE INDEX IF NOT EXISTS idx_site_content_language_id ON site_content(language_id);
 CREATE INDEX IF NOT EXISTS idx_site_content_section_key ON site_content(section_key);
 CREATE INDEX IF NOT EXISTS idx_vacancy_language_id ON vacancy(language_id);
@@ -89,7 +95,7 @@ CREATE INDEX IF NOT EXISTS idx_vacancy_is_active_sort_order ON vacancy(is_active
 CREATE INDEX IF NOT EXISTS idx_vacancy_active_type_order ON vacancy(is_active, type, sort_order);
 CREATE INDEX IF NOT EXISTS idx_subdivision_language_id ON subdivision(language_id);
 CREATE INDEX IF NOT EXISTS idx_subdivision_is_active_sort_order ON subdivision(is_active, sort_order);
-
+ 
 INSERT INTO language (code)
 VALUES ('uk'), ('en')
 ON CONFLICT (code) DO NOTHING;

@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
