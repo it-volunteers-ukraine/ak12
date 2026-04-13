@@ -1,19 +1,14 @@
 "use server";
 
 import { logger } from "@/lib/logger";
-import { HeroSchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants";
+import { AdminData } from "@/components/admin/hero-section/config";
 
 import { saveContentAction } from "../content";
 
-interface MultiLangHeroValues {
-  en: HeroSchema;
-  uk: HeroSchema;
-}
-
-export const updateHeroMultiLangAction = async (values: MultiLangHeroValues) => {
+export const updateHeroMultiLangAction = async (values: AdminData) => {
   try {
-    const languages = Object.keys(values) as (keyof MultiLangHeroValues)[];
+    const languages = Object.keys(values) as (keyof AdminData)[];
 
     const savePromises = languages.map((locale) => {
       const rawContent = values[locale];

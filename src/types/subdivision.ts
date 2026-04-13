@@ -7,6 +7,9 @@ export interface Subdivision {
   description: string;
   siteUrl: string | null;
   imageUrl: string;
+  hoverImageUrl: string | null;
+  hoverName: string | null;
+  hoverDescription: string | null;
   isActive: boolean;
   sortOrder: number;
   languageCode: Locale;
