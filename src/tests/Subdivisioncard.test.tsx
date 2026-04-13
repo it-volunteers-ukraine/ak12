@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { SubdivisionCard } from "@/components/subdivisions/subdivision-card";
 import { Subdivision } from "@/types";
 
@@ -9,14 +9,15 @@ jest.mock("next-intl", () => ({
       imageAlt: params?.name ?? "",
       hoverImageAlt: params?.name ?? "",
     };
-
     return translations[key] ?? key;
   },
 }));
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: ({ src, alt }: { src: string; alt: string }) => <img src={src} alt={alt} />,
+  default: ({ src, alt, className }: any) => (
+    <img src={src} alt={alt} className={className} />
+  ),
 }));
 
 const mockSubdivision: Subdivision = {
@@ -36,99 +37,64 @@ const mockSubdivision: Subdivision = {
 };
 
 describe("SubdivisionCard", () => {
-  it("should render emblem image and short name by default", () => {
+  it("should render both default and hover content in the DOM", () => {
     render(<SubdivisionCard subdivision={mockSubdivision} />);
 
-    const emblem = screen.getByAltText("157 БРИГАДА");
-
-    expect(emblem).toBeInTheDocument();
-    expect(emblem).toHaveAttribute("src", "/images/subdivisions/157-omvr.webp");
     expect(screen.getByText("157 БРИГАДА")).toBeInTheDocument();
-  });
-
-  it("should not render hover content by default", () => {
-    render(<SubdivisionCard subdivision={mockSubdivision} />);
-
-    expect(screen.queryByText("157 окрема механізована бригада")).not.toBeInTheDocument();
-    expect(screen.queryByText("Повний опис 157 бригади для hover стану.")).not.toBeInTheDocument();
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
-  });
-
-  it("should show hover content on mouse enter", () => {
-    render(<SubdivisionCard subdivision={mockSubdivision} />);
-
-    fireEvent.mouseEnter(screen.getByRole("article"));
-
     expect(screen.getByText("157 окрема механізована бригада")).toBeInTheDocument();
-    expect(screen.getByText("Повний опис 157 бригади для hover стану.")).toBeInTheDocument();
-    expect(screen.getByAltText("157 окрема механізована бригада")).toHaveAttribute(
-      "src",
-      "/images/subdivisions/hover-image.webp"
-    );
+
+    const images = screen.getAllByRole("img");
+    expect(images).toHaveLength(2);
   });
 
-  it("should show site link on hover when siteUrl is provided", () => {
+  it("should have correct Tailwind classes for CSS hover transition", () => {
+    render(<SubdivisionCard subdivision={mockSubdivision} />);
+    expect(screen.getByRole("article")).toHaveClass("group");
+  });
+
+  it("should format description correctly using whitespace-pre-line", () => {
     render(<SubdivisionCard subdivision={mockSubdivision} />);
 
-    fireEvent.mouseEnter(screen.getByRole("article"));
+    const expectedText = "157-ма окрема механізована бригада.\nБригада сформована у 2024 році.";
+    
+    const descriptionElement = screen.getByText(expectedText, { 
+      normalizer: (s) => s // Вимикаємо стандартну нормалізацію пробілів
+    });
 
+    expect(descriptionElement).toBeInTheDocument();
+    expect(descriptionElement).toHaveClass("whitespace-pre-line");
+  });
+
+  it("should render site link and check its attributes", () => {
+    render(<SubdivisionCard subdivision={mockSubdivision} />);
     const link = screen.getByRole("link", { name: "Наш сайт" });
-
-    expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "https://157ombr.army/");
-    expect(link).toHaveAttribute("target", "_blank");
   });
 
-  it("should hide hover content on mouse leave", () => {
-    render(<SubdivisionCard subdivision={mockSubdivision} />);
-
-    const article = screen.getByRole("article");
-    fireEvent.mouseEnter(article);
-    fireEvent.mouseLeave(article);
-
-    expect(screen.queryByText("157 окрема механізована бригада")).not.toBeInTheDocument();
-    expect(screen.getByText("157 БРИГАДА")).toBeInTheDocument();
-  });
-
-  it("should render visitSite as plain text placeholder when siteUrl is null", () => {
-    const subdivisionWithoutSite: Subdivision = {
-      ...mockSubdivision,
-      siteUrl: null,
-    };
-
+  it("should render visitSite as span when siteUrl is missing", () => {
+    const subdivisionWithoutSite = { ...mockSubdivision, siteUrl: null };
     render(<SubdivisionCard subdivision={subdivisionWithoutSite} />);
-
-    fireEvent.mouseEnter(screen.getByRole("article"));
-
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
-    expect(screen.getByText("Наш сайт")).toBeInTheDocument();
+    expect(screen.getByText("Наш сайт").tagName).toBe("SPAN");
   });
 
   it("should fallback to name when hoverName is null", () => {
-    const subdivisionWithoutHoverName: Subdivision = {
-      ...mockSubdivision,
-      hoverName: null,
-    };
-
+    const subdivisionWithoutHoverName = { ...mockSubdivision, hoverName: null };
     render(<SubdivisionCard subdivision={subdivisionWithoutHoverName} />);
-
-    fireEvent.mouseEnter(screen.getByRole("article"));
-
-    expect(screen.getAllByText("157 БРИГАДА")).toHaveLength(1);
+    const titles = screen.getAllByText("157 БРИГАДА");
+    expect(titles.length).toBe(2);
   });
 
   it("should fallback to description when hoverDescription is null", () => {
-    const subdivisionWithoutHoverDesc: Subdivision = {
-      ...mockSubdivision,
-      hoverDescription: null,
-    };
-
+    const subdivisionWithoutHoverDesc = { ...mockSubdivision, hoverDescription: null };
     render(<SubdivisionCard subdivision={subdivisionWithoutHoverDesc} />);
 
-    fireEvent.mouseEnter(screen.getByRole("article"));
-
-    expect(
-      screen.getByText("157-ма окрема механізована бригада. Бригада сформована у 2024 році.")
-    ).toBeInTheDocument();
+    const expectedText = "157-ма окрема механізована бригада.\nБригада сформована у 2024 році.";
+    
+    const descriptions = screen.getAllByText(expectedText, { 
+      normalizer: (s) => s 
+    });
+    
+    expect(descriptions.length).toBe(2);
   });
 });

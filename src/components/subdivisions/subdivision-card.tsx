@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Subdivision } from "@/types";
 
@@ -11,46 +10,38 @@ interface SubdivisionCardProps {
 
 export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
   const t = useTranslations("subdivisions");
-  const [hovered, setHovered] = useState(false);
 
   return (
     <article
-      className="border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="group border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300"
     >
-      {/* ── DEFAULT STATE ── */}
-      {!hovered && (
-        <>
-          <div className="border-dark-gray bg-surface-main relative flex h-[303px] w-[365px] flex-shrink-0 items-center justify-center overflow-hidden border">
-            <Image
-              src={subdivision.imageUrl}
-              alt={t("imageAlt", { name: subdivision.name })}
-              width={363}
-              height={269}
-              className="object-contain"
-            />
+      {/* ── DEFAULT STATE */}
+      <div className="flex h-full flex-col transition-opacity duration-300 group-hover:opacity-0 group-hover:pointer-events-none">
+        <div className="border-dark-gray bg-surface-main relative flex h-[303px] w-[365px] flex-shrink-0 items-center justify-center overflow-hidden border">
+          <Image
+            src={subdivision.imageUrl}
+            alt={t("imageAlt", { name: subdivision.name })}
+            width={363}
+            height={269}
+            className="object-contain"
+          />
+        </div>
+
+        <div className="mt-4 flex h-full flex-col items-center justify-start">
+          <h3 className="font-ermilov text-accent mb-1 text-center text-[20px] leading-[140%] font-bold uppercase">
+            {subdivision.name}
+          </h3>
+
+          <div className="flex flex-col gap-1">
+            <p className="font-road-ui text-warm-gray whitespace-pre-line text-center text-[12px] leading-[125%] font-normal">
+              {subdivision.description.replaceAll(". ", ".\n")}
+            </p>
           </div>
+        </div>
+      </div>
 
-          <div className="mt-4 flex h-full flex-col items-center justify-start">
-            <h3 className="font-ermilov text-accent mb-1 text-center text-[20px] leading-[140%] font-bold uppercase">
-              {subdivision.name}
-            </h3>
-
-            <div className="flex flex-col gap-1">
-              <p
-                className="font-road-ui text-warm-gray text-center text-[12px] leading-[125%] font-normal"
-                dangerouslySetInnerHTML={{
-                  __html: subdivision.description.replace(/\.\s+/g, ".<br>"),
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* ── HOVER STATE ── */}
-      {hovered && (
+      {/* ── HOVER STATE  */}
+      <div className="absolute inset-0 flex flex-col p-[24px] pb-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <div className="relative h-[394px] w-[366px] flex-shrink-0 self-center overflow-hidden">
           {subdivision.hoverImageUrl && (
             <Image
@@ -72,8 +63,8 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
               {subdivision.hoverName ?? subdivision.name}
             </h3>
 
-            <p className="font-road-ui text-warm-gray mb-1 line-clamp-4 text-center text-[12px] leading-[125%] font-normal">
-              {subdivision.hoverDescription ?? subdivision.description}
+            <p className="font-road-ui text-warm-gray mb-1 line-clamp-4 text-center text-[12px] leading-[125%] font-normal whitespace-pre-line">
+              {(subdivision.hoverDescription ?? subdivision.description).replaceAll(". ", ".\n")}
             </p>
 
             {subdivision.siteUrl ? (
@@ -93,7 +84,7 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
             )}
           </div>
         </div>
-      )}
+      </div>
     </article>
   );
 };
