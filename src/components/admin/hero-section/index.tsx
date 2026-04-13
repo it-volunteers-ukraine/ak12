@@ -17,7 +17,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
       ...values,
       en: {
         ...values.en,
-        backgroundImage: values.uk.backgroundImage,
+        backgroundImage: values.en.backgroundImage || values.uk.backgroundImage,
       },
     };
 

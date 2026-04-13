@@ -10,15 +10,14 @@ VALUES
           "eyebrow": "12 АК",
           "title": "Стань частиною сили, що захищає Україну",
           "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
-          "primaryButton": {
-            "label": "Обрати вакансію",
-            "href": "/vacancies"
+          "buttonTitle": "btn uk ",
+          "backgroundImage": {
+            "publicId": "ak12/hero-background",
+            "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1776073694/ak12/hero-background.jpg"
           },
-          "secondaryButton": {
-            "label": "Підрозділи",
-            "href": "/subdivisions"
-          },
-          "backgroundImage": "/images/hero/hero-main.jpg"
+          "hiringChance": "100%",
+          "majors": "30+",
+          "support": "24/7",
         }'::jsonb,
         true,
         (SELECT id FROM language WHERE code = 'uk')
@@ -29,15 +28,14 @@ VALUES
           "eyebrow": "12 AC",
           "title": "Become part of the force defending Ukraine",
           "subtitle": "Choose a subdivision and vacancy that match your experience, skills and motivation.",
-          "primaryButton": {
-            "label": "Choose vacancy",
-            "href": "/vacancies"
+          "buttonTitle": "btn en ",
+          "backgroundImage": {
+            "publicId": "ak12/hero-background",
+            "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1776073694/ak12/hero-background.jpg"
           },
-          "secondaryButton": {
-            "label": "Subdivisions",
-            "href": "/subdivisions"
-          },
-          "backgroundImage": "/images/hero/hero-main.jpg"
+          "hiringChance": "100%",
+          "majors": "30+",
+          "support": "24/7",
         }'::jsonb,
         true,
         (SELECT id FROM language WHERE code = 'en')
