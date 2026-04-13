@@ -16,7 +16,7 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
       className="group border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300"
     >
       {/* ── DEFAULT STATE */}
-      <div className="flex h-full flex-col transition-opacity duration-300 group-hover:opacity-0 group-hover:pointer-events-none">
+      <div className="flex h-full flex-col group-hover:pointer-events-none">
         <div className="border-dark-gray bg-surface-main relative flex h-[303px] w-[365px] flex-shrink-0 items-center justify-center overflow-hidden border">
           <Image
             src={subdivision.imageUrl}
