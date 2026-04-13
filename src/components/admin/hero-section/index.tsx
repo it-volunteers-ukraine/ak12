@@ -15,29 +15,18 @@ export const HeroSection = ({ data }: IHeroSection) => {
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
 
   const handleSubmit = async (values: AdminData) => {
+    let uploadedImagePublicId: string | null = null;
+
     try {
-      const existingBackgroundImage =
-        values.uk.backgroundImage || data.uk?.backgroundImage || data.en?.backgroundImage || null;
+      const existingBackgroundImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
+      const oldImagePublicId = existingBackgroundImage?.publicId ?? null;
+      let nextBackgroundImage = existingBackgroundImage;
 
-      let nextBackgroundImage = removeCurrentImage ? null : existingBackgroundImage;
-
-      if (removeCurrentImage && existingBackgroundImage?.publicId) {
-        const deleteResult = await deleteImageAction(existingBackgroundImage.publicId);
-
-        if (!deleteResult.success) {
-          throw new Error(deleteResult.error);
-        }
+      if (removeCurrentImage) {
+        nextBackgroundImage = null;
       }
 
       if (bannerFile) {
-        if (existingBackgroundImage?.publicId && !removeCurrentImage) {
-          const deleteResult = await deleteImageAction(existingBackgroundImage.publicId);
-
-          if (!deleteResult.success) {
-            throw new Error(deleteResult.error);
-          }
-        }
-
         const uploadResult = await uploadImageAction({
           file: bannerFile,
           fileName: "hero-background",
@@ -48,6 +37,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         }
 
         nextBackgroundImage = uploadResult.data;
+        uploadedImagePublicId = uploadResult.data?.publicId ?? null;
       }
 
       const enrichedValues = {
@@ -64,17 +54,39 @@ export const HeroSection = ({ data }: IHeroSection) => {
 
       const res = await updateHeroMultiLangAction(enrichedValues);
 
-      if (res.success) {
-        showMessage.success("Дані успішно оновилися!");
-        setBannerFile(null);
-        setRemoveCurrentImage(false);
-        router.refresh();
-      } else {
+      if (!res.success) {
+        if (uploadedImagePublicId) {
+          await deleteImageAction(uploadedImagePublicId);
+        }
+
         showMessage.error("Не вдалося оновити дані");
+
+        return res;
       }
+
+      const shouldDeleteOldImage =
+        oldImagePublicId &&
+        ((removeCurrentImage && !bannerFile) || (bannerFile && nextBackgroundImage?.publicId !== oldImagePublicId));
+
+      if (shouldDeleteOldImage) {
+        const deleteResult = await deleteImageAction(oldImagePublicId);
+
+        if (!deleteResult.success) {
+          console.error("Не вдалося видалити попереднє зображення hero:", deleteResult.error);
+        }
+      }
+
+      showMessage.success("Дані успішно оновилися!");
+      setBannerFile(null);
+      setRemoveCurrentImage(false);
+      router.refresh();
 
       return res;
     } catch (error) {
+      if (uploadedImagePublicId) {
+        await deleteImageAction(uploadedImagePublicId);
+      }
+
       console.error("Hero submit failed:", error);
       showMessage.error("Не вдалося оновити дані");
 
