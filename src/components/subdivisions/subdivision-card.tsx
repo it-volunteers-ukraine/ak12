@@ -16,7 +16,7 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
       className="group border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300"
     >
       {/* ── DEFAULT STATE */}
-      <div className="flex h-full flex-col transition-opacity duration-300 group-hover:opacity-0 group-hover:pointer-events-none">
+      <div className="flex h-full flex-col group-hover:pointer-events-none">
         <div className="border-dark-gray bg-surface-main relative flex h-[303px] w-[365px] flex-shrink-0 items-center justify-center overflow-hidden border">
           <Image
             src={subdivision.imageUrl}
@@ -67,7 +67,8 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
               {(subdivision.hoverDescription ?? subdivision.description).replaceAll(". ", ".\n")}
             </p>
 
-            {subdivision.siteUrl ? (
+            {/* Відображаємо посилання лише якщо воно існує в БД */}
+            {subdivision.siteUrl && (
               <a
                 href={subdivision.siteUrl}
                 target="_blank"
@@ -77,10 +78,6 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
               >
                 {t("visitSite")}
               </a>
-            ) : (
-              <span className="font-road-ui text-accent decoration-skip-ink-none mt-1 block text-center text-[12px] leading-[125%] font-normal underline">
-                {t("visitSite")}
-              </span>
             )}
           </div>
         </div>
