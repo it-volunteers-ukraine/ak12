@@ -1,8 +1,7 @@
 import React from "react";
 
-import { Loader } from "@/assets/icons";
-
 import { getStyles } from "./styles";
+import { Loader } from "../../../public/icons";
 
 type ButtonVariant = "primary" | "secondary" | "danger" | "outline";
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {

@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useActionState, useState, useEffect } from "react";
 import { adminLogin } from "@/actions/auth/login";
 import type { State } from "@/types";
-import { LoginEyeOffIcon, LoginEyeOnIcon } from "@/assets/icon";
+import { LoginEyeOffIcon, LoginEyeOnIcon } from "../../../public/icons";
 
 const initialState: State = {
   fieldErrors: {},

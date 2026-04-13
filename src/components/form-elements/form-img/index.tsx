@@ -2,8 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
-import { Upload } from "@/assets/icons";
-import { TrashIcon, EditIcon } from "@/assets/icon";
+import { EditIcon, TrashIcon, Upload } from "../../../../public/icons";
 
 interface IFormImg {
   src?: string | null;
