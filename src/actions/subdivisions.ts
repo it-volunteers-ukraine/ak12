@@ -10,7 +10,6 @@ import { Locale, Subdivision } from '@/types'
 const isLocale = (value: string): value is Locale => locales.includes(value as Locale)
 
 // Gets language row id by locale code (e.g. 'uk' -> UUID)
-// Same pattern as in header.ts ensureLanguage
 const getLanguageId = async (locale: string): Promise<string | null> => {
   if (!isLocale(locale)) {
     return null
@@ -37,6 +36,9 @@ const mapRow = (row: Record<string, unknown>, languageCode: Locale): Subdivision
   description: row.description as string,
   siteUrl: row.site_url as string | null,
   imageUrl: row.image_url as string,
+  hoverImageUrl: row.hover_image_url as string | null,
+  hoverName: row.hover_name as string | null,
+  hoverDescription: row.hover_description as string | null,
   isActive: row.is_active as boolean,
   sortOrder: row.sort_order as number,
   languageCode,
@@ -46,7 +48,6 @@ const mapRow = (row: Record<string, unknown>, languageCode: Locale): Subdivision
 // PUBLIC (frontend)
 
 // Returns only active subdivisions for the given locale, sorted by sort_order.
-// Used in SubdivisionsSection component on the landing page.
 export async function getSubdivisions(locale: Locale): Promise<Subdivision[]> {
   const languageId = await getLanguageId(locale)
 
@@ -69,7 +70,6 @@ export async function getSubdivisions(locale: Locale): Promise<Subdivision[]> {
 }
 
 // Returns a single subdivision by slug and locale.
-// Reserved for detail card or modal — not yet used in the frontend.
 export async function getSubdivisionBySlug(
   slug: string,
   locale: Locale,
@@ -101,7 +101,6 @@ export async function getSubdivisionBySlug(
 // ─── ADMIN ────────────────────────────────────────────────────────────────────
 
 // Returns ALL subdivisions for the given locale, including inactive ones.
-// Used in the admin panel table view.
 export async function getAllSubdivisions(locale: Locale): Promise<Subdivision[]> {
   const languageId = await getLanguageId(locale)
 
@@ -140,6 +139,9 @@ export async function createSubdivision(
       description: data.description,
       site_url: data.siteUrl,
       image_url: data.imageUrl,
+      hover_image_url: data.hoverImageUrl,
+      hover_name: data.hoverName,
+      hover_description: data.hoverDescription,
       is_active: data.isActive,
       sort_order: data.sortOrder,
       language_id: languageId,
@@ -157,7 +159,6 @@ export async function createSubdivision(
 }
 
 // Updates an existing subdivision by id.
-// Accepts only the fields that need to change (Partial).
 export async function updateSubdivision(
   id: string,
   data: Partial<Omit<Subdivision, 'id'>>,
@@ -169,6 +170,9 @@ export async function updateSubdivision(
   if (data.description !== undefined) { updatePayload.description = data.description }
   if (data.siteUrl !== undefined) { updatePayload.site_url = data.siteUrl }
   if (data.imageUrl !== undefined) { updatePayload.image_url = data.imageUrl }
+  if (data.hoverImageUrl !== undefined) { updatePayload.hover_image_url = data.hoverImageUrl }
+  if (data.hoverName !== undefined) { updatePayload.hover_name = data.hoverName }
+  if (data.hoverDescription !== undefined) { updatePayload.hover_description = data.hoverDescription }
   if (data.isActive !== undefined) { updatePayload.is_active = data.isActive }
   if (data.sortOrder !== undefined) { updatePayload.sort_order = data.sortOrder }
 
