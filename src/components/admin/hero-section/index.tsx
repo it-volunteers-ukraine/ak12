@@ -23,10 +23,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
     try {
       const existingBackgroundImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
       const oldImagePublicId = existingBackgroundImage?.publicId ?? null;
-      let nextBackgroundImage: {
-        secureUrl: string;
-        publicId?: string;
-      } | null = existingBackgroundImage;
+      let nextBackgroundImage = existingBackgroundImage;
 
       if (removeCurrentImage) {
         nextBackgroundImage = null;
