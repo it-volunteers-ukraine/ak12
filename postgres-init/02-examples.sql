@@ -10,9 +10,18 @@ VALUES
           "title": "Стань частиною сили, що захищає Україну",
           "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
           "buttonTitle": "btn uk ",
-          "hiringChance": "100%",
-          "majors": "30+",
-          "support": "24/7",
+          "hiringChance": {
+          "title": "Гарантія посади",
+          "value": "100%",
+          },
+          "majors": {
+          "title": "Cпеціальностей" ,
+          "value": "30+"
+          },
+          "support":{
+          "title": "Підтримка",
+          "value":"24/7",
+          },
           "backgroundImage": {
             "publicId": "hero-background",
             "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
@@ -27,9 +36,18 @@ VALUES
           "title": "Become part of the force defending Ukraine",
           "subtitle": "Choose a subdivision and vacancy that match your experience, skills and motivation.",
           "buttonTitle": "btn en ",
-          "hiringChance": "100%",
-          "majors": "30+",
-          "support": "24/7",
+          "hiringChance": {
+          "title": "Job security",
+          "value": "100%",
+          },
+          "majors": {
+          "title": "Specialisms" ,
+          "value": "30+"
+          },
+          "support":{
+          "title": "Support",
+          "value":"24/7",
+          },
           "backgroundImage": {
             "publicId": "hero-background",
             "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"

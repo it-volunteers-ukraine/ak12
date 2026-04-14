@@ -13,7 +13,7 @@ type SiteLayoutProps = {
 
 export default async function SidebarPage({ children }: SiteLayoutProps) {
   return (
-    <div className="mx-auto max-w-292 pl-64">
+    <div className="mx-auto max-w-400 pl-56">
       <Sidebar />
       <main>{children}</main>
     </div>

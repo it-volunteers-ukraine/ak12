@@ -8,8 +8,8 @@ import { getStyles } from "./styles";
 import { TextInput } from "../input";
 
 type FormFieldProps<T extends FieldValues> = {
-  label: string;
   name: Path<T>;
+  label?: string;
   component?: React.ElementType;
 } & React.ComponentPropsWithoutRef<"input">;
 
