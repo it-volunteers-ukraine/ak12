@@ -30,6 +30,7 @@
   --animate-fade-out: fade-out 300ms ease-in forwards;
   --animate-fade-in-opacity: fade-in-opacity 300ms ease-out forwards;
   --animate-fade-out-opacity: fade-out-opacity 300ms ease-in forwards;
+  --animate-marquee: marquee 30s linear infinite alternate;
 
   @keyframes fade-in {
     from {
@@ -62,6 +63,14 @@
     }
     to {
       opacity: 0;
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
     }
   }
   --font-road-ui: var(--font-road-ui), sans-serif;

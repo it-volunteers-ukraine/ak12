@@ -1,8 +1,9 @@
 import { Locale } from "@/types";
 import { VacancyType } from "@/types/vacancy";
-import { DEFAULT_PAGE, DEFAULT_TYPE } from "@/constants/vacancies";
-import { VacanciesSection, SubdivisionsSection } from "@/components";
 import { LifeOfTheUnit } from "@/components/life-of-the-unit";
+import { DEFAULT_PAGE, DEFAULT_TYPE } from "@/constants/vacancies";
+import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
+import { VacanciesSection, SubdivisionsSection, MarqueeLine } from "@/components";
 
 export interface SearchParamsProps {
   page?: string;
@@ -19,14 +20,20 @@ export default async function Home({
   const { locale } = await params;
 
   const type = (await searchParams).type || DEFAULT_TYPE;
+
   const page = Number((await searchParams).page) || DEFAULT_PAGE;
+
+  const { vacancies } = await getVacancies();
+
+  const vacanciesTitleList = vacancies.map((item) => item.position);
 
   return (
     <>
       <main>
-        <LifeOfTheUnit locale={locale} />
         <SubdivisionsSection locale={locale} />
-        <VacanciesSection type={type} page={page} />
+        <LifeOfTheUnit locale={locale} />
+        <VacanciesSection type={type} page={page} vacancies={vacancies} />
+        <MarqueeLine itemList={vacanciesTitleList} />
       </main>
     </>
   );
