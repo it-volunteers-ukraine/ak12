@@ -1,9 +1,8 @@
 import { ZodSchema } from "zod";
 
 import { SectionKey, SECTION_KEYS } from "@/constants";
-import { HeroSection } from "@/components/admin/hero-section";
-import { TestSection } from "@/components/admin/test-section";
 import { HeroSchema, heroContentSchema } from "@/schemas/heroContent";
+import { HeroSection, MobilizationSection } from "@/components/admin";
 import { MobilizationSchema, mobilizationSchema } from "@/schemas/mobilizationSchema";
 
 export interface IAdminSectionConfig<K extends keyof SectionDataMap> {
@@ -36,7 +35,7 @@ export const ADMIN_CONFIG: { [K in keyof SectionDataMap]: IAdminSectionConfig<K>
     label: "Мобілізація",
     schema: mobilizationSchema,
     sectionKey: SECTION_KEYS.MOBILIZATION,
-    component: TestSection as TAdminFormComponent<"mobilization">,
+    component: MobilizationSection as TAdminFormComponent<"mobilization">,
   },
 } as const;
 
