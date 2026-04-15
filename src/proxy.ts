@@ -1,8 +1,8 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { locales } from "./constants";
-import { verifySession } from "@/lib/auth/session.service";
-import { SESSION_COOKIE_NAME } from "@/constants";
+import { verifySession, generateSessionToken } from "@/lib/auth/session.service";
+import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
 
 const intlMiddleware = createMiddleware({
   locales,
@@ -24,7 +24,7 @@ export default function proxy(request: NextRequest) {
     if (token) {
       response.cookies.set(SESSION_COOKIE_NAME, "", {
         httpOnly: true,
-        secure: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 0,
         path: "/",
@@ -36,10 +36,22 @@ export default function proxy(request: NextRequest) {
 
   const response = intlMiddleware(request);
 
+  if (isAdminRoute && isValid) {
+    const refreshedToken = generateSessionToken();
+
+    response.cookies.set(SESSION_COOKIE_NAME, refreshedToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: SESSION_TTL,
+      path: "/",
+    });
+  }
+
   if (token && !isValid) {
     response.cookies.set(SESSION_COOKIE_NAME, "", {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 0,
       path: "/",

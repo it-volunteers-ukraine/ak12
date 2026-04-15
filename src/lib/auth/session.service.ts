@@ -1,7 +1,12 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
+import { SESSION_COOKIE_NAME, SESSION_INACTIVITY_TTL, SESSION_TTL } from "@/constants";
+
+type SessionPayload = {
+  user: "admin";
+  lastActivityAt: number;
+};
 
 function sign(value: string) {
   const secret = process.env.SESSION_SECRET_KEY;
@@ -15,18 +20,27 @@ function sign(value: string) {
   return crypto.createHmac("sha256", secret).update(value).digest("hex");
 }
 
-export async function createSession() {
-  const payload = JSON.stringify({
+function createSessionPayload(): SessionPayload {
+  return {
     user: "admin",
-    createdAt: Date.now(),
-  });
+    lastActivityAt: Date.now(),
+  };
+}
+
+export function generateSessionToken() {
+  const payload = JSON.stringify(createSessionPayload());
   const signature = sign(payload);
-  const token = `${payload}.${signature}`;
+
+  return `${payload}.${signature}`;
+}
+
+export async function createSession() {
+  const token = generateSessionToken();
   const cookieStore = await cookies();
 
   cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     maxAge: SESSION_TTL,
     path: "/",
@@ -44,27 +58,30 @@ export function verifySession(token?: string) {
     return false;
   }
 
-  const [payload, signature] = token.split(".");
+  const lastDotIndex = token.lastIndexOf(".");
+
+  if (lastDotIndex === -1) {
+    return false;
+  }
+
+  const payload = token.slice(0, lastDotIndex);
+  const signature = token.slice(lastDotIndex + 1);
 
   if (!payload || !signature) {
     return false;
   }
 
-  const expected = sign(payload);
+  const expectedSignature = sign(payload);
 
-  if (signature !== expected) {
+  if (signature !== expectedSignature) {
     return false;
   }
 
   try {
-    const data = JSON.parse(payload);
-    const isExpired = Date.now() - data.createdAt > SESSION_TTL * 1000;
+    const data = JSON.parse(payload) as SessionPayload;
+    const isInactive = Date.now() - data.lastActivityAt > SESSION_INACTIVITY_TTL * 1000;
 
-    if (isExpired) {
-      return false;
-    }
-
-    return true;
+    return !isInactive;
   } catch {
     return false;
   }
