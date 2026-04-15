@@ -93,6 +93,7 @@ export const HeroForm = ({
 
         <div className="grid grid-cols-2 gap-12 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 pt-10 pb-4">
           <div>
+            {/*  //TODO: refactor to avoid code duplication */}
             <div className="mb-4 flex justify-between">
               <h4 className="text-sm">Текст кнопки українською</h4>
               <div className={iconWrapper("h-4 w-4")}>
