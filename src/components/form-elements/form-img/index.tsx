@@ -1,21 +1,25 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
+
 import Image from "next/image";
-import { EditIcon, TrashIcon, Upload } from "../../../../public/icons";
+
+import { Upload, EditIcon, TrashIcon } from "../../../../public/icons";
 
 interface IFormImg {
-  src?: string | null;
-  file?: File | null;
-  onFileChange: (file: File | null) => void;
-  onRemove: () => void;
+  label?: string;
   disabled?: boolean;
+  file?: File | null;
+  src?: string | null;
+  onRemove: () => void;
+  onFileChange: (file: File | null) => void;
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-export const FormImg = ({ src, file, onFileChange, onRemove, disabled = false }: IFormImg) => {
+export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = false }: IFormImg) => {
   const [hasError, setHasError] = useState(false);
   const [clientError, setClientError] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -86,7 +90,7 @@ export const FormImg = ({ src, file, onFileChange, onRemove, disabled = false }:
   }
 
   return (
-    <div className="mb-10 w-100 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-10">
+    <div className="w-100 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-10">
       <input
         ref={inputRef}
         type="file"
@@ -95,9 +99,9 @@ export const FormImg = ({ src, file, onFileChange, onRemove, disabled = false }:
         onChange={handleChange}
       />
       <div>
-        <h2 className="mb-4">Фото на сайті</h2>
+        <h2 className="mb-4 font-medium">{label}</h2>
         {displayImage ? (
-          <div className="relative aspect-352/202 w-full overflow-hidden rounded-2xl border border-transparent">
+          <div className="relative z-0 aspect-352/202 w-full overflow-hidden rounded-2xl border border-transparent">
             <Image
               priority
               src={imageSrc as string}

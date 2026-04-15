@@ -12,7 +12,7 @@ export const Sidebar = () => {
   const activeSegment = params.sidebar as string;
 
   return (
-    <aside className="fixed top-0 left-0 h-screen w-64 border-r border-gray-200 bg-white">
+    <aside className="fixed top-0 left-0 h-screen w-52 border-r border-gray-200 bg-white">
       <div className="border-b p-6 text-xl font-bold text-blue-600">ADMIN</div>
       <nav className="space-y-1 p-4">
         {mainAdminNavigation?.map((item) => {

@@ -7,16 +7,20 @@ VALUES
     (
         'hero',
         '{
-          "eyebrow": "12 АК",
           "title": "Стань частиною сили, що захищає Україну",
           "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
-          "primaryButton": {
-            "label": "Обрати вакансію",
-            "href": "/vacancies"
+          "buttonTitle": "btn uk",
+          "hiringChance": {
+          "title": "Гарантія посади",
+          "value": "100%",
           },
-          "secondaryButton": {
-            "label": "Підрозділи",
-            "href": "/subdivisions"
+          "majors": {
+          "title": "Cпеціальностей" ,
+          "value": "30+"
+          },
+          "support":{
+          "title": "Підтримка",
+          "value":"24/7",
           },
           "backgroundImage": {
             "publicId": "hero-background",
@@ -29,16 +33,20 @@ VALUES
     (
         'hero',
         '{
-          "eyebrow": "12 AC",
           "title": "Become part of the force defending Ukraine",
           "subtitle": "Choose a subdivision and vacancy that match your experience, skills and motivation.",
-          "primaryButton": {
-            "label": "Choose vacancy",
-            "href": "/vacancies"
+          "buttonTitle": "btn en",
+          "hiringChance": {
+          "title": "Job security",
+          "value": "100%",
           },
-          "secondaryButton": {
-            "label": "Subdivisions",
-            "href": "/subdivisions"
+          "majors": {
+          "title": "Specialisms" ,
+          "value": "30+"
+          },
+          "support":{
+          "title": "Support",
+          "value":"24/7",
           },
           "backgroundImage": {
             "publicId": "hero-background",
