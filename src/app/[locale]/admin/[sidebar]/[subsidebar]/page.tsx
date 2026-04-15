@@ -50,10 +50,5 @@ export default async function AdminPage({ params }: PageProps) {
     en: SectionDataMap[typeof sectionKey];
   };
 
-  return (
-    <div className="rounded-xl border bg-white p-8 shadow-sm">
-      <h1 className="mb-6 text-2xl font-bold">Редагування: {subsidebar}</h1>
-      {Component && <Component data={data} />}
-    </div>
-  );
+  return <div className="px-4 py-6">{Component && <Component data={data} />}</div>;
 }

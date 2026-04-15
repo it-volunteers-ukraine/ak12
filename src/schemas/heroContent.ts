@@ -1,24 +1,30 @@
 import { z } from "zod";
 
-export const heroContentSchema = z.object({
-  title: z.string().min(1, "Обов'язкове поле"),
-  subtitle: z.string().min(1, "Обов'язкове поле"),
-  eyebrow: z.string().optional(),
+export type HeroSchema = z.infer<typeof heroContentSchema>;
 
+const REQUIRED_ERROR = "Обов'язкове поле";
+
+export const heroContentSchema = z.object({
+  title: z.string().min(1, REQUIRED_ERROR),
+  subtitle: z.string().min(1, REQUIRED_ERROR),
+  buttonTitle: z.string().min(1, REQUIRED_ERROR),
+  hiringChance: z.object({
+    title: z.string().min(1, REQUIRED_ERROR),
+    value: z.string().min(1, REQUIRED_ERROR),
+  }),
+  majors: z.object({
+    title: z.string().min(1, REQUIRED_ERROR),
+    value: z.string().min(1, REQUIRED_ERROR),
+  }),
+  support: z.object({
+    title: z.string().min(1, REQUIRED_ERROR),
+    value: z.string().min(1, REQUIRED_ERROR),
+  }),
   backgroundImage: z
     .object({
-      publicId: z.string(),
+      publicId: z.string().optional(),
       secureUrl: z.string().url(),
     })
     .nullable()
     .optional(),
-
-  primaryButton: z
-    .object({
-      text: z.string().min(1, "Обов'язкове поле"),
-      link: z.string(),
-    })
-    .optional(),
 });
-
-export type HeroSchema = z.infer<typeof heroContentSchema>;
