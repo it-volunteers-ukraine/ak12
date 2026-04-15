@@ -9,7 +9,7 @@ VALUES
         '{
           "title": "Стань частиною сили, що захищає Україну",
           "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
-          "buttonTitle": "btn uk ",
+          "buttonTitle": "btn uk",
           "hiringChance": {
           "title": "Гарантія посади",
           "value": "100%",
@@ -35,7 +35,7 @@ VALUES
         '{
           "title": "Become part of the force defending Ukraine",
           "subtitle": "Choose a subdivision and vacancy that match your experience, skills and motivation.",
-          "buttonTitle": "btn en ",
+          "buttonTitle": "btn en",
           "hiringChance": {
           "title": "Job security",
           "value": "100%",
