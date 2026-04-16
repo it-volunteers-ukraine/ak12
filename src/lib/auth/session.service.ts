@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import { SESSION_COOKIE_NAME, SESSION_INACTIVITY_TTL, SESSION_TTL } from "@/constants";
+import { SESSION_COOKIE_NAME, SESSION_INACTIVITY_TTL, SESSION_TTL, SESSION_REFRESH_DEBOUNCE_MS } from "@/constants";
 
 type SessionPayload = {
   user: "admin";
@@ -28,63 +28,104 @@ function createSessionPayload(): SessionPayload {
 }
 
 export function generateSessionToken() {
-  const payload = JSON.stringify(createSessionPayload());
+  const payload = Buffer.from(JSON.stringify(createSessionPayload())).toString("base64");
   const signature = sign(payload);
 
   return `${payload}.${signature}`;
 }
 
-export async function createSession() {
-  const token = generateSessionToken();
-  const cookieStore = await cookies();
-
-  cookieStore.set(SESSION_COOKIE_NAME, token, {
+export function getSessionCookieOptions(maxAge: number) {
+  return {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
-    maxAge: SESSION_TTL,
+    sameSite: "strict" as const,
+    maxAge,
     path: "/",
-  });
+  };
+}
+
+export async function createSession() {
+  try {
+    const token = generateSessionToken();
+    const cookieStore = await cookies();
+
+    cookieStore.set(SESSION_COOKIE_NAME, token, getSessionCookieOptions(SESSION_TTL));
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to create session");
+  }
 }
 
 export async function deleteSession() {
-  const cookieStore = await cookies();
+  try {
+    const cookieStore = await cookies();
 
-  cookieStore.delete(SESSION_COOKIE_NAME);
+    cookieStore.delete(SESSION_COOKIE_NAME);
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to delete session");
+  }
 }
 
-export function verifySession(token?: string) {
+export function getSessionPayload(token?: string): SessionPayload | null {
   if (!token) {
-    return false;
+    return null;
   }
 
   const lastDotIndex = token.lastIndexOf(".");
 
   if (lastDotIndex === -1) {
-    return false;
+    return null;
   }
 
   const payload = token.slice(0, lastDotIndex);
   const signature = token.slice(lastDotIndex + 1);
 
   if (!payload || !signature) {
-    return false;
+    return null;
   }
 
   const expectedSignature = sign(payload);
 
-  if (signature !== expectedSignature) {
-    return false;
+  if (signature.length !== expectedSignature.length) {
+    return null;
+  }
+
+  const isValidSignature = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+
+  if (!isValidSignature) {
+    return null;
   }
 
   try {
-    const data = JSON.parse(payload) as SessionPayload;
-    const isInactive = Date.now() - data.lastActivityAt > SESSION_INACTIVITY_TTL * 1000;
+    const decodedPayload = Buffer.from(payload, "base64").toString("utf8");
+    const data = JSON.parse(decodedPayload) as Partial<SessionPayload>;
 
-    return !isInactive;
+    if (data.user !== "admin" || typeof data.lastActivityAt !== "number") {
+      return null;
+    }
+
+    return {
+      user: "admin",
+      lastActivityAt: data.lastActivityAt,
+    };
   } catch {
+    return null;
+  }
+}
+
+export function verifySession(token?: string) {
+  const data = getSessionPayload(token);
+
+  if (!data) {
     return false;
   }
+
+  const isInactive = Date.now() - data.lastActivityAt > SESSION_INACTIVITY_TTL * 1000;
+
+  return !isInactive;
+}
+
+export function shouldRefreshSession(lastActivityAt: number) {
+  return Date.now() - lastActivityAt > SESSION_REFRESH_DEBOUNCE_MS;
 }
 
 export async function validateAdmin(email: string, password: string): Promise<boolean> {

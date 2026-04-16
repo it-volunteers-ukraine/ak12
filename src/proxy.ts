@@ -1,7 +1,13 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
 import { locales } from "./constants";
-import { verifySession, generateSessionToken } from "@/lib/auth/session.service";
+import {
+  verifySession,
+  generateSessionToken,
+  getSessionPayload,
+  shouldRefreshSession,
+  getSessionCookieOptions,
+} from "@/lib/auth/session.service";
 import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
 
 const intlMiddleware = createMiddleware({
@@ -22,13 +28,7 @@ export default function proxy(request: NextRequest) {
     const response = NextResponse.redirect(new URL(`/${locale}/login`, request.url));
 
     if (token) {
-      response.cookies.set(SESSION_COOKIE_NAME, "", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 0,
-        path: "/",
-      });
+      response.cookies.set(SESSION_COOKIE_NAME, "", getSessionCookieOptions(0));
     }
 
     return response;
@@ -36,26 +36,18 @@ export default function proxy(request: NextRequest) {
 
   const response = intlMiddleware(request);
 
-  if (isAdminRoute && isValid) {
-    const refreshedToken = generateSessionToken();
+  if (isAdminRoute && isValid && token) {
+    const sessionPayload = getSessionPayload(token);
 
-    response.cookies.set(SESSION_COOKIE_NAME, refreshedToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: SESSION_TTL,
-      path: "/",
-    });
+    if (sessionPayload && shouldRefreshSession(sessionPayload.lastActivityAt)) {
+      const refreshedToken = generateSessionToken();
+
+      response.cookies.set(SESSION_COOKIE_NAME, refreshedToken, getSessionCookieOptions(SESSION_TTL));
+    }
   }
 
   if (token && !isValid) {
-    response.cookies.set(SESSION_COOKIE_NAME, "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 0,
-      path: "/",
-    });
+    response.cookies.set(SESSION_COOKIE_NAME, "", getSessionCookieOptions(0));
   }
 
   return response;
