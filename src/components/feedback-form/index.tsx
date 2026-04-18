@@ -1,0 +1,77 @@
+"use client";
+
+import { useMemo } from "react";
+import { useTranslations } from "next-intl";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+import { FormInput } from "../input";
+import { SubmitIcon } from "../../../public/icons";
+import { PolicyButton } from "../policy-modal/indedx";
+import { FeedbackFormContent, getFeedbackFormSchema, IFeedbackForm } from "@/schemas";
+
+export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
+  const errorMessages = useTranslations("validation");
+  const text = useTranslations("form");
+
+  const schema = useMemo(() => getFeedbackFormSchema(errorMessages), [errorMessages]);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<IFeedbackForm>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      email: "",
+      subject: "",
+      description: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<IFeedbackForm> = async (data) => {
+    //TODO  await відправка даних на email
+    console.log("Відправлено:", data);
+  };
+
+  return (
+    <div className="bg-dark-green border-accent rounded-xs border p-12">
+      <form className="mb-6" onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-8.5 flex flex-col gap-5.5">
+          <FormInput label={text("firstName")} placeholder={text("firstName")} name="firstName" control={control} />
+          <FormInput label={text("lastName")} placeholder={text("lastName")} name="lastName" control={control} />
+          <FormInput type="tel" label={text("phone")} placeholder={text("phone")} name="phone" control={control} />
+          <FormInput type="email" label={text("email")} placeholder={text("email")} name="email" control={control} />
+        </div>
+        <FormInput
+          classNameContainer="mb-6"
+          control={control}
+          name="description"
+          label={content.descriptionInputTitle}
+          as="textarea"
+          placeholder={content.descriptionInputPlaceholder}
+        />
+        <FormInput
+          name="subject"
+          control={control}
+          as="radio"
+          label={content.radioButtonsTitle}
+          radioOptions={content.radioButtons}
+        />
+
+        <button
+          disabled={isSubmitting}
+          className="bg-accent font-ermilov mt-10 flex w-full items-center justify-center gap-1 rounded-xs py-3 text-[24px]"
+          type="submit"
+        >
+          {content.buttonSubmit}
+          <SubmitIcon className="text-card-bg h-6 w-6" />
+        </button>
+      </form>
+      <PolicyButton text={content.privacyPolicyTitle} textLink={content.privacyPolicyTextLink} />
+    </div>
+  );
+};

@@ -29,3 +29,5 @@ export { default as Uk } from "./uk.svg";
 export { default as Upload } from "./upload.svg";
 
 export { default as YoutubeIcon } from "./youtube.svg";
+
+export { default as SubmitIcon } from "./submit.svg";
