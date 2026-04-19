@@ -39,17 +39,6 @@ export const ADMIN_CONFIG: { [K in keyof SectionDataMap]: IAdminSectionConfig<K>
   },
 } as const;
 
-export const ADMIN_SECTIONS_CONFIG = Object.fromEntries(
-  Object.entries(ADMIN_CONFIG).map(([key, { schema, sectionKey }]) => [
-    key,
-    { schema, sectionKey: sectionKey as SectionKey },
-  ]),
-) as Record<AdminSectionKey, { schema: ZodSchema; sectionKey: SectionKey }>;
-
-export const FORM_COMPONENTS = Object.fromEntries(
-  Object.entries(ADMIN_CONFIG).map(([key, { component }]) => [key, component]),
-) as { [K in AdminSectionKey]: TAdminFormComponent<K> };
-
 export const SERVER_SCHEMAS_MAP = Object.values(ADMIN_CONFIG).reduce(
   (acc, item) => ({
     ...acc,
