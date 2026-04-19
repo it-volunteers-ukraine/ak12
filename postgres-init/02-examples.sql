@@ -57,6 +57,44 @@ VALUES
         (SELECT id FROM language WHERE code = 'en')
     ),
     (
+        'contract',
+        '{
+          "title": "Стань частиною сили, що захищає Україну",
+          "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
+          "buttonTitle": "btn uk",
+          content:[
+            {
+              "title": "Гарантія посади",
+              "subtitle": "100%",
+              "icon": "/icons/guarantee.svg"
+            },
+            {
+              "title": "Cпеціальностей" ,
+              "subtitle": "30+",
+              "icon": "/icons/majors.svg"
+            },
+            {
+              "title": "Підтримка",
+              "subtitle":"24/7",
+              "icon": "/icons/support.svg"
+            }
+          ],
+          "contact": {
+          text: "Залишайте заявку або звертайтеся через офіційні канали зв’язку.",
+          }
+          "imgContent":{
+          title: "Гарантія посади",
+          subtitle: "100%",
+          }
+          "backgroundImage": {
+            "publicId": "hero-background",
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+          }
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
         'about',
         '{
           "title": "Про нас",
