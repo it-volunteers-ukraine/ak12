@@ -90,7 +90,7 @@ export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = f
   }
 
   return (
-    <div className="w-100 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-10">
+    <div className="max-w-100 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-10">
       <input
         ref={inputRef}
         type="file"
