@@ -1,6 +1,7 @@
 import { VacancyMapped } from "@/types/vacancy";
 import { formatSalary } from "@/utils/vacancies/format-salary";
 import { getTranslations } from "next-intl/server";
+import Image from "next/image";
 
 interface Props {
   vacancy: VacancyMapped;
@@ -14,21 +15,29 @@ export async function VacancyCard({ vacancy }: Props) {
   const salaryMax = vacancy.salaryMax ? formatSalary(vacancy.salaryMax) : null;
 
   return (
-    <li className="flex h-full flex-col rounded-xl border border-gray-200 p-6 shadow-sm transition-shadow hover:shadow-md">
-      <h3 className="mb-4 text-lg font-semibold">{vacancy.position}</h3>
-      <p className="mb-4 text-gray-600">
-        <span className="pr-1 font-medium text-black">{t("salary")}:</span>
-        {salaryMax ? `${salaryMin} - ${salaryMax}` : `${t("from")} ${salaryMin}`} {t("currency")}
-      </p>
-      <p className="mb-6 line-clamp-3 text-gray-600">
-        <span className="pr-1 font-medium text-black">{t("requirements")}:</span>
-        {vacancy.description}
-      </p>
+    <li className="border-vacancy-card-stroke/8 from-vacancy-card-start to-vacancy-card-end mb-10 flex flex-col border bg-linear-to-r p-6 transition-transform hover:-translate-y-0.5">
+      <div className="border-accent/8 mb-4 border-b pb-4">
+        <h3 className="font-ermilov text-accent mb-3 text-[30px] leading-9 font-bold tracking-[0px]">
+          {vacancy.position}
+        </h3>
+
+        <div className="flex gap-1 text-xs">
+          <p className="text-warm-gray leading-4 tracking-[0px]">{t("salary")}:</p>
+          <p className="font-ermilov text-soft-blush leading-5 font-bold tracking-[0px]">
+            {salaryMax ? `${salaryMin} - ${salaryMax}` : `${t("from")} ${salaryMin}`} {t("currency")}
+          </p>
+        </div>
+      </div>
+
+      <p className="mb-10 text-sm leading-5.5 tracking-[0px]">{vacancy.description}</p>
+
       <a
         href="#apply"
-        className="mt-auto rounded-lg border border-black px-4 py-2 text-center text-sm transition-colors hover:bg-gray-100"
+        className="bg-surface-main border-accent hover:bg-hover mt-auto flex w-full items-center justify-center gap-1 border-2 py-1.5 transition-colors"
       >
-        {t("apply")}
+        <span className="font-ermilov text-soft-blush text-[20px] leading-7 font-bold">{t("apply")}</span>
+
+        <Image src="/icons/apply-arrow.svg" alt="" width={18} height={18} aria-hidden="true" />
       </a>
     </li>
   );
