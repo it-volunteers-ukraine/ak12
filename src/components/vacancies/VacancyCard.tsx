@@ -37,7 +37,7 @@ export async function VacancyCard({ vacancy }: Props) {
       >
         <span className="font-ermilov text-soft-blush text-[20px] leading-7 font-bold">{t("apply")}</span>
 
-        <Image src="/icons/apply-arrow.svg" alt="" width={18} height={18} aria-hidden="true" />
+        <Image src="/icons/apply-arrow.svg" alt="" width={18} height={18} />
       </a>
     </li>
   );
