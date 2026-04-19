@@ -8,5 +8,5 @@ export const mobilizationSchema = z.object({
   title: requiredString(),
   subtitle: requiredString(),
   content: requiredString(),
-  buttonTitle: requiredString().optional(),
+  buttonTitle: requiredString(),
 });

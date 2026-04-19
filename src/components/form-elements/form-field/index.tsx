@@ -17,10 +17,10 @@ type FormFieldProps<TFieldValues extends FieldValues, TElement extends React.Ele
 export const FormField = <TFieldValues extends FieldValues, TElement extends React.ElementType = typeof TextInput>({
   name,
   label,
+  component,
   className,
   placeholder,
   wrapperComponentClassName,
-  component,
   ...props
 }: FormFieldProps<TFieldValues, TElement>) => {
   const Component = component || TextInput;
@@ -40,7 +40,7 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
     <div className={wrapper}>
       <label className={labelStyle}>{label}</label>
       <div className={wrapperStyle}>
-        <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} />
+        <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} className={className} />
 
         <div className="min-h-5"> {error && <p className={errorStyle}>{error.message}</p>}</div>
       </div>
