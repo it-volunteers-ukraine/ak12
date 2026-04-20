@@ -18,7 +18,6 @@ export async function VacancyCard({ vacancy }: Props) {
   return (
     <li className="border-vacancy-card-stroke/8 from-vacancy-card-start to-vacancy-card-end mb-10 flex flex-col border bg-linear-to-r p-6 transition-transform hover:-translate-y-0.5">
       <div className="border-accent/8 mb-4 border-b pb-4">
-        <h3 className="font-ermilov text-accent mb-3 text-[30px] leading-9 font-bold tracking-[0px]">
         <h3 className="font-ermilov text-accent mb-3 text-[30px] leading-9 font-bold">
           {vacancy.position}
         </h3>
