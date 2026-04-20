@@ -1,7 +1,8 @@
-import { VACANCY_TYPES } from "@/constants/vacancies/filters";
-import { VacancyType } from "@/types/vacancy";
-import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+
+import { VacancyType } from "@/types/vacancy";
+import { VACANCY_TYPES } from "@/constants/vacancies/filters";
 
 export async function VacancyTabs({ currentType }: { currentType: VacancyType }) {
   const t = await getTranslations("vacancies");

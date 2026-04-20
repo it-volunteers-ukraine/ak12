@@ -1,12 +1,14 @@
-import { VacancyType } from "@/types/vacancy";
-import { getTranslations } from "next-intl/server";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+
+import { VacancyType } from "@/types/vacancy";
 
 export interface Props {
-  type: VacancyType;
   nextPage: number;
+  type: VacancyType;
   remainingVacancies: number;
 }
+
 export async function LoadMoreLink({ type, nextPage, remainingVacancies }: Props) {
   const t = await getTranslations("vacancies");
 

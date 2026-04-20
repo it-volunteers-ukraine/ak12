@@ -1,13 +1,15 @@
 import { getTranslations } from "next-intl/server";
-import { VacancyCard } from "./VacancyCard";
-import { VacancyTabs } from "./VacancyTabs";
-import { VacancyMapped, VacancyType } from "@/types/vacancy";
-import { LoadMoreLink } from "./LoadMoreLink";
+
+import { VacancyType, VacancyMapped } from "@/types/vacancy";
 import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
 
+import { VacancyCard } from "./VacancyCard";
+import { VacancyTabs } from "./VacancyTabs";
+import { LoadMoreLink } from "./LoadMoreLink";
+
 export interface Props {
-  type: VacancyType;
   page: number;
+  type: VacancyType;
   vacancies: VacancyMapped[];
 }
 

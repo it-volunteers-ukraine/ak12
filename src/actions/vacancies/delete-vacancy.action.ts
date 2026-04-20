@@ -1,9 +1,10 @@
-"use server";
+'use server';
+
+import { ZodIssue } from "zod";
 
 import { logger } from "@/lib/logger";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { deleteVacancySchema } from "@/schemas/vacancies/delete-vacancy.schema";
-import { ZodIssue } from "zod";
 
 export async function deleteVacancy(data: unknown): Promise<void | ZodIssue[]> {
   const result = deleteVacancySchema.safeParse(data);

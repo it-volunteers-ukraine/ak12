@@ -1,7 +1,8 @@
+import Image from "next/image";
+import { getTranslations } from "next-intl/server";
+
 import { VacancyMapped } from "@/types/vacancy";
 import { formatSalary } from "@/utils/vacancies/format-salary";
-import { getTranslations } from "next-intl/server";
-import Image from "next/image";
 
 interface Props {
   vacancy: VacancyMapped;
