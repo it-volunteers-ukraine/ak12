@@ -1,9 +1,10 @@
-"use server";
+'use server';
+
+import { ZodIssue } from "zod";
 
 import { logger } from "@/lib/logger";
-import { reorderVacanciesSchema } from "@/schemas/vacancies/reorder-vacancy.schema";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
-import { ZodIssue } from "zod";
+import { reorderVacanciesSchema } from "@/schemas/vacancies/reorder-vacancy.schema";
 
 export async function reorderVacancies(data: unknown): Promise<void | ZodIssue[]> {
   const result = reorderVacanciesSchema.safeParse(data);

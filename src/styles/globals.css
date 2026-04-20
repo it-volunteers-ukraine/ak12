@@ -17,6 +17,14 @@
   --color-stroke-green: #46614f;
   --color-card-bg: #1a1a1a;
 
+  /* vacancies */
+  --color-secondary-text: #E0E0E0;
+  --color-surface-secondary: #1a1a1a;
+  --color-vacancy-card-start: var(--color-surface-secondary);
+  --color-vacancy-card-end: #1a1e1d;
+  --color-vacancy-card-stroke: var(--color-stroke-green);
+  --color-hover: #383232;
+
   --breakpoint-mobile: 23.4375rem; /* 375px */
   --breakpoint-tablet: 48rem; /* 768px */
   --breakpoint-desktop: 62rem; /* 992px */

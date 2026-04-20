@@ -1,13 +1,15 @@
 import { getTranslations } from "next-intl/server";
-import { VacancyCard } from "./VacancyCard";
-import { VacancyTabs } from "./VacancyTabs";
-import { VacancyMapped, VacancyType } from "@/types/vacancy";
-import { LoadMoreLink } from "./LoadMoreLink";
+
+import { VacancyType, VacancyMapped } from "@/types/vacancy";
 import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
 
+import { VacancyCard } from "./VacancyCard";
+import { VacancyTabs } from "./VacancyTabs";
+import { LoadMoreLink } from "./LoadMoreLink";
+
 export interface Props {
-  type: VacancyType;
   page: number;
+  type: VacancyType;
   vacancies: VacancyMapped[];
 }
 
@@ -25,14 +27,16 @@ export async function VacanciesSection({ type, page, vacancies }: Props) {
   const remainingVacancies = total - loaded;
 
   return (
-    <section className="border border-gray-200 px-4 py-16 shadow-sm" id="vacancy">
+    <section className="bg-surface-main text-secondary-text px-20 py-25" id="vacancy">
       <div className="mx-auto max-w-7xl">
-        <h2 className="mb-12 text-center text-3xl font-bold">{t("title")}</h2>
+        <h2 className="font-ermilov text-accent mb-16 text-center text-[56px] leading-32 font-bold tracking-[-3px] uppercase">
+          {t("title")}
+        </h2>
 
         <VacancyTabs currentType={type} />
 
         {visibleVacancies.length > 0 ? (
-          <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
+          <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-x-5 gap-y-10">
             {visibleVacancies.map((v) => v.isActive && <VacancyCard key={v.id} vacancy={v} />)}
           </ul>
         ) : (
