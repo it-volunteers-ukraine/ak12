@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ConfirmModal } from "../confirm-modal/ui";
+import { Modal } from "../modal";
 
 interface IPolicyButton {
   text: string;
@@ -17,12 +17,16 @@ export const PolicyButton = ({ text, textLink }: IPolicyButton) => {
           {textLink}
         </button>
       </div>
-      <ConfirmModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+      <Modal
+        className="flex w-100 flex-col gap-8 rounded-md border border-green-100 bg-green-50 p-8 shadow-md shadow-green-200"
+        isOpen={isOpen}
+        closeModal={() => setIsOpen(false)}
+      >
         Політика конфіденційності
         <button className="text-[12px]" type="button" onClick={() => setIsOpen(false)}>
           Закрити
         </button>
-      </ConfirmModal>
+      </Modal>
     </>
   );
 };

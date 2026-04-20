@@ -7,4 +7,3 @@ export { MarqueeLine } from "./running-line";
 export { Portal } from "./portal";
 export { SubdivisionsSection } from "./subdivisions/subdivisions-section";
 export { Toast, showMessage } from "./toastify";
-export { VacanciesSection } from "./vacancies/index";

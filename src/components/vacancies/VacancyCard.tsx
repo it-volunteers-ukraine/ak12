@@ -1,17 +1,30 @@
+import { SECTION_KEYS } from "@/constants";
+import { contentService } from "@/lib/content/content.service";
+import { feedbackContentSchema } from "@/schemas";
+import { Locale } from "@/types";
 import { VacancyMapped } from "@/types/vacancy";
 import { formatSalary } from "@/utils/vacancies/format-salary";
+
 import { getTranslations } from "next-intl/server";
+import { ApplyButton } from "./ApplyButton";
 
 interface Props {
   vacancy: VacancyMapped;
+  locale: Locale;
 }
 
-export async function VacancyCard({ vacancy }: Props) {
+export async function VacancyCard({ vacancy, locale }: Props) {
   const t = await getTranslations("vacancies");
 
   const salaryMin = formatSalary(vacancy.salaryMin);
 
   const salaryMax = vacancy.salaryMax ? formatSalary(vacancy.salaryMax) : null;
+
+  const contentFeedback = await contentService.get({
+    locale,
+    schema: feedbackContentSchema,
+    section: SECTION_KEYS.FEEDBACK,
+  });
 
   return (
     <li className="flex h-full flex-col rounded-xl border border-gray-200 p-6 shadow-sm transition-shadow hover:shadow-md">
@@ -24,12 +37,7 @@ export async function VacancyCard({ vacancy }: Props) {
         <span className="pr-1 font-medium text-black">{t("requirements")}:</span>
         {vacancy.description}
       </p>
-      <a
-        href="#apply"
-        className="mt-auto rounded-lg border border-black px-4 py-2 text-center text-sm transition-colors hover:bg-gray-100"
-      >
-        {t("apply")}
-      </a>
+      {contentFeedback && <ApplyButton contentModal={contentFeedback.form} />}
     </li>
   );
 }

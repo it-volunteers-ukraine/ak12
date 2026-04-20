@@ -2,6 +2,8 @@
 
 @theme {
   --color-accent: #ffd700;
+  --color-white: #ffffff;
+  --color-accent-hover: #e9c504;
   --color-auth-input-bg: #f2f4f8;
   --color-auth-input-border: #c1c7cd;
   --color-auth-primary: #0f62fe;

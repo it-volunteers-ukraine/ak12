@@ -22,11 +22,12 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
     formState: { isSubmitting },
   } = useForm<IFeedbackForm>({
     resolver: zodResolver(schema),
+    mode: "onTouched",
     defaultValues: {
       firstName: "",
       lastName: "",
-      phone: "",
       email: "",
+      phone: "",
       subject: "",
       description: "",
     },
@@ -43,8 +44,8 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
         <div className="mb-8.5 flex flex-col gap-5.5">
           <FormInput label={text("firstName")} placeholder={text("firstName")} name="firstName" control={control} />
           <FormInput label={text("lastName")} placeholder={text("lastName")} name="lastName" control={control} />
-          <FormInput type="tel" label={text("phone")} placeholder={text("phone")} name="phone" control={control} />
           <FormInput type="email" label={text("email")} placeholder={text("email")} name="email" control={control} />
+          <FormInput type="tel" label={text("phone")} placeholder={text("phone")} name="phone" control={control} />
         </div>
         <FormInput
           classNameContainer="mb-6"
@@ -64,11 +65,11 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
 
         <button
           disabled={isSubmitting}
-          className="bg-accent font-ermilov mt-10 flex w-full items-center justify-center gap-1 rounded-xs py-3 text-[24px]"
+          className="bg-accent group disabled:text-text-disabled disabled:bg-disabled hover:bg-accent/50 focus:bg-accent-hover active:bg-accent-hover font-ermilov mt-10 flex w-full items-center justify-center gap-1 rounded-xs py-3 text-[20px] transition-colors"
           type="submit"
         >
           {content.buttonSubmit}
-          <SubmitIcon className="text-card-bg h-6 w-6" />
+          <SubmitIcon className="text-card-bg group-disabled:text-text-disabled h-6 w-6" />
         </button>
       </form>
       <PolicyButton text={content.privacyPolicyTitle} textLink={content.privacyPolicyTextLink} />

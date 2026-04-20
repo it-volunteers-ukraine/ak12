@@ -4,14 +4,16 @@ import { VacancyTabs } from "./VacancyTabs";
 import { VacancyMapped, VacancyType } from "@/types/vacancy";
 import { LoadMoreLink } from "./LoadMoreLink";
 import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
+import { Locale } from "@/types";
 
 export interface Props {
   type: VacancyType;
   page: number;
+  locale: Locale;
   vacancies: VacancyMapped[];
 }
 
-export async function VacanciesSection({ type, page, vacancies }: Props) {
+export async function VacanciesSection({ type, page, vacancies, locale }: Props) {
   const t = await getTranslations("vacancies");
 
   const filteredVacancies = vacancies.filter((v) => v.type === type);
@@ -33,7 +35,7 @@ export async function VacanciesSection({ type, page, vacancies }: Props) {
 
         {visibleVacancies.length > 0 ? (
           <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
-            {visibleVacancies.map((v) => v.isActive && <VacancyCard key={v.id} vacancy={v} />)}
+            {visibleVacancies.map((v) => v.isActive && <VacancyCard locale={locale} key={v.id} vacancy={v} />)}
           </ul>
         ) : (
           <p className="text-center">{t("noResults")}</p>

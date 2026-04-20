@@ -12,7 +12,7 @@ const BASE_LABEL = "text-soft-blush mb-2";
 export const getStyles = ({ isError, isSuccess, classNameContainer }: GetStylesProps) => {
   const input = cn(
     BASE_PLACEHOLDER,
-    "bg-surface-main text-soft-blush border border-accent/50 rounded-xs p-4 text-[16px] font-medium transition-colors",
+    "bg-surface-main text-soft-blush border border-accent/50 rounded-xs py-[14px] px-4 text-[16px] font-medium transition-colors",
 
     "hover:bg-olive-brown focus:bg-dark-khaki focus:border-accent outline-none",
 
@@ -33,9 +33,9 @@ export const getStyles = ({ isError, isSuccess, classNameContainer }: GetStylesP
     label: BASE_LABEL + " text-[14px]",
     input,
     textarea: input + " resize-none h-32",
-    radioLabelGroup: BASE_LABEL + " text-[20px]",
+    radioLabelGroup: BASE_LABEL + " text-[20px]/7",
     radioContainer: "flex items-center gap-6",
-    radioLabel: "text-soft-blush mb-2 text-[16px] flex items-center gap-1 cursor-pointer",
+    radioLabel: "text-soft-blush text-[16px] flex items-center gap-1 cursor-pointer",
     radioBigCircle:
       "border-darker-gray peer-checked:!border-soft-blush peer-hover:border-soft-blush/50 peer-focus:border-soft-blush/50 flex h-5 w-5 items-center justify-center rounded-full border-2 transition-colors peer-hover:[&>div]:opacity-50 peer-focus:[&>div]:opacity-50 peer-checked:[&>div]:!opacity-100",
     radioSmallCircle: "bg-accent h-3 w-3 opacity-0 rounded-full transition-transform",
