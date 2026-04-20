@@ -8,8 +8,8 @@ import { showMessage } from "@/components/toastify";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
+import { FormWrapper } from "../form";
 import { HeroForm } from "./hero-form";
-import { WrapperWithModal } from "../form-wrapper-with-modal";
 import { AdminData, adminSchema, IHeroSection } from "./config";
 
 export const HeroSection = ({ data }: IHeroSection) => {
@@ -127,7 +127,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
   }
 
   return (
-    <WrapperWithModal
+    <FormWrapper
       key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero-empty-image"}
       formConfig={{
         data,
@@ -146,6 +146,6 @@ export const HeroSection = ({ data }: IHeroSection) => {
           onBannerFileChange={handleBannerFileChange}
         />
       )}
-    </WrapperWithModal>
+    </FormWrapper>
   );
 };
