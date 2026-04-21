@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { Locale } from "@/types";
 import { SectionKey, SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
+
 import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 import { lifeOfUnitSchema } from "@/schemas/life-of-the-unit.schema";
 import { heroContentSchema, headerContentSchema, contactsContentSchema, feedbackContentSchema } from "@/schemas";
