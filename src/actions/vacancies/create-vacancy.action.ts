@@ -1,10 +1,11 @@
-"use server";
+'use server';
+
+import { ZodIssue } from "zod";
 
 import { logger } from "@/lib/logger";
-import { createVacancySchema } from "@/schemas/vacancies/create-vacancy.schema";
-import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { VacancyMapped } from "@/types/vacancy";
-import { ZodIssue } from "zod";
+import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { createVacancySchema } from "@/schemas/vacancies/create-vacancy.schema";
 
 export async function createVacancy(data: unknown): Promise<VacancyMapped[] | ZodIssue[]> {
   const result = createVacancySchema.safeParse(data);

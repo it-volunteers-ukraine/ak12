@@ -43,31 +43,27 @@ export const HeroSection = ({ data }: IHeroSection) => {
         uploadedImagePublicId = uploadResult.data?.publicId ?? null;
       }
 
-      const commonLocaleData = {
-        backgroundImage: nextBackgroundImage,
-        support: {
-          ...values.uk?.support,
-          value: values.uk?.support?.value,
-        },
-        majors: {
-          ...values.uk?.majors,
-          value: values.uk?.majors?.value,
-        },
-        hiringChance: {
-          ...values.uk?.hiringChance,
-          value: values.uk?.hiringChance?.value,
-        },
-      };
-
       const enrichedValues = {
         ...values,
         uk: {
           ...values.uk,
-          ...commonLocaleData,
+          backgroundImage: nextBackgroundImage,
         },
         en: {
           ...values.en,
-          ...commonLocaleData,
+          backgroundImage: nextBackgroundImage,
+          support: {
+            ...values.en?.support,
+            value: values.uk?.support?.value,
+          },
+          majors: {
+            ...values.en?.majors,
+            value: values.uk?.majors?.value,
+          },
+          hiringChance: {
+            ...values.en?.hiringChance,
+            value: values.uk?.hiringChance?.value,
+          },
         },
       };
 
