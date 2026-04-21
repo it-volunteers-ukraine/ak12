@@ -1,9 +1,8 @@
 import { ZodSchema } from "zod";
 
 import { SectionKey, SECTION_KEYS } from "@/constants";
-import { HeroSection } from "@/components/admin/hero-section";
-import { TestSection } from "@/components/admin/test-section";
 import { HeroSchema, heroContentSchema } from "@/schemas/heroContent";
+import { HeroSection, MobilizationSection } from "@/components/admin";
 import { MobilizationSchema, mobilizationSchema } from "@/schemas/mobilizationSchema";
 
 export interface IAdminSectionConfig<K extends keyof SectionDataMap> {
@@ -36,20 +35,9 @@ export const ADMIN_CONFIG: { [K in keyof SectionDataMap]: IAdminSectionConfig<K>
     label: "Мобілізація",
     schema: mobilizationSchema,
     sectionKey: SECTION_KEYS.MOBILIZATION,
-    component: TestSection as TAdminFormComponent<"mobilization">,
+    component: MobilizationSection as TAdminFormComponent<"mobilization">,
   },
 } as const;
-
-export const ADMIN_SECTIONS_CONFIG = Object.fromEntries(
-  Object.entries(ADMIN_CONFIG).map(([key, { schema, sectionKey }]) => [
-    key,
-    { schema, sectionKey: sectionKey as SectionKey },
-  ]),
-) as Record<AdminSectionKey, { schema: ZodSchema; sectionKey: SectionKey }>;
-
-export const FORM_COMPONENTS = Object.fromEntries(
-  Object.entries(ADMIN_CONFIG).map(([key, { component }]) => [key, component]),
-) as { [K in AdminSectionKey]: TAdminFormComponent<K> };
 
 export const SERVER_SCHEMAS_MAP = Object.values(ADMIN_CONFIG).reduce(
   (acc, item) => ({
