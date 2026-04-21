@@ -14,12 +14,13 @@ export const DirectContact = ({ title, contacts }: DirectContactProps) => {
     <div className="border-dark-gray w-auto rounded-xs border px-10 py-10">
       <h3 className="text-soft-blush font-ermilov mb-10 text-[20px]/7 uppercase">{title}</h3>
       <div className="flex flex-col gap-6">
-        {contacts.map((contact) => {
+        {contacts.map((contact, index) => {
           const href = autoPrefixHref(contact.href);
+          const uniqueKey = `${contact.href}-${index}`;
 
           if (href.startsWith("tel:")) {
             return (
-              <ContactCard key={href} contact={contact} href={href}>
+              <ContactCard key={uniqueKey} contact={contact} href={href}>
                 <PhoneIcon className="border-accent text-accent bg-surface-main h-12 w-12 rounded-xs border p-3" />
               </ContactCard>
             );
@@ -27,7 +28,7 @@ export const DirectContact = ({ title, contacts }: DirectContactProps) => {
 
           if (href.startsWith("mailto:")) {
             return (
-              <ContactCard key={href} contact={contact} href={href}>
+              <ContactCard key={uniqueKey} contact={contact} href={href}>
                 <AtIcon className="border-accent text-accent bg-surface-main h-12 w-12 rounded-xs border p-3" />
               </ContactCard>
             );
