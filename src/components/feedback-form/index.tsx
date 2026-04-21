@@ -8,7 +8,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { FormInput } from "../input";
 import { SubmitIcon } from "../../../public/icons";
-import { PolicyButton } from "../policy-modal/indedx";
+import { PolicyButton } from "../policy-modal";
 import { FeedbackFormContent, getFeedbackFormSchema, IFeedbackForm } from "@/schemas";
 
 export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
