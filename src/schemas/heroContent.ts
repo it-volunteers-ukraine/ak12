@@ -2,23 +2,23 @@ import { z } from "zod";
 
 export type HeroSchema = z.infer<typeof heroContentSchema>;
 
-const REQUIRED_ERROR = "Обов'язкове поле";
+const REQUIRED_STRING = z.string().trim().min(1, "Обов'язкове поле");
 
 export const heroContentSchema = z.object({
-  title: z.string().min(1, REQUIRED_ERROR),
-  subtitle: z.string().min(1, REQUIRED_ERROR),
-  buttonTitle: z.string().min(1, REQUIRED_ERROR),
+  title: REQUIRED_STRING,
+  subtitle: REQUIRED_STRING,
+  buttonTitle: REQUIRED_STRING,
   hiringChance: z.object({
-    title: z.string().min(1, REQUIRED_ERROR),
-    value: z.string().min(1, REQUIRED_ERROR),
+    title: REQUIRED_STRING,
+    value: REQUIRED_STRING,
   }),
   majors: z.object({
-    title: z.string().min(1, REQUIRED_ERROR),
-    value: z.string().min(1, REQUIRED_ERROR),
+    title: REQUIRED_STRING,
+    value: REQUIRED_STRING,
   }),
   support: z.object({
-    title: z.string().min(1, REQUIRED_ERROR),
-    value: z.string().min(1, REQUIRED_ERROR),
+    title: REQUIRED_STRING,
+    value: REQUIRED_STRING,
   }),
   backgroundImage: z
     .object({
