@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 
 import { VacancyType, VacancyMapped } from "@/types/vacancy";
 import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
-import { Locale } from "@/types";
 
 import { VacancyCard } from "./VacancyCard";
 import { VacancyTabs } from "./VacancyTabs";
@@ -10,12 +9,11 @@ import { LoadMoreLink } from "./LoadMoreLink";
 
 export interface Props {
   page: number;
-  locale: Locale;
   type: VacancyType;
   vacancies: VacancyMapped[];
 }
 
-export async function VacanciesSection({ type, page, vacancies, locale }: Props) {
+export async function VacanciesSection({ type, page, vacancies }: Props) {
   const t = await getTranslations("vacancies");
 
   const filteredVacancies = vacancies.filter((v) => v.type === type);
@@ -39,7 +37,7 @@ export async function VacanciesSection({ type, page, vacancies, locale }: Props)
 
         {visibleVacancies.length > 0 ? (
           <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
-            {visibleVacancies.map((v) => v.isActive && <VacancyCard locale={locale} key={v.id} vacancy={v} />)}
+            {visibleVacancies.map((v) => v.isActive && <VacancyCard key={v.id} vacancy={v} />)}
           </ul>
         ) : (
           <p className="text-center">{t("noResults")}</p>

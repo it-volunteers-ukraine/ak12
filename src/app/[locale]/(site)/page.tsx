@@ -34,7 +34,7 @@ export default async function Home({
       <main>
         <SubdivisionsSection locale={locale} />
         <LifeOfTheUnit locale={locale} />
-        <VacanciesSection locale={locale} type={type} page={page} vacancies={vacancies} />
+        <VacanciesSection type={type} page={page} vacancies={vacancies} />
         <FeedbackSection locale={locale} />
         <MarqueeLine itemList={vacanciesTitleList} />
       </main>

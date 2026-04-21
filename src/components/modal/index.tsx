@@ -14,8 +14,6 @@ interface IModal {
   children?: React.ReactNode;
 }
 
-let openModalsCount = 0;
-
 export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const { isUnmounted } = useMounted({ isOpened: isOpen, duration: 300 });
@@ -29,9 +27,14 @@ export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
       return;
     }
 
-    openModalsCount++;
+    let timer: NodeJS.Timeout;
 
-    if (openModalsCount === 1) {
+    const currentCount = parseInt(document.body.getAttribute("data-modals-open") || "0", 10);
+    const newCount = currentCount + 1;
+
+    document.body.setAttribute("data-modals-open", newCount.toString());
+
+    if (newCount === 1) {
       const scrollWidth = window.innerWidth - document.documentElement.clientWidth;
 
       document.body.style.overflow = "hidden";
@@ -39,15 +42,24 @@ export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
     }
 
     return () => {
-      openModalsCount--;
+      if (timer) {
+        clearTimeout(timer);
+      }
 
-      if (openModalsCount === 0) {
-        setTimeout(() => {
-          if (openModalsCount === 0) {
+      const countDuringCleanup = parseInt(document.body.getAttribute("data-modals-open") || "1", 10);
+      const updatedCount = countDuringCleanup - 1;
+
+      if (updatedCount <= 0) {
+        document.body.removeAttribute("data-modals-open");
+
+        timer = setTimeout(() => {
+          if (!document.body.hasAttribute("data-modals-open")) {
             document.body.style.overflow = "unset";
             document.body.style.paddingRight = "0px";
           }
         }, 300);
+      } else {
+        document.body.setAttribute("data-modals-open", updatedCount.toString());
       }
     };
   }, [isOpen]);

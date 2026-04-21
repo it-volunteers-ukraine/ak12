@@ -5,23 +5,23 @@ import { Locale } from "@/types";
 import { VacancyMapped } from "@/types/vacancy";
 import { formatSalary } from "@/utils/vacancies/format-salary";
 
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ApplyButton } from "./ApplyButton";
 
 interface Props {
   vacancy: VacancyMapped;
-  locale: Locale;
 }
 
-export async function VacancyCard({ vacancy, locale }: Props) {
+export async function VacancyCard({ vacancy }: Props) {
   const t = await getTranslations("vacancies");
+  const locale = await getLocale();
 
   const salaryMin = formatSalary(vacancy.salaryMin);
 
   const salaryMax = vacancy.salaryMax ? formatSalary(vacancy.salaryMax) : null;
 
   const contentFeedback = await contentService.get({
-    locale,
+    locale: locale as Locale,
     schema: feedbackContentSchema,
     section: SECTION_KEYS.FEEDBACK,
   });

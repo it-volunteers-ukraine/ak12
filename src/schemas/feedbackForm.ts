@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { TranslationValues } from "next-intl";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 const PHONE_REGEX = /^\+[1-9]\d{7,14}$/;
 
@@ -13,7 +14,23 @@ export const getFeedbackFormSchema = (error: (key: string, params?: TranslationV
       .string(error("required"))
       .min(2, error("minLength", { min: 2 }))
       .max(100, error("maxLength", { max: 100 })),
-    phone: z.string(error("required")).regex(PHONE_REGEX, error("phone")),
+    phone: z
+      .string()
+      .min(1, error("required"))
+      .transform((value, ctx) => {
+        const phoneNumber = parsePhoneNumberFromString(value);
+
+        if (!phoneNumber || !phoneNumber.isValid()) {
+          ctx.addIssue({
+            code: "custom",
+            message: error("phone"),
+          });
+
+          return z.NEVER;
+        }
+
+        return phoneNumber.number;
+      }),
     email: z.email(error("email")),
     description: z
       .string(error("required"))
