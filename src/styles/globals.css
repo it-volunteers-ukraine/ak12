@@ -1,17 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --color-accent: #ffd700;
-  --color-white: #ffffff;
   --color-accent-hover: #e9c504;
+  --color-accent: #ffd700;
   --color-auth-input-bg: #f2f4f8;
   --color-auth-input-border: #c1c7cd;
-  --color-charcoal: #383232;
   --color-auth-primary: #0f62fe;
   --color-auth-surface-border: #dde1e6;
   --color-auth-text: #21272a;
   --color-black: #0a0a0a;
   --color-card-bg: #1a1a1a;
+  --color-charcoal: #383232;
   --color-dark-gray: #3b3f32;
   --color-dark-green: #1a1e1d;
   --color-dark-khaki: #1f1d16;
@@ -26,13 +25,14 @@
   --color-surface-main: #0d0d0d;
   --color-text-disabled: #5b5d5c;
   --color-warm-gray: #b3b3b2;
+  --color-white: #ffffff;
 
   --background-image-section:
     linear-gradient(90deg, #0d0d0d 0%, rgba(26, 26, 26, 70%) 50%, rgba(51, 64, 54, 60%) 100%),
     linear-gradient(#1a1e1d, #1a1e1d);
 
   /* vacancies */
-  --color-secondary-text: #E0E0E0;
+  --color-secondary-text: #e0e0e0;
   --color-surface-secondary: #1a1a1a;
   --color-vacancy-card-start: var(--color-surface-secondary);
   --color-vacancy-card-end: #1a1e1d;

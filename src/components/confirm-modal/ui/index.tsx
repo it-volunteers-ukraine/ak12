@@ -6,7 +6,6 @@ import { ModalTitle, ModalFooter, ModalContent } from "./modal-parts";
 
 interface IConfirmModal {
   isOpen: boolean;
-  className?: string;
   onClose: () => void;
   children?: React.ReactNode;
 }
