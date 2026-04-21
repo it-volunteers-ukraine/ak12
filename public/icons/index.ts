@@ -33,3 +33,7 @@ export { default as YoutubeIcon } from "./youtube.svg";
 export { default as SubmitIcon } from "./submit.svg";
 
 export { default as CloseIcon } from "./close.svg";
+
+export { default as AtIcon } from "./at.svg";
+
+export { default as PhoneIcon } from "./phone.svg";

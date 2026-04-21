@@ -39,13 +39,17 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
   };
 
   return (
-    <div className="bg-dark-green border-accent rounded-xs border p-12">
+    <div className="bg-dark-green border-accent w-full rounded-xs border p-12">
       <form className="mb-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-8.5 flex flex-col gap-5.5">
-          <FormInput label={text("firstName")} placeholder={text("firstName")} name="firstName" control={control} />
-          <FormInput label={text("lastName")} placeholder={text("lastName")} name="lastName" control={control} />
-          <FormInput type="email" label={text("email")} placeholder={text("email")} name="email" control={control} />
-          <FormInput type="tel" label={text("phone")} placeholder={text("phone")} name="phone" control={control} />
+          <div className="flex gap-6">
+            <FormInput label={text("firstName")} placeholder={text("firstName")} name="firstName" control={control} />
+            <FormInput label={text("lastName")} placeholder={text("lastName")} name="lastName" control={control} />
+          </div>
+          <div className="flex gap-6">
+            <FormInput type="email" label={text("email")} placeholder={text("email")} name="email" control={control} />
+            <FormInput type="tel" label={text("phone")} placeholder={text("phone")} name="phone" control={control} />
+          </div>
         </div>
         <FormInput
           classNameContainer="mb-6"
