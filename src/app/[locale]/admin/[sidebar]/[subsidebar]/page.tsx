@@ -1,7 +1,7 @@
 import { Locale } from "@/types";
+import { ADMIN_CONFIG } from "@/lib/admin/admin-config";
 import { contentService } from "@/lib/content/content.service";
-
-import { ADMIN_CONFIG, SectionDataMap, TAdminFormComponent } from "./config-admin-forms";
+import { SectionDataMap, TAdminFormComponent } from "@/lib/admin/admin-types";
 
 export type AdminPageParams = {
   locale: Locale;

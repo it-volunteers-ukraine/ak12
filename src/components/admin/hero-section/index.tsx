@@ -5,12 +5,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { showMessage } from "@/components/toastify";
+import { AdminDataMap } from "@/lib/admin/admin-types";
+import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
 import { HeroForm } from "./hero-form";
-import { AdminData, adminSchema, IHeroSection } from "./config";
+
+type AdminData = AdminDataMap["hero"];
+interface IHeroSection {
+  data: AdminData;
+}
+
+const adminSchema = ADMIN_SCHEMAS.hero;
 
 export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();

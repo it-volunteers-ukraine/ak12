@@ -4,16 +4,16 @@ import { useEffect } from "react";
 
 import { useFormContext } from "react-hook-form";
 
+import { AdminDataMap } from "@/lib/admin/admin-types";
 import { FormImg, FormField } from "@/components/form-elements";
 
-import { AdminData } from "../config";
 import { LANGUAGES, buttonLabels, textContentLabels } from "./config";
 import { BtnGroup, FieldWithIcon, LocaleContentGroup } from "../../admin-form-elements";
 
 interface IHeroForm {
-  data: AdminData;
   isValid: boolean;
   bannerFile: File | null;
+  data: AdminDataMap["hero"];
   onBannerRemove: () => void;
   removeCurrentImage: boolean;
   onBannerFileChange: (file: File | null) => void;

@@ -7,9 +7,8 @@ import { useForm, FormProvider, DefaultValues } from "react-hook-form";
 
 import { Button } from "@/components/button";
 import { showMessage } from "@/components/toastify";
+import { AllAdminForms } from "@/lib/admin/admin-types";
 import { ConfirmModal } from "@/components/confirm-modal/ui";
-
-import { AllAdminForms } from "./types";
 
 type SubmitResult = {
   error?: string;

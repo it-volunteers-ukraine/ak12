@@ -1,11 +1,12 @@
 import { useFormContext } from "react-hook-form";
 
 import { TextArea } from "@/components/form-elements";
+import { AdminDataMap } from "@/lib/admin/admin-types";
 
-import { AdminData } from "../config";
 import { LANGUAGES, textLabels, buttonLabels, textContentLabels } from "./config";
 import { BtnGroup, FieldWithIcon, LocaleContentGroup } from "../../admin-form-elements";
 
+type AdminData = AdminDataMap["mobilization"];
 interface IMobilizationForm {
   data: AdminData;
   isValid: boolean;
@@ -16,7 +17,7 @@ export const MobilizationForm = ({ data, isValid }: IMobilizationForm) => {
 
   return (
     <>
-    <BtnGroup
+      <BtnGroup
         isValid={isValid}
         onReset={() => reset(data)}
         submitText="Зберегти зміни"
