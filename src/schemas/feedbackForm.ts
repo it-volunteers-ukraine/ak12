@@ -31,7 +31,7 @@ export const getFeedbackFormSchema = (error: (key: string, params?: TranslationV
 
         return phoneNumber.number;
       }),
-    email: z.email(error("email")),
+    email: z.string().min(1, error("required")).email(error("email")),
     description: z
       .string(error("required"))
       .min(10, error("minLength", { min: 10 }))
