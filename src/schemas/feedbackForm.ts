@@ -2,8 +2,6 @@ import { z } from "zod";
 import { TranslationValues } from "next-intl";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
-const PHONE_REGEX = /^\+[1-9]\d{7,14}$/;
-
 export const getFeedbackFormSchema = (error: (key: string, params?: TranslationValues) => string) => {
   return z.object({
     firstName: z
@@ -17,19 +15,15 @@ export const getFeedbackFormSchema = (error: (key: string, params?: TranslationV
     phone: z
       .string()
       .min(1, error("required"))
-      .transform((value, ctx) => {
+      .refine((value) => {
         const phoneNumber = parsePhoneNumberFromString(value);
 
-        if (!phoneNumber || !phoneNumber.isValid()) {
-          ctx.addIssue({
-            code: "custom",
-            message: error("phone"),
-          });
+        return phoneNumber ? phoneNumber.isValid() : false;
+      }, error("phone"))
+      .transform((value) => {
+        const phoneNumber = parsePhoneNumberFromString(value);
 
-          return z.NEVER;
-        }
-
-        return phoneNumber.number;
+        return phoneNumber!.number;
       }),
     email: z.email(error("email")),
     description: z
@@ -41,3 +35,5 @@ export const getFeedbackFormSchema = (error: (key: string, params?: TranslationV
 };
 
 export type IFeedbackForm = z.infer<ReturnType<typeof getFeedbackFormSchema>>;
+export type TFeedbackFormInput = z.input<ReturnType<typeof getFeedbackFormSchema>>;
+export type TFeedbackFormOutput = z.output<ReturnType<typeof getFeedbackFormSchema>>;

@@ -1,5 +1,6 @@
 "use client";
 
+import z from "zod";
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,10 +18,11 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
   const schema = useMemo(() => getFeedbackFormSchema(errorMessages), [errorMessages]);
 
   const {
+    reset,
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<IFeedbackForm>({
+  } = useForm<z.input<typeof schema>, any, z.output<typeof schema>>({
     resolver: zodResolver(schema),
     mode: "onTouched",
     defaultValues: {
@@ -36,6 +38,8 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
   const onSubmit: SubmitHandler<IFeedbackForm> = async (data) => {
     //TODO  await відправка даних на email
     console.log("Відправлено:", data);
+
+    reset();
   };
 
   return (

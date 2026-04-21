@@ -3,7 +3,6 @@
 import { useRef, useEffect } from "react";
 
 import { useMounted, useOutsideClick } from "@/hooks";
-
 import { Portal } from "../portal";
 import { getStyles } from "./style";
 
@@ -16,6 +15,9 @@ interface IModal {
 
 export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
   const modalRef = useRef<HTMLDivElement>(null);
+
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
   const { isUnmounted } = useMounted({ isOpened: isOpen, duration: 300 });
 
   useOutsideClick(() => closeModal(), modalRef);
@@ -26,8 +28,6 @@ export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
     if (!isOpen) {
       return;
     }
-
-    let timer: NodeJS.Timeout;
 
     const currentCount = parseInt(document.body.getAttribute("data-modals-open") || "0", 10);
     const newCount = currentCount + 1;
@@ -42,8 +42,8 @@ export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
     }
 
     return () => {
-      if (timer) {
-        clearTimeout(timer);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
       }
 
       const countDuringCleanup = parseInt(document.body.getAttribute("data-modals-open") || "1", 10);
@@ -52,7 +52,7 @@ export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
       if (updatedCount <= 0) {
         document.body.removeAttribute("data-modals-open");
 
-        timer = setTimeout(() => {
+        timerRef.current = setTimeout(() => {
           if (!document.body.hasAttribute("data-modals-open")) {
             document.body.style.overflow = "unset";
             document.body.style.paddingRight = "0px";
