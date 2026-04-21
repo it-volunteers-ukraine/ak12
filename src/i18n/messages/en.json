@@ -6,7 +6,7 @@
     "social": "Social"
   },
   "subdivisions": {
-     "title": "Choose a Unit",
+    "title": "Choose a Unit",
     "subtitle": "Hover over a unit to get more information*",
     "visitSite": "Our website",
     "imageAlt": "Unit emblem: {name}",
@@ -24,5 +24,18 @@
     "readLess": "Show less",
     "apply": "Apply",
     "noResults": "No vacancies available at the moment"
+  },
+  "validation": {
+    "required": "This field is required",
+    "minLength": "Minimum length is {min} characters",
+    "maxLength": "Maximum length is {max} characters",
+    "email": "Please enter a valid email address",
+    "phone": "Please enter a valid phone number"
+  },
+  "form": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone"
   }
 }

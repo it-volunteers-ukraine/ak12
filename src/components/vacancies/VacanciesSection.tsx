@@ -36,7 +36,7 @@ export async function VacanciesSection({ type, page, vacancies }: Props) {
         <VacancyTabs currentType={type} />
 
         {visibleVacancies.length > 0 ? (
-          <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-x-5 gap-y-10">
+          <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
             {visibleVacancies.map((v) => v.isActive && <VacancyCard key={v.id} vacancy={v} />)}
           </ul>
         ) : (
