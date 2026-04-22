@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
 import { useState } from "react";
 
+import z from "zod";
 import { useRouter } from "next/navigation";
 
 import { showMessage } from "@/components/toastify";
@@ -13,19 +14,20 @@ import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-ima
 import { FormWrapper } from "../form";
 import { HeroForm } from "./hero-form";
 
+type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["hero"];
 interface IHeroSection {
   data: AdminData;
 }
 
-const adminSchema = ADMIN_SCHEMAS.hero;
+export const adminSchema = ADMIN_SCHEMAS.hero;
 
 export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
 
-  const handleSubmit = async (values: AdminData) => {
+  const handleSubmit = async (values: FormValues) => {
     let uploadedImagePublicId: string | null = null;
 
     try {
@@ -131,20 +133,13 @@ export const HeroSection = ({ data }: IHeroSection) => {
   }
 
   return (
-    <FormWrapper
-      key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero-empty-image"}
-      formConfig={{
-        data,
-        type: "hero",
-        schema: adminSchema,
-      }}
-      onSubmit={handleSubmit}
-    >
-      {(status) => (
+
+    <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={handleSubmit}>
+      {(methods) => (
         <HeroForm
           data={data}
           bannerFile={bannerFile}
-          isValid={status.isValid}
+          isValid={methods.formState.isValid}
           onBannerRemove={handleBannerRemove}
           removeCurrentImage={removeCurrentImage}
           onBannerFileChange={handleBannerFileChange}
