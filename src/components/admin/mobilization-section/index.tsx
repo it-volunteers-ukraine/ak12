@@ -6,8 +6,8 @@ import z from "zod";
 import { useRouter } from "next/navigation";
 
 import { showMessage } from "@/components/toastify";
-import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
+import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateMobilizationMultiLangAction } from "@/actions/mobilization/mobilizationActions";
 
@@ -23,50 +23,35 @@ interface IAdminSection {
 const adminSchema = ADMIN_SCHEMAS.mobilization;
 
 export const MobilizationSection = ({ data }: IAdminSection) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [currentData, setCurrentData] = useState<FormValues | null>(null);
-
   const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
-  const onFormSubmit = (values: FormValues) => {
-    setCurrentData(values);
-    setIsOpen(true);
-  };
-
-  const onSubmit = async (values: z.infer<typeof adminSchema>) => {
-    const res = await updateMobilizationMultiLangAction(values);
-
-    if (res.success) {
-      showMessage.success("Дані успішно оновилися!");
-      router.refresh();
-    } else {
-      showMessage.error("Не вдалося оновити дані");
-    }
-
-    return res;
+  const onFormSubmit = (values: AdminData) => {
+    setPendingData(values);
+    setIsModalOpen(true);
   };
 
   const handleConfirm = async () => {
-    if (!currentData) {
+    if (!pendingData) {
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const result = await onSubmit(currentData);
+      const res = await updateMobilizationMultiLangAction(pendingData);
 
-      if (result && !result.success) {
-        return;
+      if (res.success) {
+        showMessage.success("Дані успішно оновилися!");
+        setIsModalOpen(false);
+        router.refresh();
+      } else {
+        showMessage.error("Не вдалося оновити дані");
       }
-
-      setIsOpen(false);
     } catch (error) {
-      console.error("Form submission failed:", error);
-
+      console.error({ error }, "Mobilization form submission failed");
       showMessage.error("Не вдалося оновити дані");
     } finally {
       setIsLoading(false);
@@ -80,11 +65,11 @@ export const MobilizationSection = ({ data }: IAdminSection) => {
       </FormWrapper>
 
       <ConfirmModal
-        isOpen={isOpen}
+        isOpen={isModalOpen}
         title="Підтвердіть зміни"
         content="Ви впевнені, що хочете зберегти зміни в секції мобілізації?"
         isLoading={isLoading}
-        onClose={() => setIsOpen(false)}
+        onClose={() => setIsModalOpen(false)}
         handleConfirm={handleConfirm}
       />
     </>

@@ -14,7 +14,7 @@ import {
   type UseFormReturn,
 } from "react-hook-form";
 
-type RHFZodFormProps<TValues extends FieldValues> = {
+type TFormWrapper<TValues extends FieldValues> = {
   className?: string;
   initialValues: TValues;
   enableReinitialize?: boolean;
@@ -22,6 +22,11 @@ type RHFZodFormProps<TValues extends FieldValues> = {
   schema: z.ZodType<TValues, TValues>;
   options?: Omit<UseFormProps<TValues>, "resolver" | "defaultValues">;
   children: ReactNode | ((methods: UseFormReturn<TValues>) => ReactNode);
+};
+export type FormStatus = {
+  isDirty: boolean;
+  isValid: boolean;
+  isSubmitting: boolean;
 };
 
 export const FormWrapper = <TValues extends FieldValues>({
@@ -32,7 +37,7 @@ export const FormWrapper = <TValues extends FieldValues>({
   className,
   children,
   options,
-}: RHFZodFormProps<TValues>) => {
+}: TFormWrapper<TValues>) => {
   const methods = useForm<TValues>({
     ...options,
     defaultValues: initialValues as DefaultValues<TValues>,

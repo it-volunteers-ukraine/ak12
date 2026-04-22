@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
+import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
@@ -26,6 +27,9 @@ export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
   const handleSubmit = async (values: FormValues) => {
     let uploadedImagePublicId: string | null = null;
@@ -112,13 +116,38 @@ export const HeroSection = ({ data }: IHeroSection) => {
         await deleteImageAction(uploadedImagePublicId);
       }
 
-      console.error("Hero submit failed:", error);
+      console.error({ error }, "Hero form submission failed");
       showMessage.error("Не вдалося оновити дані");
 
       return {
         success: false,
         error: "Internal Server Error",
       };
+    }
+  };
+
+  const onFormSubmit = (values: FormValues) => {
+    setPendingData(values);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirm = async () => {
+    if (!pendingData) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await handleSubmit(pendingData);
+
+      if (result && !result.success) {
+        return;
+      }
+
+      setIsModalOpen(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -133,18 +162,28 @@ export const HeroSection = ({ data }: IHeroSection) => {
   }
 
   return (
+    <>
+      <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={onFormSubmit}>
+        {(methods) => (
+          <HeroForm
+            data={data}
+            bannerFile={bannerFile}
+            isValid={methods.formState.isValid}
+            onBannerRemove={handleBannerRemove}
+            removeCurrentImage={removeCurrentImage}
+            onBannerFileChange={handleBannerFileChange}
+          />
+        )}
+      </FormWrapper>
 
-    <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={handleSubmit}>
-      {(methods) => (
-        <HeroForm
-          data={data}
-          bannerFile={bannerFile}
-          isValid={methods.formState.isValid}
-          onBannerRemove={handleBannerRemove}
-          removeCurrentImage={removeCurrentImage}
-          onBannerFileChange={handleBannerFileChange}
-        />
-      )}
-    </FormWrapper>
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Підтвердіть зміни"
+        content="Ви впевнені, що хочете зберегти зміни в секції Hero?"
+        isLoading={isLoading}
+        onClose={() => setIsModalOpen(false)}
+        handleConfirm={handleConfirm}
+      />
+    </>
   );
 };
