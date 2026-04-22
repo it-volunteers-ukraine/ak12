@@ -1,20 +1,23 @@
 "use server";
 
+import { Locale } from "@/types";
 import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
-import { AdminData } from "@/components/admin/hero-section/config";
+import { AdminDataMap } from "@/lib/admin";
 
 import { saveContentAction } from "../content";
 
+type AdminData = AdminDataMap["hero"];
+
 export const updateHeroMultiLangAction = async (values: AdminData) => {
   try {
-    const languages = Object.keys(values) as (keyof AdminData)[];
+    const languages = Object.keys(values) as Locale[];
 
     const savePromises = languages.map((locale) => {
       const rawContent = values[locale];
 
       return saveContentAction({
-        locale: locale,
+        locale,
         sectionKey: SECTION_KEYS.HERO,
         rawContent,
       });

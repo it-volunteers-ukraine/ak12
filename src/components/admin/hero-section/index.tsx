@@ -4,9 +4,11 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/button";
+import { logger } from "@/lib/logger";
 import { showMessage } from "@/components/toastify";
-import { AdminDataMap } from "@/lib/admin/admin-types";
-import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
+import { AdminDataMap, ADMIN_SCHEMAS } from "@/lib/admin";
+import { ConfirmModal } from "@/components/confirm-modal/ui";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
@@ -24,8 +26,22 @@ export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pendingData, setPendingData] = useState<AdminData | null>(null);
 
-  const handleSubmit = async (values: AdminData) => {
+  const onFormSubmit = (values: AdminData) => {
+    setPendingData(values);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirm = async () => {
+    if (!pendingData) {
+      return;
+    }
+
+    setIsLoading(true);
+
     let uploadedImagePublicId: string | null = null;
 
     try {
@@ -52,25 +68,25 @@ export const HeroSection = ({ data }: IHeroSection) => {
       }
 
       const enrichedValues = {
-        ...values,
+        ...pendingData,
         uk: {
-          ...values.uk,
+          ...pendingData.uk,
           backgroundImage: nextBackgroundImage,
         },
         en: {
-          ...values.en,
+          ...pendingData.en,
           backgroundImage: nextBackgroundImage,
           support: {
-            ...values.en?.support,
-            value: values.uk?.support?.value,
+            ...pendingData.en?.support,
+            value: pendingData.uk?.support?.value,
           },
           majors: {
-            ...values.en?.majors,
-            value: values.uk?.majors?.value,
+            ...pendingData.en?.majors,
+            value: pendingData.uk?.majors?.value,
           },
           hiringChance: {
-            ...values.en?.hiringChance,
-            value: values.uk?.hiringChance?.value,
+            ...pendingData.en?.hiringChance,
+            value: pendingData.uk?.hiringChance?.value,
           },
         },
       };
@@ -84,7 +100,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
 
         showMessage.error("Не вдалося оновити дані");
 
-        return res;
+        return;
       }
 
       const shouldDeleteOldImage =
@@ -95,28 +111,27 @@ export const HeroSection = ({ data }: IHeroSection) => {
         const deleteResult = await deleteImageAction(oldImagePublicId);
 
         if (!deleteResult.success) {
-          console.error("Не вдалося видалити попереднє зображення hero:", deleteResult.error);
+          logger.error(
+            { error: deleteResult.error, publicId: oldImagePublicId },
+            "Failed to delete old hero image"
+          );
         }
       }
 
       showMessage.success("Дані успішно оновилися!");
       setBannerFile(null);
       setRemoveCurrentImage(false);
+      setIsModalOpen(false);
       router.refresh();
-
-      return res;
     } catch (error) {
       if (uploadedImagePublicId) {
         await deleteImageAction(uploadedImagePublicId);
       }
 
-      console.error("Hero submit failed:", error);
+      logger.error({ error }, "Hero form submission failed");
       showMessage.error("Не вдалося оновити дані");
-
-      return {
-        success: false,
-        error: "Internal Server Error",
-      };
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -131,25 +146,54 @@ export const HeroSection = ({ data }: IHeroSection) => {
   }
 
   return (
-    <FormWrapper
-      key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero-empty-image"}
-      formConfig={{
-        data,
-        type: "hero",
-        schema: adminSchema,
-      }}
-      onSubmit={handleSubmit}
-    >
-      {(status) => (
-        <HeroForm
-          data={data}
-          bannerFile={bannerFile}
-          isValid={status.isValid}
-          onBannerRemove={handleBannerRemove}
-          removeCurrentImage={removeCurrentImage}
-          onBannerFileChange={handleBannerFileChange}
-        />
-      )}
-    </FormWrapper>
+    <>
+      <FormWrapper
+        key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero-empty-image"}
+        formConfig={{
+          data,
+          type: "hero",
+          schema: adminSchema,
+        }}
+        onSubmit={onFormSubmit}
+      >
+        {(status) => (
+          <HeroForm
+            data={data}
+            bannerFile={bannerFile}
+            isValid={status.isValid}
+            onBannerRemove={handleBannerRemove}
+            removeCurrentImage={removeCurrentImage}
+            onBannerFileChange={handleBannerFileChange}
+          />
+        )}
+      </FormWrapper>
+
+      <ConfirmModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ConfirmModal.ModalTitle>Підтвердіть зміни</ConfirmModal.ModalTitle>
+        <ConfirmModal.ModalContent>
+          Ви впевнені, що хочете зберегти зміни в головній секції?
+        </ConfirmModal.ModalContent>
+        <ConfirmModal.ModalFooter>
+          <Button
+            type="button"
+            variant="primary"
+            isLoading={isLoading}
+            onClick={handleConfirm}
+            className="w-full rounded-full"
+          >
+            Так, зберегти
+          </Button>
+          <Button
+            type="button"
+            variant="danger"
+            onClick={() => setIsModalOpen(false)}
+            className="w-full rounded-full"
+            disabled={isLoading}
+          >
+            Скасувати
+          </Button>
+        </ConfirmModal.ModalFooter>
+      </ConfirmModal>
+    </>
   );
 };
