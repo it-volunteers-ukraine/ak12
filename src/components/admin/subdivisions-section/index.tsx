@@ -65,13 +65,13 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
         hoverName: values.uk.hoverName,
         hoverDescription: values.uk.hoverDescription,
         siteUrl: values.uk.siteUrl,
-        isActive: values.uk.isActive,
         sortOrder: values.uk.sortOrder,
         languageCode: "uk" as const,
         languageId: data?.uk?.languageId ?? "",
         imageUrl: nextImage,
         hoverImageUrl: nextHoverImage,
         updatedAt: new Date().toISOString(),
+        isActive: true
       };
 
       const enPayload = {
@@ -81,13 +81,13 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
         hoverName: values.en.hoverName,
         hoverDescription: values.en.hoverDescription,
         siteUrl: values.en.siteUrl,
-        isActive: values.uk.isActive,
         sortOrder: values.uk.sortOrder,
         languageCode: "en" as const,
         languageId: data?.en?.languageId ?? "",
         imageUrl: nextImage,
         hoverImageUrl: nextHoverImage,
         updatedAt: new Date().toISOString(),
+        isActive: true
       };
 
       if (data?.uk?.id) {

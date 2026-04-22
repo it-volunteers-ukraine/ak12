@@ -16,8 +16,10 @@ export const subdivisionContentSchema = z.object({
   imageUrl: storedImageSchema,
   hoverImageUrl: storedImageSchema,
   sortOrder: z.coerce.number().int().nonnegative(),
+  isActive: z.boolean().default(true),
   languageId: z.string().uuid().optional(),
   updatedAt: z.string().optional(), 
+
 });
 
 export const adminSchema = z.object({

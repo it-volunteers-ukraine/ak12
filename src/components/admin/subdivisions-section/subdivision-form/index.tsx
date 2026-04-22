@@ -114,6 +114,7 @@ export const SubdivisionForm = ({
         <h3 className="mb-4 font-medium">Налаштування</h3>
         <div className="flex gap-8">
           <FormField name="uk.sortOrder" label="Порядок" type="number" />
+           <FormField name="uk.isActive" label="Активний" type="checkbox" />
         </div>
       </div>
     </>
