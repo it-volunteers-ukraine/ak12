@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { locales } from '@/constants'
 import { supabaseServer } from '@/lib/supabase-server'
 import { Locale, Subdivision } from '@/types'
+import { StoredImage } from '@/lib/admin/upload-image.service'
 
 // HELPERS
 
@@ -32,15 +33,16 @@ const getLanguageId = async (locale: string): Promise<string | null> => {
 const mapRow = (row: Record<string, unknown>, languageCode: Locale): Subdivision => ({
   id: row.id as string,
   name: row.name as string,
-  slug: row.slug as string | null,
+  slug: (row.slug as string) ?? "",
   description: row.description as string,
   siteUrl: row.site_url as string | null,
-  imageUrl: row.image_url as string,
-  hoverImageUrl: row.hover_image_url as string | null,
+  imageUrl: (row.image_url as StoredImage | null) ?? null,
+  hoverImageUrl: (row.hover_image_url as StoredImage | null) ?? null,
   hoverName: row.hover_name as string | null,
   hoverDescription: row.hover_description as string | null,
   isActive: row.is_active as boolean,
   sortOrder: row.sort_order as number,
+  updatedAt: row.updated_at as string,
   languageCode,
   languageId: row.language_id as string,
 })

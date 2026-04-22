@@ -12,44 +12,53 @@ export const SubdivisionCard = ({ subdivision }: SubdivisionCardProps) => {
   const t = useTranslations("subdivisions");
 
   return (
-    <article
-      className="group border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300"
-    >
+  
+<article className="group border-stroke-green bg-card-bg relative box-border flex h-[450px] w-[413px] cursor-pointer flex-col border-2 p-[24px] pb-[32px] transition-all duration-300 group-hover:border-transparent">
       {/* ── DEFAULT STATE */}
-      <div className="flex h-full flex-col group-hover:pointer-events-none">
-        <div className="border-dark-gray bg-surface-main relative flex h-[303px] w-[365px] flex-shrink-0 items-center justify-center overflow-hidden border">
+      <div className="border-dark-gray bg-surface-main relative flex h-[303px] w-[365px] flex-shrink-0 items-center justify-center overflow-hidden border">
+        {subdivision.imageUrl ? (
           <Image
-            src={subdivision.imageUrl}
+            src={subdivision.imageUrl.secureUrl}
             alt={t("imageAlt", { name: subdivision.name })}
             width={363}
             height={269}
             className="object-contain"
           />
-        </div>
-
-        <div className="mt-4 flex h-full flex-col items-center justify-start">
-          <h3 className="font-ermilov text-accent mb-1 text-center text-[20px] leading-[140%] font-bold uppercase">
-            {subdivision.name}
-          </h3>
-
-          <div className="flex flex-col gap-1">
-            <p className="font-road-ui text-warm-gray whitespace-pre-line text-center text-[12px] leading-[125%] font-normal">
-              {subdivision.description.replaceAll(". ", ".\n")}
-            </p>
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+              <rect width="80" height="80" rx="8" fill="#2a2a2a" />
+              <path d="M20 56L32 38L40 48L52 32L60 56H20Z" fill="#444" />
+              <circle cx="30" cy="30" r="6" fill="#444" />
+            </svg>
           </div>
+        )}
+      </div>
+
+      <div className="mt-4 flex h-full flex-col items-center justify-start">
+        <h3 className="font-ermilov text-accent mb-1 text-center text-[20px] leading-[140%] font-bold uppercase">
+          {subdivision.name}
+        </h3>
+
+        <div className="flex flex-col gap-1">
+          <p className="font-road-ui text-warm-gray text-center text-[12px] leading-[125%] font-normal whitespace-pre-line">
+            {subdivision.description.replaceAll(". ", ".\n")}
+          </p>
         </div>
       </div>
 
       {/* ── HOVER STATE  */}
       <div className="absolute inset-0 flex flex-col p-[24px] pb-[32px] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
         <div className="relative h-[394px] w-[366px] flex-shrink-0 self-center overflow-hidden">
-          {subdivision.hoverImageUrl && (
+          {subdivision.hoverImageUrl ? (
             <Image
-              src={subdivision.hoverImageUrl}
+              src={subdivision.hoverImageUrl.secureUrl}
               alt={t("hoverImageAlt", { name: subdivision.hoverName ?? subdivision.name })}
               fill
               className="object-cover object-bottom"
             />
+          ) : (
+            <div className="bg-surface-secondary h-full w-full" />
           )}
 
           <div

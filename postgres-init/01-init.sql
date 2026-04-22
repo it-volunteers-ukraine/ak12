@@ -60,18 +60,19 @@ COMMENT ON COLUMN vacancy.language_id IS 'Reference to the content language.';
 
 CREATE TABLE IF NOT EXISTS subdivision (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     slug VARCHAR(100),
-    description VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
     site_url VARCHAR(255),
-    image_url VARCHAR(255) NOT NULL,
-    hover_image_url TEXT,
+    image_url JSONB,                    
+    hover_image_url JSONB,              
     hover_name TEXT,
     hover_description TEXT,
     is_active BOOLEAN NOT NULL DEFAULT true,
     sort_order INTEGER NOT NULL DEFAULT 0,
     language_id UUID NOT NULL REFERENCES language(id) ON DELETE RESTRICT,
-    CONSTRAINT uq_subdivision_slug_language UNIQUE (slug, language_id)
+    updated_at TIMESTAMPTZ DEFAULT NOW(),  -- додати
+    CONSTRAINT uq_subdivision_slug_language UNIQUE (slug, language_id) 
 );
  
 COMMENT ON TABLE subdivision IS 'Military subdivisions displayed on the site.';
