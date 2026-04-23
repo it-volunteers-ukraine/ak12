@@ -58,37 +58,26 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
         uploadedHoverPublicId = result.data.publicId;
       }
 
-      const ukPayload = {
-        name: values.uk.name,
+      // buildPayload всередині handleSubmit — має доступ до data з closure
+      const buildPayload = (lang: "uk" | "en") => ({
+        name: values[lang].name,
         slug: values.uk.slug,
-        description: values.uk.description,
-        hoverName: values.uk.hoverName,
-        hoverDescription: values.uk.hoverDescription,
-        siteUrl: values.uk.siteUrl,
+        description: values[lang].description,
+        hoverName: values[lang].hoverName,
+        hoverDescription: values[lang].hoverDescription,
+        siteUrl: values[lang].siteUrl,
+        isActive: values.uk.isActive ?? true,
         sortOrder: values.uk.sortOrder,
-        languageCode: "uk" as const,
-        languageId: data?.uk?.languageId ?? "",
+        languageCode: lang as "uk" | "en",
+        languageId: lang === "uk"
+          ? (data?.uk?.languageId ?? "")
+          : (data?.en?.languageId ?? ""),
         imageUrl: nextImage,
         hoverImageUrl: nextHoverImage,
-        updatedAt: new Date().toISOString(),
-        isActive: true
-      };
+      });
 
-      const enPayload = {
-        name: values.en.name,
-        slug: values.uk.slug, // en slug = uk slug
-        description: values.en.description,
-        hoverName: values.en.hoverName,
-        hoverDescription: values.en.hoverDescription,
-        siteUrl: values.en.siteUrl,
-        sortOrder: values.uk.sortOrder,
-        languageCode: "en" as const,
-        languageId: data?.en?.languageId ?? "",
-        imageUrl: nextImage,
-        hoverImageUrl: nextHoverImage,
-        updatedAt: new Date().toISOString(),
-        isActive: true
-      };
+      const ukPayload = buildPayload("uk");
+      const enPayload = buildPayload("en");
 
       if (data?.uk?.id) {
         await updateSubdivision(data.uk.id, ukPayload);
@@ -101,13 +90,17 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
         await createSubdivision(enPayload);
       }
 
-      if (oldImage?.publicId && (imageFile || removeImage)) {
-        await deleteImageAction(oldImage.publicId);
-      }
+      const imagePublicIdChanged = nextImage?.publicId !== oldImage?.publicId;
 
-      if (oldHoverImage?.publicId && (hoverImageFile || removeHoverImage)) {
-        await deleteImageAction(oldHoverImage.publicId);
-      }
+if (oldImage?.publicId && (removeImage || (imageFile && imagePublicIdChanged))) {
+  await deleteImageAction(oldImage.publicId);
+}
+
+const hoverPublicIdChanged = nextHoverImage?.publicId !== oldHoverImage?.publicId;
+
+if (oldHoverImage?.publicId && (removeHoverImage || (hoverImageFile && hoverPublicIdChanged))) {
+  await deleteImageAction(oldHoverImage.publicId);
+}
 
       showMessage.success("Дані успішно збережено!");
       setImageFile(null);
@@ -126,7 +119,6 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
       if (uploadedHoverPublicId) {
         await deleteImageAction(uploadedHoverPublicId);
       }
-
       showMessage.error("Не вдалося зберегти дані");
 
       return { success: false, error: String(error) };
@@ -150,7 +142,7 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
 
   return (
     <WrapperWithModal
-      key={data?.uk?.imageUrl?.secureUrl || "subdivision-empty"}
+      key={data?.uk?.id || "subdivision-new"}
       formConfig={{
         data: formData,
         type: "subdivision",

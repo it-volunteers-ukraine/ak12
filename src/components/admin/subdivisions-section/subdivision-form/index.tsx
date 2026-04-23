@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useFormContext } from "react-hook-form";
-import { FormImg, FormField } from "@/components/form-elements";
+import { FormImg, FormField, TextArea } from "@/components/form-elements";
 import { BtnGroup } from "@/components/admin/admin-form-elements";
 import { StoredImage } from "@/lib/admin/upload-image.service";
 import { AdminData } from "../config";
@@ -80,10 +80,7 @@ export const SubdivisionForm = ({
 
       <div className="mb-6 flex gap-6">
         {LANGUAGES.map(({ id, icon: Icon }) => (
-          <div
-            key={id}
-            className="flex-1 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 pt-6 pb-4"
-          >
+          <div key={id} className="flex-1 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 pt-6 pb-4">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-medium">{textContentLabels[id]}</h3>
               <Icon width={42} height={32} />
@@ -93,18 +90,9 @@ export const SubdivisionForm = ({
               <FormField name={`${id}.slug`} label="Slug" />
               <FormField name={`${id}.siteUrl`} label="Посилання на сайт" />
               <FormField name={`${id}.hoverName`} label="Назва (hover)" />
-              <FormField
-                name={`${id}.description`}
-                label="Короткий опис *"
-                component="textarea"
-                rows={3}
-              />
-              <FormField
-                name={`${id}.hoverDescription`}
-                label="Повний опис (hover)"
-                component="textarea"
-                rows={5}
-              />
+
+              <FormField name={`${id}.description`} label="Короткий опис *" component={TextArea} rows={3} />
+              <FormField name={`${id}.hoverDescription`} label="Повний опис (hover)" component={TextArea} rows={5} />
             </div>
           </div>
         ))}
@@ -114,7 +102,7 @@ export const SubdivisionForm = ({
         <h3 className="mb-4 font-medium">Налаштування</h3>
         <div className="flex gap-8">
           <FormField name="uk.sortOrder" label="Порядок" type="number" />
-           <FormField name="uk.isActive" label="Активний" type="checkbox" />
+          <FormField name="uk.isActive" label="Активний" type="checkbox" />
         </div>
       </div>
     </>

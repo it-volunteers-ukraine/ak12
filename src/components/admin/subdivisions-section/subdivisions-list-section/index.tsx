@@ -16,10 +16,7 @@ interface ISubdivisionsListSection {
   subdivisionsEn: Subdivision[];
 }
 
-export const SubdivisionsListSection = ({
-  subdivisionsUk,
-  subdivisionsEn,
-}: ISubdivisionsListSection) => {
+export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISubdivisionsListSection) => {
   const router = useRouter();
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
   const [deletingSubdivision, setDeletingSubdivision] = useState<Subdivision | null>(null);
@@ -29,7 +26,9 @@ export const SubdivisionsListSection = ({
   const editingEn = subdivisionsEn.find((s) => s.slug === editingSlug) ?? null;
 
   const handleDeleteConfirm = async () => {
-    if (!deletingSubdivision) return;
+    if (!deletingSubdivision) {
+      return;
+    }
 
     setIsDeleting(true);
 
@@ -92,20 +91,16 @@ export const SubdivisionsListSection = ({
         </div>
 
         {subdivisionsUk.length === 0 ? (
-          <div className="px-4 py-8 text-center text-gray-400">
-            Підрозділи відсутні. Додайте перший підрозділ.
-          </div>
+          <div className="px-4 py-8 text-center text-gray-400">Підрозділи відсутні. Додайте перший підрозділ.</div>
         ) : (
           subdivisionsUk.map((subdivision) => (
             <div
               key={subdivision.id}
               className="grid grid-cols-[1fr_160px_80px] items-center border-b border-gray-100 px-4 py-4 last:border-0 hover:bg-gray-50"
             >
-              <span className="text-sm font-medium">
-                {subdivision.hoverName ?? subdivision.name}
-              </span>
+              <span className="text-sm font-medium">{subdivision.hoverName ?? subdivision.name}</span>
               <span className="text-sm text-gray-400">
-                {new Date(subdivision.updatedAt).toLocaleDateString("uk-UA")}
+                {subdivision.updatedAt ? new Date(subdivision.updatedAt).toLocaleDateString("uk-UA") : "—"}
               </span>
               <div className="flex gap-2">
                 <button
@@ -128,21 +123,14 @@ export const SubdivisionsListSection = ({
         )}
       </div>
 
-      <ConfirmModal
-        isOpen={Boolean(deletingSubdivision)}
-        onClose={() => setDeletingSubdivision(null)}
-      >
+      <ConfirmModal isOpen={Boolean(deletingSubdivision)} onClose={() => setDeletingSubdivision(null)}>
         <ConfirmModal.ModalTitle>Видалити підрозділ</ConfirmModal.ModalTitle>
         <ConfirmModal.ModalContent>
-          Ви впевнені, що хочете видалити &quot;{deletingSubdivision?.hoverName ?? deletingSubdivision?.name}&quot;? Цю дію не можна скасувати.
+          Ви впевнені, що хочете видалити &quot;{deletingSubdivision?.hoverName ?? deletingSubdivision?.name}&quot;? Цю
+          дію не можна скасувати.
         </ConfirmModal.ModalContent>
         <ConfirmModal.ModalFooter>
-          <Button
-            variant="danger"
-            isLoading={isDeleting}
-            onClick={handleDeleteConfirm}
-            className="w-full rounded-full"
-          >
+          <Button variant="danger" isLoading={isDeleting} onClick={handleDeleteConfirm} className="w-full rounded-full">
             Видалити
           </Button>
           <Button

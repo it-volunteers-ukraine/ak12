@@ -2,8 +2,9 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, FormProvider, DefaultValues, FieldValues } from "react-hook-form";
-
 import { AllAdminForms } from "./types";
+
+type FormResolver<T extends FieldValues> = NonNullable<Parameters<typeof useForm<T>>[0]>["resolver"];
 
 export type FormStatus = {
   isDirty: boolean;
@@ -31,20 +32,23 @@ export const FormWrapper = <T extends AllAdminForms>({
     uk: data?.uk ?? {},
   };
 
-  const methods = useForm<T["data"] & FieldValues>({
+  const methods = useForm<T["data"]>({
     mode: "onChange",
-    resolver: zodResolver(schema) as any,
-    defaultValues: safeData as DefaultValues<T["data"] & FieldValues>,
+    resolver: zodResolver(schema) as FormResolver<T["data"]>,
+    defaultValues: safeData as DefaultValues<T["data"]>,
   });
 
   const { isValid, isDirty, isSubmitting } = methods.formState;
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit as any)} className={className}>
-        {typeof children === "function"
-          ? children({ isValid, isDirty, isSubmitting })
-          : children}{" "}
+      <form 
+        onSubmit={methods.handleSubmit(onSubmit as any)} 
+        className={className}
+      >
+        {typeof children === "function" 
+          ? children({ isValid, isDirty, isSubmitting }) 
+          : children}
       </form>
     </FormProvider>
   );

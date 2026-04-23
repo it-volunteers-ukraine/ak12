@@ -1,6 +1,6 @@
 import { StoredImage } from "@/lib/admin/upload-image.service";
 import { Locale } from "./locale";
-
+ 
 export interface Subdivision {
   id: string;
   name: string;
@@ -13,7 +13,7 @@ export interface Subdivision {
   hoverDescription: string | null;
   isActive: boolean;
   sortOrder: number;
-  updatedAt: string;
+  updatedAt?: string;  
   languageCode: Locale;
   languageId: string;
 }
