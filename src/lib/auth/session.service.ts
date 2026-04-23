@@ -1,7 +1,12 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
+import { SESSION_COOKIE_NAME, SESSION_INACTIVITY_TTL, SESSION_TTL, SESSION_REFRESH_DEBOUNCE_MS } from "@/constants";
+
+type SessionPayload = {
+  user: "admin";
+  lastActivityAt: number;
+};
 
 function sign(value: string) {
   const secret = process.env.SESSION_SECRET_KEY;
@@ -15,59 +20,112 @@ function sign(value: string) {
   return crypto.createHmac("sha256", secret).update(value).digest("hex");
 }
 
-export async function createSession() {
-  const payload = JSON.stringify({
+function createSessionPayload(): SessionPayload {
+  return {
     user: "admin",
-    createdAt: Date.now(),
-  });
-  const signature = sign(payload);
-  const token = `${payload}.${signature}`;
-  const cookieStore = await cookies();
+    lastActivityAt: Date.now(),
+  };
+}
 
-  cookieStore.set(SESSION_COOKIE_NAME, token, {
+export function generateSessionToken() {
+  const payload = Buffer.from(JSON.stringify(createSessionPayload())).toString("base64");
+  const signature = sign(payload);
+
+  return `${payload}.${signature}`;
+}
+
+export function getSessionCookieOptions(maxAge: number) {
+  return {
     httpOnly: true,
-    secure: true,
-    sameSite: "strict",
-    maxAge: SESSION_TTL,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict" as const,
+    maxAge,
     path: "/",
-  });
+  };
+}
+
+export async function createSession() {
+  try {
+    const token = generateSessionToken();
+    const cookieStore = await cookies();
+
+    cookieStore.set(SESSION_COOKIE_NAME, token, getSessionCookieOptions(SESSION_TTL));
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to create session");
+  }
 }
 
 export async function deleteSession() {
-  const cookieStore = await cookies();
+  try {
+    const cookieStore = await cookies();
 
-  cookieStore.delete(SESSION_COOKIE_NAME);
+    cookieStore.delete(SESSION_COOKIE_NAME);
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Failed to delete session");
+  }
 }
 
-export function verifySession(token?: string) {
+export function getSessionPayload(token?: string): SessionPayload | null {
   if (!token) {
-    return false;
+    return null;
   }
 
-  const [payload, signature] = token.split(".");
+  const lastDotIndex = token.lastIndexOf(".");
+
+  if (lastDotIndex === -1) {
+    return null;
+  }
+
+  const payload = token.slice(0, lastDotIndex);
+  const signature = token.slice(lastDotIndex + 1);
 
   if (!payload || !signature) {
-    return false;
+    return null;
   }
 
-  const expected = sign(payload);
+  const expectedSignature = sign(payload);
 
-  if (signature !== expected) {
-    return false;
+  if (signature.length !== expectedSignature.length) {
+    return null;
+  }
+
+  const isValidSignature = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+
+  if (!isValidSignature) {
+    return null;
   }
 
   try {
-    const data = JSON.parse(payload);
-    const isExpired = Date.now() - data.createdAt > SESSION_TTL * 1000;
+    const decodedPayload = Buffer.from(payload, "base64").toString("utf8");
+    const data = JSON.parse(decodedPayload) as Partial<SessionPayload>;
 
-    if (isExpired) {
-      return false;
+    if (data.user !== "admin" || typeof data.lastActivityAt !== "number") {
+      return null;
     }
 
-    return true;
+    return {
+      user: "admin",
+      lastActivityAt: data.lastActivityAt,
+    };
   } catch {
+    return null;
+  }
+}
+
+export function verifySession(token?: string) {
+  const data = getSessionPayload(token);
+
+  if (!data) {
     return false;
   }
+
+  const isInactive = Date.now() - data.lastActivityAt > SESSION_INACTIVITY_TTL * 1000;
+
+  return !isInactive;
+}
+
+export function shouldRefreshSession(lastActivityAt: number) {
+  return Date.now() - lastActivityAt > SESSION_REFRESH_DEBOUNCE_MS;
 }
 
 export async function validateAdmin(email: string, password: string): Promise<boolean> {

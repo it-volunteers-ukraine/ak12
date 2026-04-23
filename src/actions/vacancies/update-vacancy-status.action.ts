@@ -1,9 +1,10 @@
-"use server";
+'use server';
+
+import { ZodIssue } from "zod";
 
 import { logger } from "@/lib/logger";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { updateVacancyStatusSchema } from "@/schemas/vacancies/update-vacancy-status.schema";
-import { ZodIssue } from "zod";
 
 export async function updateVacancyStatus(data: unknown): Promise<void | ZodIssue[]> {
   const result = updateVacancyStatusSchema.safeParse(data);

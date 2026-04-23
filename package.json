@@ -20,6 +20,7 @@
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
     "globals": "^17.4.0",
+    "libphonenumber-js": "^1.12.41",
     "next": "^16.2.1",
     "next-cloudinary": "^6.17.5",
     "next-intl": "^4.8.3",

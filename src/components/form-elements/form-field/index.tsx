@@ -7,21 +7,24 @@ import { Path, FieldValues, useController, useFormContext } from "react-hook-for
 import { getStyles } from "./styles";
 import { TextInput } from "../input";
 
-type FormFieldProps<T extends FieldValues> = {
-  name: Path<T>;
+type FormFieldProps<TFieldValues extends FieldValues, TElement extends React.ElementType> = {
   label?: string;
-  component?: React.ElementType;
-} & React.ComponentPropsWithoutRef<"input">;
+  component?: TElement;
+  name: Path<TFieldValues>;
+  wrapperComponentClassName?: string;
+} & React.ComponentPropsWithoutRef<TElement>;
 
-export const FormField = <T extends FieldValues>({
+export const FormField = <TFieldValues extends FieldValues, TElement extends React.ElementType = typeof TextInput>({
   name,
   label,
+  component,
   className,
   placeholder,
-  component: Component = TextInput,
+  wrapperComponentClassName,
   ...props
-}: FormFieldProps<T>) => {
-  const { control } = useFormContext<T>();
+}: FormFieldProps<TFieldValues, TElement>) => {
+  const Component = component || TextInput;
+  const { control } = useFormContext<TFieldValues>();
 
   const {
     field,
@@ -31,13 +34,13 @@ export const FormField = <T extends FieldValues>({
     control,
   });
 
-  const { labelStyle, wrapperStyle, errorStyle } = getStyles({ error, className });
+  const { labelStyle, wrapperStyle, errorStyle, wrapper } = getStyles({ error, wrapperComponentClassName });
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className={wrapper}>
       <label className={labelStyle}>{label}</label>
       <div className={wrapperStyle}>
-        <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} />
+        <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} className={className} />
 
         <div className="min-h-5"> {error && <p className={errorStyle}>{error.message}</p>}</div>
       </div>

@@ -3,6 +3,7 @@
  */
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
+
 import { reorderVacancies } from "./reorder-vacancies.action";
 
 jest.mock("@/lib/supabase-server", () => ({

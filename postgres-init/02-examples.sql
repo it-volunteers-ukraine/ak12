@@ -130,6 +130,26 @@ VALUES
         }'::jsonb,
         true,
         (SELECT id FROM language WHERE code = 'en')
+      'mobilization',
+      '{
+        "title": "Стань частиною сили, що захищає Україну",
+        "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
+        "content": "Ми допомагаємо кандидатам знайти напрям служби, у якому їхні вміння принесуть найбільшу користь. На платформі можна ознайомитися з підрозділами, вакансіями та залишити заявку для подальшого контакту.",
+        "buttonTitle": "Обрати вакансію"
+      }'::jsonb,
+      true,
+      (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
+      'mobilization',
+      '{
+        "title": "Become part of the force defending Ukraine",
+        "subtitle": "Choose a subdivision and vacancy that match your experience, skills and motivation.",
+        "content": "We help candidates find the service direction where their abilities bring the most value. The platform allows users to explore subdivisions, vacancies and submit an application for further contact.",
+        "buttonTitle": "Choose vacancy"
+      }'::jsonb,
+      true,
+      (SELECT id FROM language WHERE code = 'en')
     ),
     (
         'about',

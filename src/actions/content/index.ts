@@ -6,9 +6,10 @@ import { revalidatePath } from "next/cache";
 import { Locale } from "@/types";
 import { SectionKey, SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
+
 import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 import { lifeOfUnitSchema } from "@/schemas/life-of-the-unit.schema";
-import { heroContentSchema, headerContentSchema, contactsContentSchema } from "@/schemas";
+import { heroContentSchema, headerContentSchema, contactsContentSchema, feedbackContentSchema } from "@/schemas";
 
 type SaveContentAction = {
   locale: Locale;
@@ -22,6 +23,7 @@ const schemasMap: Record<SectionKey, z.ZodType> = {
   [SECTION_KEYS.LIFE_OF_UNIT]: lifeOfUnitSchema,
   [SECTION_KEYS.CONTACTS]: contactsContentSchema,
   [SECTION_KEYS.MOBILIZATION]: mobilizationSchema,
+  [SECTION_KEYS.FEEDBACK]: feedbackContentSchema,
 };
 
 export const saveContentAction = async ({ locale, sectionKey, rawContent }: SaveContentAction) => {
