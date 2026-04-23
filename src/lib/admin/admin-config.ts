@@ -3,21 +3,21 @@ import { heroContentSchema } from "@/schemas/heroContent";
 import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 import { HeroSection, MobilizationSection } from "@/components/admin";
 
-import { SectionDataMap, IAdminSectionConfig, TAdminFormComponent } from "./admin-types";
+import { AdminSectionKey, IAdminSectionConfig } from "./admin-types";
 
-export type AdminSectionKey = keyof typeof ADMIN_CONFIG;
-
-export const ADMIN_CONFIG: { [K in keyof SectionDataMap]: IAdminSectionConfig<K> } = {
+export const ADMIN_CONFIG: { [K in AdminSectionKey]: IAdminSectionConfig<K> } = {
   hero: {
     label: "Головний екран",
     schema: heroContentSchema,
     sectionKey: SECTION_KEYS.HERO,
-    component: HeroSection as TAdminFormComponent<"hero">,
+    component: HeroSection,
   },
   mobilization: {
     label: "Мобілізація",
     schema: mobilizationSchema,
     sectionKey: SECTION_KEYS.MOBILIZATION,
-    component: MobilizationSection as TAdminFormComponent<"mobilization">,
+    component: MobilizationSection,
   },
-} as const;
+};
+
+export const getAdminSectionConfig = <K extends AdminSectionKey>(key: K): IAdminSectionConfig<K> => ADMIN_CONFIG[key];
