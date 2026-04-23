@@ -1,24 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  --color-black: #0a0a0a;
-  --color-soft-blush: #f9efec;
-  --color-warm-gray: #b3b3b2;
-  --color-medium-gray: #828282;
-  --color-dark-gray: #3b3f32;
-  --color-light-gray: #f2f2f2;
+  --color-accent-hover: #e9c504;
   --color-accent: #ffd700;
-  --color-auth-text: #21272a;
-  --color-auth-input-border: #c1c7cd;
   --color-auth-input-bg: #f2f4f8;
-  --color-auth-surface-border: #dde1e6;
+  --color-auth-input-border: #c1c7cd;
   --color-auth-primary: #0f62fe;
-  --color-surface-main: #0d0d0d;
-  --color-stroke-green: #46614f;
+  --color-auth-surface-border: #dde1e6;
+  --color-auth-text: #21272a;
+  --color-black: #0a0a0a;
   --color-card-bg: #1a1a1a;
+  --color-charcoal: #383232;
+  --color-dark-gray: #3b3f32;
+  --color-dark-green: #1a1e1d;
+  --color-dark-khaki: #1f1d16;
+  --color-darker-gray: #334036;
+  --color-disabled: #3a3a3a;
+  --color-error: #c52323;
+  --color-light-gray: #f2f2f2;
+  --color-medium-gray: #828282;
+  --color-olive-brown: #282720;
+  --color-soft-blush: #f9efec;
+  --color-stroke-green: #46614f;
+  --color-surface-main: #0d0d0d;
+  --color-text-disabled: #5b5d5c;
+  --color-warm-gray: #b3b3b2;
+  --color-white: #ffffff;
+
+  --background-image-section:
+    linear-gradient(90deg, #0d0d0d 0%, rgba(26, 26, 26, 70%) 50%, rgba(51, 64, 54, 60%) 100%),
+    linear-gradient(#1a1e1d, #1a1e1d);
 
   /* vacancies */
-  --color-secondary-text: #E0E0E0;
+  --color-secondary-text: #e0e0e0;
   --color-surface-secondary: #1a1a1a;
   --color-vacancy-card-start: var(--color-surface-secondary);
   --color-vacancy-card-end: #1a1e1d;
