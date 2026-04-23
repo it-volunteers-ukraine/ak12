@@ -3,7 +3,7 @@ import { z } from "zod";
 import { contract1824Schema } from "@/schemas";
 
 export type AdminData = z.infer<typeof adminSchema>;
-export interface IHeroSection {
+export interface IContract1824Section {
   data: AdminData;
 }
 

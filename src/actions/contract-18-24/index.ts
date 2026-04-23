@@ -2,7 +2,7 @@
 
 import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
-import { AdminData } from "@/components/admin/hero-section/config";
+import { AdminData } from "@/components/admin/contract-18-24-section/config";
 
 import { saveContentAction } from "../content";
 
