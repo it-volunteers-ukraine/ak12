@@ -1,15 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, FormProvider, DefaultValues } from "react-hook-form";
-
+import { useForm, FormProvider, DefaultValues, FieldValues } from "react-hook-form";
 import { AllAdminForms } from "./types";
+
+type FormResolver<T extends FieldValues> = NonNullable<Parameters<typeof useForm<T>>[0]>["resolver"];
 
 export type FormStatus = {
   isDirty: boolean;
   isValid: boolean;
   isSubmitting: boolean;
 };
+
 interface IFormWrapperProps<T extends AllAdminForms> {
   formConfig: T;
   className?: string;
@@ -32,7 +34,7 @@ export const FormWrapper = <T extends AllAdminForms>({
 
   const methods = useForm<T["data"]>({
     mode: "onChange",
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as FormResolver<T["data"]>,
     defaultValues: safeData as DefaultValues<T["data"]>,
   });
 
@@ -40,8 +42,13 @@ export const FormWrapper = <T extends AllAdminForms>({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} className={className}>
-        {typeof children === "function" ? children({ isValid, isDirty, isSubmitting }) : children}{" "}
+      <form 
+        onSubmit={methods.handleSubmit(onSubmit as any)} 
+        className={className}
+      >
+        {typeof children === "function" 
+          ? children({ isValid, isDirty, isSubmitting }) 
+          : children}
       </form>
     </FormProvider>
   );
