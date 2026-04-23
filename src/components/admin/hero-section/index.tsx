@@ -13,7 +13,8 @@ import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
-import { HeroForm } from "./hero-form";
+import { FormBuilder } from "@/lib/form-builder";
+import { heroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
 
 type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["hero"];
@@ -101,7 +102,6 @@ export const HeroSection = ({ data }: IHeroSection) => {
         const deleteResult = await deleteImageAction(oldImagePublicId);
 
         if (!deleteResult.success) {
-          console.error("Не вдалося видалити попереднє зображення hero:", deleteResult.error);
         }
       }
 
@@ -111,12 +111,11 @@ export const HeroSection = ({ data }: IHeroSection) => {
       router.refresh();
 
       return res;
-    } catch (error) {
+    } catch {
       if (uploadedImagePublicId) {
         await deleteImageAction(uploadedImagePublicId);
       }
 
-      console.error({ error }, "Hero form submission failed");
       showMessage.error("Не вдалося оновити дані");
 
       return {
@@ -164,16 +163,13 @@ export const HeroSection = ({ data }: IHeroSection) => {
   return (
     <>
       <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={onFormSubmit}>
-        {(methods) => (
-          <HeroForm
-            data={data}
-            bannerFile={bannerFile}
-            isValid={methods.formState.isValid}
-            onBannerRemove={handleBannerRemove}
-            removeCurrentImage={removeCurrentImage}
-            onBannerFileChange={handleBannerFileChange}
-          />
-        )}
+        <FormBuilder
+          config={heroFormBuilderConfig}
+          data={data}
+          imageFile={bannerFile}
+          onImageChange={handleBannerFileChange}
+          onImageRemove={handleBannerRemove}
+        />
       </FormWrapper>
 
       <ConfirmModal

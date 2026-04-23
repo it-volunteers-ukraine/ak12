@@ -12,7 +12,8 @@ import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateMobilizationMultiLangAction } from "@/actions/mobilization/mobilizationActions";
 
 import { FormWrapper } from "../form";
-import { MobilizationForm } from "./mobilization-form";
+import { FormBuilder } from "@/lib/form-builder";
+import { mobilizationFormBuilderConfig } from "@/lib/admin/configs/mobilization.config";
 
 type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["mobilization"];
@@ -50,8 +51,8 @@ export const MobilizationSection = ({ data }: IAdminSection) => {
       } else {
         showMessage.error("Не вдалося оновити дані");
       }
-    } catch (error) {
-      console.error({ error }, "Mobilization form submission failed");
+    } catch {
+      // Помилка вже залогована в server action
       showMessage.error("Не вдалося оновити дані");
     } finally {
       setIsLoading(false);
@@ -61,7 +62,7 @@ export const MobilizationSection = ({ data }: IAdminSection) => {
   return (
     <>
       <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={onFormSubmit}>
-        {(methods) => <MobilizationForm data={data} isValid={methods.formState.isValid} />}
+        <FormBuilder config={mobilizationFormBuilderConfig} data={data} />
       </FormWrapper>
 
       <ConfirmModal
