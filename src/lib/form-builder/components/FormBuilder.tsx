@@ -4,14 +4,22 @@
 
 import { useFormContext } from "react-hook-form";
 import { En, Uk } from "../../../../public/icons";
-import { FormBuilderConfig, LOCALES, SectionConfig } from "../types";
-import { BtnGroup, FieldWithIcon } from "@/components/admin/admin-form-elements";
-import { FormImg } from "@/components/form-elements";
+import { FormBuilderConfig, LOCALES } from "../types";
+import { BtnGroup } from "@/components/admin/admin-form-elements";
+import { FormImg, FormField } from "@/components/form-elements";
 
 // Іконки для мов
 const LANGUAGE_ICONS = {
   uk: Uk,
   en: En,
+};
+
+// 🎨 SECTION_LAYOUTS - grid layout для кожної секції
+const SECTION_LAYOUTS: Record<string, string> = {
+  "text-content": "grid-cols-1 lg:grid-cols-[350px_1fr_1fr]", // [Фото | UK | EN]
+  "statistics": "grid-cols-1 lg:grid-cols-2",                 // [UK | EN]
+  "subtitle": "grid-cols-1 lg:grid-cols-2",
+  "button": "grid-cols-1 lg:grid-cols-2",
 };
 
 interface FormBuilderProps {
@@ -33,7 +41,6 @@ export const FormBuilder = ({
   const { reset, formState } = useFormContext();
   const { isValid } = formState;
   
-  // Тексти кнопок
   const submitText = config.options?.submitText || "Зберегти зміни";
   const resetText = config.options?.resetText || "Скасувати правки";
   const bannerImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
@@ -52,89 +59,66 @@ export const FormBuilder = ({
         />
       </div>
       
-      {config.options?.hasImage && onImageChange && (
-        <div className={config.imageWrapperClassName || "mb-10"}>
-          <FormImg
-            src={bannerImg}
-            file={imageFile}
-            label={config.options.imageConfig?.label || "Фото на сайті"}
-            onRemove={onImageRemove || (() => {})}
-            onFileChange={onImageChange}
-          />
-        </div>
-      )}
-      
-      {config.sections.map((section) => (
-        <div key={section.id} className="mb-10">
-          
-          {section.title && (
-            <h3 className={section.titleClassName || "mb-4 text-xl font-medium"}>
-              {section.title}
-            </h3>
-          )}
-          
-          {section.description && (
-            <p className={section.descriptionClassName || "mb-4 text-sm text-gray-600"}>
-              {section.description}
-            </p>
-          )}
-
-          <div className={getSectionClassName(section)}>
-            
-            {section.fields.map((field) => (
-              <div key={field.name} className={field.wrapperClassName || "flex gap-12"}>
+      {config.sections.map((section) => {
+        const gridLayout = SECTION_LAYOUTS[section.id] || "grid-cols-1 lg:grid-cols-2";
+        const showImage = section.id === "text-content" && config.options?.hasImage && onImageChange;
+        
+        return (
+          <div key={section.id} className="mb-10">
+            <div className={`grid ${gridLayout} gap-8`}>
+              
+              {showImage && (
+                <div className={config.imageWrapperClassName}>
+                  <FormImg
+                    src={bannerImg}
+                    file={imageFile}
+                    label={config.options?.imageConfig?.label || "Фото на сайті"}
+                    onRemove={onImageRemove || (() => {})}
+                    onFileChange={onImageChange}
+                  />
+                </div>
+              )}
+              
+              {LOCALES.map((locale) => {
+                const Icon = LANGUAGE_ICONS[locale];
+                const localeText = locale === "uk" ? "українською" : "англійською";
+                const blockTitle = section.title 
+                  ? `${section.title} ${localeText}` 
+                  : `Текстовий контент ${localeText}`;
                 
-                {LOCALES.map((locale) => {
-                  const Icon = LANGUAGE_ICONS[locale];
-                  
-                  return (
-                    <FieldWithIcon
-                      key={`${locale}-${field.name}`}
-                      icon={Icon}
-                      locale={locale}
-                      basePath={field.name}
-                      label={field.label[locale]}
-                      labelClassName={field.labelClassName}
-                      labelWrapperClassName={field.labelWrapperClassName}
-                      iconWidth={42}
-                      iconHeight={32}
-                      iconClassName={field.iconClassName}
-                      iconWrapperClassName={field.iconWrapperClassName}
-                      component={field.component}
-                      className={field.className}
-                      {...field.props}
-                    />
-                  );
-                })}
-                
-              </div>
-            ))}
-            
+                return (
+                  <div key={locale} className="rounded-xl border border-gray-200 p-6 bg-gray-100">
+                    <div className="flex items-center justify-between mb-6">
+                      <h4 className="text-lg font-medium">{blockTitle}</h4>
+                      <Icon width={42} height={32} />
+                    </div>
+                    
+                    <div className="space-y-6">
+                      {section.fields.map((field) => (
+                        <div key={`${locale}-${field.name}`}>
+                          {field.label && (
+                            <label className="block mb-2 text-sm font-medium">
+                              {field.label[locale]}
+                            </label>
+                          )}
+                          <FormField
+                            name={`${locale}.${field.name}`}
+                            component={field.component}
+                            className={field.className || "bg-white"}
+                            {...field.props}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+              
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       
     </div>
   );
 };
-
-function getSectionClassName(section: SectionConfig) {
-  // Якщо є sectionWrapperClassName - використовуємо тільки його
-  if (section.sectionWrapperClassName) {
-    return section.sectionWrapperClassName;
-  }
-  
-  // Інакше - base + layout + custom className
-  const base = "rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 pt-10 pb-4";
-  
-  const layoutMap: Record<string, string> = {
-    row: "flex gap-12",
-    col: "flex flex-col gap-6",
-    "grid-2": "grid grid-cols-2 gap-12",
-    "grid-3": "grid grid-cols-3 gap-12",
-  };
-  
-  const layout = layoutMap[section.layout || "col"];
-  
-  return `${base} ${layout} ${section.className || ""}`.trim();
-}

@@ -13,7 +13,6 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
   sections: [
     {
       id: "titles",
-      layout: "row",
       fields: [
         {
           name: "title",
@@ -28,7 +27,6 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "subtitle",
-      layout: "row",
       fields: [
         {
           name: "subtitle",
@@ -43,7 +41,6 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content",
-      layout: "row",
       fields: [
         {
           name: "content",
@@ -62,7 +59,6 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
     {
       id: "button",
       title: "Редагування кнопки",
-      layout: "row",
       fields: [
         {
           name: "buttonTitle",
