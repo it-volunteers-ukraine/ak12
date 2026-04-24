@@ -40,6 +40,8 @@ export const FormWrapper = <TValues extends FieldValues>({
   options,
 }: TFormWrapper<TValues>) => {
   const methods = useForm<TValues>({
+    mode: "onChange",
+    reValidateMode: "onChange",
     ...options,
     defaultValues: initialValues as DefaultValues<TValues>,
     resolver: zodResolver(schema),

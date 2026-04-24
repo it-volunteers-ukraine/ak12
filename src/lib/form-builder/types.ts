@@ -13,6 +13,7 @@ export interface FieldConfig {
   name: string;
   label: Record<Locale, string>;
   type: FieldType;
+  locales?: Locale[];
   required?: boolean;
   placeholder?: Record<Locale, string>;
   component?: ComponentType<any>;
@@ -24,12 +25,24 @@ export interface FieldConfig {
 export interface SectionConfig {
   id: string;
   title?: string;
+  titlePlacement?: "inside" | "outside";
+  localeLayout?: "split" | "combined" | "by-field-2col" | "by-locale-2col";
+  group?: string;
   fields: FieldConfig[];
 }
 
 export interface FormBuilderConfig {
   id: string;
   sections: SectionConfig[];
+  sectionGroups?: Record<
+    string,
+    | string
+    | {
+        className?: string;
+        title?: string;
+        titleClassName?: string;
+      }
+  >;
   
   // 🎨 Стилізація (опціонально)
   className?: string;
