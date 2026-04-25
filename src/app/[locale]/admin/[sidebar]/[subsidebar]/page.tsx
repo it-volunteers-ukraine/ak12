@@ -1,32 +1,17 @@
-import { Locale } from "@/types";
 import { contentService } from "@/lib/content/content.service";
+import { getAdminSectionConfig } from "@/lib/admin/admin-config";
+import { AdminDataMap, AdminSectionKey, isAdminSectionKey } from "@/lib/admin/admin-types";
 
-import { ADMIN_CONFIG, SectionDataMap, TAdminFormComponent } from "./config-admin-forms";
-
-export type AdminPageParams = {
-  locale: Locale;
-  sidebar: string;
-  subsidebar: string;
-};
 interface PageProps {
   params: Promise<{
     subsidebar: string;
   }>;
 }
-export type AdminSectionKey = keyof typeof ADMIN_CONFIG;
 
-export default async function AdminPage({ params }: PageProps) {
-  const { subsidebar } = await params;
+async function renderAdminSection<K extends AdminSectionKey>(sectionKey: K, subsidebar: string) {
+  const config = getAdminSectionConfig(sectionKey);
 
-  const sectionKey = subsidebar as AdminSectionKey;
-
-  const config = ADMIN_CONFIG[sectionKey];
-
-  if (!config) {
-    return <div className="p-8 text-red-500">Секцію "{subsidebar}" не знайдено</div>;
-  }
-
-  const [contentUk, contentEn] = await Promise.all([
+  const [contentUk, contentEn] = (await Promise.all([
     contentService.get({
       locale: "uk",
       schema: config.schema,
@@ -37,18 +22,28 @@ export default async function AdminPage({ params }: PageProps) {
       schema: config.schema,
       section: config.sectionKey,
     }),
-  ]);
+  ])) as [AdminDataMap[K]["uk"] | null, AdminDataMap[K]["en"] | null];
 
   if (!contentUk || !contentEn) {
     return <div>Дані для секції {subsidebar} відсутні або ще не створені.</div>;
   }
 
-  const Component = config.component as TAdminFormComponent<AdminSectionKey>;
+  const Component = config.component;
+  const data = { uk: contentUk, en: contentEn } as AdminDataMap[K];
 
-  const data = { uk: contentUk, en: contentEn } as {
-    uk: SectionDataMap[typeof sectionKey];
-    en: SectionDataMap[typeof sectionKey];
-  };
+  return (
+    <div className="px-4 py-6">
+      <Component data={data} />
+    </div>
+  );
+}
 
-  return <div className="px-4 py-6">{Component && <Component data={data} />}</div>;
+export default async function AdminPage({ params }: PageProps) {
+  const { subsidebar } = await params;
+
+  if (!isAdminSectionKey(subsidebar)) {
+    return <div className="p-8 text-red-500">Секцію "{subsidebar}" не знайдено</div>;
+  }
+
+  return renderAdminSection(subsidebar, subsidebar);
 }

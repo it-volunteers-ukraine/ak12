@@ -1,48 +1,67 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, FormProvider, DefaultValues } from "react-hook-form";
+import { useEffect, type ReactNode } from "react";
 
-import { AllAdminForms } from "./types";
+import type { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  useForm,
+  FormProvider,
+  type FieldValues,
+  type UseFormProps,
+  type DefaultValues,
+  type SubmitHandler,
+  type UseFormReturn,
+} from "react-hook-form";
+
+type TFormWrapper<TValues extends FieldValues> = {
+  className?: string;
+  initialValues: TValues;
+  enableReinitialize?: boolean;
+  onSubmit: SubmitHandler<TValues>;
+  schema: z.ZodType<TValues, TValues>;
+  options?: Omit<UseFormProps<TValues>, "resolver" | "defaultValues">;
+  children: ReactNode | ((methods: UseFormReturn<TValues>) => ReactNode);
+};
 
 export type FormStatus = {
   isDirty: boolean;
   isValid: boolean;
   isSubmitting: boolean;
 };
-interface IFormWrapperProps<T extends AllAdminForms> {
-  formConfig: T;
-  className?: string;
-  onSubmit: (data: T["data"]) => Promise<void> | void;
-  children: React.ReactNode | ((status: FormStatus) => React.ReactNode);
-}
 
-export const FormWrapper = <T extends AllAdminForms>({
+export const FormWrapper = <TValues extends FieldValues>({
+  schema,
+  initialValues,
   onSubmit,
-  children,
+  enableReinitialize,
   className,
-  formConfig,
-}: IFormWrapperProps<T>) => {
-  const { schema, data } = formConfig;
-
-  const safeData = {
-    en: data?.en ?? {},
-    uk: data?.uk ?? {},
-  };
-
-  const methods = useForm<T["data"]>({
-    mode: "onChange",
+  children,
+  options,
+}: TFormWrapper<TValues>) => {
+  const methods = useForm<TValues>({
+    ...options,
+    defaultValues: initialValues as DefaultValues<TValues>,
     resolver: zodResolver(schema),
-    defaultValues: safeData as DefaultValues<T["data"]>,
   });
 
-  const { isValid, isDirty, isSubmitting } = methods.formState;
+  const { reset, handleSubmit } = methods;
+
+  useEffect(() => {
+    if (!enableReinitialize) {
+      return;
+    }
+
+    reset(initialValues as DefaultValues<TValues>);
+  }, [enableReinitialize, initialValues, reset]);
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} className={className}>
-        {typeof children === "function" ? children({ isValid, isDirty, isSubmitting }) : children}{" "}
-      </form>
-    </FormProvider>
+    <>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)} className={className}>
+          {typeof children === "function" ? children(methods) : children}
+        </form>
+      </FormProvider>
+    </>
   );
 };
