@@ -44,7 +44,6 @@ export interface FormBuilderConfig {
       }
   >;
   
-  // 🎨 Стилізація (опціонально)
   className?: string;
   buttonsClassName?: string;
   submitClassName?: string;
@@ -62,18 +61,4 @@ export interface FormBuilderConfig {
     submitText?: string;
     resetText?: string;
   };
-}
-export interface SimpleFieldConfig {
-  name: string;
-  label: string;
-  type: FieldType;
-  required?: boolean;
-  placeholder?: string;
-}
-
-export interface SimpleFormConfig {
-  id: string;
-  fields: SimpleFieldConfig[];
-  submitText?: string;
-  resetText?: string;
 }

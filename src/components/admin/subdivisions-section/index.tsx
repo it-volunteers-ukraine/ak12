@@ -198,7 +198,7 @@ if (oldHoverImage?.publicId && (removeHoverImage || (hoverImageFile && hoverPubl
         onClose={handleCancel}
         isLoading={isLoading}
         isOpen={isModalOpen}
-        onConfirm={handleConfirm}
+        handleConfirm={handleConfirm}
       />
     </>
   );

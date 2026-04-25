@@ -1,5 +1,18 @@
 # FormBuilder Guide
 
+## 🏗️ Архітектура
+
+FormBuilder складається з 2 основних компонентів:
+
+1. **FormBuilder** - головний компонент, обробляє секції, групи, зображення та кнопки
+2. **LocaleSection** - рендерить поля форми в залежності від `localeLayout` режиму
+
+Кожен режим `localeLayout` має свій окремий компонент:
+- `SplitLayout` - 2 окремі картки UK | EN
+- `CombinedLayout` - 1 картка, поля по черзі uk → en
+- `ByFieldLayout` - 1 картка, кожне поле uk | en
+- `ByLocaleLayout` - 1 картка, ліворуч всі uk, праворуч всі en
+
 ## 1) Базова ідея
 
 `FormBuilder` один для всіх адмін-форм.  
@@ -11,7 +24,7 @@
 - `titlePlacement` - де показувати title секції
 - `group` + `sectionGroups` - як об'єднувати кілька секцій в один ряд/групу
 
-Типи: [types.ts](/home/vlad/web/ak12/src/lib/form-builder/types.ts)
+Типи: [types.ts](./types.ts)
 
 ## 2) Section Config
 
@@ -117,13 +130,46 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
 };
 ```
 
-## 6) Коли треба правити `FormBuilder.tsx`
+## 6) Розширення функціоналу
 
-Тільки якщо потрібен новий тип відображення, якого нема в:
+### Додавання нового `localeLayout` режиму
 
-- `localeLayout`
-- `titlePlacement`
-- `group/sectionGroups`
+1. Створи новий компонент в `LocaleSection.tsx`:
+```tsx
+const MyCustomLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
+  // твоя логіка рендерингу
+  return <div>...</div>;
+};
+```
 
-У більшості кейсів достатньо змін у конфізі.
+2. Додай його в `LAYOUT_COMPONENTS`:
+```tsx
+const LAYOUT_COMPONENTS = {
+  split: SplitLayout,
+  combined: CombinedLayout,
+  "by-field-2col": ByFieldLayout,
+  "by-locale-2col": ByLocaleLayout,
+  "my-custom": MyCustomLayout, // ✅ новий режим
+};
+```
+
+3. Використай в конфізі:
+```tsx
+{
+  id: "my-section",
+  localeLayout: "my-custom",
+  fields: [...]
+}
+```
+
+### Коли треба правити `FormBuilder.tsx`
+
+Тільки якщо потрібні зміни в:
+- Grid layouts для секцій (SECTION_LAYOUTS)
+- Логіка групування секцій
+- Обробка зображень
+- Кнопки форми (submit/reset)
+
+У більшості кейсів достатньо змін у конфізі або додавання нового layout в `LocaleSection.tsx`.
+
 
