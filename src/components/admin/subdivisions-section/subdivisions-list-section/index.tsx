@@ -123,26 +123,16 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
         )}
       </div>
 
-      <ConfirmModal isOpen={Boolean(deletingSubdivision)} onClose={() => setDeletingSubdivision(null)}>
-        <ConfirmModal.ModalTitle>Видалити підрозділ</ConfirmModal.ModalTitle>
-        <ConfirmModal.ModalContent>
-          Ви впевнені, що хочете видалити &quot;{deletingSubdivision?.hoverName ?? deletingSubdivision?.name}&quot;? Цю
-          дію не можна скасувати.
-        </ConfirmModal.ModalContent>
-        <ConfirmModal.ModalFooter>
-          <Button variant="danger" isLoading={isDeleting} onClick={handleDeleteConfirm} className="w-full rounded-full">
-            Видалити
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setDeletingSubdivision(null)}
-            isLoading={isDeleting}
-            className="w-full rounded-full"
-          >
-            Скасувати
-          </Button>
-        </ConfirmModal.ModalFooter>
-      </ConfirmModal>
+      <ConfirmModal
+        isOpen={Boolean(deletingSubdivision)}
+        onClose={() => setDeletingSubdivision(null)}
+        handleConfirm={handleDeleteConfirm}
+        isLoading={isDeleting}
+        title="Видалити підрозділ"
+        content={`Ви впевнені, що хочете видалити "${deletingSubdivision?.hoverName ?? deletingSubdivision?.name}"? Цю дію не можна скасувати.`}
+        confirmButtonText="Видалити"
+        cancelButtonText="Скасувати"
+      />
     </div>
   );
 };
