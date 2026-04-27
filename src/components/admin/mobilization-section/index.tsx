@@ -5,15 +5,15 @@ import { useState } from "react";
 import z from "zod";
 import { useRouter } from "next/navigation";
 
+import { FormBuilder } from "@/lib/form-builder";
 import { showMessage } from "@/components/toastify";
-import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { AdminDataMap } from "@/lib/admin/admin-types";
+import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
+import { mobilizationFormBuilderConfig } from "@/lib/admin/configs/mobilization.config";
 import { updateMobilizationMultiLangAction } from "@/actions/mobilization/mobilizationActions";
 
 import { FormWrapper } from "../form";
-import { FormBuilder } from "@/lib/form-builder";
-import { mobilizationFormBuilderConfig } from "@/lib/admin/configs/mobilization.config";
 
 type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["mobilization"];
@@ -67,11 +67,11 @@ export const MobilizationSection = ({ data }: IAdminSection) => {
 
       <ConfirmModal
         isOpen={isModalOpen}
-        title="Підтвердіть зміни"
-        content="Ви впевнені, що хочете зберегти зміни в секції мобілізації?"
         isLoading={isLoading}
-        onClose={() => setIsModalOpen(false)}
+        title="Підтвердіть зміни"
         handleConfirm={handleConfirm}
+        onClose={() => setIsModalOpen(false)}
+        content="Ви впевнені, що хочете зберегти зміни в секції мобілізації?"
       />
     </>
   );

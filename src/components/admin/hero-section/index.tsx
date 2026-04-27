@@ -32,11 +32,12 @@ export const HeroSection = ({ data }: IHeroSection) => {
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
+  const existingBackgroundImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
+
   const handleSubmit = async (values: FormValues) => {
     let uploadedImagePublicId: string | null = null;
 
     try {
-      const existingBackgroundImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
       const oldImagePublicId = existingBackgroundImage?.publicId ?? null;
       let nextBackgroundImage = existingBackgroundImage;
 
@@ -180,6 +181,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
           onReset={handleFormReset}
           config={heroFormBuilderConfig}
           onImageRemove={handleBannerRemove}
+          bannerSrc={existingBackgroundImage}
           onImageChange={handleBannerFileChange}
           isImageMarkedForRemoval={removeCurrentImage}
         />

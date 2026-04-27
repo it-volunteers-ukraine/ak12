@@ -14,6 +14,7 @@ interface FormBuilderProps {
   imageFile?: File | null;
   config: FormBuilderConfig;
   onImageRemove?: () => void;
+  bannerSrc?: LocaleBackgroundImage;
   isImageMarkedForRemoval?: boolean;
   onImageChange?: (file: File | null) => void;
 }
@@ -55,6 +56,7 @@ export const FormBuilder = ({
   config,
   onReset,
   imageFile,
+  bannerSrc,
   onImageChange,
   onImageRemove,
   isImageMarkedForRemoval = false,
@@ -64,8 +66,7 @@ export const FormBuilder = ({
 
   const submitText = config.options?.submitText || "Зберегти зміни";
   const resetText = config.options?.resetText || "Скасувати правки";
-  const bannerImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
-  const bannerImg = isImageMarkedForRemoval ? null : bannerImage?.secureUrl || null;
+  const bannerImg = isImageMarkedForRemoval ? null : bannerSrc?.secureUrl || null;
 
   const renderSectionContent = (
     section: FormBuilderConfig["sections"][number],

@@ -32,24 +32,12 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
-  const formBuilderData = {
-    ...data,
-    uk: {
-      ...data.uk,
-      backgroundImage: data.uk?.imgContent?.backgroundImage,
-    },
-    en: {
-      ...data.en,
-      backgroundImage: data.en?.imgContent?.backgroundImage,
-    },
-  };
+  const existingBackgroundImage = data.uk?.imgContent?.backgroundImage || data.en?.imgContent?.backgroundImage || null;
 
   const handleSubmit = async (values: FormValues) => {
     let uploadedImagePublicId: string | null = null;
 
     try {
-      const existingBackgroundImage =
-        data.uk?.imgContent?.backgroundImage || data.en?.imgContent?.backgroundImage || null;
       const oldImagePublicId = existingBackgroundImage?.publicId ?? null;
       let nextBackgroundImage = existingBackgroundImage;
 
@@ -86,10 +74,6 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
             ...values.en.imgContent,
             backgroundImage: nextBackgroundImage,
           },
-          contact: {
-            ...values.en.contact,
-            number: values.uk.contact.number,
-          },
         },
       };
 
@@ -110,7 +94,11 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
         ((removeCurrentImage && !bannerFile) || (bannerFile && nextBackgroundImage?.publicId !== oldImagePublicId));
 
       if (shouldDeleteOldImage) {
-        await deleteImageAction(oldImagePublicId);
+        const deleteResult = await deleteImageAction(oldImagePublicId);
+
+        if (!deleteResult.success) {
+          showMessage.warn("Контент оновлено, але старе зображення не вдалося видалити зі сховища");
+        }
       }
 
       showMessage.success("Дані успішно оновилися!");
@@ -168,15 +156,32 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
     setRemoveCurrentImage(true);
   }
 
+  function handleFormReset() {
+    setBannerFile(null);
+    setRemoveCurrentImage(false);
+  }
+
   return (
     <>
-      <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={onFormSubmit}>
+      <FormWrapper<FormValues>
+        schema={adminSchema}
+        initialValues={data}
+        onSubmit={onFormSubmit}
+        key={
+          data.uk?.imgContent?.backgroundImage?.secureUrl ||
+          data.en?.imgContent?.backgroundImage?.secureUrl ||
+          "contract-18-24"
+        }
+      >
         <FormBuilder
-          data={formBuilderData}
+          data={data}
           imageFile={bannerFile}
+          onReset={handleFormReset}
           onImageRemove={handleBannerRemove}
+          bannerSrc={existingBackgroundImage}
           onImageChange={handleBannerFileChange}
           config={contract1824FormBuilderConfig}
+          isImageMarkedForRemoval={removeCurrentImage}
         />
       </FormWrapper>
 
