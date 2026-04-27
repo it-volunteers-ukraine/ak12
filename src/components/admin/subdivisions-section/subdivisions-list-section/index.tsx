@@ -1,19 +1,21 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
+
+import { Subdivision } from "@/types";
+import { ConfirmModal } from "@/components";
 import { showMessage } from "@/components/toastify";
 import { deleteSubdivision } from "@/actions/subdivisions";
 import { deleteImageAction } from "@/actions/admin/upload-image.actions";
-import { Subdivision } from "@/types";
-import { Button } from "@/components/button";
-import { ConfirmModal } from "@/components";
-import { EditIcon, TrashIcon } from "../../../../../public/icons";
+
 import { SubdivisionSection } from "../index";
+import { EditIcon, TrashIcon } from "../../../../../public/icons";
 
 interface ISubdivisionsListSection {
-  subdivisionsUk: Subdivision[];
   subdivisionsEn: Subdivision[];
+  subdivisionsUk: Subdivision[];
 }
 
 export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISubdivisionsListSection) => {

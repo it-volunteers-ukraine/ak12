@@ -21,13 +21,14 @@ type LocaleBackgroundImage = {
   publicId?: string | null;
   secureUrl?: string | null;
 } | null;
+
+type LocaleFormData = FieldValues & {
+  backgroundImage?: LocaleBackgroundImage;
+};
+
 type FormBuilderData = FieldValues & {
-  uk?: {
-    backgroundImage?: LocaleBackgroundImage;
-  };
-  en?: {
-    backgroundImage?: LocaleBackgroundImage;
-  };
+  uk?: LocaleFormData;
+  en?: LocaleFormData;
 };
 
 const SECTION_GRIDS: Record<string, string> = {
