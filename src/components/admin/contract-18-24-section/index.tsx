@@ -2,27 +2,54 @@
 
 import { useState } from "react";
 
+import z from "zod";
 import { useRouter } from "next/navigation";
 
+import { FormBuilder } from "@/lib/form-builder";
 import { showMessage } from "@/components/toastify";
+import { AdminDataMap } from "@/lib/admin/admin-types";
+import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
+import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateContract1824MultiLangAction } from "@/actions/contract-18-24";
+import { contract1824FormBuilderConfig } from "@/lib/admin/configs/contract1824.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
-import { WrapperWithModal } from "..";
-import { Contract1824Form } from "./contract-18-24-form/inde";
-import { AdminData, adminSchema, IContract1824Section } from "./config";
+import { FormWrapper } from "../form";
+
+type FormValues = z.infer<typeof adminSchema>;
+type AdminData = AdminDataMap["contract-18-24"];
+interface IContract1824Section {
+  data: AdminData;
+}
+
+const adminSchema = ADMIN_SCHEMAS["contract-18-24"];
 
 export const Contract1824Section = ({ data }: IContract1824Section) => {
   const router = useRouter();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
-  const handleSubmit = async (values: AdminData) => {
+  const formBuilderData = {
+    ...data,
+    uk: {
+      ...data.uk,
+      backgroundImage: data.uk?.imgContent?.backgroundImage,
+    },
+    en: {
+      ...data.en,
+      backgroundImage: data.en?.imgContent?.backgroundImage,
+    },
+  };
+
+  const handleSubmit = async (values: FormValues) => {
     let uploadedImagePublicId: string | null = null;
 
     try {
       const existingBackgroundImage =
-        data.uk?.imgContent.backgroundImage || data.en?.imgContent.backgroundImage || null;
+        data.uk?.imgContent?.backgroundImage || data.en?.imgContent?.backgroundImage || null;
       const oldImagePublicId = existingBackgroundImage?.publicId ?? null;
       let nextBackgroundImage = existingBackgroundImage;
 
@@ -33,7 +60,7 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
       if (bannerFile) {
         const uploadResult = await uploadImageAction({
           file: bannerFile,
-          fileName: "hero-background",
+          fileName: "contract-18-24-background",
         });
 
         if (!uploadResult.success) {
@@ -44,18 +71,24 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
         uploadedImagePublicId = uploadResult.data?.publicId ?? null;
       }
 
-      const enrichedValues = {
+      const enrichedValues: FormValues = {
         ...values,
         uk: {
           ...values.uk,
-          backgroundImage: nextBackgroundImage,
+          imgContent: {
+            ...values.uk.imgContent,
+            backgroundImage: nextBackgroundImage,
+          },
         },
         en: {
           ...values.en,
-          backgroundImage: nextBackgroundImage,
+          imgContent: {
+            ...values.en.imgContent,
+            backgroundImage: nextBackgroundImage,
+          },
           contact: {
-            ...values.en?.contact,
-            number: values.uk?.contact?.number,
+            ...values.en.contact,
+            number: values.uk.contact.number,
           },
         },
       };
@@ -77,11 +110,7 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
         ((removeCurrentImage && !bannerFile) || (bannerFile && nextBackgroundImage?.publicId !== oldImagePublicId));
 
       if (shouldDeleteOldImage) {
-        const deleteResult = await deleteImageAction(oldImagePublicId);
-
-        if (!deleteResult.success) {
-          console.error("Не вдалося видалити попереднє зображення hero:", deleteResult.error);
-        }
+        await deleteImageAction(oldImagePublicId);
       }
 
       showMessage.success("Дані успішно оновилися!");
@@ -90,18 +119,42 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
       router.refresh();
 
       return res;
-    } catch (error) {
+    } catch {
       if (uploadedImagePublicId) {
         await deleteImageAction(uploadedImagePublicId);
       }
 
-      console.error("Hero submit failed:", error);
       showMessage.error("Не вдалося оновити дані");
 
       return {
         success: false,
         error: "Internal Server Error",
       };
+    }
+  };
+
+  const onFormSubmit = (values: FormValues) => {
+    setPendingData(values);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirm = async () => {
+    if (!pendingData) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await handleSubmit(pendingData);
+
+      if (result && !result.success) {
+        return;
+      }
+
+      setIsModalOpen(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -116,29 +169,25 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
   }
 
   return (
-    <WrapperWithModal
-      key={
-        data.uk?.imgContent?.backgroundImage?.secureUrl ||
-        data.en?.imgContent?.backgroundImage?.secureUrl ||
-        "hero-empty-image"
-      }
-      formConfig={{
-        data,
-        type: "contract1824",
-        schema: adminSchema,
-      }}
-      onSubmit={handleSubmit}
-    >
-      {(status) => (
-        <Contract1824Form
-          data={data}
-          bannerFile={bannerFile}
-          isValid={status.isValid}
-          onBannerRemove={handleBannerRemove}
-          removeCurrentImage={removeCurrentImage}
-          onBannerFileChange={handleBannerFileChange}
+    <>
+      <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={onFormSubmit}>
+        <FormBuilder
+          config={contract1824FormBuilderConfig}
+          data={formBuilderData}
+          imageFile={bannerFile}
+          onImageChange={handleBannerFileChange}
+          onImageRemove={handleBannerRemove}
         />
-      )}
-    </WrapperWithModal>
+      </FormWrapper>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Підтвердіть зміни"
+        content="Ви впевнені, що хочете зберегти зміни в секції Контракт 18-24?"
+        isLoading={isLoading}
+        onClose={() => setIsModalOpen(false)}
+        handleConfirm={handleConfirm}
+      />
+    </>
   );
 };
