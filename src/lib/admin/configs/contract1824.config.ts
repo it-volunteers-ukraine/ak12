@@ -2,6 +2,12 @@ import { FormBuilderConfig } from "@/lib/form-builder";
 
 export const contract1824FormBuilderConfig: FormBuilderConfig = {
   id: "contract1824",
+  sectionGroups: {
+    "hero-stats": {
+      className: "grid grid-cols-1 lg:grid-cols-3 gap-8",
+      title: "Додатковий контент ",
+    },
+  },
   options: {
     hasImage: true,
     imageConfig: {
@@ -15,11 +21,12 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
   sections: [
     {
       id: "text-content",
+      localeLayout: "split",
       title: "Основний контент",
       fields: [
         {
           name: "title",
-          type: "textarea",
+          type: "text",
           required: true,
           label: {
             uk: "Заголовок українською",
@@ -45,6 +52,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "button",
+      titlePlacement: "outside",
       title: "Редагування кнопки",
       fields: [
         {
@@ -60,7 +68,8 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "contact",
-      title: "Контакт",
+      titlePlacement: "outside",
+      title: "Редагування контактів",
       fields: [
         {
           name: "contact.startText",
@@ -93,6 +102,9 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-1",
+      group: "hero-stats",
+      localeLayout: "combined",
+
       title: "Картка контенту 1",
       fields: [
         {
@@ -120,6 +132,8 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-2",
+      group: "hero-stats",
+      localeLayout: "combined",
       title: "Картка контенту 2",
       fields: [
         {
@@ -147,6 +161,8 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-3",
+      group: "hero-stats",
+      localeLayout: "combined",
       title: "Картка контенту 3",
       fields: [
         {
@@ -174,7 +190,8 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "img-content",
-      title: "Контент блоку з фото",
+      titlePlacement: "outside",
+      title: "Редагування контенту блоку з фото",
       fields: [
         {
           name: "imgContent.title",
@@ -187,14 +204,11 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
         },
         {
           name: "imgContent.subtitle",
-          type: "textarea",
+          type: "text",
           required: true,
           label: {
             uk: "Опис блоку з фото",
             en: "Image block subtitle",
-          },
-          props: {
-            rows: 4,
           },
         },
       ],

@@ -26,10 +26,10 @@ const adminSchema = ADMIN_SCHEMAS["contract-18-24"];
 
 export const Contract1824Section = ({ data }: IContract1824Section) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
   const formBuilderData = {
@@ -172,21 +172,21 @@ export const Contract1824Section = ({ data }: IContract1824Section) => {
     <>
       <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={onFormSubmit}>
         <FormBuilder
-          config={contract1824FormBuilderConfig}
           data={formBuilderData}
           imageFile={bannerFile}
-          onImageChange={handleBannerFileChange}
           onImageRemove={handleBannerRemove}
+          onImageChange={handleBannerFileChange}
+          config={contract1824FormBuilderConfig}
         />
       </FormWrapper>
 
       <ConfirmModal
         isOpen={isModalOpen}
-        title="Підтвердіть зміни"
-        content="Ви впевнені, що хочете зберегти зміни в секції Контракт 18-24?"
         isLoading={isLoading}
-        onClose={() => setIsModalOpen(false)}
+        title="Підтвердіть зміни"
         handleConfirm={handleConfirm}
+        onClose={() => setIsModalOpen(false)}
+        content="Ви впевнені, що хочете зберегти зміни в секції Контракт 18-24?"
       />
     </>
   );

@@ -26,10 +26,10 @@ export const adminSchema = ADMIN_SCHEMAS.hero;
 
 export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
   const handleSubmit = async (values: FormValues) => {

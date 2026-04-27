@@ -21,21 +21,19 @@ type LocaleBackgroundImage = {
   publicId?: string | null;
   secureUrl?: string | null;
 } | null;
-
 type LocaleFormData = FieldValues & {
   backgroundImage?: LocaleBackgroundImage;
 };
-
 type FormBuilderData = FieldValues & {
   uk?: LocaleFormData;
   en?: LocaleFormData;
 };
 
 const SECTION_GRIDS: Record<string, string> = {
-  "text-content": "grid-cols-1 lg:grid-cols-3", // [Фото | UK | EN]
-  statistics: "grid-cols-1 lg:grid-cols-2",
-  subtitle: "grid-cols-1 lg:grid-cols-2",
   button: "grid-cols-1 lg:grid-cols-2",
+  subtitle: "grid-cols-1 lg:grid-cols-2",
+  statistics: "grid-cols-1 lg:grid-cols-2",
+  "text-content": "grid-cols-1 lg:grid-cols-3", // [Фото | UK | EN]
 };
 
 const getSectionGrid = (sectionId: string, localeMode: string, hasImage: boolean): string => {
@@ -90,9 +88,9 @@ export const FormBuilder = ({
               <FormImg
                 src={bannerImg}
                 file={imageFile}
-                label={config.options?.imageConfig?.label || "Фото на сайті"}
-                onRemove={onImageRemove || (() => {})}
                 onFileChange={onImageChange}
+                onRemove={onImageRemove || (() => {})}
+                label={config.options?.imageConfig?.label || "Фото на сайті"}
               />
             </div>
           )}
@@ -128,8 +126,8 @@ export const FormBuilder = ({
 
     sectionGroups.push({
       type: "group",
-      group: currentSection.group,
       sections: groupedSections,
+      group: currentSection.group,
     });
     index = nextIndex;
   }
@@ -143,10 +141,10 @@ export const FormBuilder = ({
             reset(data);
             onReset?.();
           }}
-          submitText={submitText}
           resetText={resetText}
-          submitClassName={config.submitClassName}
+          submitText={submitText}
           resetClassName={config.resetClassName}
+          submitClassName={config.submitClassName}
         />
       </div>
 

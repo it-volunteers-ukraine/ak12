@@ -1,10 +1,23 @@
 "use client";
 
 import { ReactNode } from "react";
-import { FormField } from "@/components/form-elements";
+
+import { logger } from "@/lib/logger";
+import { TextArea, FormField, TextInput } from "@/components/form-elements";
+
 import { En, Uk } from "../../../../public/icons";
 import { LOCALES, SectionConfig } from "../types";
-import { logger } from "@/lib/logger";
+
+interface LocaleSectionProps {
+  section: SectionConfig;
+  showOutsideTitle: boolean;
+}
+
+const COMPONENT_BY_TYPE = {
+  text: TextInput,
+  number: TextInput,
+  textarea: TextArea,
+};
 
 const LANGUAGE_ICONS = {
   uk: Uk,
@@ -16,11 +29,6 @@ const FlagBadge = ({ children, size = "sm" }: { children: ReactNode; size?: "sm"
 
   return <span className={`inline-flex ${classes} overflow-hidden rounded-full`}>{children}</span>;
 };
-
-interface LocaleSectionProps {
-  section: SectionConfig;
-  showOutsideTitle: boolean;
-}
 
 const SplitLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
   return (
@@ -59,7 +67,7 @@ const SplitLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                       ))}
                     <FormField
                       name={`${locale}.${field.name}`}
-                      component={field.component}
+                      component={field.component || COMPONENT_BY_TYPE[field.type]}
                       className={field.className || "bg-white"}
                       {...field.props}
                     />
@@ -98,7 +106,7 @@ const CombinedLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                   </div>
                   <FormField
                     name={`${locale}.${field.name}`}
-                    component={field.component}
+                    component={field.component || COMPONENT_BY_TYPE[field.type]}
                     className={field.className || "bg-white"}
                     {...field.props}
                   />
@@ -128,9 +136,7 @@ const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
           return (
             <div
               key={`by-field-2col-${field.name}`}
-              className={`grid ${
-                fieldLocales.length === 1 ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-2"
-              } gap-6`}
+              className={`grid ${fieldLocales.length === 1 ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-2"} gap-6`}
             >
               {fieldLocales.map((locale) => {
                 const Icon = LANGUAGE_ICONS[locale];
@@ -145,7 +151,7 @@ const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                     </div>
                     <FormField
                       name={`${locale}.${field.name}`}
-                      component={field.component}
+                      component={field.component || COMPONENT_BY_TYPE[field.type]}
                       className={field.className || "bg-white"}
                       {...field.props}
                     />
@@ -192,7 +198,7 @@ const ByLocaleLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                   <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>
                   <FormField
                     name={`${locale}.${field.name}`}
-                    component={field.component}
+                    component={field.component || COMPONENT_BY_TYPE[field.type]}
                     className={field.className || "bg-white"}
                     {...field.props}
                   />
