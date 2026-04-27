@@ -15,7 +15,7 @@ type TConfirmModal = React.FC<IConfirmModal> & {
   ModalContent: typeof ModalContent;
 };
 
-export const ConfirmModal: TConfirmModal = ({ isOpen, children, onClose }: IConfirmModal) => {
+export const WrapperModal: TConfirmModal = ({ isOpen, children, onClose }: IConfirmModal) => {
   return (
     <Modal isOpen={isOpen} closeModal={onClose} className="-translate-y-16">
       <div className="flex w-100 flex-col gap-8 rounded-md border border-green-100 bg-green-50 p-8 shadow-md shadow-green-200">
@@ -25,6 +25,6 @@ export const ConfirmModal: TConfirmModal = ({ isOpen, children, onClose }: IConf
   );
 };
 
-ConfirmModal.ModalTitle = ModalTitle;
-ConfirmModal.ModalFooter = ModalFooter;
-ConfirmModal.ModalContent = ModalContent;
+WrapperModal.ModalTitle = ModalTitle;
+WrapperModal.ModalFooter = ModalFooter;
+WrapperModal.ModalContent = ModalContent;

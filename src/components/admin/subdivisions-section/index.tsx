@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { showMessage } from "@/components/toastify";
+import { ConfirmModal } from "@/components/connfirm-modal";
 import { uploadImageAction, deleteImageAction } from "@/actions/admin/upload-image.actions";
 import { createSubdivision, updateSubdivision } from "@/actions/subdivisions";
 import { StoredImage } from "@/lib/admin/upload-image.service";
-import { WrapperWithModal } from "../form-wrapper-with-modal";
+import { FormWrapper } from "../form";
 import { SubdivisionForm } from "./subdivision-form";
 import { adminSchema, AdminData, ISubdivisionSection } from "./config";
 
@@ -17,6 +18,10 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
   const [removeImage, setRemoveImage] = useState(false);
   const [hoverImageFile, setHoverImageFile] = useState<File | null>(null);
   const [removeHoverImage, setRemoveHoverImage] = useState(false);
+  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pendingData, setPendingData] = useState<AdminData | null>(null);
 
   const handleSubmit = async (values: AdminData) => {
     let uploadedImagePublicId: string | null = null;
@@ -140,30 +145,61 @@ if (oldHoverImage?.publicId && (removeHoverImage || (hoverImageFile && hoverPubl
 
   const formData: AdminData = data ?? { uk: empty, en: empty };
 
+  const handleConfirm = () => {
+    setIsModalOpen(false);
+    if (pendingData) {
+      setIsLoading(true);
+      handleSubmit(pendingData).finally(() => {
+        setIsLoading(false);
+        setPendingData(null);
+      });
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setPendingData(null);
+  };
+
+  const onFormSubmit = async (values: AdminData) => {
+    setPendingData(values);
+    setIsModalOpen(true);
+  };
+
   return (
-    <WrapperWithModal
-      key={data?.uk?.id || "subdivision-new"}
-      formConfig={{
-        data: formData,
-        type: "subdivision",
-        schema: adminSchema,
-      }}
-      onSubmit={handleSubmit}
-    >
-      {(status) => (
-        <SubdivisionForm
-          data={data}
-          isValid={status.isValid}
-          imageFile={imageFile}
-          removeImage={removeImage}
-          onImageChange={(f) => { setImageFile(f); setRemoveImage(false); }}
-          onImageRemove={() => { setImageFile(null); setRemoveImage(true); }}
-          hoverImageFile={hoverImageFile}
-          removeHoverImage={removeHoverImage}
-          onHoverImageChange={(f) => { setHoverImageFile(f); setRemoveHoverImage(false); }}
-          onHoverImageRemove={() => { setHoverImageFile(null); setRemoveHoverImage(true); }}
-        />
-      )}
-    </WrapperWithModal>
+    <>
+      <FormWrapper
+        key={data?.uk?.id || "subdivision-new"}
+        schema={adminSchema}
+        initialValues={formData}
+        onSubmit={onFormSubmit}
+      >
+        {(methods) => {
+          const { isValid } = methods.formState;
+          
+          return (
+            <SubdivisionForm
+              data={data}
+              isValid={isValid}
+              imageFile={imageFile}
+              removeImage={removeImage}
+              onImageChange={(f) => { setImageFile(f); setRemoveImage(false); }}
+              onImageRemove={() => { setImageFile(null); setRemoveImage(true); }}
+              hoverImageFile={hoverImageFile}
+              removeHoverImage={removeHoverImage}
+              onHoverImageChange={(f) => { setHoverImageFile(f); setRemoveHoverImage(false); }}
+              onHoverImageRemove={() => { setHoverImageFile(null); setRemoveHoverImage(true); }}
+            />
+          );
+        }}
+      </FormWrapper>
+
+      <ConfirmModal
+        onClose={handleCancel}
+        isLoading={isLoading}
+        isOpen={isModalOpen}
+        handleConfirm={handleConfirm}
+      />
+    </>
   );
 };

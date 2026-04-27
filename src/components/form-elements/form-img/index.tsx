@@ -90,7 +90,7 @@ export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = f
   }
 
   return (
-    <div className="max-w-100 rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-10">
+    <div className="w-full rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-6">
       <input
         ref={inputRef}
         type="file"
@@ -98,10 +98,10 @@ export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = f
         className="hidden"
         onChange={handleChange}
       />
-      <div>
-        <h2 className="mb-4 font-medium">{label}</h2>
+      <div className="w-full">
+        <h2 className="mb-4 text-lg font-medium">{label}</h2>
         {displayImage ? (
-          <div className="relative z-0 aspect-352/202 w-full overflow-hidden rounded-2xl border border-transparent">
+          <div className="relative z-0 w-full overflow-hidden rounded-2xl border border-transparent">
             <Image
               priority
               src={imageSrc as string}
@@ -109,7 +109,7 @@ export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = f
               height={202}
               alt="main-banner"
               onError={() => setHasError(true)}
-              className="rounded-2xl object-cover"
+              className="aspect-1.5/1 h-full w-full rounded-2xl object-cover"
               unoptimized={Boolean(previewUrl)}
             />
             <div className="absolute top-3 right-3 flex gap-1">

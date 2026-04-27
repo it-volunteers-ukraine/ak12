@@ -6,8 +6,6 @@ export { HeroSection } from "./hero-section";
 
 export { Sidebar } from "./sidebar";
 
-export { WrapperWithModal } from "./form-wrapper-with-modal";
-
 export { MobilizationSection } from "./mobilization-section";
 export { SubdivisionSection } from "./subdivisions-section";
 export { SubdivisionsListSection } from "./subdivisions-section/subdivisions-list-section";

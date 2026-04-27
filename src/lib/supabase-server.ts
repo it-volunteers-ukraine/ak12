@@ -1,6 +1,8 @@
 import { createClient } from "@supabase/supabase-js";
 
-import "server-only";
+// NOTE: Removed "server-only" import due to build conflicts
+// This file should ONLY be imported in server-side code (actions, server components)
+// Importing on client will fail naturally due to missing env variables
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 

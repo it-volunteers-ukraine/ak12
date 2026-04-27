@@ -1,6 +1,9 @@
 import pino from "pino";
 
-const transport = process.stdout.isTTY
+// Check if we're running on the server (Node.js environment)
+const isServer = typeof window === "undefined";
+
+const transport = isServer && process.stdout?.isTTY
   ? {
       transport: {
         target: "pino-pretty",
@@ -9,7 +12,28 @@ const transport = process.stdout.isTTY
     }
   : {};
 
-export const logger = pino({
-  level: process.env.NODE_ENV === "production" ? "info" : "debug",
-  ...transport,
-});
+// On client-side, create a minimal logger that uses console
+const createClientLogger = (): pino.Logger => {
+  const noop = () => {};
+  const clientLogger = {
+    debug: console.debug.bind(console),
+    info: console.info.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
+    fatal: console.error.bind(console),
+    trace: console.trace.bind(console),
+    child: () => clientLogger,
+    level: "info",
+    silent: noop,
+    msgPrefix: "",
+  };
+  
+  return clientLogger as unknown as pino.Logger;
+};
+
+export const logger: pino.Logger = isServer 
+  ? pino({
+      level: process.env.NODE_ENV === "production" ? "info" : "debug",
+      ...transport,
+    })
+  : createClientLogger();

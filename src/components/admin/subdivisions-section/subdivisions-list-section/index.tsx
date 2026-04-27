@@ -1,19 +1,21 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
+
+import { Subdivision } from "@/types";
+import { ConfirmModal } from "@/components";
 import { showMessage } from "@/components/toastify";
 import { deleteSubdivision } from "@/actions/subdivisions";
 import { deleteImageAction } from "@/actions/admin/upload-image.actions";
-import { Subdivision } from "@/types";
-import { Button } from "@/components/button";
-import { ConfirmModal } from "@/components";
-import { EditIcon, TrashIcon } from "../../../../../public/icons";
+
 import { SubdivisionSection } from "../index";
+import { EditIcon, TrashIcon } from "../../../../../public/icons";
 
 interface ISubdivisionsListSection {
-  subdivisionsUk: Subdivision[];
   subdivisionsEn: Subdivision[];
+  subdivisionsUk: Subdivision[];
 }
 
 export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISubdivisionsListSection) => {
@@ -123,26 +125,16 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
         )}
       </div>
 
-      <ConfirmModal isOpen={Boolean(deletingSubdivision)} onClose={() => setDeletingSubdivision(null)}>
-        <ConfirmModal.ModalTitle>Видалити підрозділ</ConfirmModal.ModalTitle>
-        <ConfirmModal.ModalContent>
-          Ви впевнені, що хочете видалити &quot;{deletingSubdivision?.hoverName ?? deletingSubdivision?.name}&quot;? Цю
-          дію не можна скасувати.
-        </ConfirmModal.ModalContent>
-        <ConfirmModal.ModalFooter>
-          <Button variant="danger" isLoading={isDeleting} onClick={handleDeleteConfirm} className="w-full rounded-full">
-            Видалити
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => setDeletingSubdivision(null)}
-            isLoading={isDeleting}
-            className="w-full rounded-full"
-          >
-            Скасувати
-          </Button>
-        </ConfirmModal.ModalFooter>
-      </ConfirmModal>
+      <ConfirmModal
+        isOpen={Boolean(deletingSubdivision)}
+        onClose={() => setDeletingSubdivision(null)}
+        handleConfirm={handleDeleteConfirm}
+        isLoading={isDeleting}
+        title="Видалити підрозділ"
+        content={`Ви впевнені, що хочете видалити "${deletingSubdivision?.hoverName ?? deletingSubdivision?.name}"? Цю дію не можна скасувати.`}
+        confirmButtonText="Видалити"
+        cancelButtonText="Скасувати"
+      />
     </div>
   );
 };

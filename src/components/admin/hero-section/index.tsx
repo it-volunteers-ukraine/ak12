@@ -2,22 +2,37 @@
 
 import { useState } from "react";
 
+import z from "zod";
 import { useRouter } from "next/navigation";
 
+import { FormBuilder } from "@/lib/form-builder";
 import { showMessage } from "@/components/toastify";
+import { AdminDataMap } from "@/lib/admin/admin-types";
+import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
+import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
+import { heroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
-import { HeroForm } from "./hero-form";
-import { WrapperWithModal } from "../form-wrapper-with-modal";
-import { AdminData, adminSchema, IHeroSection } from "./config";
+import { FormWrapper } from "../form";
+
+type FormValues = z.infer<typeof adminSchema>;
+type AdminData = AdminDataMap["hero"];
+interface IHeroSection {
+  data: AdminData;
+}
+
+export const adminSchema = ADMIN_SCHEMAS.hero;
 
 export const HeroSection = ({ data }: IHeroSection) => {
   const router = useRouter();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
-  const handleSubmit = async (values: AdminData) => {
+  const handleSubmit = async (values: FormValues) => {
     let uploadedImagePublicId: string | null = null;
 
     try {
@@ -87,7 +102,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         const deleteResult = await deleteImageAction(oldImagePublicId);
 
         if (!deleteResult.success) {
-          console.error("Не вдалося видалити попереднє зображення hero:", deleteResult.error);
+          showMessage.warn("Контент оновлено, але старе зображення не вдалося видалити зі сховища");
         }
       }
 
@@ -97,18 +112,42 @@ export const HeroSection = ({ data }: IHeroSection) => {
       router.refresh();
 
       return res;
-    } catch (error) {
+    } catch {
       if (uploadedImagePublicId) {
         await deleteImageAction(uploadedImagePublicId);
       }
 
-      console.error("Hero submit failed:", error);
       showMessage.error("Не вдалося оновити дані");
 
       return {
         success: false,
         error: "Internal Server Error",
       };
+    }
+  };
+
+  const onFormSubmit = (values: FormValues) => {
+    setPendingData(values);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirm = async () => {
+    if (!pendingData) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await handleSubmit(pendingData);
+
+      if (result && !result.success) {
+        return;
+      }
+
+      setIsModalOpen(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -122,26 +161,39 @@ export const HeroSection = ({ data }: IHeroSection) => {
     setRemoveCurrentImage(true);
   }
 
+  function handleFormReset() {
+    setBannerFile(null);
+    setRemoveCurrentImage(false);
+  }
+
   return (
-    <WrapperWithModal
-      key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero-empty-image"}
-      formConfig={{
-        data,
-        type: "hero",
-        schema: adminSchema,
-      }}
-      onSubmit={handleSubmit}
-    >
-      {(status) => (
-        <HeroForm
+    <>
+      <FormWrapper<FormValues>
+        enableReinitialize
+        schema={adminSchema}
+        initialValues={data}
+        onSubmit={onFormSubmit}
+        key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero"}
+      >
+        <FormBuilder
           data={data}
-          bannerFile={bannerFile}
-          isValid={status.isValid}
-          onBannerRemove={handleBannerRemove}
-          removeCurrentImage={removeCurrentImage}
-          onBannerFileChange={handleBannerFileChange}
+          imageFile={bannerFile}
+          onReset={handleFormReset}
+          config={heroFormBuilderConfig}
+          onImageRemove={handleBannerRemove}
+          isImageMarkedForRemoval={removeCurrentImage}
+          onImageChange={handleBannerFileChange}
         />
-      )}
-    </WrapperWithModal>
+      </FormWrapper>
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        title="Підтвердіть зміни"
+        content="Ви впевнені, що хочете зберегти зміни в секції Hero?"
+        isLoading={isLoading}
+        onClose={() => setIsModalOpen(false)}
+        handleConfirm={handleConfirm}
+      />
+    </>
   );
 };
