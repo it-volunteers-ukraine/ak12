@@ -80,7 +80,7 @@ VALUES
           "startText": "Телефонуй",
           "number": "+38 (000) 000-00-00",
           "endText": "або заповнюй анкету",
-          }
+          },
           "imgContent":{ 
           "title": "Гарантія посади",
           "subtitle": "100%",
@@ -117,7 +117,7 @@ VALUES
           "startText": "Телефонуй",
           "number": "+38 (000) 000-00-00",
           "endText": "або заповнюй анкету",
-          }
+          },
           "imgContent":{ 
           "title": "Гарантія посади",
           "subtitle": "100%",

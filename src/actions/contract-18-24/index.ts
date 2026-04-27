@@ -1,14 +1,17 @@
 "use server";
 
+import { Locale } from "@/types";
 import { logger } from "@/lib/logger";
+import { AdminDataMap } from "@/lib/admin";
 import { SECTION_KEYS } from "@/constants";
-import { AdminData } from "@/components/admin/contract-18-24-section/config";
 
 import { saveContentAction } from "../content";
 
+type AdminData = AdminDataMap["contract-18-24"];
+
 export const updateContract1824MultiLangAction = async (values: AdminData) => {
   try {
-    const languages = Object.keys(values) as (keyof AdminData)[];
+    const languages = Object.keys(values) as Locale[];
 
     const savePromises = languages.map((locale) => {
       const rawContent = values[locale];
