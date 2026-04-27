@@ -1,18 +1,34 @@
 "use client";
 
-import { useFormContext } from "react-hook-form";
+import { FieldValues, useFormContext } from "react-hook-form";
+
 import { FormImg } from "@/components/form-elements";
 import { BtnGroup } from "@/components/admin/admin-form-elements";
-import { LocaleSection } from "./LocaleSection";
+
 import { FormBuilderConfig } from "../types";
+import { LocaleSection } from "./LocaleSection";
 
 interface FormBuilderProps {
-  data: any;
+  onReset?: () => void;
+  data: FormBuilderData;
   imageFile?: File | null;
   config: FormBuilderConfig;
   onImageRemove?: () => void;
+  isImageMarkedForRemoval?: boolean;
   onImageChange?: (file: File | null) => void;
 }
+type LocaleBackgroundImage = {
+  publicId?: string | null;
+  secureUrl?: string | null;
+} | null;
+type FormBuilderData = FieldValues & {
+  uk?: {
+    backgroundImage?: LocaleBackgroundImage;
+  };
+  en?: {
+    backgroundImage?: LocaleBackgroundImage;
+  };
+};
 
 const SECTION_GRIDS: Record<string, string> = {
   "text-content": "grid-cols-1 lg:grid-cols-3", // [Фото | UK | EN]
@@ -21,48 +37,52 @@ const SECTION_GRIDS: Record<string, string> = {
   button: "grid-cols-1 lg:grid-cols-2",
 };
 
-const getSectionGrid = (
-  sectionId: string,
-  localeMode: string,
-  hasImage: boolean
-): string => {
+const getSectionGrid = (sectionId: string, localeMode: string, hasImage: boolean): string => {
   const baseGrid = SECTION_GRIDS[sectionId] || "grid-cols-1 lg:grid-cols-2";
-  
+
   if (hasImage) {
     return localeMode === "split" ? baseGrid : "grid-cols-1 lg:grid-cols-[350px_1fr]";
   }
-  
+
   if (localeMode !== "split") {
     return "grid-cols-1";
   }
-  
+
   return baseGrid;
 };
 
-export const FormBuilder = ({ config, data, imageFile, onImageChange, onImageRemove }: FormBuilderProps) => {
+export const FormBuilder = ({
+  data,
+  config,
+  onReset,
+  imageFile,
+  onImageChange,
+  onImageRemove,
+  isImageMarkedForRemoval = false,
+}: FormBuilderProps) => {
   const { reset, formState } = useFormContext();
   const { isValid } = formState;
 
   const submitText = config.options?.submitText || "Зберегти зміни";
   const resetText = config.options?.resetText || "Скасувати правки";
   const bannerImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
-  const bannerImg = bannerImage?.secureUrl || null;
+  const bannerImg = isImageMarkedForRemoval ? null : bannerImage?.secureUrl || null;
 
   const renderSectionContent = (
     section: FormBuilderConfig["sections"][number],
-    options?: { suppressOutsideTitle?: boolean }
+    options?: { suppressOutsideTitle?: boolean },
   ) => {
     const hasImage = section.id === "text-content" && config.options?.hasImage && onImageChange;
     const localeMode = section.localeLayout || "split";
     const showOutsideTitle =
       Boolean(section.title) && section.titlePlacement === "outside" && !options?.suppressOutsideTitle;
-    
+
     const gridClasses = getSectionGrid(section.id, localeMode, !!hasImage);
 
     return (
       <div className="space-y-3">
         {showOutsideTitle && <h4 className="text-lg font-medium">{section.title}</h4>}
-        
+
         <div className={`grid ${gridClasses} gap-8`}>
           {hasImage && (
             <div className={config.imageWrapperClassName || "w-full"}>
@@ -118,7 +138,10 @@ export const FormBuilder = ({ config, data, imageFile, onImageChange, onImageRem
       <div className={config.buttonsClassName}>
         <BtnGroup
           isValid={isValid}
-          onReset={() => reset(data)}
+          onReset={() => {
+            reset(data);
+            onReset?.();
+          }}
           submitText={submitText}
           resetText={resetText}
           submitClassName={config.submitClassName}

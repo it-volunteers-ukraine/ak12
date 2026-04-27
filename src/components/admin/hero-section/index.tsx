@@ -5,16 +5,16 @@ import { useState } from "react";
 import z from "zod";
 import { useRouter } from "next/navigation";
 
+import { FormBuilder } from "@/lib/form-builder";
 import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
+import { heroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
-import { FormBuilder } from "@/lib/form-builder";
-import { heroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
 
 type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["hero"];
@@ -102,6 +102,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         const deleteResult = await deleteImageAction(oldImagePublicId);
 
         if (!deleteResult.success) {
+          showMessage.warn("Контент оновлено, але старе зображення не вдалося видалити зі сховища");
         }
       }
 
@@ -160,15 +161,28 @@ export const HeroSection = ({ data }: IHeroSection) => {
     setRemoveCurrentImage(true);
   }
 
+  function handleFormReset() {
+    setBannerFile(null);
+    setRemoveCurrentImage(false);
+  }
+
   return (
     <>
-      <FormWrapper<FormValues> schema={adminSchema} initialValues={data} onSubmit={onFormSubmit}>
+      <FormWrapper<FormValues>
+        enableReinitialize
+        schema={adminSchema}
+        initialValues={data}
+        onSubmit={onFormSubmit}
+        key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero"}
+      >
         <FormBuilder
-          config={heroFormBuilderConfig}
           data={data}
           imageFile={bannerFile}
-          onImageChange={handleBannerFileChange}
+          onReset={handleFormReset}
+          config={heroFormBuilderConfig}
           onImageRemove={handleBannerRemove}
+          isImageMarkedForRemoval={removeCurrentImage}
+          onImageChange={handleBannerFileChange}
         />
       </FormWrapper>
 
