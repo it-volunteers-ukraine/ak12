@@ -29,7 +29,7 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
       fields: [
         {
           name: "title",
-          type: "",
+          type: "text",
           required: true,
           label: {
             uk: "Текстовий контент українською",
