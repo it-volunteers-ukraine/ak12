@@ -1,10 +1,15 @@
 // 🎓 HERO CONFIG - конфіг для Hero форми (працює з БД)
-
 import { FormBuilderConfig } from "@/lib/form-builder";
 
 export const heroFormBuilderConfig: FormBuilderConfig = {
   id: "hero",
-  
+  sectionGroups: {
+    "hero-stats": {
+      className: "grid grid-cols-1 lg:grid-cols-3 gap-8",
+      title: "Додатковий контент ",
+    },
+  },
+
   options: {
     hasImage: true,
     imageConfig: {
@@ -15,11 +20,12 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
     submitText: "Зберегти зміни",
     resetText: "Скасувати правки",
   },
-  
+
   sections: [
     {
       id: "text-content",
       title: "Текстовий контент",
+      localeLayout: "split",
       fields: [
         {
           name: "title",
@@ -29,16 +35,38 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
             uk: "Текстовий контент українською",
             en: "Text content in English",
           },
-          props: {
-            rows: 3,
+        },
+        {
+          name: "subtitle",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Підзаголовок українською",
+            en: "Subtitle in English",
           },
         },
       ],
     },
-    
     {
-      id: "statistics",
-      title: "Статистичні дані",
+      id: "button",
+      title: "Редагування кнопки",
+      titlePlacement: "outside",
+      fields: [
+        {
+          name: "buttonTitle",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Текст кнопки українською",
+            en: "Button text in English",
+          },
+        },
+      ],
+    },
+    {
+      id: "statistics_support",
+      localeLayout: "combined",
+      group: "hero-stats",
       fields: [
         {
           name: "support.title",
@@ -52,31 +80,21 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
         {
           name: "support.value",
           type: "text",
+          locales: ["uk"],
           required: true,
           label: {
             uk: "Підтримка - Значення",
             en: "Support - Value",
           },
         },
-        
-        {
-          name: "majors.title",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Майори - Заголовок",
-            en: "Majors - Title",
-          },
-        },
-        {
-          name: "majors.value",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Майори - Значення",
-            en: "Majors - Value",
-          },
-        },
+      ],
+    },
+
+    {
+      id: "statistics_hiringChance",
+      localeLayout: "combined",
+      group: "hero-stats",
+      fields: [
         {
           name: "hiringChance.title",
           type: "text",
@@ -89,6 +107,7 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
         {
           name: "hiringChance.value",
           type: "text",
+          locales: ["uk"],
           required: true,
           label: {
             uk: "Шанс найму - Значення",
@@ -97,40 +116,32 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
         },
       ],
     },
-    
+
     {
-      id: "subtitle",
+      id: "statistics_majors",
+      localeLayout: "combined",
+      group: "hero-stats",
       fields: [
         {
-          name: "subtitle",
-          type: "textarea",
-          required: true,
-          label: {
-            uk: "Підзаголовок українською",
-            en: "Subtitle in English",
-          },
-          props: {
-            rows: 3,
-          },
-        },
-      ],
-    },
-    
-    {
-      id: "button",
-      title: "Редагування кнопки",
-      fields: [
-        {
-          name: "buttonTitle",
+          name: "majors.title",
           type: "text",
           required: true,
           label: {
-            uk: "Текст кнопки українською",
-            en: "Button text in English",
+            uk: "Майори - Заголовок",
+            en: "Majors - Title",
+          },
+        },
+        {
+          name: "majors.value",
+          type: "text",
+          locales: ["uk"],
+          required: true,
+          label: {
+            uk: "Майори - Значення",
+            en: "Majors - Value",
           },
         },
       ],
     },
   ],
 };
-

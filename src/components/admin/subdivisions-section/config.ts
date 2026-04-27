@@ -15,7 +15,10 @@ export const subdivisionContentSchema = z.object({
   siteUrl: z.string().url("Невірний формат URL").nullable().or(z.literal("").transform(() => null)),
   imageUrl: storedImageSchema,
   hoverImageUrl: storedImageSchema,
-  sortOrder: z.coerce.number().int().nonnegative(),
+  // sortOrder може бути string з форми або number з БД
+  sortOrder: z.union([z.number(), z.string()]).transform(val => 
+    typeof val === 'string' ? parseInt(val, 10) : val
+  ).pipe(z.number().int().nonnegative()),
   isActive: z.boolean().default(true),
   languageId: z.string().uuid().optional(),
   updatedAt: z.string().optional(), 

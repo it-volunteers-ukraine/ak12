@@ -19,7 +19,7 @@ type TFormWrapper<TValues extends FieldValues> = {
   initialValues: TValues;
   enableReinitialize?: boolean;
   onSubmit: SubmitHandler<TValues>;
-  schema: z.ZodType<TValues, TValues>;
+  schema: z.ZodType<TValues, any, any>;
   options?: Omit<UseFormProps<TValues>, "resolver" | "defaultValues">;
   children: ReactNode | ((methods: UseFormReturn<TValues>) => ReactNode);
 };
@@ -40,6 +40,8 @@ export const FormWrapper = <TValues extends FieldValues>({
   options,
 }: TFormWrapper<TValues>) => {
   const methods = useForm<TValues>({
+    mode: "onChange",
+    reValidateMode: "onChange",
     ...options,
     defaultValues: initialValues as DefaultValues<TValues>,
     resolver: zodResolver(schema),

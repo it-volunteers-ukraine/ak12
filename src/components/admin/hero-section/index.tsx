@@ -102,6 +102,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         const deleteResult = await deleteImageAction(oldImagePublicId);
 
         if (!deleteResult.success) {
+          showMessage.warn("Контент оновлено, але старе зображення не вдалося видалити зі сховища");
         }
       }
 
@@ -160,6 +161,11 @@ export const HeroSection = ({ data }: IHeroSection) => {
     setRemoveCurrentImage(true);
   }
 
+  function handleFormReset() {
+    setBannerFile(null);
+    setRemoveCurrentImage(false);
+  }
+
   return (
     <>
       <FormWrapper<FormValues>
@@ -169,11 +175,13 @@ export const HeroSection = ({ data }: IHeroSection) => {
         key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero"}
       >
         <FormBuilder
-          config={heroFormBuilderConfig}
           data={data}
           imageFile={bannerFile}
+          onReset={handleFormReset}
+          config={heroFormBuilderConfig}
           onImageRemove={handleBannerRemove}
           onImageChange={handleBannerFileChange}
+          isImageMarkedForRemoval={removeCurrentImage}
         />
       </FormWrapper>
 
