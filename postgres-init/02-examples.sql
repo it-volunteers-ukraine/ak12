@@ -57,6 +57,79 @@ VALUES
         (SELECT id FROM language WHERE code = 'en')
     ),
     (
+        'contract-18-24',
+        '{
+          "title": "Стань частиною сили, що захищає Україну",
+          "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
+          "buttonTitle": "btn uk",
+          "content":[
+            {
+              "title": "Гарантія посади",
+              "subtitle": "100%",
+            },
+            {
+              "title": "Cпеціальностей" ,
+              "subtitle": "30+",
+            },
+            {
+              "title": "Підтримка",
+              "subtitle":"24/7",
+            }
+          ],
+          "contact": {
+          "startText": "Телефонуй",
+          "number": "+38 (000) 000-00-00",
+          "endText": "або заповнюй анкету",
+          },
+          "imgContent":{ 
+          "title": "Гарантія посади",
+          "subtitle": "100%",
+          "backgroundImage": {
+            "publicId": "hero-background",
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+            }
+          }
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
+        'contract-18-24',
+        '{
+          "title": "Стань частиною сили, що захищає Україну",
+          "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
+          "buttonTitle": "btn uk",
+          "content":[
+            {
+              "title": "Гарантія посади",
+              "subtitle": "100%",
+            },
+            {
+              "title": "Cпеціальностей" ,
+              "subtitle": "30+",
+            },
+            {
+              "title": "Підтримка",
+              "subtitle":"24/7",
+            }
+          ],
+          "contact": {
+          "startText": "Телефонуй",
+          "number": "+38 (000) 000-00-00",
+          "endText": "або заповнюй анкету",
+          },
+          "imgContent":{ 
+          "title": "Гарантія посади",
+          "subtitle": "100%",
+          
+          "backgroundImage": {
+            "publicId": "hero-background",
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+            }
+          }
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'en')
       'mobilization',
       '{
         "title": "Стань частиною сили, що захищає Україну",
@@ -137,7 +210,7 @@ VALUES
         '{
           "title": "Why join",
           "items": [
-            {
+            {     
               "title": "Clear roles",
               "description": "Each vacancy has a clear description of tasks and expectations."
             },

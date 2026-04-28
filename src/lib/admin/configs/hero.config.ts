@@ -29,7 +29,7 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
       fields: [
         {
           name: "title",
-          type: "textarea",
+          type: "text",
           required: true,
           label: {
             uk: "Текстовий контент українською",
@@ -119,8 +119,8 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
 
     {
       id: "statistics_majors",
-      localeLayout: "combined",
       group: "hero-stats",
+      localeLayout: "combined",
       fields: [
         {
           name: "majors.title",
