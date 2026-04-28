@@ -10,10 +10,11 @@ interface IModal {
   isOpen: boolean;
   className?: string;
   closeModal: () => void;
+  classNameOverlay?: string;
   children?: React.ReactNode;
 }
 
-export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
+export const Modal = ({ isOpen, className, classNameOverlay, children, closeModal }: IModal) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -22,7 +23,7 @@ export const Modal = ({ isOpen, className, children, closeModal }: IModal) => {
 
   useOutsideClick(() => closeModal(), modalRef);
 
-  const style = getStyles({ isOpen });
+  const style = getStyles({ isOpen, classNameOverlay });
 
   useEffect(() => {
     if (!isOpen) {

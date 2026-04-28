@@ -7,8 +7,14 @@ export const headerLinkSchema = z.object({
 
 export const headerContentSchema = z.object({
   logoText: z.string().min(1, "Logo text is required"),
+  subLogoText: z.string().min(1, "Sub logo text is required"),
   links: z.array(headerLinkSchema),
-  cta: headerLinkSchema.optional(),
+  button: z
+    .object({
+      href: z.string(),
+      text: z.string(),
+    })
+    .optional(),
 });
 
 export type HeaderLink = z.infer<typeof headerLinkSchema>;
