@@ -4,7 +4,7 @@ import { socialPlatformsIconsMap } from "@/constants";
 export const SocialLinkList = ({ socialLinks }: { socialLinks: SocialLink[] }) => {
   return (
     <ul className="flex items-center gap-4">
-      {socialLinks.slice(0, 2).map((item) => {
+      {socialLinks.map((item) => {
         const Icon = socialPlatformsIconsMap[item.platform];
 
         return (

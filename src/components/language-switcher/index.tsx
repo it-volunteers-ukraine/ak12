@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { useState, useRef } from "react";
+import { useState, useRef, useId } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 
 import { cn } from "@/utils";
@@ -17,6 +17,8 @@ export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+
+  const menuId = useId();
 
   const isUk = locale === ActiveLanguage.UK;
 
@@ -38,7 +40,9 @@ export default function LanguageSwitcher() {
         ref={triggerRef}
         type="button"
         aria-expanded={isOpen}
-        aria-haspopup="true"
+        aria-haspopup="listbox"
+        aria-controls={menuId}
+        aria-label="Change language"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           "text-soft-blush focus:border-accent flex h-6 w-12 items-center justify-between border border-transparent px-0.5 py-1 text-[14px] font-bold transition-colors focus:ring-0 focus:outline-none",
@@ -51,16 +55,23 @@ export default function LanguageSwitcher() {
       </button>
 
       <div
+        id={menuId}
+        role="listbox"
+        aria-label="Language options"
         className={cn(
           "bg-disabled absolute top-full left-0 z-50 flex w-full origin-top flex-col rounded-b-xs shadow-lg transition-all duration-200 ease-in-out",
-          isOpen ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0",
+          isOpen ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0",
         )}
         inert={!isOpen ? true : undefined}
+        aria-hidden={!isOpen}
       >
         <button
           type="button"
+          role="option"
+          aria-selected={false}
+          tabIndex={!isOpen ? -1 : 0}
           onClick={() => switchLanguage(isUk ? ActiveLanguage.EN : ActiveLanguage.UK)}
-          className="text-soft-blush hover:border-accent/50 focus:border-accent flex h-6 w-full items-center justify-center justify-start rounded-b-xs border border-transparent px-0.5 py-1 text-[14px] font-bold transition-colors focus:ring-0 focus:outline-none"
+          className="text-soft-blush hover:border-accent/50 focus:border-accent flex h-6 w-full items-center justify-center rounded-b-xs border border-transparent px-0.5 py-1 text-[14px] font-bold transition-colors focus:ring-0 focus:outline-none"
         >
           {isUk ? "Eng" : "Укр"}
         </button>
