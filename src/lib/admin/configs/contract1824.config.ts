@@ -1,7 +1,7 @@
 import { FormBuilderConfig } from "@/lib/form-builder";
 
 export const contract1824FormBuilderConfig: FormBuilderConfig = {
-  id: "contract1824",
+  id: "contract-18-24",
   sectionGroups: {
     "hero-stats": {
       className: "grid grid-cols-1 lg:grid-cols-3 gap-8",
@@ -31,9 +31,6 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
           label: {
             uk: "Заголовок українською",
             en: "Title in English",
-          },
-          props: {
-            rows: 3,
           },
         },
         {
