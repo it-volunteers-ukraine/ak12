@@ -10,21 +10,21 @@ import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
-import { heroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
+import { updateContract1824MultiLangAction } from "@/actions/contract-18-24";
+import { contract1824FormBuilderConfig } from "@/lib/admin/configs/contract1824.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
 
 type FormValues = z.infer<typeof adminSchema>;
-type AdminData = AdminDataMap["hero"];
-interface IHeroSection {
+type AdminData = AdminDataMap["contract-18-24"];
+interface IContract1824Section {
   data: AdminData;
 }
 
-export const adminSchema = ADMIN_SCHEMAS.hero;
+const adminSchema = ADMIN_SCHEMAS["contract-18-24"];
 
-export const HeroSection = ({ data }: IHeroSection) => {
+export const Contract1824Section = ({ data }: IContract1824Section) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,7 +32,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
   const [removeCurrentImage, setRemoveCurrentImage] = useState(false);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
 
-  const existingBackgroundImage = data.uk?.backgroundImage || data.en?.backgroundImage || null;
+  const existingBackgroundImage = data.uk?.imgContent?.backgroundImage || data.en?.imgContent?.backgroundImage || null;
 
   const handleSubmit = async (values: FormValues) => {
     let uploadedImagePublicId: string | null = null;
@@ -48,7 +48,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
       if (bannerFile) {
         const uploadResult = await uploadImageAction({
           file: bannerFile,
-          fileName: "hero-background",
+          fileName: "contract-18-24-background",
         });
 
         if (!uploadResult.success) {
@@ -59,31 +59,25 @@ export const HeroSection = ({ data }: IHeroSection) => {
         uploadedImagePublicId = uploadResult.data?.publicId ?? null;
       }
 
-      const enrichedValues = {
+      const enrichedValues: FormValues = {
         ...values,
         uk: {
           ...values.uk,
-          backgroundImage: nextBackgroundImage,
+          imgContent: {
+            ...values.uk.imgContent,
+            backgroundImage: nextBackgroundImage,
+          },
         },
         en: {
           ...values.en,
-          backgroundImage: nextBackgroundImage,
-          support: {
-            ...values.en?.support,
-            value: values.uk?.support?.value,
-          },
-          majors: {
-            ...values.en?.majors,
-            value: values.uk?.majors?.value,
-          },
-          hiringChance: {
-            ...values.en?.hiringChance,
-            value: values.uk?.hiringChance?.value,
+          imgContent: {
+            ...values.en.imgContent,
+            backgroundImage: nextBackgroundImage,
           },
         },
       };
 
-      const res = await updateHeroMultiLangAction(enrichedValues);
+      const res = await updateContract1824MultiLangAction(enrichedValues);
 
       if (!res.success) {
         if (uploadedImagePublicId) {
@@ -173,16 +167,20 @@ export const HeroSection = ({ data }: IHeroSection) => {
         schema={adminSchema}
         initialValues={data}
         onSubmit={onFormSubmit}
-        key={data.uk?.backgroundImage?.secureUrl || data.en?.backgroundImage?.secureUrl || "hero"}
+        key={
+          data.uk?.imgContent?.backgroundImage?.secureUrl ||
+          data.en?.imgContent?.backgroundImage?.secureUrl ||
+          "contract-18-24"
+        }
       >
         <FormBuilder
           data={data}
           imageFile={bannerFile}
           onReset={handleFormReset}
-          config={heroFormBuilderConfig}
           onImageRemove={handleBannerRemove}
           bannerSrc={existingBackgroundImage}
           onImageChange={handleBannerFileChange}
+          config={contract1824FormBuilderConfig}
           isImageMarkedForRemoval={removeCurrentImage}
         />
       </FormWrapper>
@@ -193,7 +191,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         title="Підтвердіть зміни"
         handleConfirm={handleConfirm}
         onClose={() => setIsModalOpen(false)}
-        content="Ви впевнені, що хочете зберегти зміни в секції Hero?"
+        content="Ви впевнені, що хочете зберегти зміни в секції Контракт 18-24?"
       />
     </>
   );

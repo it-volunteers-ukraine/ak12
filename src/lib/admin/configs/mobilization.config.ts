@@ -1,18 +1,17 @@
-
 import { FormBuilderConfig } from "@/lib/form-builder";
 
 export const mobilizationFormBuilderConfig: FormBuilderConfig = {
   id: "mobilization",
-  
   options: {
     hasImage: false,
     submitText: "Зберегти зміни",
     resetText: "Скасувати правки",
   },
-  
   sections: [
     {
-      id: "titles",
+      id: "title-text",
+      titlePlacement: "outside",
+      title: "Редагування заголовків",
       fields: [
         {
           name: "title",
@@ -23,24 +22,24 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Title in English",
           },
         },
-      ],
-    },
-    {
-      id: "subtitle",
-      fields: [
         {
           name: "subtitle",
-          type: "text",
+          type: "textarea",
           required: true,
           label: {
             uk: "Підзаголовок українською",
             en: "Subtitle in English",
+          },
+          props: {
+            rows: 2,
           },
         },
       ],
     },
     {
       id: "content",
+      titlePlacement: "outside",
+      title: "Редагування текстового контенту",
       fields: [
         {
           name: "content",
@@ -51,13 +50,14 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text content in English",
           },
           props: {
-            rows: 6,
+            rows: 4,
           },
         },
       ],
     },
     {
       id: "button",
+      titlePlacement: "outside",
       title: "Редагування кнопки",
       fields: [
         {
