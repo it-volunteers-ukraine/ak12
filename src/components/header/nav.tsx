@@ -37,16 +37,18 @@ export const Nav = ({ links }: { links: Links }) => {
       <Modal
         isOpen={isOpen}
         closeModal={closeModal}
-        className="desktop:hidden w-[calc(100%-80px)]"
+        className="desktop:hidden tablet:w-150 w-75"
         classNameOverlay="bg-surface-main/81"
       >
-        <button
-          onClick={closeModal}
-          aria-label="Close menu"
-          className="hover:text-accent/50 focus:text-accent/50 p-4 text-white transition-colors"
-        >
-          <CloseIcon className="h-6 w-6" />
-        </button>
+        <div className="flex w-full justify-end">
+          <button
+            onClick={closeModal}
+            aria-label="Close menu"
+            className="hover:text-accent/50 focus:text-accent/50 p-4 text-white transition-colors"
+          >
+            <CloseIcon className="h-6 w-6" />
+          </button>
+        </div>
 
         <NavLinks activeSection={activeSection} links={links} onClickAction={closeModal} type="mobile" />
       </Modal>
