@@ -60,8 +60,9 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
         role="listbox"
         aria-label="Language options"
         className={cn(
-          "bg-disabled absolute top-full left-0 z-50 flex w-full origin-top flex-col rounded-b-xs shadow-lg transition-all duration-200 ease-in-out",
+          "bg-disabled absolute top-full left-0 z-50 flex h-6 w-12 origin-top flex-col rounded-b-xs shadow-lg transition-all duration-200 ease-in-out",
           isOpen ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0",
+          className,
         )}
         inert={!isOpen ? true : undefined}
         aria-hidden={!isOpen}
