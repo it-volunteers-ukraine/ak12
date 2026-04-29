@@ -41,7 +41,9 @@
 
   --breakpoint-mobile: 23.4375rem; /* 375px */
   --breakpoint-tablet: 48rem; /* 768px */
-  --breakpoint-desktop: 62rem; /* 992px */
+  --breakpoint-laptop: 62rem; /* 992px */
+  --breakpoint-desktop: 90rem; /* 1440px */
+  --breakpoint-desktop-xl: 120rem; /* 1920 */
 
   --font-montserrat: Montserrat, sans-serif;
   --font-scada: var(--font-scada), sans-serif;

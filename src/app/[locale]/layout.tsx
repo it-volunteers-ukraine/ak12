@@ -19,6 +19,7 @@ const roadUI = localeFont({
   src: [
     { path: "../../fonts/road_ui/RoadUI-Regular.woff2", weight: "400", style: "normal" },
     { path: "../../fonts/road_ui/RoadUI-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../../fonts/road_ui/RoadUI-SemiBold.woff2", weight: "600", style: "normal" },
     { path: "../../fonts/road_ui/RoadUI-Bold.woff2", weight: "700", style: "normal" },
   ],
   variable: "--font-road-ui",

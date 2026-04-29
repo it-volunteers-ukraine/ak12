@@ -20,7 +20,7 @@ export const FeedbackSection = async ({ locale }: FeedbackSectionProps) => {
   }
 
   return (
-    <section className="bg-section px-20 py-25">
+    <section className="bg-section overflow-hidden px-20 py-25" id="contacts">
       <h2 className="font-ermilov text-accent mb-16 text-center text-[56px] font-bold uppercase">
         {content.form.title}
       </h2>

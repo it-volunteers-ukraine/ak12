@@ -37,3 +37,27 @@ export { default as CloseIcon } from "./close.svg";
 export { default as AtIcon } from "./at.svg";
 
 export { default as PhoneIcon } from "./phone.svg";
+
+export { default as AngleIcon } from "./angle.svg";
+
+export { default as BarsIcon } from "./bars.svg";
+
+export { default as HeartIcon } from "./heart.svg";
+
+export { default as ViberIcon } from "./viber.svg";
+
+export { default as InstagramIcon } from "./instagram.svg";
+
+export { default as TwitterIcon } from "./twitter.svg";
+
+export { default as TelegramIcon } from "./telegram.svg";
+
+export { default as TiktokIcon } from "./tiktok.svg";
+
+export { default as WhatsappIcon } from "./whatsapp.svg";
+
+export { default as DiscordIcon } from "./discord.svg";
+
+export { default as LinkedinIcon } from "./linkedin.svg";
+
+export { default as ThreadsIcon } from "./threads.svg";
