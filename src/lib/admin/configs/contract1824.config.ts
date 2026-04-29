@@ -3,7 +3,7 @@ import { FormBuilderConfig } from "@/lib/form-builder";
 export const contract1824FormBuilderConfig: FormBuilderConfig = {
   id: "contract-18-24",
   sectionGroups: {
-    "hero-stats": {
+    "contract-stats": {
       className: "grid grid-cols-1 lg:grid-cols-3 gap-8",
       title: "Додатковий контент ",
     },
@@ -99,7 +99,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-1",
-      group: "hero-stats",
+      group: "contract-stats",
       localeLayout: "combined",
 
       title: "Картка контенту 1",
@@ -129,7 +129,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-2",
-      group: "hero-stats",
+      group: "contract-stats",
       localeLayout: "combined",
       title: "Картка контенту 2",
       fields: [
@@ -158,7 +158,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-3",
-      group: "hero-stats",
+      group: "contract-stats",
       localeLayout: "combined",
       title: "Картка контенту 3",
       fields: [

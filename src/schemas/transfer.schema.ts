@@ -18,7 +18,7 @@ export const transferSchema = z.object({
     )
     .min(1, "Додайте хоча б один елемент контенту"),
 
-  "transfer-link": z.object({
+  transferLink: z.object({
     startText: REQUIRED_STRING,
     link: REQUIRED_STRING,
     endText: REQUIRED_STRING,

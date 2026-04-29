@@ -3,7 +3,7 @@ import { FormBuilderConfig } from "@/lib/form-builder";
 export const transferConfig: FormBuilderConfig = {
   id: "transfer",
   sectionGroups: {
-    "hero-stats": {
+    "transfer-stats": {
       className: "grid grid-cols-1 lg:grid-cols-3 gap-8",
       title: "Додатковий контент ",
     },
@@ -64,12 +64,12 @@ export const transferConfig: FormBuilderConfig = {
       ],
     },
     {
-      id: "transfer-link",
+      id: "transferLink",
       titlePlacement: "outside",
       title: "Редагування посилання ",
       fields: [
         {
-          name: "transfer-link.startText",
+          name: "transferLink.startText",
           type: "text",
           required: true,
           label: {
@@ -78,7 +78,7 @@ export const transferConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "transfer-link.link",
+          name: "transferLink.link",
           type: "text",
           required: true,
           label: {
@@ -87,7 +87,7 @@ export const transferConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "transfer-link.endText",
+          name: "transferLink.endText",
           type: "text",
           required: true,
           label: {
@@ -99,7 +99,7 @@ export const transferConfig: FormBuilderConfig = {
     },
     {
       id: "content-1",
-      group: "hero-stats",
+      group: "transfer-stats",
       localeLayout: "combined",
 
       title: "Картка контенту 1",
@@ -129,7 +129,7 @@ export const transferConfig: FormBuilderConfig = {
     },
     {
       id: "content-2",
-      group: "hero-stats",
+      group: "transfer-stats",
       localeLayout: "combined",
       title: "Картка контенту 2",
       fields: [
@@ -158,7 +158,7 @@ export const transferConfig: FormBuilderConfig = {
     },
     {
       id: "content-3",
-      group: "hero-stats",
+      group: "transfer-stats",
       localeLayout: "combined",
       title: "Картка контенту 3",
       fields: [

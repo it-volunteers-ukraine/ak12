@@ -76,7 +76,7 @@ VALUES
               "subtitle":"Ми цінуємо твій час",
             }
           ],
-          "transfer-link": {
+          "transferLink": {
           "startText": "Ми допоможемо тобі у цьому надавши вибір військових частин, що приймуть тебе на бажану вакантну посаду",
           "link": "«Переведення»",
           "endText": "та очікуй дзвінок від рекрутера для співбесіди.",
@@ -110,7 +110,7 @@ VALUES
               "subtitle":"We value your time",
             }
           ],
-          "transfer-link": {
+          "transferLink": {
           "startText": "We will help you with this by providing a choice of military units that will accept you for the desired vacant position",
           "link": "«Transfer»",
           "endText": "and wait for a call from a recruiter to schedule an interview.",

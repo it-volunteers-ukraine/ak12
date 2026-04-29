@@ -48,7 +48,7 @@ export const TransferSection = ({ data }: ITransferSection) => {
       if (bannerFile) {
         const uploadResult = await uploadImageAction({
           file: bannerFile,
-          fileName: "contract-18-24-background",
+          fileName: "transfer-background",
         });
 
         if (!uploadResult.success) {
@@ -183,7 +183,7 @@ export const TransferSection = ({ data }: ITransferSection) => {
         title="Підтвердіть зміни"
         handleConfirm={handleConfirm}
         onClose={() => setIsModalOpen(false)}
-        content="Ви впевнені, що хочете зберегти зміни в секції Контракт 18-24?"
+        content="Ви впевнені, що хочете зберегти зміни в секції Переведення?"
       />
     </>
   );
