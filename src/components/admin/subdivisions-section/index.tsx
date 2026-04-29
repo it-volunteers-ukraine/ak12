@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useFormContext } from "react-hook-form";
+import slugify from "slugify";
 
 import { showMessage } from "@/components/toastify";
 import { FormImg } from "@/components/form-elements";
@@ -16,8 +17,6 @@ import { subdivisionFormBuilderConfig } from "@/lib/admin/configs/subdivision.co
 
 import { FormWrapper } from "../form";
 import { adminSchema, AdminData, ISubdivisionSection } from "./config";
-
-// Внутрішній компонент форми — має доступ до formContext
 
 const SubdivisionFormContent = ({
   data,
@@ -56,7 +55,6 @@ const SubdivisionFormContent = ({
 
   return (
     <>
-      {/* Кнопки керування */}
       <BtnGroup
         isValid={isValid}
         onReset={() => {
@@ -67,7 +65,6 @@ const SubdivisionFormContent = ({
         resetText="Скасувати правки"
       />
 
-      {/* Ряд з двома фото */}
       <div className="mb-10 flex flex-wrap gap-6">
         <div className="min-w-[300px] flex-1">
           <FormImg
@@ -89,8 +86,6 @@ const SubdivisionFormContent = ({
         </div>
       </div>
 
-      {/* Використовуємо FormBuilder для текстових полів */}
-      {/* Він автоматично підхопить localeLayout: "split" з твого конфігу */}
       <div className="admin-form-content">
         {subdivisionFormBuilderConfig.sections.map((section) => (
           <div key={section.id} className="mb-6">
@@ -154,13 +149,7 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
         nextHoverImage = result.data;
         uploadedHoverPublicId = result.data.publicId;
       }
-      const generateSlug = (name: string) =>
-        name
-          .toLowerCase()
-          .replace(/\s+/g, "-")
-          .replace(/[^a-z0-9-]/g, "")
-          .replace(/-+/g, "-")
-          .replace(/^-|-$/g, "");
+      const generateSlug = (name: string) => slugify(name, { lower: true, strict: true });
 
       const buildPayload = (lang: "uk" | "en") => ({
         name: values[lang].name,
