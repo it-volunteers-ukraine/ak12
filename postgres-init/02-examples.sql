@@ -61,7 +61,7 @@ VALUES
         '{
           "title": "Хочеш змінити підрозділ?",
           "subtitle": "Ми допоможемо тобі у цьому надавши вибір військових частин, що приймуть тебе на бажану вакантну посаду",
-          "buttonTitle": "Ми цінуємо твій час",
+          "buttonTitle": "Подати заявку",
           "content":[
             {
               "title": "Підтримка",
@@ -95,7 +95,7 @@ VALUES
         '{
           "title": "Would you like to change departments?",
           "subtitle": "We will help you with this by providing a choice of military units that will accept you for the desired vacant position",
-          "buttonTitle": "We value your time",
+          "buttonTitle": "Submit Application",
           "content":[
             {
               "title": "Support",
