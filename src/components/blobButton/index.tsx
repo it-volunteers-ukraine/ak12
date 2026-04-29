@@ -4,17 +4,18 @@ import { cn } from "@/utils";
 
 type BlobButtonProps = {
   href: string;
+  className: string;
   children: React.ReactNode;
   typeStyles?: "primary" | "sub";
 };
 
-export const BlobButton = ({ href, children, typeStyles = "primary" }: BlobButtonProps) => {
+export const BlobButton = ({ href, children, className, typeStyles = "primary" }: BlobButtonProps) => {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="group relative flex h-10 w-50 scale-100 items-center justify-center focus:outline-none"
+      className={cn(className, "group relative h-10 w-50 scale-100 items-center justify-center focus:outline-none")}
     >
       <svg
         className="absolute inset-0 -z-10 h-full w-full"

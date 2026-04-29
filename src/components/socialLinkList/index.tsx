@@ -3,14 +3,13 @@ import { socialPlatformsIconsMap } from "@/constants";
 
 export const SocialLinkList = ({ socialLinks }: { socialLinks: SocialLink[] }) => {
   return (
-    <ul className="flex items-center gap-4">
+    <ul className="tablet:flex hidden items-center gap-2">
       {socialLinks.map((item) => {
         const Icon = socialPlatformsIconsMap[item.platform];
 
         return (
           <li key={item.href} className="flex items-center">
             <a
-              key={item.platform}
               href={item.href}
               className="focus:border-accent hover:border-accent inline-block rounded-xs border active:border-2"
               target="_blank"

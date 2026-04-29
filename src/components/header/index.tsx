@@ -1,18 +1,12 @@
-"use client";
-
 import z from "zod";
 import Image from "next/image";
-import { useState } from "react";
 
-import { Modal } from "../modal";
-import { MobileNav } from "./mobileNav";
-import { DesktopNav } from "./desktopNav";
+import { Nav } from "./nav";
 import { BlobButton } from "../blobButton";
 import { Logo } from "../../../public/images";
 import { SocialLinkList } from "../socialLinkList";
 import LanguageSwitcher from "../language-switcher";
-import { useActiveSection, useWindowWidth } from "@/hooks";
-import { BarsIcon, HeartIcon } from "../../../public/icons";
+import { HeartIcon } from "../../../public/icons";
 import { headerContentSchema, SocialLink } from "@/schemas";
 
 export type HeaderProps = {
@@ -20,35 +14,30 @@ export type HeaderProps = {
   content: z.infer<typeof headerContentSchema> | null;
 };
 
+export type Links = NonNullable<HeaderProps["content"]>["links"];
+
 export const Header = ({ content, socialLinks }: HeaderProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const { isTablet, isDesktop } = useWindowWidth();
-
   const links = content?.links ?? [];
   const button = content?.button;
 
-  const sectionIds = links.map((l) => l.idSection).filter((id): id is string => id !== null);
-
-  const activeSection = useActiveSection(sectionIds);
-
-  const logoText = isDesktop ? content?.logoText : content?.subLogoText;
-
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
   return (
     <header className="bg-card-bg tablet:px-10 tablet:py-5 desktop:px-20 fixed z-50 flex w-full items-center justify-between px-4 py-3">
-      <div className="flex h-12 items-center gap-5">
+      <div className="desktop:gap-2 desktop-xl:gap-2.5 flex h-12 items-center gap-1">
         <Image src={Logo} alt="Company logo" className="tablet:h-10 tablet:w-8.75 h-6 w-[21]" />
-        <p className="text-[20px] font-bold text-white">{logoText || "Logo"}</p>
+        <p className="flex justify-center text-white">
+          <span className="tablet:hidden font-bold">{content?.subLogoText || "Logo"}</span>
+          <span className="tablet:block hidden text-[20px] font-bold">{content?.logoText || "Logo"}</span>
+        </p>
       </div>
 
       <div className="flex items-center">
-        <DesktopNav links={links} activeSection={activeSection} />
+        <Nav links={links} />
 
-        {isTablet && button?.text && button?.href && (
-          <BlobButton href={button.href}>
+        {button?.text && button?.href && (
+          <BlobButton
+            className="tablet:flex desktop:mr-12 desktop:ml-10 desktop-xl:ml-12 mr-10 hidden"
+            href={button.href}
+          >
             <span className="text-soft-blush font-ermilov flex items-center gap-1 text-[16px]">
               {button.text}
               <HeartIcon className="h-4 w-4" />
@@ -56,31 +45,10 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
           </BlobButton>
         )}
 
-        <div className="desktop-xl:gap-6 ml-12 flex items-center gap-4">
-          {socialLinks && isTablet && <SocialLinkList socialLinks={socialLinks} />}
+        {socialLinks && <SocialLinkList socialLinks={socialLinks} />}
 
-          <LanguageSwitcher />
-
-          {!isDesktop && (
-            <button
-              aria-label="Open menu"
-              onClick={openModal}
-              className="text-soft-blush hover:text-accent/50 focus:text-accent/50 p-2.5"
-            >
-              <BarsIcon className="h-6 w-6" />
-            </button>
-          )}
-        </div>
+        <LanguageSwitcher className="tablet:mx-4 desktop:mr-0 desktop-xl:ml-6 mr-1" />
       </div>
-
-      <Modal
-        isOpen={isOpen}
-        closeModal={closeModal}
-        className="w-[calc(100%-80px)]"
-        classNameOverlay="bg-surface-main/81"
-      >
-        <MobileNav links={links} activeSection={activeSection} onClose={closeModal} />
-      </Modal>
     </header>
   );
 };
