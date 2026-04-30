@@ -61,3 +61,5 @@ export { default as DiscordIcon } from "./discord.svg";
 export { default as LinkedinIcon } from "./linkedin.svg";
 
 export { default as ThreadsIcon } from "./threads.svg";
+
+export { default as ExternalLinkIcon } from "./external-link.svg";
