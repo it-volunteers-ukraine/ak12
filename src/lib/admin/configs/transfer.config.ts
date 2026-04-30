@@ -1,9 +1,9 @@
 import { FormBuilderConfig } from "@/lib/form-builder";
 
-export const contract1824FormBuilderConfig: FormBuilderConfig = {
-  id: "contract-18-24",
+export const transferConfig: FormBuilderConfig = {
+  id: "transfer",
   sectionGroups: {
-    "contract-stats": {
+    "transfer-stats": {
       className: "grid grid-cols-1 lg:grid-cols-3 gap-8",
       title: "Додатковий контент ",
     },
@@ -64,12 +64,12 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
       ],
     },
     {
-      id: "contact",
+      id: "transferLink",
       titlePlacement: "outside",
-      title: "Редагування контактів",
+      title: "Редагування посилання ",
       fields: [
         {
-          name: "contact.startText",
+          name: "transferLink.startText",
           type: "text",
           required: true,
           label: {
@@ -78,7 +78,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "contact.number",
+          name: "transferLink.link",
           type: "text",
           required: true,
           label: {
@@ -87,7 +87,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "contact.endText",
+          name: "transferLink.endText",
           type: "text",
           required: true,
           label: {
@@ -99,7 +99,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-1",
-      group: "contract-stats",
+      group: "transfer-stats",
       localeLayout: "combined",
 
       title: "Картка контенту 1",
@@ -129,7 +129,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-2",
-      group: "contract-stats",
+      group: "transfer-stats",
       localeLayout: "combined",
       title: "Картка контенту 2",
       fields: [
@@ -158,7 +158,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     },
     {
       id: "content-3",
-      group: "contract-stats",
+      group: "transfer-stats",
       localeLayout: "combined",
       title: "Картка контенту 3",
       fields: [
@@ -181,31 +181,6 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
           },
           props: {
             rows: 3,
-          },
-        },
-      ],
-    },
-    {
-      id: "img-content",
-      titlePlacement: "outside",
-      title: "Редагування контенту блоку з фото",
-      fields: [
-        {
-          name: "imgContent.title",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Заголовок блоку з фото",
-            en: "Image block title",
-          },
-        },
-        {
-          name: "imgContent.subtitle",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Опис блоку з фото",
-            en: "Image block subtitle",
           },
         },
       ],

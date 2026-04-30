@@ -9,6 +9,7 @@ import { contentService } from "@/lib/content/content.service";
 import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 import { lifeOfUnitSchema } from "@/schemas/life-of-the-unit.schema";
 import {
+  transferSchema,
   heroContentSchema,
   contract1824Schema,
   headerContentSchema,
@@ -24,6 +25,7 @@ type SaveContentAction = {
 
 const schemasMap: Record<SectionKey, z.ZodType> = {
   [SECTION_KEYS.HERO]: heroContentSchema,
+  [SECTION_KEYS.TRANSFER]: transferSchema,
   [SECTION_KEYS.HEADER]: headerContentSchema,
   [SECTION_KEYS.LIFE_OF_UNIT]: lifeOfUnitSchema,
   [SECTION_KEYS.FEEDBACK]: feedbackContentSchema,

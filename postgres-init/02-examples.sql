@@ -56,6 +56,74 @@ VALUES
         true,
         (SELECT id FROM language WHERE code = 'en')
     ),
+      (
+        'transfer',
+        '{
+          "title": "Хочеш змінити підрозділ?",
+          "subtitle": "Ми допоможемо тобі у цьому надавши вибір військових частин, що приймуть тебе на бажану вакантну посаду",
+          "buttonTitle": "Подати заявку",
+          "content":[
+            {
+              "title": "Підтримка",
+              "subtitle": "Повний супровід просесу",
+            },
+            {
+              "title": "Вибір" ,
+              "subtitle": "Підбір позиції",
+            },
+            {
+              "title": "Оперативність",
+              "subtitle":"Ми цінуємо твій час",
+            }
+          ],
+          "transferLink": {
+          "startText": "Ми допоможемо тобі у цьому надавши вибір військових частин, що приймуть тебе на бажану вакантну посаду",
+          "link": "«Переведення»",
+          "endText": "та очікуй дзвінок від рекрутера для співбесіди.",
+          },
+          "backgroundImage": {
+            "publicId": "transfer-background",
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/transfer-background"
+            }
+          }
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'uk')
+      ),
+      (
+        'transfer',
+        '{
+          "title": "Would you like to change departments?",
+          "subtitle": "We will help you with this by providing a choice of military units that will accept you for the desired vacant position",
+          "buttonTitle": "Submit Application",
+          "content":[
+            {
+              "title": "Support",
+              "subtitle": "Full support during the process",
+            },
+            {
+              "title": "Choice" ,
+              "subtitle": "Position matching",
+            },
+            {
+              "title": "Speed",
+              "subtitle":"We value your time",
+            }
+          ],
+          "transferLink": {
+          "startText": "We will help you with this by providing a choice of military units that will accept you for the desired vacant position",
+          "link": "«Transfer»",
+          "endText": "and wait for a call from a recruiter to schedule an interview.",
+          },
+          "backgroundImage": {
+            "publicId": "transfer-background",
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/transfer-background"
+            }
+          }
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
     (
         'contract-18-24',
         '{

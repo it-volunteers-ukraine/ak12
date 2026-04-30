@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { ExternalLinkIcon } from "../../../../public/icons/index";
+import { ExternalLinkIcon } from "@/../public/icons";
 
 export function AdminViewSiteButton() {
   const locale = useLocale();
