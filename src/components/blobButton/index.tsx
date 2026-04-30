@@ -4,18 +4,25 @@ import { cn } from "@/utils";
 
 type BlobButtonProps = {
   href: string;
-  className: string;
+  className?: string;
   children: React.ReactNode;
   typeStyles?: "primary" | "sub";
+  openInNewTab?: boolean;
 };
 
-export const BlobButton = ({ href, children, className, typeStyles = "primary" }: BlobButtonProps) => {
+export const BlobButton = ({
+  href,
+  children,
+  className,
+  typeStyles = "primary",
+  openInNewTab = true,
+}: BlobButtonProps) => {
   return (
     <a
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className={cn(className, "group relative h-10 w-50 scale-100 items-center justify-center focus:outline-none")}
+      target={openInNewTab ? "_blank" : undefined}
+      rel={openInNewTab ? "noopener noreferrer" : undefined}
+      className={cn("group relative flex h-10 w-50 scale-100 items-center justify-center focus:outline-none", className)}
     >
       <svg
         className="absolute inset-0 -z-10 h-full w-full"

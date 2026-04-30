@@ -59,6 +59,18 @@ export const HeroSection = ({ data }: IHeroSection) => {
         uploadedImagePublicId = uploadResult.data?.publicId ?? null;
       }
 
+      const ukFeatures = values.uk?.features ?? [];
+      const enFeatures = values.en?.features ?? [];
+      const syncedEnFeatures = ukFeatures.map((ukFeature, index) => {
+        const enFeature = enFeatures[index];
+
+        return {
+          type: ukFeature.type,
+          value: ukFeature.value,
+          label: enFeature?.label ?? ukFeature.label,
+        };
+      });
+
       const enrichedValues = {
         ...values,
         uk: {
@@ -68,18 +80,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         en: {
           ...values.en,
           backgroundImage: nextBackgroundImage,
-          support: {
-            ...values.en?.support,
-            value: values.uk?.support?.value,
-          },
-          majors: {
-            ...values.en?.majors,
-            value: values.uk?.majors?.value,
-          },
-          hiringChance: {
-            ...values.en?.hiringChance,
-            value: values.uk?.hiringChance?.value,
-          },
+          features: syncedEnFeatures,
         },
       };
 

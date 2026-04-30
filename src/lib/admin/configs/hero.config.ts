@@ -4,9 +4,9 @@ import { FormBuilderConfig } from "@/lib/form-builder";
 export const heroFormBuilderConfig: FormBuilderConfig = {
   id: "hero",
   sectionGroups: {
-    "hero-stats": {
+    "hero-features": {
       className: "grid grid-cols-1 lg:grid-cols-3 gap-8",
-      title: "Додатковий контент ",
+      title: "Додатковий контент",
     },
   },
 
@@ -32,8 +32,8 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
           type: "text",
           required: true,
           label: {
-            uk: "Текстовий контент українською",
-            en: "Text content in English",
+            uk: "Заголовок українською",
+            en: "Title in English",
           },
         },
         {
@@ -64,39 +64,12 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
       ],
     },
     {
-      id: "statistics_support",
+      id: "feature_hiring_chance",
       localeLayout: "combined",
-      group: "hero-stats",
+      group: "hero-features",
       fields: [
         {
-          name: "support.title",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Підтримка - Заголовок",
-            en: "Support - Title",
-          },
-        },
-        {
-          name: "support.value",
-          type: "text",
-          locales: ["uk"],
-          required: true,
-          label: {
-            uk: "Підтримка - Значення",
-            en: "Support - Value",
-          },
-        },
-      ],
-    },
-
-    {
-      id: "statistics_hiringChance",
-      localeLayout: "combined",
-      group: "hero-stats",
-      fields: [
-        {
-          name: "hiringChance.title",
+          name: "features.0.label",
           type: "text",
           required: true,
           label: {
@@ -105,10 +78,10 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "hiringChance.value",
+          name: "features.0.value",
           type: "text",
-          locales: ["uk"],
           required: true,
+          locales: ["uk"],
           label: {
             uk: "Шанс найму - Значення",
             en: "Hiring Chance - Value",
@@ -116,29 +89,54 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
         },
       ],
     },
-
     {
-      id: "statistics_majors",
-      group: "hero-stats",
+      id: "feature_majors",
       localeLayout: "combined",
+      group: "hero-features",
       fields: [
         {
-          name: "majors.title",
+          name: "features.1.label",
           type: "text",
           required: true,
           label: {
-            uk: "Майори - Заголовок",
+            uk: "Спеціальності - Заголовок",
             en: "Majors - Title",
           },
         },
         {
-          name: "majors.value",
+          name: "features.1.value",
           type: "text",
+          required: true,
           locales: ["uk"],
+          label: {
+            uk: "Спеціальності - Значення",
+            en: "Majors - Value",
+          },
+        },
+      ],
+    },
+    {
+      id: "feature_support",
+      localeLayout: "combined",
+      group: "hero-features",
+      fields: [
+        {
+          name: "features.2.label",
+          type: "text",
           required: true,
           label: {
-            uk: "Майори - Значення",
-            en: "Majors - Value",
+            uk: "Підтримка - Заголовок",
+            en: "Support - Title",
+          },
+        },
+        {
+          name: "features.2.value",
+          type: "text",
+          required: true,
+          locales: ["uk"],
+          label: {
+            uk: "Підтримка - Значення",
+            en: "Support - Value",
           },
         },
       ],
