@@ -29,6 +29,8 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
   const editingEn = subdivisionsEn.find((s) => s.slug === editingSlug) ?? null;
 
   const handleReorder = async (reordered: Subdivision[]) => {
+    const previousOrder = [...items];
+    
     setItems(reordered);
 
     const updates = reordered.flatMap((item, index) => {
@@ -44,7 +46,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
       router.refresh();
     } catch {
       showMessage.error("Не вдалося зберегти порядок");
-      setItems(subdivisionsUk);
+      setItems(previousOrder);
     }
   };
 

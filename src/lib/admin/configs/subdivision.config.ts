@@ -51,17 +51,3 @@ export const subdivisionFormBuilderConfig: FormBuilderConfig = {
     },
   ],
 };
-
-export const subdivisionHoverImageConfig: FormBuilderConfig = {
-  id: "subdivision-hover",
-  buttonsClassName: "hidden",
-  options: {
-    hasImage: true,
-    imageConfig: {
-      label: "Hover фото",
-      maxSize: 5 * 1024 * 1024,
-      accept: ["image/jpeg", "image/png", "image/webp"],
-    },
-  },
-  sections: [],
-};

@@ -244,6 +244,15 @@ export async function updateSubdivisionsOrder(
       .eq("id", id),
   );
 
-  await Promise.all(updates);
+  const results = await Promise.all(updates);
+
+  const failed = results.filter((r) => r.error);
+
+  if (failed.length > 0) {
+    throw new Error(
+      `Failed to update sort order for ${failed.length} items: ${failed.map((r) => r.error?.message).join(", ")}`,
+    );
+  }
+
   revalidatePath("/");
 }
