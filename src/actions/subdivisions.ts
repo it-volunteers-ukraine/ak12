@@ -232,3 +232,27 @@ export async function deleteSubdivision(id: string): Promise<void> {
 
   revalidatePath("/");
 }
+
+// Update sortOrder for an array of subdivisions with a single query
+export async function updateSubdivisionsOrder(
+  items: { id: string; sortOrder: number }[],
+): Promise<void> {
+  const updates = items.map(({ id, sortOrder }) =>
+    supabaseServer
+      .from("subdivision")
+      .update({ sort_order: sortOrder })
+      .eq("id", id),
+  );
+
+  const results = await Promise.all(updates);
+
+  const failed = results.filter((r) => r.error);
+
+  if (failed.length > 0) {
+    throw new Error(
+      `Failed to update sort order for ${failed.length} items: ${failed.map((r) => r.error?.message).join(", ")}`,
+    );
+  }
+
+  revalidatePath("/");
+}

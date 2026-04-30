@@ -8,14 +8,13 @@ export const storedImageSchema = z.object({
 export const subdivisionContentSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, "Назва обов'язкова"),
-  slug: z.string().min(1, "Slug обов'язковий"), 
+  slug: z.string().optional().default(""),
   description: z.string().min(1, "Опис обов'язковий"),
   hoverName: z.string().nullable(),
   hoverDescription: z.string().nullable(),
   siteUrl: z.string().url("Невірний формат URL").nullable().or(z.literal("").transform(() => null)),
   imageUrl: storedImageSchema,
   hoverImageUrl: storedImageSchema,
-  // sortOrder може бути string з форми або number з БД
   sortOrder: z.union([z.number(), z.string()]).transform(val => 
     typeof val === 'string' ? parseInt(val, 10) : val
   ).pipe(z.number().int().nonnegative()),
