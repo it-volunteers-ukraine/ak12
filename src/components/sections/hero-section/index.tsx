@@ -26,37 +26,57 @@ export const HeroSection = async ({ locale }: { locale: Locale }) => {
           fill
           priority
           sizes="100vw"
-          src={content.backgroundImage.secureUrl}
           alt={content.title}
           className="-z-20 object-cover"
+          src={content.backgroundImage.secureUrl}
         />
       )}
 
-      <div className="absolute inset-0 -z-10 bg-linear-to-r from-black/75 via-black/55 to-black/35" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-r from-black/50 via-black/35 to-black/25" />
 
       <div className="container-app flex flex-col justify-center py-15">
-        <div>
-          <h1 className="font-ermilov text-accent desktop:text-[116px] mb-4 text-5xl leading-tight font-bold uppercase md:text-7xl">
+        <div className="mb-24">
+          <h1 className="font-ermilov desktop:text-[116px] mb-4 max-w-121 text-5xl leading-tight font-bold uppercase md:text-7xl lg:max-w-200">
             {content.title}
           </h1>
           <h3 className="w-67 text-base text-white/90">{content.subtitle}</h3>
 
-          <BlobButton className="mt-8 flex w-full" href={"#vacancy"} typeStyles="sub">
-            <span className="font-ermilov flex items-center gap-1 text-[16px] text-black">
+          <BlobButton
+            typeStyles="sub"
+            href={"#vacancy"}
+            openInNewTab={false}
+            className="mt-8 hidden h-15 w-70 py-3 md:flex"
+          >
+            <span className="font-ermilov flex items-center gap-1 text-[20px] text-black">
               {content.buttonTitle}
               <ArrowDown />
             </span>
           </BlobButton>
         </div>
-
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {content.features.map((item) => (
-            <li key={`${item.value}_${item.label}`}>
-              <p>{item.label}</p>
-              <p>{item.value}</p>
-            </li>
-          ))}
-        </ul>
+        <div className="mx-auto w-full max-w-90 md:mx-0 md:self-end">
+          <ul className="md:divide-accent/50 flex w-full md:justify-between md:gap-4 md:divide-x">
+            {content.features.map((item) => (
+              <li
+                key={`${item.value}_${item.label}`}
+                className="flex flex-1 flex-col items-center gap-2 whitespace-nowrap md:pr-4"
+              >
+                <span className="text-accent">{item.value}</span>
+                <span className="text-[12px]">{item.label}</span>
+              </li>
+            ))}
+          </ul>
+          <BlobButton
+            typeStyles="sub"
+            href={"#vacancy"}
+            openInNewTab={false}
+            className="mt-8 flex h-15 w-full md:hidden"
+          >
+            <span className="font-ermilov flex items-center gap-1 py-3 text-[20px] text-black">
+              {content.buttonTitle}
+              <ArrowDown />
+            </span>
+          </BlobButton>
+        </div>
       </div>
     </section>
   );
