@@ -4,6 +4,7 @@ export * from "./feedbackForm";
 export * from "./headerContent";
 export * from "./contactsContent";
 export * from "./feedbackContent";
+export * from "./transfer.schema";
 export * from "./mobilizationSchema";
 export * from "./contract-18-24.schema";
 export * from "./life-of-the-unit.schema";

@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export type Contract1824Schema = z.infer<typeof contract1824Schema>;
-
 const REQUIRED_ERROR = z.string().min(1, "Обов'язкове поле");
 
 export const contract1824Schema = z.object({

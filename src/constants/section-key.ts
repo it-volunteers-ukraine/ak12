@@ -5,6 +5,7 @@ export const SECTION_KEYS = {
   HEADER: "header",
   CONTACTS: "contacts",
   FEEDBACK: "feedback",
+  TRANSFER: "transfer",
   MOBILIZATION: "mobilization",
   LIFE_OF_UNIT: "life_of_unit",
   CONTRACT_18_24: "contract-18-24",

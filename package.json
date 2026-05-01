@@ -13,6 +13,9 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^5.2.2",
     "@next/eslint-plugin-next": "^16.2.1",
     "@supabase/supabase-js": "^2.100.1",
@@ -30,6 +33,7 @@
     "react-hook-form": "^7.72.0",
     "react-toastify": "^11.0.5",
     "server-only": "^0.0.1",
+    "slugify": "^1.6.9",
     "tailwind-merge": "^3.5.0",
     "transliteration": "^2.6.1",
     "typescript-eslint": "^8.57.2",

@@ -23,3 +23,5 @@ export { Toast, showMessage } from "./toastify";
 export { ConfirmModal } from "./connfirm-modal";
 
 export { FormWrapper } from "./admin/form";
+
+export { AdminViewSiteButton } from "./admin/admin-view-site-button";

@@ -1,8 +1,6 @@
 import { SECTION_KEYS } from "@/constants";
-import { contract1824Schema } from "@/schemas";
-import { heroContentSchema } from "@/schemas/heroContent";
-import { mobilizationSchema } from "@/schemas/mobilizationSchema";
-import { HeroSection, Contract1824Section, MobilizationSection } from "@/components/admin";
+import { transferSchema, heroContentSchema, contract1824Schema, mobilizationSchema } from "@/schemas";
+import { HeroSection, TransferSection, Contract1824Section, MobilizationSection } from "@/components/admin";
 
 import { AdminSectionKey, IAdminSectionConfig } from "./admin-types";
 
@@ -24,6 +22,13 @@ export const ADMIN_CONFIG: { [K in AdminSectionKey]: IAdminSectionConfig<K> } = 
     schema: contract1824Schema,
     sectionKey: SECTION_KEYS.CONTRACT_18_24,
     component: Contract1824Section,
+  },
+
+  transfer: {
+    label: "Трансфер",
+    schema: transferSchema,
+    sectionKey: SECTION_KEYS.TRANSFER,
+    component: TransferSection,
   },
 };
 

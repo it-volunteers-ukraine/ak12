@@ -20,6 +20,8 @@ export { default as Editing } from "./editing.svg";
 
 export { default as En } from "./en.svg";
 
+export { default as ExternalLinkIcon } from "./external-link.svg";
+
 export { default as FacebookIcon } from "./facebook.svg";
 
 export { default as HeartIcon } from "./heart.svg";
