@@ -72,14 +72,19 @@ export const updateContentMultiLang = async <K extends AdminSectionKey>(section:
       });
     });
 
-    const results = await Promise.all(savePromises);
+    const results = await Promise.allSettled(savePromises);
 
-    const firstError = results.find((res) => !res.success);
+    const failures = results.filter(
+      (res) => res.status === "rejected" || (res.status === "fulfilled" && !res.value.success),
+    );
 
-    if (firstError) {
-      logger.warn({ firstError }, "Multi-lang partial failure");
+    if (failures.length > 0) {
+      logger.error({ failures, section }, "Multi-lang partial failure – data may be inconsistent across locales");
 
-      return firstError;
+      return {
+        success: false,
+        error: "Помилка збереження. Дані для деяких мов могли не оновитися.",
+      };
     }
 
     return { success: true };
