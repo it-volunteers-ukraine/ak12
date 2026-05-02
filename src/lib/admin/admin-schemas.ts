@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { heroContentSchema } from "@/schemas/heroContent";
-import { transferSchema, contract1824Schema } from "@/schemas";
+import { transferSchema, contract1824Schema, headerAndFooterContentSchema } from "@/schemas";
 import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 
 const withMultiLang = <S extends z.ZodRawShape>(schema: z.ZodObject<S>) => {
@@ -19,4 +19,6 @@ export const ADMIN_SCHEMAS = {
   "contract-18-24": withMultiLang(contract1824Schema),
 
   transfer: withMultiLang(transferSchema),
+
+  "header-footer": withMultiLang(headerAndFooterContentSchema),
 } as const;

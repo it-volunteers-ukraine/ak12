@@ -1,22 +1,35 @@
 import { getStyles } from "./styles";
 import { socialPlatformsIconsMap } from "@/constants";
-import { ContactsContent, HeaderLink } from "@/schemas";
+import { FooterContent, HeaderLink, SocialLink } from "@/schemas";
+import Image from "next/image";
+import { Logo } from "../../../public/images";
 
 type FooterProps = {
   menu: HeaderLink[] | null;
   translations: (key: string) => string;
-  contactsContent: ContactsContent | null;
+  content: FooterContent | null;
+  socialLinks: SocialLink[] | null;
+  contacts: { label: string; href: string }[] | null;
 };
 
-export const Footer = ({ contactsContent, menu, translations }: FooterProps) => {
+export const Footer = ({ socialLinks, contacts, content, menu, translations }: FooterProps) => {
   const styles = getStyles();
 
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div>
-          <h2 className={styles.title}>{contactsContent?.title}</h2>
-          <p className={styles.text}>{contactsContent?.description}</p>
+          <div className="mb-4 flex items-center gap-2">
+            <Image
+              width={35}
+              height={40}
+              alt="Company logo"
+              src={content?.logoImg?.secureUrl || Logo}
+              className="tablet:h-10 tablet:w-8.75 h-6 w-5.25"
+            />
+            <h2 className={"text-soft-blush font-ermilov text-[20px]"}>{content?.title}</h2>
+          </div>
+          <p className={styles.text}>{content?.description}</p>
         </div>
 
         {menu && menu.length > 0 && (
@@ -37,11 +50,11 @@ export const Footer = ({ contactsContent, menu, translations }: FooterProps) => 
           </nav>
         )}
 
-        {contactsContent?.contacts && contactsContent?.contacts.length > 0 && (
+        {contacts && contacts.length > 0 && (
           <div>
             <p className={styles.subTitle}>{translations("contact")}</p>
             <ul className="flex flex-col gap-2">
-              {contactsContent.contacts.map((item) => {
+              {contacts.map((item) => {
                 let href = item.href;
 
                 if (href[0] === "+" || /^\d+$/.test(href.replace(/\D/g, ""))) {
@@ -63,11 +76,11 @@ export const Footer = ({ contactsContent, menu, translations }: FooterProps) => 
           </div>
         )}
 
-        {contactsContent?.socialLinks && contactsContent?.socialLinks.length > 0 && (
+        {socialLinks && socialLinks.length > 0 && (
           <div>
             <p className={styles.subTitle}>{translations("social")}</p>
             <ul className="flex gap-3">
-              {contactsContent.socialLinks.map((item) => {
+              {socialLinks.map((item) => {
                 const Icon = socialPlatformsIconsMap[item.platform];
 
                 return (
@@ -84,9 +97,9 @@ export const Footer = ({ contactsContent, menu, translations }: FooterProps) => 
       </div>
       <div className={styles.containerCopyright}>
         <p className={styles.text}>
-          © {new Date().getFullYear()}. {contactsContent?.copyright}
+          © {new Date().getFullYear()}. {content?.copyright}
         </p>
-        <p className={styles.text}>{contactsContent?.copyrightOwner}</p>
+        <p className={styles.text}>{content?.copyrightOwner}</p>
       </div>
     </footer>
   );

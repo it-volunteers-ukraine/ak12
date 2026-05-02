@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { SECTION_KEYS } from "@/constants";
 import { Footer, Header } from "@/components";
 import { contentService } from "@/lib/content/content.service";
-import { headerContentSchema, contactsContentSchema } from "@/schemas";
+import { contactsContentSchema, headerAndFooterContentSchema } from "@/schemas";
 
 type SiteLayoutProps = {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
 
   const contentHeader = await contentService.get({
     locale: validLocale,
-    schema: headerContentSchema,
+    schema: headerAndFooterContentSchema,
     section: SECTION_KEYS.HEADER,
   });
 
@@ -35,9 +35,15 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
 
   return (
     <>
-      <Header content={contentHeader} socialLinks={contentContacts?.socialLinks || null} />
+      <Header content={contentHeader?.header ?? null} socialLinks={contentContacts?.socialLinks || null} />
       {children}
-      <Footer translations={t} contactsContent={contentContacts} menu={contentHeader?.links || null} />
+      <Footer
+        translations={t}
+        content={contentHeader?.footer ?? null}
+        menu={contentHeader?.header.links || null}
+        contacts={contentContacts?.contacts ?? null}
+        socialLinks={contentContacts?.socialLinks ?? null}
+      />
     </>
   );
 }

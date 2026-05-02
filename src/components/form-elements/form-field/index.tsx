@@ -38,7 +38,7 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
 
   return (
     <div className={wrapper}>
-      <label className={labelStyle}>{label}</label>
+      {label && <label className={labelStyle}>{label}</label>}
       <div className={wrapperStyle}>
         <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} className={className} />
 

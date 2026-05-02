@@ -4,21 +4,17 @@ export type Locale = "uk" | "en";
 
 export const LOCALES: Locale[] = ["uk", "en"];
 
-export type FieldType = 
-  | "text"
-  | "textarea"
-  | "number";
+export type FieldType = "text" | "textarea" | "number";
 
 export interface FieldConfig {
   name: string;
-  label: Record<Locale, string>;
+  label?: Record<Locale, string>;
   type: FieldType;
   locales?: Locale[];
   required?: boolean;
   placeholder?: Record<Locale, string>;
   component?: ComponentType<any>;
   props?: Record<string, any>;
-  
   className?: string;
 }
 
@@ -43,13 +39,13 @@ export interface FormBuilderConfig {
         titleClassName?: string;
       }
   >;
-  
+
   className?: string;
   buttonsClassName?: string;
   submitClassName?: string;
   resetClassName?: string;
   imageWrapperClassName?: string;
-  
+
   options?: {
     hasImage?: boolean;
     imageConfig?: {
@@ -57,7 +53,7 @@ export interface FormBuilderConfig {
       maxSize?: number;
       accept?: string[];
     };
-    
+
     submitText?: string;
     resetText?: string;
   };
