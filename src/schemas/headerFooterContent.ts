@@ -48,3 +48,4 @@ export const headerAndFooterContentSchema = z.object({
 
 export type HeaderLink = z.infer<typeof headerLinkSchema>;
 export type FooterContent = z.infer<typeof footerContentSchema>;
+export type HeaderContent = z.infer<typeof headerContentSchema>;

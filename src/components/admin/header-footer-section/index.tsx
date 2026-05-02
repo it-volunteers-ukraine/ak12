@@ -2,6 +2,7 @@
 
 import z from "zod";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 import { FormWrapper } from "../form";
@@ -145,11 +146,14 @@ export const HeaderFooterSection = ({ data }: IHeaderSection) => {
       const result = await handleSubmit(pendingData);
 
       if (result && !result.success) {
+        toast.error(result.error || "Помилка збереження");
+
         return;
       }
-
-      setIsModalOpen(false);
+    } catch {
+      toast.error("Щось пішло не так");
     } finally {
+      setIsModalOpen(false);
       setIsLoading(false);
     }
   };

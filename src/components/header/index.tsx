@@ -1,17 +1,16 @@
-import z from "zod";
 import Image from "next/image";
 
 import { Nav } from "./nav";
 import { BlobButton } from "../blobButton";
 import { Logo } from "../../../public/images";
+import { HeartIcon } from "../../../public/icons";
 import { SocialLinkList } from "../socialLinkList";
 import LanguageSwitcher from "../language-switcher";
-import { HeartIcon } from "../../../public/icons";
-import { headerContentSchema, SocialLink } from "@/schemas";
+import { HeaderContent, SocialLink } from "@/schemas";
 
 export type HeaderProps = {
   socialLinks: SocialLink[] | null;
-  content: z.infer<typeof headerContentSchema> | null;
+  content: HeaderContent | null;
 };
 
 export type Links = NonNullable<HeaderProps["content"]>["links"];
