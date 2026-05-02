@@ -14,14 +14,14 @@ const getHeaderSections = (data: AdminData) => {
     {
       id: "text-content",
       group: "header",
-      title: "Контент",
+      title: "Заголовок",
       localeLayout: "split" as const,
       fields: [
         { name: "header.logoText", type: "text", label: { uk: "Заголовок", en: "Title" }, required: true },
         {
           name: "header.subLogoText",
           type: "text",
-          label: { uk: "Скорочений заголовок", en: "Sub title" },
+          label: { uk: "Скорочений заголовок", en: "Short title" },
           required: true,
         },
       ] as FieldConfig[],
@@ -35,7 +35,7 @@ const getHeaderSections = (data: AdminData) => {
         {
           name: "header.button.text",
           type: "text",
-          label: { uk: "Напис у кнопці", en: "Text on the button" },
+          label: { uk: "Текст на кнопці", en: "Text on the button" },
           required: true,
         },
         {
