@@ -15,12 +15,13 @@ export const BlobButton = ({ href, children, className, typeStyles = "primary" }
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={cn(className, "group relative h-10 w-50 scale-100 items-center justify-center focus:outline-none")}
+      className={cn("group relative h-10 w-50 scale-100 items-center justify-center focus:outline-none", className)}
     >
       <svg
         className="absolute inset-0 -z-10 h-full w-full"
         viewBox="0 0 200 40"
         fill="none"
+        preserveAspectRatio="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <path
