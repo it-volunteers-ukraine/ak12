@@ -99,7 +99,7 @@ const CombinedLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
               return (
                 <div key={`${locale}-${field.name}`}>
                   <div className="mb-2 flex items-center justify-between">
-                    <label className="block text-sm font-medium">{field.label[locale]}</label>
+                    {field.label && <label className="block text-sm font-medium">{field.label[locale]}</label>}
                     <FlagBadge>
                       <Icon width={28} height={20} />
                     </FlagBadge>
@@ -144,7 +144,7 @@ const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                 return (
                   <div key={`${locale}-${field.name}`}>
                     <div className="mb-2 flex items-center justify-between">
-                      <label className="block text-sm font-medium">{field.label[locale]}</label>
+                      {field.label && <label className="block text-sm font-medium">{field.label[locale]}</label>}
                       <FlagBadge>
                         <Icon width={28} height={20} />
                       </FlagBadge>
@@ -195,7 +195,7 @@ const ByLocaleLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
 
               {localeFields.map((field) => (
                 <div key={`${locale}-${field.name}`}>
-                  <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>
+                  {field.label && <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>}
                   <FormField
                     name={`${locale}.${field.name}`}
                     component={field.component || COMPONENT_BY_TYPE[field.type]}

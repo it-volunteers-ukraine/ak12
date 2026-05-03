@@ -1,6 +1,18 @@
 import { SECTION_KEYS } from "@/constants";
-import { transferSchema, heroContentSchema, contract1824Schema, mobilizationSchema } from "@/schemas";
-import { HeroSection, TransferSection, Contract1824Section, MobilizationSection } from "@/components/admin";
+import {
+  transferSchema,
+  heroContentSchema,
+  contract1824Schema,
+  mobilizationSchema,
+  headerAndFooterContentSchema,
+} from "@/schemas";
+import {
+  HeroSection,
+  TransferSection,
+  Contract1824Section,
+  MobilizationSection,
+  HeaderFooterSection,
+} from "@/components/admin";
 
 import { AdminSectionKey, IAdminSectionConfig } from "./admin-types";
 
@@ -29,6 +41,12 @@ export const ADMIN_CONFIG: { [K in AdminSectionKey]: IAdminSectionConfig<K> } = 
     schema: transferSchema,
     sectionKey: SECTION_KEYS.TRANSFER,
     component: TransferSection,
+  },
+  "header-footer": {
+    label: "Шапка та підвал сайту",
+    schema: headerAndFooterContentSchema,
+    sectionKey: SECTION_KEYS.HEADER,
+    component: HeaderFooterSection,
   },
 };
 
