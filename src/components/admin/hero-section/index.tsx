@@ -11,7 +11,7 @@ import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
-import { heroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
+import { createHeroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
@@ -61,8 +61,8 @@ export const HeroSection = ({ data }: IHeroSection) => {
 
       const ukFeatures = values.uk?.features ?? [];
       const enFeatures = values.en?.features ?? [];
-      const syncedEnFeatures = ukFeatures.map((ukFeature, index) => {
-        const enFeature = enFeatures[index];
+      const syncedEnFeatures = ukFeatures.map((ukFeature) => {
+        const enFeature = enFeatures.find((f) => f.type === ukFeature.type);
 
         return {
           type: ukFeature.type,
@@ -180,10 +180,10 @@ export const HeroSection = ({ data }: IHeroSection) => {
           data={data}
           imageFile={bannerFile}
           onReset={handleFormReset}
-          config={heroFormBuilderConfig}
           onImageRemove={handleBannerRemove}
           bannerSrc={existingBackgroundImage}
           onImageChange={handleBannerFileChange}
+          config={createHeroFormBuilderConfig(data)}
           isImageMarkedForRemoval={removeCurrentImage}
         />
       </FormWrapper>

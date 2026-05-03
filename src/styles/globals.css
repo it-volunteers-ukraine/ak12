@@ -138,7 +138,7 @@
 
   @media (min-width: 1919px) {
     .container-app {
-      @apply max-w-480;
+      @apply mx-auto max-w-480;
     }
   }
 }

@@ -20,7 +20,7 @@ export const HeroSection = async ({ locale }: { locale: Locale }) => {
   }
 
   return (
-    <section className="relative isolate overflow-hidden pt-18 text-white">
+    <section className="desktop-xl:max-w-480 desktop-xl:mx-auto relative isolate overflow-hidden pt-18 text-white">
       {content.backgroundImage?.secureUrl && (
         <Image
           fill
@@ -32,28 +32,16 @@ export const HeroSection = async ({ locale }: { locale: Locale }) => {
         />
       )}
 
-      <div className="absolute inset-0 -z-10 bg-linear-to-r from-black/50 via-black/35 to-black/25" />
+      <div className="absolute inset-0 -z-10 bg-linear-to-r from-black/80 via-black/35 to-black/25" />
 
       <div className="container-app flex flex-col justify-center py-15">
-        <div className="mb-24">
+        <div className="mb-24 md:mb-8 lg:mb-10">
           <h1 className="font-ermilov desktop:text-[116px] mb-4 max-w-121 text-5xl leading-tight font-bold uppercase md:text-7xl lg:max-w-200">
             {content.title}
           </h1>
           <h3 className="w-67 text-base text-white/90">{content.subtitle}</h3>
-
-          <BlobButton
-            typeStyles="sub"
-            href={"#vacancy"}
-            openInNewTab={false}
-            className="mt-8 hidden h-15 w-70 py-3 md:flex"
-          >
-            <span className="font-ermilov flex items-center gap-1 text-[20px] text-black">
-              {content.buttonTitle}
-              <ArrowDown />
-            </span>
-          </BlobButton>
         </div>
-        <div className="mx-auto w-full max-w-90 md:mx-0 md:self-end">
+        <div className="order-2 mx-auto mb-8 w-full max-w-90 md:order-3 md:mx-0 md:mb-0 md:self-end">
           <ul className="md:divide-accent/50 flex w-full md:justify-between md:gap-4 md:divide-x">
             {content.features.map((item) => (
               <li
@@ -65,18 +53,18 @@ export const HeroSection = async ({ locale }: { locale: Locale }) => {
               </li>
             ))}
           </ul>
-          <BlobButton
-            typeStyles="sub"
-            href={"#vacancy"}
-            openInNewTab={false}
-            className="mt-8 flex h-15 w-full md:hidden"
-          >
-            <span className="font-ermilov flex items-center gap-1 py-3 text-[20px] text-black">
-              {content.buttonTitle}
-              <ArrowDown />
-            </span>
-          </BlobButton>
         </div>
+        <BlobButton
+          typeStyles="sub"
+          href={"#vacancy"}
+          openInNewTab={false}
+          className="order-3 flex h-15 w-full max-w-90 self-center md:order-2 md:mt-0 md:mb-23 md:w-70 md:max-w-none md:self-start md:py-3 xl:mb-36"
+        >
+          <span className="font-ermilov flex items-center gap-1 py-3 text-[20px] text-black md:py-0">
+            {content.buttonTitle}
+            <ArrowDown />
+          </span>
+        </BlobButton>
       </div>
     </section>
   );

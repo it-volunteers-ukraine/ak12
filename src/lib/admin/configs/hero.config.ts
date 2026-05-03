@@ -1,7 +1,55 @@
 // 🎓 HERO CONFIG - конфіг для Hero форми (працює з БД)
+import { AdminDataMap } from "@/lib/admin/admin-types";
 import { FormBuilderConfig } from "@/lib/form-builder";
+import { SectionConfig } from "@/lib/form-builder/types";
 
-export const heroFormBuilderConfig: FormBuilderConfig = {
+type HeroData = AdminDataMap["hero"];
+
+const baseSections: FormBuilderConfig["sections"] = [
+  {
+    id: "text-content",
+    title: "Текстовий контент",
+    localeLayout: "split",
+    fields: [
+      {
+        name: "title",
+        type: "text",
+        required: true,
+        label: {
+          uk: "Заголовок українською",
+          en: "Title in English",
+        },
+      },
+      {
+        name: "subtitle",
+        type: "textarea",
+        required: true,
+        label: {
+          uk: "Підзаголовок українською",
+          en: "Subtitle in English",
+        },
+      },
+    ],
+  },
+  {
+    id: "button",
+    title: "Редагування кнопки",
+    titlePlacement: "outside",
+    fields: [
+      {
+        name: "buttonTitle",
+        type: "text",
+        required: true,
+        label: {
+          uk: "Текст кнопки українською",
+          en: "Button text in English",
+        },
+      },
+    ],
+  },
+];
+
+export const createHeroFormBuilderConfig = (data: HeroData): FormBuilderConfig => ({
   id: "hero",
   sectionGroups: {
     "hero-features": {
@@ -22,124 +70,32 @@ export const heroFormBuilderConfig: FormBuilderConfig = {
   },
 
   sections: [
-    {
-      id: "text-content",
-      title: "Текстовий контент",
-      localeLayout: "split",
-      fields: [
-        {
-          name: "title",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Заголовок українською",
-            en: "Title in English",
-          },
-        },
-        {
-          name: "subtitle",
-          type: "textarea",
-          required: true,
-          label: {
-            uk: "Підзаголовок українською",
-            en: "Subtitle in English",
-          },
-        },
-      ],
-    },
-    {
-      id: "button",
-      title: "Редагування кнопки",
-      titlePlacement: "outside",
-      fields: [
-        {
-          name: "buttonTitle",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Текст кнопки українською",
-            en: "Button text in English",
-          },
-        },
-      ],
-    },
-    {
-      id: "feature_hiring_chance",
+    ...baseSections,
+    ...(data.uk?.features ?? []).map<SectionConfig>((feature, index) => ({
+      id: `feature_${feature.type}`,
       localeLayout: "combined",
       group: "hero-features",
       fields: [
         {
-          name: "features.0.label",
+          name: `features.${index}.label`,
           type: "text",
           required: true,
           label: {
-            uk: "Шанс найму - Заголовок",
-            en: "Hiring Chance - Title",
+            uk: `${feature.label} - Заголовок`,
+            en: `${feature.label} - Title`,
           },
         },
         {
-          name: "features.0.value",
+          name: `features.${index}.value`,
           type: "text",
           required: true,
           locales: ["uk"],
           label: {
-            uk: "Шанс найму - Значення",
-            en: "Hiring Chance - Value",
+            uk: `${feature.label} - Значення`,
+            en: `${feature.label} - Value`,
           },
         },
       ],
-    },
-    {
-      id: "feature_majors",
-      localeLayout: "combined",
-      group: "hero-features",
-      fields: [
-        {
-          name: "features.1.label",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Спеціальності - Заголовок",
-            en: "Majors - Title",
-          },
-        },
-        {
-          name: "features.1.value",
-          type: "text",
-          required: true,
-          locales: ["uk"],
-          label: {
-            uk: "Спеціальності - Значення",
-            en: "Majors - Value",
-          },
-        },
-      ],
-    },
-    {
-      id: "feature_support",
-      localeLayout: "combined",
-      group: "hero-features",
-      fields: [
-        {
-          name: "features.2.label",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Підтримка - Заголовок",
-            en: "Support - Title",
-          },
-        },
-        {
-          name: "features.2.value",
-          type: "text",
-          required: true,
-          locales: ["uk"],
-          label: {
-            uk: "Підтримка - Значення",
-            en: "Support - Value",
-          },
-        },
-      ],
-    },
+    })),
   ],
-};
+});
