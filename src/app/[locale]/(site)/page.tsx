@@ -1,11 +1,12 @@
 import { Locale } from "@/types";
 import { VacancyType } from "@/types/vacancy";
+import { HeroSection } from "@/components/sections";
+import { VacanciesSection } from "@/components/vacancies";
 import { LifeOfTheUnit } from "@/components/life-of-the-unit";
 import { FeedbackSection } from "@/components/feedback-section";
+import { MarqueeLine, SubdivisionsSection } from "@/components";
 import { DEFAULT_PAGE, DEFAULT_TYPE } from "@/constants/vacancies";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
-import { SubdivisionsSection, MarqueeLine } from "@/components";
-import { VacanciesSection } from "@/components/vacancies";
 
 export interface SearchParamsProps {
   page?: string;
@@ -32,6 +33,7 @@ export default async function Home({
   return (
     <>
       <main>
+        <HeroSection locale={locale} />
         <LifeOfTheUnit locale={locale} />
         <SubdivisionsSection locale={locale} />
         <VacanciesSection type={type} page={page} vacancies={vacancies} />

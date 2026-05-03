@@ -8,18 +8,16 @@ export const heroContentSchema = z.object({
   title: REQUIRED_STRING,
   subtitle: REQUIRED_STRING,
   buttonTitle: REQUIRED_STRING,
-  hiringChance: z.object({
-    title: REQUIRED_STRING,
-    value: REQUIRED_STRING,
-  }),
-  majors: z.object({
-    title: REQUIRED_STRING,
-    value: REQUIRED_STRING,
-  }),
-  support: z.object({
-    title: REQUIRED_STRING,
-    value: REQUIRED_STRING,
-  }),
+
+  features: z
+    .array(
+      z.object({
+        type: z.enum(["hiringChance", "majors", "support"]),
+        label: REQUIRED_STRING,
+        value: REQUIRED_STRING,
+      }),
+    )
+    .max(3),
   backgroundImage: z
     .object({
       publicId: z.string().optional(),

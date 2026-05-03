@@ -11,7 +11,7 @@ import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateHeroMultiLangAction } from "@/actions/hero/heroActions";
-import { heroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
+import { createHeroFormBuilderConfig } from "@/lib/admin/configs/hero.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
@@ -59,6 +59,18 @@ export const HeroSection = ({ data }: IHeroSection) => {
         uploadedImagePublicId = uploadResult.data?.publicId ?? null;
       }
 
+      const ukFeatures = values.uk?.features ?? [];
+      const enFeatures = values.en?.features ?? [];
+      const syncedEnFeatures = ukFeatures.map((ukFeature) => {
+        const enFeature = enFeatures.find((f) => f.type === ukFeature.type);
+
+        return {
+          type: ukFeature.type,
+          value: ukFeature.value,
+          label: enFeature?.label ?? ukFeature.label,
+        };
+      });
+
       const enrichedValues = {
         ...values,
         uk: {
@@ -68,18 +80,7 @@ export const HeroSection = ({ data }: IHeroSection) => {
         en: {
           ...values.en,
           backgroundImage: nextBackgroundImage,
-          support: {
-            ...values.en?.support,
-            value: values.uk?.support?.value,
-          },
-          majors: {
-            ...values.en?.majors,
-            value: values.uk?.majors?.value,
-          },
-          hiringChance: {
-            ...values.en?.hiringChance,
-            value: values.uk?.hiringChance?.value,
-          },
+          features: syncedEnFeatures,
         },
       };
 
@@ -179,10 +180,10 @@ export const HeroSection = ({ data }: IHeroSection) => {
           data={data}
           imageFile={bannerFile}
           onReset={handleFormReset}
-          config={heroFormBuilderConfig}
           onImageRemove={handleBannerRemove}
           bannerSrc={existingBackgroundImage}
           onImageChange={handleBannerFileChange}
+          config={createHeroFormBuilderConfig(data)}
           isImageMarkedForRemoval={removeCurrentImage}
         />
       </FormWrapper>

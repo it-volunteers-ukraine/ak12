@@ -115,8 +115,33 @@
   input {
     @apply outline-none;
   }
-}
+  .container-app {
+    @apply w-full px-4;
+  }
+  @media (min-width: 768px) {
+    .container-app {
+      @apply md:px-10;
+    }
+  }
 
+  @media (min-width: 1024px) {
+    .container-app {
+      @apply desktop:px-15;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    .container-app {
+      @apply px-20;
+    }
+  }
+
+  @media (min-width: 1919px) {
+    .container-app {
+      @apply mx-auto max-w-480;
+    }
+  }
+}
 html {
   scroll-behavior: smooth;
 }
