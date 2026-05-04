@@ -35,4 +35,5 @@ export type AdminData = z.infer<typeof adminSchema>;
 export interface ISubdivisionSection {
   data?: AdminData;
   onSuccess?: () => void;
+  onBack?: () => void;
 }

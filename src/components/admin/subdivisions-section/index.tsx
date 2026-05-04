@@ -31,6 +31,7 @@ const SubdivisionFormContent = ({
   onHoverImageChange,
   onHoverImageRemove,
   onReset,
+  onBack,
 }: {
   data?: AdminData;
   imageFile: File | null;
@@ -43,6 +44,7 @@ const SubdivisionFormContent = ({
   onImageRemove: () => void;
   onHoverImageChange: (f: File | null) => void;
   onHoverImageRemove: () => void;
+  onBack?: () => void;
   onReset: () => void;
 }) => {
   const {
@@ -55,6 +57,15 @@ const SubdivisionFormContent = ({
 
   return (
     <>
+      {onBack && (
+        <button
+          type="button"
+          onClick={onBack}
+          className="mb-4 flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700"
+        >
+          ← Назад до списку
+        </button>
+      )}
       <BtnGroup
         isValid={isValid}
         onReset={() => {
@@ -64,7 +75,9 @@ const SubdivisionFormContent = ({
         submitText="Зберегти зміни"
         resetText="Скасувати правки"
       />
-
+      <p className="mb-6 text-sm text-gray-500">
+        Поля, позначені <span className="text-red-500">*</span> — обов'язкові для заповнення
+      </p>
       <div className="mb-10 flex flex-wrap gap-6">
         <div className="min-w-[300px] flex-1">
           <FormImg
@@ -99,7 +112,7 @@ const SubdivisionFormContent = ({
   );
 };
 
-export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => {
+export const SubdivisionSection = ({ data, onSuccess, onBack }: ISubdivisionSection) => {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -255,6 +268,7 @@ export const SubdivisionSection = ({ data, onSuccess }: ISubdivisionSection) => 
           removeHoverImage={removeHoverImage}
           existingImage={existingImage}
           existingHoverImage={existingHoverImage}
+          onBack={onBack}
           onImageChange={(f) => {
             setImageFile(f);
             setRemoveImage(false);

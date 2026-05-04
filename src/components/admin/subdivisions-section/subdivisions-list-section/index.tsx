@@ -50,53 +50,53 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
     }
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!deletingSubdivision) {
-      return;
+ const handleDeleteConfirm = async () => {
+  if (!deletingSubdivision) {
+    return;
+  }
+
+  setIsDeleting(true);
+
+  try {
+    const enVersion = subdivisionsEn.find((s) => s.slug === deletingSubdivision.slug);
+
+    if (deletingSubdivision.imageUrl?.publicId) {
+      await deleteImageAction(deletingSubdivision.imageUrl.publicId);
     }
 
-    setIsDeleting(true);
-
-    try {
-      const enVersion = subdivisionsEn.find((s) => s.slug === deletingSubdivision.slug);
-
-      if (deletingSubdivision.imageUrl?.publicId) {
-        await deleteImageAction(deletingSubdivision.imageUrl.publicId);
-      }
-
-      if (deletingSubdivision.hoverImageUrl?.publicId) {
-        await deleteImageAction(deletingSubdivision.hoverImageUrl.publicId);
-      }
-
-      await deleteSubdivision(deletingSubdivision.id);
-
-      if (enVersion?.id) {
-        await deleteSubdivision(enVersion.id);
-      }
-
-      showMessage.success("Підрозділ видалено");
-      setDeletingSubdivision(null);
-      router.refresh();
-    } catch {
-      showMessage.error("Не вдалося видалити підрозділ");
-    } finally {
-      setIsDeleting(false);
+    if (deletingSubdivision.hoverImageUrl?.publicId) {
+      await deleteImageAction(deletingSubdivision.hoverImageUrl.publicId);
     }
-  };
+
+    await deleteSubdivision(deletingSubdivision.id);
+
+    if (enVersion?.id) {
+      await deleteSubdivision(enVersion.id);
+    }
+
+    showMessage.success("Підрозділ видалено");
+    setItems((prev) => prev.filter((s) => s.slug !== deletingSubdivision.slug));
+    setDeletingSubdivision(null);
+    router.refresh();
+  } catch {
+    showMessage.error("Не вдалося видалити підрозділ");
+  } finally {
+    setIsDeleting(false);
+  }
+};
 
   if (editingSlug && editingUk) {
     return (
-      <SubdivisionSection data={{ uk: editingUk, en: editingEn ?? editingUk }} onSuccess={() => setEditingSlug(null)} />
+      <SubdivisionSection data={{ uk: editingUk, en: editingEn ?? editingUk }} onSuccess={() => setEditingSlug(null)} onBack={() => setEditingSlug(null)} />
     );
   }
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Всі підрозділи</h1>
         <button
           onClick={() => router.push("new")}
-          className="flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-sm text-white hover:bg-green-800"
+          className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-700"
         >
           + Додати підрозділ
         </button>
@@ -129,7 +129,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
                       e.stopPropagation();
                       setEditingSlug(subdivision.slug);
                     }}
-                    onPointerDown={(e) => e.stopPropagation()} // зупиняє drag
+                    onPointerDown={(e) => e.stopPropagation()}
                     className="rounded-full p-1.5 hover:bg-gray-100"
                     aria-label="Редагувати"
                   >
@@ -140,7 +140,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
                       e.stopPropagation();
                       setDeletingSubdivision(subdivision);
                     }}
-                    onPointerDown={(e) => e.stopPropagation()} // зупиняє drag
+                    onPointerDown={(e) => e.stopPropagation()}
                     className="rounded-full p-1.5 hover:bg-red-50"
                     aria-label="Видалити"
                   >
