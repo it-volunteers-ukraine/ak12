@@ -30,7 +30,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
 
   const handleReorder = async (reordered: Subdivision[]) => {
     const previousOrder = [...items];
-    
+
     setItems(reordered);
 
     const updates = reordered.flatMap((item, index) => {
@@ -50,44 +50,50 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
     }
   };
 
- const handleDeleteConfirm = async () => {
-  if (!deletingSubdivision) {
-    return;
-  }
-
-  setIsDeleting(true);
-
-  try {
-    const enVersion = subdivisionsEn.find((s) => s.slug === deletingSubdivision.slug);
-
-    if (deletingSubdivision.imageUrl?.publicId) {
-      await deleteImageAction(deletingSubdivision.imageUrl.publicId);
+  const handleDeleteConfirm = async () => {
+    if (!deletingSubdivision) {
+      return;
     }
 
-    if (deletingSubdivision.hoverImageUrl?.publicId) {
-      await deleteImageAction(deletingSubdivision.hoverImageUrl.publicId);
+    const previousItems = [...items]; // зберегти для rollback
+
+    setIsDeleting(true);
+
+    try {
+      const enVersion = subdivisionsEn.find((s) => s.slug === deletingSubdivision.slug);
+
+      if (deletingSubdivision.imageUrl?.publicId) {
+        await deleteImageAction(deletingSubdivision.imageUrl.publicId);
+      }
+
+      if (deletingSubdivision.hoverImageUrl?.publicId) {
+        await deleteImageAction(deletingSubdivision.hoverImageUrl.publicId);
+      }
+
+      await deleteSubdivision(deletingSubdivision.id);
+
+      if (enVersion?.id) {
+        await deleteSubdivision(enVersion.id);
+      }
+
+      setItems((prev) => prev.filter((s) => s.slug !== deletingSubdivision.slug));
+      showMessage.success("Підрозділ видалено");
+      router.refresh();
+    } catch {
+      setItems(previousItems);
+      showMessage.error("Не вдалося видалити підрозділ");
+    } finally {
+      setIsDeleting(false);
+      setDeletingSubdivision(null);
     }
-
-    await deleteSubdivision(deletingSubdivision.id);
-
-    if (enVersion?.id) {
-      await deleteSubdivision(enVersion.id);
-    }
-
-    showMessage.success("Підрозділ видалено");
-    setItems((prev) => prev.filter((s) => s.slug !== deletingSubdivision.slug));
-    setDeletingSubdivision(null);
-    router.refresh();
-  } catch {
-    showMessage.error("Не вдалося видалити підрозділ");
-  } finally {
-    setIsDeleting(false);
-  }
-};
-
+  };
   if (editingSlug && editingUk) {
     return (
-      <SubdivisionSection data={{ uk: editingUk, en: editingEn ?? editingUk }} onSuccess={() => setEditingSlug(null)} onBack={() => setEditingSlug(null)} />
+      <SubdivisionSection
+        data={{ uk: editingUk, en: editingEn ?? editingUk }}
+        onSuccess={() => setEditingSlug(null)}
+        onBack={() => setEditingSlug(null)}
+      />
     );
   }
 
