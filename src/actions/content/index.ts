@@ -4,10 +4,12 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
 import { Locale } from "@/types";
+import { logger } from "@/lib/logger";
 import { SectionKey, SECTION_KEYS } from "@/constants";
+import { aboutUsSchema } from "@/schemas/about-us.schema";
+import { AdminDataMap, AdminSectionKey } from "@/lib/admin";
 import { contentService } from "@/lib/content/content.service";
 import { mobilizationSchema } from "@/schemas/mobilizationSchema";
-import { lifeOfUnitSchema } from "@/schemas/life-of-the-unit.schema";
 import {
   transferSchema,
   heroContentSchema,
@@ -16,8 +18,6 @@ import {
   feedbackContentSchema,
   headerAndFooterContentSchema,
 } from "@/schemas";
-import { logger } from "@/lib/logger";
-import { AdminDataMap, AdminSectionKey } from "@/lib/admin";
 
 type SaveContentAction = {
   locale: Locale;
@@ -28,7 +28,7 @@ type SaveContentAction = {
 const schemasMap: Record<SectionKey, z.ZodType> = {
   [SECTION_KEYS.HERO]: heroContentSchema,
   [SECTION_KEYS.TRANSFER]: transferSchema,
-  [SECTION_KEYS.LIFE_OF_UNIT]: lifeOfUnitSchema,
+  [SECTION_KEYS.ABOUT]: aboutUsSchema,
   [SECTION_KEYS.FEEDBACK]: feedbackContentSchema,
   [SECTION_KEYS.CONTACTS]: contactsContentSchema,
   [SECTION_KEYS.MOBILIZATION]: mobilizationSchema,

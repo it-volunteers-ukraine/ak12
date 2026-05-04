@@ -219,33 +219,81 @@ VALUES
       true,
       (SELECT id FROM language WHERE code = 'en')
     ),
-    (
-        'about',
-        '{
-          "title": "Про нас",
-          "description": "Ми допомагаємо кандидатам знайти напрям служби, у якому їхні вміння принесуть найбільшу користь. На платформі можна ознайомитися з підрозділами, вакансіями та залишити заявку для подальшого контакту.",
-          "images": [
-            "/images/about/about-1.jpg",
-            "/images/about/about-2.jpg",
-            "/images/about/about-3.jpg"
+     (
+      'about',
+      '{
+        "mainTitle": "12-й Армійський корпус",
+        "description": "Ми засновані у жовтні 2024 року як відповідь на виклики сучасної війни. Наша структура об’єднує штурмовий драйв, високотехнологічні безпілотні системи, надійний зв’язок та залізне ППО. Ми будуємо армію майбутнього, де досвід зустрічається з інноваціями.",
+        "content": {
+          "title": "Життя корпусу",
+          "gallery": [
+            {
+              "text": "Мотивація",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Відвага",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Навчання",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Людяність",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "ЧЕСТЬ",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Побут",
+              "image": "/images/about/about-1.jpg"
+            }
           ]
-        }'::jsonb,
-        true,
-        (SELECT id FROM language WHERE code = 'uk')
+        }        
+      }'::jsonb,
+      true,
+      (SELECT id FROM language WHERE code = 'uk')
     ),
-    (
-        'about',
-        '{
-          "title": "About us",
-          "description": "We help candidates find the service direction where their abilities bring the most value. The platform allows users to explore subdivisions, vacancies and submit an application for further contact.",
-          "images": [
-            "/images/about/about-1.jpg",
-            "/images/about/about-2.jpg",
-            "/images/about/about-3.jpg"
+     (
+      'about',
+      '{
+        "mainTitle": "12th Army Corps",
+        "description": "We were founded in October 2024 in response to the challenges of modern warfare. Our organization combines an aggressive offensive mindset, high-tech unmanned systems, reliable communications, and robust air defense. We are building the army of the future, where experience meets innovation.",
+        "content": {
+          "title": "The Life of the Corps",
+          "gallery": [
+            {
+              "text": "Motivation",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Courage",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Education",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Humanity",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Honor",
+              "image": "/images/about/about-1.jpg"
+            },
+            {
+              "text": "Daily Life",
+              "image": "/images/about/about-1.jpg"
+            }
           ]
-        }'::jsonb,
-        true,
-        (SELECT id FROM language WHERE code = 'en')
+        }        
+      }'::jsonb,
+      true,
+      (SELECT id FROM language WHERE code = 'en')
     ),
     (
         'advantages',
