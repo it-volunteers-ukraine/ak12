@@ -8,7 +8,7 @@ export const mainAdminNavigation = [
   { id: "content", label: "Контент" },
   { id: "divisions", label: "Підрозділи" },
   { id: "careers", label: "Вакансії" },
-  { id: "ceo", label: "CEO" },
+  { id: "ceo", label: "SEO" },
 ];
 
 export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {
@@ -21,7 +21,6 @@ export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {
   ],
   divisions: [
     { id: "list", label: "Всі підрозділи ", status: "1min" },
-    { id: "new", label: "Новий підрозділ ", status: "1min" },
   ],
   careers: [
     { id: "combat", label: "Бойові вакансії", status: "1min" },
