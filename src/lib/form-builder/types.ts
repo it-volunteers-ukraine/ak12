@@ -4,7 +4,7 @@ export type Locale = "uk" | "en";
 
 export const LOCALES: Locale[] = ["uk", "en"];
 
-export type FieldType = "text" | "textarea" | "number";
+export type FieldType = "text" | "textarea" | "number" | "custom";
 
 export interface FieldConfig {
   name: string;

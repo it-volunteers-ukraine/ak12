@@ -65,3 +65,7 @@ export { default as ViberIcon } from "./viber.svg";
 export { default as WhatsappIcon } from "./whatsapp.svg";
 
 export { default as YoutubeIcon } from "./youtube.svg";
+
+export { default as LocationIcon } from "./location.svg";
+
+export { default as LinkIcon } from "./link.svg";

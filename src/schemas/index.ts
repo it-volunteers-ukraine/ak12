@@ -1,7 +1,6 @@
 export * from "./auth";
 export * from "./heroContent";
 export * from "./feedbackForm";
-export * from "./contactsContent";
 export * from "./feedbackContent";
 export * from "./transfer.schema";
 export * from "./mobilizationSchema";
