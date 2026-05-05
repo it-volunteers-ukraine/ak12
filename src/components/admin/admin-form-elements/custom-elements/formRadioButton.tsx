@@ -5,6 +5,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 
 import { cn } from "@/utils";
 import { FORM_RADIO_BUTTON } from "./t";
+import { Locale } from "@/types";
 
 function getNestedError(errors: any, path: string) {
   return path.split(".").reduce((acc, part) => acc && acc[part], errors);
@@ -15,13 +16,13 @@ const INPUT_CLASS =
 
 interface FormRadioButtonProp extends ComponentPropsWithoutRef<"div"> {
   name: string;
+  locale: Locale;
 }
 
-export const FormRadioButton = ({ name, className }: FormRadioButtonProp) => {
+export const FormRadioButton = ({ name, className, locale }: FormRadioButtonProp) => {
   const { control, trigger } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name });
 
-  const locale = name.split(".")[0] === "en" ? "en" : "uk";
   const t = FORM_RADIO_BUTTON[locale];
 
   const handleAdd = () => {

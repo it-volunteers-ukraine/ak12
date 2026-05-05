@@ -5,6 +5,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 
 import { SOCIAL_LINKS_LABELS } from "./t";
 import { SocialPlatform } from "@/constants";
+import { Locale } from "@/types";
 
 function getNestedError(errors: any, path: string) {
   return path.split(".").reduce((acc, part) => acc && acc[part], errors);
@@ -15,13 +16,13 @@ const INPUT_CLASS =
 
 interface SocialLinksFieldProps extends ComponentPropsWithoutRef<"div"> {
   name: string;
+  locale: Locale;
 }
 
-export const SocialLinksField = ({ name, className }: SocialLinksFieldProps) => {
+export const SocialLinksField = ({ name, className, locale }: SocialLinksFieldProps) => {
   const { control, trigger } = useFormContext();
   const { fields, append, remove } = useFieldArray({ control, name });
 
-  const locale = name.split(".")[0] === "en" ? "en" : "uk";
   const t = SOCIAL_LINKS_LABELS[locale];
 
   const handleAdd = () => {

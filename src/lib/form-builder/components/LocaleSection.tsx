@@ -67,6 +67,7 @@ const SplitLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                         <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>
                       ))}
                     <FormField
+                      locale={locale}
                       isCustom={field.type === "custom"}
                       name={`${locale}.${field.name}`}
                       component={field.component || COMPONENT_BY_TYPE[field.type]}
@@ -107,6 +108,7 @@ const CombinedLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                     </FlagBadge>
                   </div>
                   <FormField
+                    locale={locale}
                     isCustom={field.type === "custom"}
                     name={`${locale}.${field.name}`}
                     component={field.component || COMPONENT_BY_TYPE[field.type]}
@@ -153,6 +155,7 @@ const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                       </FlagBadge>
                     </div>
                     <FormField
+                      locale={locale}
                       isCustom={field.type === "custom"}
                       name={`${locale}.${field.name}`}
                       component={field.component || COMPONENT_BY_TYPE[field.type]}
@@ -201,6 +204,7 @@ const ByLocaleLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                 <div key={`${locale}-${field.name}`}>
                   {field.label && <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>}
                   <FormField
+                    locale={locale}
                     isCustom={field.type === "custom"}
                     name={`${locale}.${field.name}`}
                     component={field.component || COMPONENT_BY_TYPE[field.type]}
