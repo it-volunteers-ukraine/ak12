@@ -4,15 +4,9 @@ import { ComponentPropsWithoutRef } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 
 import { cn } from "@/utils";
-import { FORM_RADIO_BUTTON } from "./t";
 import { Locale } from "@/types";
-
-function getNestedError(errors: any, path: string) {
-  return path.split(".").reduce((acc, part) => acc && acc[part], errors);
-}
-
-const INPUT_CLASS =
-  "h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:ring-2 focus:ring-slate-200 focus:outline-none";
+import { FORM_RADIO_BUTTON } from "./t";
+import { FormField } from "@/components/form-elements";
 
 interface FormRadioButtonProp extends ComponentPropsWithoutRef<"div"> {
   name: string;
@@ -77,17 +71,10 @@ interface RadioButtonItemProps {
 }
 
 const RadioButtonItem = ({ name, index, t, isRemovable, onRemove }: RadioButtonItemProps) => {
-  const { register, formState } = useFormContext();
-
-  const arrayErrors = getNestedError(formState.errors, name);
-  const labelError = getNestedError(arrayErrors, `${index}.label`);
-
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
       <div className="mb-4 max-w-sm">
-        <label className="mb-2 block text-sm font-medium">{t.titleButton}</label>
-        <input {...register(`${name}.${index}.label`)} className={INPUT_CLASS} />
-        {labelError?.message && <p className="mt-1 text-xs text-red-600">{String(labelError.message)}</p>}
+        <FormField label={t.titleButton} name={`${name}.${index}.label`} />
       </div>
 
       <div className="flex items-center justify-between gap-4 border-t border-gray-100 pt-4">

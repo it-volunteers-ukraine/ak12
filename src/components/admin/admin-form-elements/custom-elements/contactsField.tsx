@@ -1,18 +1,12 @@
 "use client";
 
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, useState } from "react";
 import { useFormContext, useFieldArray, useWatch } from "react-hook-form";
 
 import { CONTACTS_LABELS } from "./t";
 import { ContactsType } from "@/constants";
 import { Locale } from "@/types";
-
-function getNestedError(errors: any, path: string) {
-  return path.split(".").reduce((acc, part) => acc && acc[part], errors);
-}
-
-const INPUT_CLASS =
-  "h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:ring-2 focus:ring-slate-200 focus:outline-none";
+import { FormField, FormSelect } from "@/components/form-elements";
 
 interface ContactsFieldProp extends ComponentPropsWithoutRef<"div"> {
   name: string;
@@ -71,75 +65,49 @@ interface ContactItemProps {
 }
 
 const ContactItem = ({ name, index, t, onRemove }: ContactItemProps) => {
-  const { register, formState, setValue, control } = useFormContext();
+  const { setValue, control } = useFormContext();
 
   const currentType = useWatch({
     control,
     name: `${name}.${index}.type`,
   });
 
-  const arrayErrors = getNestedError(formState.errors, name);
-  const typeError = getNestedError(arrayErrors, `${index}.type`);
-  const hrefError = getNestedError(arrayErrors, `${index}.href`);
-  const labelError = getNestedError(arrayErrors, `${index}.label`);
-  const textHrefError = getNestedError(arrayErrors, `${index}.textHref`);
+  const currentHrefText = useWatch({
+    control,
+    name: `${name}.${index}.textHref`,
+  });
 
-  const typeField = register(`${name}.${index}.type`);
+  const [oldHrefText, setOldHrefText] = useState(currentHrefText);
+
   const isContactType = currentType === ContactsType.PHONE || currentType === ContactsType.EMAIL;
 
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    typeField.onChange(e);
+  const option = [
+    { label: "", value: "" },
+    ...Object.values(ContactsType).map((item) => ({ label: item, value: item })),
+  ];
 
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = e.target.value;
+
+    if (currentHrefText !== "contact") {
+      setOldHrefText(currentHrefText);
+    }
 
     if (newType === ContactsType.PHONE || newType === ContactsType.EMAIL) {
       setValue(`${name}.${index}.textHref`, "contact", { shouldValidate: true });
     } else {
-      setValue(`${name}.${index}.textHref`, "", { shouldValidate: true });
+      setValue(`${name}.${index}.textHref`, oldHrefText !== "contact" ? oldHrefText : "", { shouldValidate: true });
     }
   };
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
       <div className="grid gap-4 sm:grid-cols-[250px_1fr]">
-        <div>
-          <label className="mb-2 block text-sm font-medium">{t.type}</label>
-          <select {...typeField} onChange={handleTypeChange} className={`${INPUT_CLASS} uppercase`}>
-            <option value="" disabled hidden>
-              {t.selectPlaceholder}
-            </option>
-            {Object.values(ContactsType).map((type) => (
-              <option className="uppercase" key={type} value={type}>
-                {type === ContactsType.OTHER ? t.typeOther : type}
-              </option>
-            ))}
-          </select>
-          {typeError?.message && <p className="mt-1 text-xs text-red-600">{String(typeError.message)}</p>}
-        </div>
+        <FormSelect label={t.type} name={`${name}.${index}.type`} options={option} onChange={handleTypeChange} />
 
-        <div>
-          <label className="mb-2 block text-sm font-medium">{t.titleContact}</label>
-          <input {...register(`${name}.${index}.label`)} className={INPUT_CLASS} />
-          {labelError?.message && <p className="mt-1 text-xs text-red-600">{String(labelError.message)}</p>}
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium">{t.link}</label>
-          <input
-            {...register(`${name}.${index}.href`)}
-            className={INPUT_CLASS}
-            placeholder={isContactType ? "" : "https://"}
-          />
-          {hrefError?.message && <p className="mt-1 text-xs text-red-600">{String(hrefError.message)}</p>}
-        </div>
-
-        {!isContactType && (
-          <div>
-            <label className="mb-2 block text-sm font-medium">{t.textLink}</label>
-            <input {...register(`${name}.${index}.textHref`)} className={INPUT_CLASS} />
-            {textHrefError?.message && <p className="mt-1 text-xs text-red-600">{String(textHrefError.message)}</p>}
-          </div>
-        )}
+        <FormField name={`${name}.${index}.label`} label={t.titleContact} />
+        <FormField name={`${name}.${index}.href`} label={t.link} />
+        {!isContactType && <FormField name={`${name}.${index}.textHref`} label={t.textLink} />}
       </div>
 
       <div className="mt-4 flex items-center justify-between gap-4">

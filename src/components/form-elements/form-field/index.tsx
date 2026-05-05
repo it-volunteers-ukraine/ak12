@@ -26,6 +26,15 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
   ...props
 }: FormFieldProps<TFieldValues, TElement>) => {
   const Component = component || TextInput;
+
+  if (isCustom) {
+    return (
+      <>
+        <Component name={name} {...props} className={className} />
+      </>
+    );
+  }
+
   const { control } = useFormContext<TFieldValues>();
 
   const {
@@ -44,7 +53,11 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
       <div className={wrapperStyle}>
         <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} className={className} />
 
-        {!isCustom && <div className="min-h-5"> {error && <p className={errorStyle}>{error.message}</p>}</div>}
+        {error && (
+          <div className="min-h-5">
+            <p className={errorStyle}>{error.message}</p>
+          </div>
+        )}
       </div>
     </div>
   );

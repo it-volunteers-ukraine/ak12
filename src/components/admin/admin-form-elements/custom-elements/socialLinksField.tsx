@@ -6,13 +6,7 @@ import { useFormContext, useFieldArray } from "react-hook-form";
 import { SOCIAL_LINKS_LABELS } from "./t";
 import { SocialPlatform } from "@/constants";
 import { Locale } from "@/types";
-
-function getNestedError(errors: any, path: string) {
-  return path.split(".").reduce((acc, part) => acc && acc[part], errors);
-}
-
-const INPUT_CLASS =
-  "h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:ring-2 focus:ring-slate-200 focus:outline-none";
+import { FormField, FormSelect } from "@/components/form-elements";
 
 interface SocialLinksFieldProps extends ComponentPropsWithoutRef<"div"> {
   name: string;
@@ -69,34 +63,20 @@ interface SocialLinkItemProps {
 }
 
 const SocialLinkItem = ({ name, index, t, onRemove }: SocialLinkItemProps) => {
-  const { register, formState } = useFormContext();
-
-  const arrayErrors = getNestedError(formState.errors, name);
-  const platformError = getNestedError(arrayErrors, `${index}.platform`);
-  const hrefError = getNestedError(arrayErrors, `${index}.href`);
+  const option = [
+    { label: "", value: "" },
+    ...Object.values(SocialPlatform).map((item) => ({ label: item, value: item })),
+  ];
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
       <div className="grid gap-4 sm:grid-cols-[250px_1fr]">
         <div>
-          <label className="mb-2 block text-sm font-medium">{t.platform}</label>
-          <select {...register(`${name}.${index}.platform`)} className={`${INPUT_CLASS} uppercase`}>
-            <option value="" disabled hidden>
-              {t.selectPlaceholder}
-            </option>
-            {Object.values(SocialPlatform).map((platform) => (
-              <option className="uppercase" key={platform} value={platform}>
-                {platform === SocialPlatform.OTHER ? t.platformOther : platform}
-              </option>
-            ))}
-          </select>
-          {platformError?.message && <p className="mt-1 text-xs text-red-600">{String(platformError.message)}</p>}
+          <FormSelect label={t.platform} name={`${name}.${index}.platform`} options={option} />
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">{t.link}</label>
-          <input {...register(`${name}.${index}.href`)} className={INPUT_CLASS} placeholder="https://" />
-          {hrefError?.message && <p className="mt-1 text-xs text-red-600">{String(hrefError.message)}</p>}
+          <FormField name={`${name}.${index}.href`} label={t.link} />
         </div>
       </div>
 
