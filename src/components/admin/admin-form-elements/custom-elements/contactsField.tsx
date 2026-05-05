@@ -77,7 +77,7 @@ const ContactItem = ({ name, index, t, onRemove }: ContactItemProps) => {
     name: `${name}.${index}.textHref`,
   });
 
-  const [oldHrefText, setOldHrefText] = useState(currentHrefText);
+  const [oldHrefText, setOldHrefText] = useState(currentHrefText || "");
 
   const isContactType = currentType === ContactsType.PHONE || currentType === ContactsType.EMAIL;
 

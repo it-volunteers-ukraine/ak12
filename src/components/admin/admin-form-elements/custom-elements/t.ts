@@ -58,7 +58,7 @@ export const CONTACTS_LABELS = {
 
 export const FORM_RADIO_BUTTON = {
   uk: {
-    title: "Редагування грипи кнопок",
+    title: "Редагування групи кнопок",
     description: "Додайте, відредагуйте або видаліть кнопки",
     platformOther: "Інша мережа",
     add: "Додати",
