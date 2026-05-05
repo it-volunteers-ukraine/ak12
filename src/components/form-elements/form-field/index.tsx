@@ -42,7 +42,11 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
       <div className={wrapperStyle}>
         <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} className={className} />
 
-        <div className="min-h-5"> {error && <p className={errorStyle}>{error.message}</p>}</div>
+        {error && (
+          <div className="min-h-5">
+            <span className={errorStyle}>{error.message}</span>
+          </div>
+        )}
       </div>
     </div>
   );

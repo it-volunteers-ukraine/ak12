@@ -63,14 +63,6 @@ export const createAboutFormBuilderConfig = (data: AboutData): FormBuilderConfig
             en: "Caption in English",
           },
         },
-        {
-          name: `content.gallery.${index}.secureUrl`,
-          type: "text",
-          label: {
-            uk: "Посилання на зображення",
-            en: "Image URL",
-          },
-        },
       ],
     })),
   ],

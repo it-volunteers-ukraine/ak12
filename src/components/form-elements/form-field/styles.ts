@@ -15,5 +15,5 @@ export const getStyles = ({ error, wrapperComponentClassName, className }: IStyl
     error && "text-red-500",
   ),
   wrapperStyle: cn("flex w-full flex-col gap-2", wrapperComponentClassName),
-  errorStyle: "text-[0.8rem] font-medium text-red-500",
+  errorStyle: "text-[0.8rem] font-medium text-red-500 inline-block",
 });
