@@ -40,7 +40,7 @@ export const SocialLinksField = ({ name, className, locale }: SocialLinksFieldPr
 
       <div className="space-y-4">
         {fields.map((field, index) => (
-          <SocialLinkItem key={field.id} name={name} index={index} t={t} onRemove={() => remove(index)} />
+          <SocialLinkItem key={field.id} name={name} index={index} locale={locale} onRemove={() => remove(index)} />
         ))}
       </div>
 
@@ -56,13 +56,15 @@ export const SocialLinksField = ({ name, className, locale }: SocialLinksFieldPr
 };
 
 interface SocialLinkItemProps {
-  t: any;
   name: string;
   index: number;
+  locale: Locale;
   onRemove: () => void;
 }
 
-const SocialLinkItem = ({ name, index, t, onRemove }: SocialLinkItemProps) => {
+const SocialLinkItem = ({ name, index, locale, onRemove }: SocialLinkItemProps) => {
+  const t = SOCIAL_LINKS_LABELS[locale];
+
   const option = [
     { label: t.selectPlaceholder, value: "" },
     ...Object.values(SocialPlatform).map((item) => {

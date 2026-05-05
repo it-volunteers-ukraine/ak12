@@ -42,7 +42,7 @@ export const ContactsField = ({ name, className, locale }: ContactsFieldProp) =>
 
       <div className="space-y-4">
         {fields.map((field, index) => (
-          <ContactItem key={field.id} name={name} index={index} t={t} onRemove={() => remove(index)} />
+          <ContactItem key={field.id} name={name} index={index} locale={locale} onRemove={() => remove(index)} />
         ))}
       </div>
 
@@ -58,13 +58,15 @@ export const ContactsField = ({ name, className, locale }: ContactsFieldProp) =>
 };
 
 interface ContactItemProps {
-  t: any;
   name: string;
   index: number;
+  locale: Locale;
   onRemove: () => void;
 }
 
-const ContactItem = ({ name, index, t, onRemove }: ContactItemProps) => {
+const ContactItem = ({ name, index, locale, onRemove }: ContactItemProps) => {
+  const t = CONTACTS_LABELS[locale];
+
   const { setValue, control } = useFormContext();
 
   const currentType = useWatch({
