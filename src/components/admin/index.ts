@@ -1,3 +1,5 @@
+export { AboutSectionAdmin } from "./admin-about-section";
+
 export { AdminHeader } from "./header-menu";
 
 export { Contract1824Section } from "./contract-18-24-section";

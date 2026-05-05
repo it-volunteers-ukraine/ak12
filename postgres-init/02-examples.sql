@@ -227,31 +227,37 @@ VALUES
         "content": {
           "title": "Життя корпусу",
           "gallery": [
-            {
-              "text": "Мотивація",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Відвага",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Навчання",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Людяність",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "ЧЕСТЬ",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Побут",
-              "image": "/images/about/about-1.jpg"
-            }
-          ]
+      {
+        "text": "Мотивація",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Відвага",
+        "publicId": "ak12/Courage",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Навчання",
+        "publicId": "ak12/Education",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Людяність",
+        "publicId": "ak12/Humanity",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "ЧЕСТЬ",
+        "publicId": "ak12/Honor",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Побут",
+        "publicId": "ak12/Daily-Life",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      }
+    ]
         }        
       }'::jsonb,
       true,
@@ -265,31 +271,37 @@ VALUES
         "content": {
           "title": "The Life of the Corps",
           "gallery": [
-            {
-              "text": "Motivation",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Courage",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Education",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Humanity",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Honor",
-              "image": "/images/about/about-1.jpg"
-            },
-            {
-              "text": "Daily Life",
-              "image": "/images/about/about-1.jpg"
-            }
-          ]
+      {
+        "text": "Motivation",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Courage",
+        "publicId": "ak12/Courage",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Education",
+        "publicId": "ak12/Education",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Humanity",
+        "publicId": "ak12/Humanity",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Honor",
+        "publicId": "ak12/Honor",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Daily Life",
+        "publicId": "ak12/Daily-Life",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      }
+    ]
         }        
       }'::jsonb,
       true,
