@@ -9,7 +9,7 @@ export const SOCIAL_LINKS_LABELS = {
     item: "Елемент {index}",
     remove: "Видалити",
     emptyState: "Немає доданих соціальних мереж.",
-    selectPlaceholder: "Оберіть соціальну мережу",
+    selectPlaceholder: "Соціальна мережа",
   },
   en: {
     title: "Social networks",
@@ -21,7 +21,7 @@ export const SOCIAL_LINKS_LABELS = {
     item: "Item {index}",
     remove: "Remove",
     emptyState: "No social links have been added.",
-    selectPlaceholder: "Select a social network",
+    selectPlaceholder: "Social network",
   },
 };
 
@@ -38,7 +38,7 @@ export const CONTACTS_LABELS = {
     item: "Елемент {index}",
     remove: "Видалити",
     emptyState: "Немає доданих контактів.",
-    selectPlaceholder: "Оберіть тип контатку",
+    selectPlaceholder: "Тип контатку",
   },
   en: {
     title: "Contacts",
@@ -52,7 +52,7 @@ export const CONTACTS_LABELS = {
     item: "Item {index}",
     remove: "Remove",
     emptyState: "No contacts have been added.",
-    selectPlaceholder: "Select the type of contact",
+    selectPlaceholder: "Type of contact",
   },
 };
 
@@ -60,7 +60,6 @@ export const FORM_RADIO_BUTTON = {
   uk: {
     title: "Редагування грипи кнопок",
     description: "Додайте, відредагуйте або видаліть кнопки",
-    platformOther: "Інша мережа",
     add: "Додати",
     titleButton: "Кнопка",
     item: "Кнопка {index}",
@@ -70,7 +69,6 @@ export const FORM_RADIO_BUTTON = {
   en: {
     title: "Editing the radio button",
     description: "Add, edit or delete buttons",
-    platformOther: "Another network",
     add: "Add",
     titleButton: "Link",
     item: "Button {index}",

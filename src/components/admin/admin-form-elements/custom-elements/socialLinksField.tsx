@@ -64,8 +64,14 @@ interface SocialLinkItemProps {
 
 const SocialLinkItem = ({ name, index, t, onRemove }: SocialLinkItemProps) => {
   const option = [
-    { label: "", value: "" },
-    ...Object.values(SocialPlatform).map((item) => ({ label: item, value: item })),
+    { label: t.selectPlaceholder, value: "" },
+    ...Object.values(SocialPlatform).map((item) => {
+      if (item === "other") {
+        return { label: t.platformOther, value: item };
+      }
+
+      return { label: item, value: item };
+    }),
   ];
 
   return (

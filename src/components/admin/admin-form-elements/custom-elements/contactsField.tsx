@@ -82,8 +82,14 @@ const ContactItem = ({ name, index, t, onRemove }: ContactItemProps) => {
   const isContactType = currentType === ContactsType.PHONE || currentType === ContactsType.EMAIL;
 
   const option = [
-    { label: "", value: "" },
-    ...Object.values(ContactsType).map((item) => ({ label: item, value: item })),
+    { label: t.selectPlaceholder, value: "" },
+    ...Object.values(ContactsType).map((item) => {
+      if (item === "other") {
+        return { label: t.typeOther, value: item };
+      }
+
+      return { label: item, value: item };
+    }),
   ];
 
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
