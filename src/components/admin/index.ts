@@ -19,3 +19,5 @@ export { SubdivisionsListSection } from "./subdivisions-section/subdivisions-lis
 export { AdminViewSiteButton } from "./admin-view-site-button";
 
 export { TransferSection } from "./transfer-section";
+
+export { FeedbackSection } from "./feedback-section";

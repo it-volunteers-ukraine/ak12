@@ -41,7 +41,7 @@ export async function VacancyCard({ vacancy }: Props) {
 
       <p className="mb-10 text-sm leading-5.5 tracking-[0px]">{vacancy.description}</p>
 
-      {contentFeedback && <ApplyButton contentModal={contentFeedback.form} />}
+      {contentFeedback?.form && <ApplyButton contentModal={contentFeedback.form} />}
     </li>
   );
 }

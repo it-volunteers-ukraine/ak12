@@ -2,7 +2,6 @@ export type SectionKey = (typeof SECTION_KEYS)[keyof typeof SECTION_KEYS];
 
 export const SECTION_KEYS = {
   HERO: "hero",
-  CONTACTS: "contacts",
   FEEDBACK: "feedback",
   TRANSFER: "transfer",
   HEADER: "header-footer",

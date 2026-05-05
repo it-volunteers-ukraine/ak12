@@ -9,6 +9,7 @@ import { TextInput } from "../input";
 
 type FormFieldProps<TFieldValues extends FieldValues, TElement extends React.ElementType> = {
   label?: string;
+  isCustom?: boolean;
   component?: TElement;
   name: Path<TFieldValues>;
   wrapperComponentClassName?: string;
@@ -17,6 +18,7 @@ type FormFieldProps<TFieldValues extends FieldValues, TElement extends React.Ele
 export const FormField = <TFieldValues extends FieldValues, TElement extends React.ElementType = typeof TextInput>({
   name,
   label,
+  isCustom,
   component,
   className,
   placeholder,
@@ -24,6 +26,15 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
   ...props
 }: FormFieldProps<TFieldValues, TElement>) => {
   const Component = component || TextInput;
+
+  if (isCustom) {
+    return (
+      <>
+        <Component name={name} {...props} className={className} />
+      </>
+    );
+  }
+
   const { control } = useFormContext<TFieldValues>();
 
   const {
@@ -42,7 +53,11 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
       <div className={wrapperStyle}>
         <Component {...field} {...props} value={field.value ?? ""} invalid={!!error} className={className} />
 
-        <div className="min-h-5"> {error && <p className={errorStyle}>{error.message}</p>}</div>
+        {error && (
+          <div className="min-h-5">
+            <p className={errorStyle}>{error.message}</p>
+          </div>
+        )}
       </div>
     </div>
   );

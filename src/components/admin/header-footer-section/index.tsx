@@ -198,7 +198,7 @@ export const HeaderFooterSection = ({ data }: IHeaderSection) => {
         title="Підтвердіть зміни"
         handleConfirm={handleConfirm}
         onClose={() => setIsModalOpen(false)}
-        content="Ви впевнені, що хочете зберегти зміни в секції Шапка сайту?"
+        content="Ви впевнені, що хочете зберегти зміни в шапці та підвалі сайту?"
       />
     </>
   );

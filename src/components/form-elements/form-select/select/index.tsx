@@ -4,11 +4,11 @@ import { getStyles } from "./style";
 import { SelectProps } from "../types";
 
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
-  ({ options, invalid, placeholder, value, className, ...props }, ref) => {
+  ({ options, invalid, placeholder, value, className, onChange, ...props }, ref) => {
     const { selectStyle } = getStyles({ invalid, className });
 
     return (
-      <select ref={ref} value={value} {...props} className={selectStyle}>
+      <select ref={ref} value={value} {...props} onChange={onChange} className={selectStyle}>
         {placeholder && (
           <option value="" disabled>
             {placeholder}

@@ -9,6 +9,7 @@ export const FormSelect = <T extends FieldValues>({
   name,
   label,
   options,
+  onChange,
   className,
   placeholder,
 }: FormSelectProps<T>) => {
@@ -21,10 +22,20 @@ export const FormSelect = <T extends FieldValues>({
     <div className={cn("flex flex-col gap-2", className)}>
       <label className="w-fit text-sm font-medium">{label}</label>
 
-      <div className="relative pb-5">
-        <Select {...field} options={options} placeholder={placeholder} value={field.value ?? ""} invalid={!!error} />
+      <div className="flex w-full flex-col gap-2">
+        <Select
+          {...field}
+          onChange={(value) => {
+            field.onChange(value);
+            onChange?.(value);
+          }}
+          options={options}
+          placeholder={placeholder}
+          value={field.value ?? ""}
+          invalid={!!error}
+        />
 
-        {error && <p className="absolute bottom-0 left-0 text-xs text-red-500">{error.message}</p>}
+        {error && <p className="text-[0.8rem] font-medium text-red-500">{error.message}</p>}
       </div>
     </div>
   );

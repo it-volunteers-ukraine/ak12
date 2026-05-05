@@ -7,7 +7,7 @@ interface InputProps<T extends FieldValues> extends UseControllerProps<T> {
   label?: string;
   placeholder?: string;
   classNameContainer?: string;
-  radioOptions?: { label: string; value: string }[];
+  radioOptions?: { label: string }[];
 }
 
 export const FormInput = <T extends FieldValues>({
@@ -56,14 +56,14 @@ export const FormInput = <T extends FieldValues>({
           {label && <legend className={styles.radioLabelGroup}>{label}</legend>}
 
           <div className={styles.radioContainer}>
-            {radioOptions.map((option) => (
-              <label key={option.value} className={styles.radioLabel}>
+            {radioOptions.map((option, index) => (
+              <label key={option.label + index} className={styles.radioLabel}>
                 <input
                   className="peer sr-only"
                   type="radio"
-                  value={option.value}
-                  checked={field.value === option.value}
-                  onChange={() => field.onChange(option.value)}
+                  value={option.label}
+                  checked={field.value === option.label}
+                  onChange={() => field.onChange(option.label)}
                 />
                 <div className={styles.radioBigCircle}>
                   <div className={styles.radioSmallCircle} />

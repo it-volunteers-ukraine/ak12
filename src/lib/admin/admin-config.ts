@@ -5,6 +5,7 @@ import {
   contract1824Schema,
   mobilizationSchema,
   headerAndFooterContentSchema,
+  feedbackContentSchema,
 } from "@/schemas";
 import {
   HeroSection,
@@ -12,6 +13,7 @@ import {
   Contract1824Section,
   MobilizationSection,
   HeaderFooterSection,
+  FeedbackSection,
 } from "@/components/admin";
 
 import { AdminSectionKey, IAdminSectionConfig } from "./admin-types";
@@ -41,6 +43,12 @@ export const ADMIN_CONFIG: { [K in AdminSectionKey]: IAdminSectionConfig<K> } = 
     schema: transferSchema,
     sectionKey: SECTION_KEYS.TRANSFER,
     component: TransferSection,
+  },
+  feedback: {
+    label: "Зворотній зв'язок",
+    schema: feedbackContentSchema,
+    sectionKey: SECTION_KEYS.FEEDBACK,
+    component: FeedbackSection,
   },
   "header-footer": {
     label: "Шапка та підвал сайту",

@@ -11,7 +11,7 @@ interface IStyles {
 export const getStyles = ({ error, wrapperComponentClassName, className }: IStyles) => ({
   wrapper: cn("flex w-full flex-col gap-2", className),
   labelStyle: cn(
-    "text-[14px] text-gray-500 leading-none w-fit font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
+    "text-sm w-fit font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70",
     error && "text-red-500",
   ),
   wrapperStyle: cn("flex w-full flex-col gap-2", wrapperComponentClassName),

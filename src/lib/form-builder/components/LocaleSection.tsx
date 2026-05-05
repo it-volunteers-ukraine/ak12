@@ -16,6 +16,7 @@ interface LocaleSectionProps {
 const COMPONENT_BY_TYPE = {
   text: TextInput,
   number: TextInput,
+  custom: TextInput,
   textarea: TextArea,
 };
 
@@ -66,9 +67,11 @@ const SplitLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                         <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>
                       ))}
                     <FormField
+                      locale={locale}
+                      isCustom={field.type === "custom"}
                       name={`${locale}.${field.name}`}
                       component={field.component || COMPONENT_BY_TYPE[field.type]}
-                      className={field.className || "bg-white"}
+                      className={field.type === "custom" ? "" : field.className || "bg-white"}
                       {...field.props}
                     />
                   </div>
@@ -105,9 +108,11 @@ const CombinedLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                     </FlagBadge>
                   </div>
                   <FormField
+                    locale={locale}
+                    isCustom={field.type === "custom"}
                     name={`${locale}.${field.name}`}
                     component={field.component || COMPONENT_BY_TYPE[field.type]}
-                    className={field.className || "bg-white"}
+                    className={field.type === "custom" ? "" : field.className || "bg-white"}
                     {...field.props}
                   />
                 </div>
@@ -150,9 +155,11 @@ const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                       </FlagBadge>
                     </div>
                     <FormField
+                      locale={locale}
+                      isCustom={field.type === "custom"}
                       name={`${locale}.${field.name}`}
                       component={field.component || COMPONENT_BY_TYPE[field.type]}
-                      className={field.className || "bg-white"}
+                      className={field.type === "custom" ? "" : field.className || "bg-white"}
                       {...field.props}
                     />
                   </div>
@@ -197,9 +204,11 @@ const ByLocaleLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                 <div key={`${locale}-${field.name}`}>
                   {field.label && <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>}
                   <FormField
+                    locale={locale}
+                    isCustom={field.type === "custom"}
                     name={`${locale}.${field.name}`}
                     component={field.component || COMPONENT_BY_TYPE[field.type]}
-                    className={field.className || "bg-white"}
+                    className={field.type === "custom" ? "" : field.className || "bg-white"}
                     {...field.props}
                   />
                 </div>
