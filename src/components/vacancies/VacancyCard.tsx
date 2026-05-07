@@ -40,12 +40,17 @@ export function VacancyCard({ vacancy, contentModal }: Props) {
           </p>
         </div>
       </div>
-
-      <p className="mb-2 text-sm leading-5.5 tracking-[0px]">
-        {displayedDescription}
-      </p>
-
-      {contentFeedback && <ApplyButton contentModal={contentFeedback.form} />}
+      <p className="mb-2 text-sm leading-5.5 tracking-[0px]">{displayedDescription}</p>
+      {isLong && (
+        <button
+          onClick={() => setIsExpanded((prev) => !prev)}
+          className="text-accent mb-8 self-start text-sm hover:underline"
+        >
+          {isExpanded ? t("showLess") : t("showMore2")}
+        </button>
+      )}
+      {!isLong && <div className="mb-10" />}
+      <ApplyButton contentModal={contentModal} />
     </li>
   );
 }

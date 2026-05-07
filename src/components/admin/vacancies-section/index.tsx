@@ -28,7 +28,10 @@ const VacancyFormContent = ({
   onReset: () => void;
   onBack?: () => void;
 }) => {
-  const { reset, formState: { isValid } } = useFormContext();
+  const {
+    reset,
+    formState: { isValid },
+  } = useFormContext();
 
   return (
     <>
@@ -44,14 +47,15 @@ const VacancyFormContent = ({
 
       <BtnGroup
         isValid={isValid}
-        onReset={() => { reset(data); onReset(); }}
+        onReset={() => {
+          reset(data);
+          onReset();
+        }}
         submitText="Опублікувати"
         resetText="Скасувати правки"
       />
 
-      <h2 className="mb-1 mt-6 text-lg font-semibold">
-        {data?.uk?.id ? "Редагування вакансії" : "Нова вакансія"}
-      </h2>
+      <h2 className="mt-6 mb-1 text-lg font-semibold">{data?.uk?.id ? "Редагування вакансії" : "Нова вакансія"}</h2>
       <p className="mb-6 text-sm text-red-500">Всі поля обов'язкові*</p>
 
       <div className="mb-4">
@@ -60,18 +64,11 @@ const VacancyFormContent = ({
       </div>
 
       <div className="mb-6 max-w-sm">
-        <SalaryInput
-          nameMin="uk.salaryMin"
-          nameMax="uk.salaryMax"
-          label="Зарплата*"
-        />
+        <SalaryInput nameMin="uk.salaryMin" nameMax="uk.salaryMax" label="Зарплата*" />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <LocaleSection
-          section={vacancyFormBuilderConfig.sections[0]}
-          showOutsideTitle={false}
-        />
+        <LocaleSection section={vacancyFormBuilderConfig.sections[0]} showOutsideTitle={false} />
       </div>
     </>
   );
@@ -87,8 +84,7 @@ export const VacancySection = ({ data, onSuccess, onBack }: IVacancySection) => 
 
   const handleSubmit = async (values: AdminVacancyData) => {
     try {
-      const generateSlug = (position: string) =>
-        slugify(position, { lower: true, strict: true });
+      const generateSlug = (position: string) => slugify(position, { lower: true, strict: true });
 
       if (data?.uk?.id && data?.en?.id) {
         await updateVacancy({
@@ -161,7 +157,10 @@ export const VacancySection = ({ data, onSuccess, onBack }: IVacancySection) => 
   };
 
   const formData: AdminVacancyData = data
-    ? { uk: { ...data.uk }, en: { ...data.en } }
+    ? {
+        uk: { ...data.uk, slug: data.uk.slug ?? "" }, // ← null → ""
+        en: { ...data.en, slug: data.en.slug ?? "" }, // ← null → ""
+      }
     : { uk: empty, en: empty };
 
   return (
