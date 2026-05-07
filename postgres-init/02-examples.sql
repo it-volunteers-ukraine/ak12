@@ -543,23 +543,36 @@ VALUES
     )
 ON CONFLICT (section_key, language_id) DO NOTHING;
 
+
 INSERT INTO vacancy (position, slug, description, type, salary_min, salary_max, is_active, sort_order, language_id)
 VALUES
     (
-        'Оператор БПЛА',
-        'operator-bpla',
-        'Аеророзвідка, виявлення цілей та робота з безпілотними системами в польових умовах.',
+        'Кухар',
+        'kukhar',
+        'Шукаємо відповідальну людину з досвідом роботи кухарем або профільна освіта.',
         'frontline',
-        20000,
-        170000,
+        23000,
+        100000,
         true,
         10,
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Штурмовик',
-        'shturmovyk',
-        'Виконання бойових завдань у складі штурмових груп, участь у маневрових діях та зачистці позицій.',
+        'Cook',
+        'kukhar',
+        'We are looking for a responsible person with cooking experience or relevant education.',
+        'frontline',
+        23000,
+        100000,
+        true,
+        10,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Водій-механік',
+        'vodii-mekhanik',
+        'Перевезення особового складу, спеціальних вантажів та техніки.',
         'frontline',
         20000,
         170000,
@@ -568,20 +581,44 @@ VALUES
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Бойовий медик',
-        'boyovyi-medyk',
-        'Надання допомоги пораненим, участь в евакуації та медичному супроводі підрозділу.',
+        'Driver-Mechanic',
+        'vodii-mekhanik',
+        'Transportation of personnel, special cargo and equipment.',
         'frontline',
         20000,
         170000,
+        true,
+        20,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Водій-санітар',
+        'vodii-sanitar',
+        'Перевезення особового складу, майна, паливно-мастильних матеріалів, забезпечення життєдіяльності підрозділів.',
+        'frontline',
+        20000,
+        NULL,
         true,
         30,
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Фахівець зі зв’язку',
-        'fakhivets-zi-zviazku',
-        'Налаштування засобів зв’язку, підтримка стійких каналів комунікації та координація роботи обладнання.',
+        'Medical Driver',
+        'vodii-sanitar',
+        'Transportation of personnel, property and fuel, ensuring the vital activities of units.',
+        'frontline',
+        20000,
+        NULL,
+        true,
+        30,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Водій-електрик',
+        'vodii-elektryk',
+        'Перевезення особового складу, спеціальних вантажів та техніки. Діагностика та ремонт електрообладнання.',
         'frontline',
         20000,
         170000,
@@ -590,21 +627,45 @@ VALUES
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Водій-механік',
-        'vodii-mekhanik',
-        'Керування технікою, технічний контроль і забезпечення мобільності підрозділу.',
-        'backline',
+        'Driver-Electrician',
+        'vodii-elektryk',
+        'Transportation of personnel, special cargo and equipment. Diagnostics and repair of electrical equipment.',
+        'frontline',
         20000,
-        NULL,
+        170000,
+        true,
+        40,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Гранатометник',
+        'hranatometnnyk',
+        'Військовослужбовець, який використовує гранатомети для ураження ворожої техніки, укріплень та живої сили.',
+        'frontline',
+        20000,
+        170000,
         true,
         50,
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Фахівець із кібербезпеки',
-        'fakhivets-iz-kiberbezpeky',
-        'Захист цифрової інфраструктури, моніторинг загроз та підтримка інформаційної стійкості.',
-        'backline',
+        'Grenadier',
+        'hranatometnnyk',
+        'A serviceman who uses grenade launchers to destroy enemy equipment, fortifications and personnel.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        50,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Навідник',
+        'navidnyk',
+        'Обов''язки пов''язані з прицілюванням та веденням вогню з різного озброєння, координація роботи з екіпажем, пошук та знищення цілей, контроль технічного стану озброєння.',
+        'frontline',
         20000,
         170000,
         true,
@@ -612,10 +673,22 @@ VALUES
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Логіст',
-        'lohist',
-        'Організація постачання, облік ресурсів та підтримка внутрішніх процесів забезпечення.',
-        'backline',
+        'Gunner',
+        'navidnyk',
+        'Responsibilities include aiming and firing various weapons, crew coordination, target acquisition and destruction, and weapons maintenance.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        60,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Стрілець',
+        'strilets',
+        'Основна силова одиниця, яка забезпечує підтримку та ефективність бойових дій, бере участь у оборонних, наступальних операціях та укріпленні позицій.',
+        'frontline',
         20000,
         170000,
         true,
@@ -623,105 +696,223 @@ VALUES
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Фахівець з рекрутингу',
-        'fakhivets-z-rekrutynhu',
-        'Комунікація з кандидатами, супровід відгуків та первинна координація етапів відбору.',
-        'backline',
+        'Rifleman',
+        'strilets',
+        'The main combat unit providing support and effectiveness in battle, participating in defensive and offensive operations and position fortification.',
+        'frontline',
         20000,
         170000,
-        false,
+        true,
+        70,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Снайпер',
+        'snaiper',
+        'Безпосередня робота із закріпленою зброєю, виконання бойових завдань у складі підрозділів, знищення живої сили противника, своєчасне обслуговування власної зброї.',
+        'frontline',
+        20000,
+        170000,
+        true,
         80,
+        (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
+        'Sniper',
+        'snaiper',
+        'Direct work with assigned weapons, execution of combat missions within units, elimination of enemy personnel, timely maintenance of own weapons.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        80,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Санітарний інструктор',
+        'sanitarnyi-instruktor',
+        'Контроль за станом здоров''я особового складу, дотримання військової дисципліни, надання першої медичної допомоги, супровід хворих до лікувальних закладів, ведення медичної документації.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        90,
+        (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
+        'Medical Instructor',
+        'sanitarnyi-instruktor',
+        'Monitoring personnel health, maintaining military discipline, providing first aid, escorting patients to medical facilities, maintaining medical documentation.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        90,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Оператор БПЛА',
+        'operator-bpla',
+        'Керування безпілотними літальними апаратами (БПЛА) відповідно до вимог та інструкцій.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        100,
         (SELECT id FROM language WHERE code = 'uk')
     ),
     (
         'UAV Operator',
-        'uav-operator',
-        'Aerial reconnaissance, target detection and work with unmanned systems in field conditions.',
+        'operator-bpla',
+        'Operation of unmanned aerial vehicles (UAVs) in accordance with requirements and instructions.',
         'frontline',
         20000,
         170000,
         true,
-        10,
+        100,
         (SELECT id FROM language WHERE code = 'en')
     ),
+
     (
-        'Assault Infantryman',
-        'assault-infantryman',
-        'Execution of combat tasks within assault groups, including maneuver operations and position clearing.',
+        'Майстер БПЛА',
+        'maister-bpla',
+        'Ремонт, діагностика, налаштування та відновлення безпілотних літальних апаратів (БПЛА) відповідно до вимог та інструкцій.',
         'frontline',
         20000,
         170000,
         true,
-        20,
-        (SELECT id FROM language WHERE code = 'en')
+        110,
+        (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Combat Medic',
-        'combat-medic',
-        'Provide emergency care, support evacuation and ensure medical support for the unit.',
+        'UAV Technician',
+        'maister-bpla',
+        'Repair, diagnostics, configuration and restoration of unmanned aerial vehicles (UAVs) in accordance with requirements and instructions.',
         'frontline',
         20000,
         170000,
         true,
-        30,
+        110,
         (SELECT id FROM language WHERE code = 'en')
     ),
+
     (
-        'Communications Specialist',
-        'communications-specialist',
-        'Set up communication equipment, maintain stable channels and support operational coordination.',
+        'Зовнішній пілот БПЛА',
+        'zovnishnii-pilot-bpla',
+        'Керування безпілотними літальними апаратами (БПЛА) відповідно до вимог та інструкцій.',
         'frontline',
         20000,
         170000,
         true,
-        40,
-        (SELECT id FROM language WHERE code = 'en')
+        120,
+        (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Driver-Mechanic',
-        'driver-mechanic',
-        'Operate vehicles, monitor technical condition and support unit mobility.',
-        'backline',
+        'External UAV Pilot',
+        'zovnishnii-pilot-bpla',
+        'Piloting unmanned aerial vehicles (UAVs) in accordance with requirements and instructions.',
+        'frontline',
         20000,
-        NULL,
+        170000,
         true,
-        50,
+        120,
         (SELECT id FROM language WHERE code = 'en')
     ),
+
     (
-        'Cybersecurity Specialist',
-        'cybersecurity-specialist',
-        'Protect digital infrastructure, monitor threats and support information resilience.',
+        'Сапер',
+        'saper',
+        'Визначення місця розташування та знешкодження вибухових пристроїв.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        130,
+        (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
+        'Combat Engineer (Sapper)',
+        'saper',
+        'Detection and neutralization of explosive devices.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        130,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Номер обслуги',
+        'nomer-obsluhy',
+        'Технічне обслуговування, експлуатація та підтримка озброєння та техніки у складі підрозділу, допомога навідникам у виконанні завдань.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        140,
+        (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
+        'Crew Member',
+        'nomer-obsluhy',
+        'Technical maintenance, operation and support of weapons and equipment within the unit, assisting gunners in task execution.',
+        'frontline',
+        20000,
+        170000,
+        true,
+        140,
+        (SELECT id FROM language WHERE code = 'en')
+    ),
+
+    (
+        'Бухгалтер',
+        'bukhhalter',
+        'Організація бухгалтерського обліку, ведення фінансової документації підрозділу, забезпечення своєчасної підготовки звітності та дотримання фінансової дисципліни.',
         'backline',
         20000,
         170000,
         true,
-        60,
-        (SELECT id FROM language WHERE code = 'en')
+        150,
+        (SELECT id FROM language WHERE code = 'uk')
     ),
     (
-        'Logistics Specialist',
-        'logistics-specialist',
-        'Organize supply operations, maintain resource records and support internal logistics processes.',
+        'Accountant',
+        'bukhhalter',
+        'Organization of accounting, maintenance of financial documentation, ensuring timely reporting and financial discipline.',
         'backline',
         20000,
         170000,
         true,
-        70,
+        150,
         (SELECT id FROM language WHERE code = 'en')
     ),
+
     (
-        'Recruitment Specialist',
-        'recruitment-specialist',
-        'Communicate with candidates, manage incoming applications and coordinate initial selection stages.',
+        'Бойовий медик взводу',
+        'boyovyi-medyk-vzvodu',
+        'Контроль за станом здоров''я особового складу взводу, надання першої медичної допомоги, евакуація особового складу, ведення медичної документації підрозділу.',
         'backline',
         20000,
         170000,
-        false,
-        80,
+        true,
+        160,
+        (SELECT id FROM language WHERE code = 'uk')
+    ),
+    (
+        'Platoon Combat Medic',
+        'boyovyi-medyk-vzvodu',
+        'Monitoring platoon personnel health, providing first aid, personnel evacuation, maintaining unit medical documentation.',
+        'backline',
+        20000,
+        170000,
+        true,
+        160,
         (SELECT id FROM language WHERE code = 'en')
     );
-
 
 INSERT INTO subdivision (
   name, slug, description,
@@ -863,9 +1054,7 @@ VALUES
     (SELECT id FROM language WHERE code = 'uk')
   );
 
--- ============================================================
--- STEP 4: Insert 11 subdivisions — English locale
--- ============================================================
+
 INSERT INTO subdivision (
   name, slug, description,
   hover_name, hover_description,

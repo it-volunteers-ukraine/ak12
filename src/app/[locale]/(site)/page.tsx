@@ -5,11 +5,13 @@ import { VacanciesSection } from "@/components/vacancies";
 import { LifeOfTheUnit } from "@/components/life-of-the-unit";
 import { FeedbackSection } from "@/components/feedback-section";
 import { MarqueeLine, SubdivisionsSection } from "@/components";
-import { DEFAULT_PAGE, DEFAULT_TYPE } from "@/constants/vacancies";
+import { DEFAULT_TYPE } from "@/constants/vacancies";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
+import { SECTION_KEYS } from "@/constants";
+import { contentService } from "@/lib/content/content.service";
+import { feedbackContentSchema } from "@/schemas";
 
 export interface SearchParamsProps {
-  page?: string;
   type?: VacancyType;
 }
 
@@ -21,12 +23,17 @@ export default async function Home({
   searchParams: Promise<SearchParamsProps>;
 }) {
   const { locale } = await params;
+  const initialType = (await searchParams).type || DEFAULT_TYPE;
 
-  const type = (await searchParams).type || DEFAULT_TYPE;
-
-  const page = Number((await searchParams).page) || DEFAULT_PAGE;
-
-  const { vacancies } = await getVacancies();
+  // ✅ Один запит замість N (по одному на кожну картку)
+  const [{ vacancies }, contentFeedback] = await Promise.all([
+    getVacancies(),
+    contentService.get({
+      locale,
+      schema: feedbackContentSchema,
+      section: SECTION_KEYS.FEEDBACK,
+    }),
+  ]);
 
   const vacanciesTitleList = vacancies.map((item) => item.position);
 
@@ -36,7 +43,11 @@ export default async function Home({
         <HeroSection locale={locale} />
         <LifeOfTheUnit locale={locale} />
         <SubdivisionsSection locale={locale} />
-        <VacanciesSection type={type} page={page} vacancies={vacancies} />
+        <VacanciesSection
+          vacancies={vacancies}
+          initialType={initialType}
+          contentModal={contentFeedback?.form ?? null}
+        />
         <FeedbackSection locale={locale} />
         <MarqueeLine itemList={vacanciesTitleList} />
       </main>
