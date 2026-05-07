@@ -36,8 +36,6 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
   });
 
   const onSubmit: SubmitHandler<IFeedbackForm> = async (data) => {
-    //TODO  await відправка даних на email
-    console.log("Відправлено:", data);
 
     reset();
   };

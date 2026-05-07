@@ -29,8 +29,7 @@ export const ApplyButton = ({ contentModal }: { contentModal: FeedbackFormConten
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="bg-surface-main border-accent hover:bg-ho
-        ver mt-auto flex w-full items-center justify-center gap-1 border-2 py-1.5 transition-colors"
+        className="bg-surface-main border-accent hover:bg-hover mt-auto flex w-full items-center justify-center gap-1 border-2 py-1.5 transition-colors"
       >
         <span className="font-ermilov text-soft-blush text-[20px] leading-7 font-bold">
           {t("apply")}
