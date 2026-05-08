@@ -25,8 +25,7 @@ export default async function Home({
   const { locale } = await params;
   const initialType = (await searchParams).type || DEFAULT_TYPE;
 
-  // ✅ Один запит замість N (по одному на кожну картку)
-  const [{ vacancies }, contentFeedback] = await Promise.all([
+  const [{ vacancies: allVacancies }, contentFeedback] = await Promise.all([
     getVacancies(),
     contentService.get({
       locale,
@@ -35,6 +34,7 @@ export default async function Home({
     }),
   ]);
 
+  const vacancies = allVacancies.filter((v) => v.isActive);
   const vacanciesTitleList = vacancies.map((item) => item.position);
 
   return (

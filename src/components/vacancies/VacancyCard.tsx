@@ -46,7 +46,7 @@ export function VacancyCard({ vacancy, contentModal }: Props) {
           onClick={() => setIsExpanded((prev) => !prev)}
           className="text-accent mb-8 self-start text-sm hover:underline"
         >
-          {isExpanded ? t("showLess") : t("showMore2")}
+          {isExpanded ? t("readLess") : t("readMore")}
         </button>
       )}
       {!isLong && <div className="mb-10" />}

@@ -100,7 +100,7 @@ export const VacancySection = ({ data, onSuccess, onBack }: IVacancySection) => 
           },
           en: {
             position: values.en.position,
-            slug: data.en.slug ?? generateSlug(values.uk.position),
+            slug: data.en.slug ?? generateSlug(values.en.position),
             description: values.en.description,
           },
         });

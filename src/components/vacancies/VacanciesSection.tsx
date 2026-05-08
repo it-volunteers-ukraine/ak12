@@ -25,9 +25,9 @@ export function VacanciesSection({ vacancies, initialType, contentModal }: Props
   };
 
   const filteredVacancies = useMemo(
-    () => vacancies.filter((v) => v.type === activeType && v.isActive),
-    [vacancies, activeType],
-  );
+  () => vacancies.filter((v) => v.type === activeType), 
+  [vacancies, activeType],
+);
 
   const visibleVacancies = filteredVacancies.slice(0, (page + 1) * DEFAULT_LIMIT);
   const remainingVacancies = filteredVacancies.length - visibleVacancies.length;
