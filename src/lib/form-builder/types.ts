@@ -4,7 +4,7 @@ export type Locale = "uk" | "en";
 
 export const LOCALES: Locale[] = ["uk", "en"];
 
-export type FieldType = "text" | "textarea" | "number";
+export type FieldType = "text" | "textarea" | "number" | "image";
 
 export interface FieldConfig {
   name: string;
@@ -22,7 +22,9 @@ export interface SectionConfig {
   id: string;
   title?: string;
   titlePlacement?: "inside" | "outside";
-  localeLayout?: "split" | "combined" | "by-field-2col" | "by-locale-2col";
+  localeLayout?: "split" | "combined" | "by-field-2col" | "by-locale-2col" | "gallery-3col";
+  localeTitles?: Partial<Record<Locale, string>>;
+  hideLocaleBadge?: boolean;
   group?: string;
   fields: FieldConfig[];
 }

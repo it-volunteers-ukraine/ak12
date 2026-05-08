@@ -1,24 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import z from "zod";
 import { useRouter } from "next/navigation";
+import { UseFormReturn } from "react-hook-form";
 
-import { FormBuilder } from "@/lib/form-builder";
 import { showMessage } from "@/components/toastify";
-import { FormImg } from "@/components/form-elements";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
 import { updateAboutMultiLangAction } from "@/actions/about";
-import { createAboutFormBuilderConfig } from "@/lib/admin/configs/about.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
+import { AboutFormContent } from "./about-form-content";
+import { remapFilesAfterRemove, remapRemovedIndexesAfterRemove } from "./gallery.helpers";
 
 type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["about"];
+type GalleryItem = NonNullable<FormValues["uk"]["content"]["gallery"][number]>;
+type SubmitResult =
+  | {
+      success: true;
+      nextEnGallery: Array<GalleryItem | null | undefined>;
+      nextUkGallery: Array<GalleryItem | null | undefined>;
+    }
+  | { success: false; error: string };
 interface IAboutSection {
   data: AdminData;
 }
@@ -27,13 +35,12 @@ export const adminSchema = ADMIN_SCHEMAS.about;
 
 export const AboutSectionAdmin = ({ data }: IAboutSection) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
+  const formMethodsRef = useRef<UseFormReturn<FormValues> | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<Record<number, File | null>>({});
   const [removedImageIndexes, setRemovedImageIndexes] = useState<Set<number>>(new Set());
-
-  const existingGallery = data.uk?.content?.gallery ?? [];
+  const [isPending, startTransition] = useTransition();
 
   const handleGalleryFileChange = (index: number, file: File | null) => {
     setGalleryFiles((prev) => ({ ...prev, [index]: file }));
@@ -46,9 +53,14 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
     });
   };
 
-  const handleGalleryRemove = (index: number) => {
+  const handleGalleryImageRemove = (index: number) => {
     setGalleryFiles((prev) => ({ ...prev, [index]: null }));
     setRemovedImageIndexes((prev) => new Set(prev).add(index));
+  };
+
+  const handleGalleryItemRemove = (index: number) => {
+    setGalleryFiles((prev) => remapFilesAfterRemove(prev, index));
+    setRemovedImageIndexes((prev) => remapRemovedIndexesAfterRemove(prev, index));
   };
 
   const handleFormReset = () => {
@@ -56,35 +68,33 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
     setRemovedImageIndexes(new Set());
   };
 
-  const handleSubmit = async (values: FormValues) => {
+  const handleSubmit = async (values: FormValues): Promise<SubmitResult> => {
     const uploadedImagePublicIds: string[] = [];
-    const oldImagePublicIdsForCleanup = new Set<string>();
+    const oldImagePublicIds = new Set<string>();
 
     try {
       const nextUkGallery = [...(values.uk?.content?.gallery ?? [])];
-      const nextEnGallery = [...(values.en?.content?.gallery ?? [])];
 
       for (let index = 0; index < nextUkGallery.length; index += 1) {
         const newFile = galleryFiles[index];
         const isRemoved = removedImageIndexes.has(index);
-        const ukItem = nextUkGallery[index];
-        const enItem = nextEnGallery[index];
-        const oldImagePublicId =
-          data.uk?.content?.gallery?.[index]?.publicId ?? data.en?.content?.gallery?.[index]?.publicId ?? null;
+        const currentItem = nextUkGallery[index];
+
+        if (!currentItem) {
+          continue;
+        }
+
+        const oldImagePublicId = currentItem.publicId ?? null;
 
         if (isRemoved && !newFile) {
-          if (ukItem) {
-            ukItem.secureUrl = "";
-            ukItem.publicId = undefined;
-          }
-
-          if (enItem) {
-            enItem.secureUrl = "";
-            enItem.publicId = undefined;
-          }
+          nextUkGallery[index] = {
+            ...currentItem,
+            secureUrl: undefined,
+            publicId: undefined,
+          };
 
           if (oldImagePublicId) {
-            oldImagePublicIdsForCleanup.add(oldImagePublicId);
+            oldImagePublicIds.add(oldImagePublicId);
           }
 
           continue;
@@ -105,22 +115,32 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
 
         const uploadedImage = uploadResult.data;
 
+        nextUkGallery[index] = {
+          ...currentItem,
+          secureUrl: uploadedImage.secureUrl,
+          publicId: uploadedImage.publicId,
+        };
+
         uploadedImagePublicIds.push(uploadedImage.publicId);
 
-        if (ukItem) {
-          ukItem.secureUrl = uploadedImage.secureUrl;
-          ukItem.publicId = uploadedImage.publicId;
-        }
-
-        if (enItem) {
-          enItem.secureUrl = uploadedImage.secureUrl;
-          enItem.publicId = uploadedImage.publicId;
-        }
-
         if (oldImagePublicId && oldImagePublicId !== uploadedImage.publicId) {
-          oldImagePublicIdsForCleanup.add(oldImagePublicId);
+          oldImagePublicIds.add(oldImagePublicId);
         }
       }
+
+      const nextEnGallery = (values.en?.content?.gallery ?? []).map((enItem, index) => {
+        if (!enItem) {
+          return enItem;
+        }
+
+        const ukGalleryItem = nextUkGallery[index];
+
+        return {
+          ...enItem,
+          secureUrl: ukGalleryItem?.secureUrl ?? undefined,
+          publicId: ukGalleryItem?.publicId ?? undefined,
+        };
+      });
 
       const res = await updateAboutMultiLangAction({
         ...values,
@@ -144,12 +164,12 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
         await Promise.all(uploadedImagePublicIds.map((publicId) => deleteImageAction(publicId)));
         showMessage.error("Не вдалося оновити дані");
 
-        return res;
+        return { success: false, error: "Не вдалося оновити дані" };
       }
 
-      if (oldImagePublicIdsForCleanup.size) {
+      if (oldImagePublicIds.size) {
         const cleanupResults = await Promise.all(
-          Array.from(oldImagePublicIdsForCleanup).map((publicId) => deleteImageAction(publicId)),
+          Array.from(oldImagePublicIds).map((publicId) => deleteImageAction(publicId)),
         );
         const hasCleanupErrors = cleanupResults.some((result) => !result.success);
 
@@ -158,20 +178,12 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
         }
       }
 
-      showMessage.success("Дані успішно оновилися!");
-      setGalleryFiles({});
-      setRemovedImageIndexes(new Set());
-      router.refresh();
-
-      return res;
+      return { success: true, nextUkGallery, nextEnGallery };
     } catch {
       await Promise.all(uploadedImagePublicIds.map((publicId) => deleteImageAction(publicId)));
       showMessage.error("Не вдалося оновити дані");
 
-      return {
-        success: false,
-        error: "Internal Server Error",
-      };
+      return { success: false, error: "Internal Server Error" };
     }
   };
 
@@ -184,20 +196,34 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
     if (!pendingData) {
       return;
     }
+    startTransition(async () => {
+      try {
+        const result = await handleSubmit(pendingData);
 
-    setIsLoading(true);
+        if (result && !result.success) {
+          return;
+        }
 
-    try {
-      const result = await handleSubmit(pendingData);
+        if (result.success) {
+          formMethodsRef.current?.setValue("uk.content.gallery", result.nextUkGallery, {
+            shouldDirty: false,
+            shouldValidate: false,
+          });
+          formMethodsRef.current?.setValue("en.content.gallery", result.nextEnGallery, {
+            shouldDirty: false,
+            shouldValidate: false,
+          });
+          showMessage.success("Дані успішно оновилися!");
+        }
 
-      if (result && !result.success) {
-        return;
+        router.refresh();
+        setIsModalOpen(false);
+        setGalleryFiles({});
+        setRemovedImageIndexes(new Set());
+      } catch {
+        showMessage.error("Помилка при збереженні");
       }
-
-      setIsModalOpen(false);
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (
@@ -206,38 +232,28 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
         schema={adminSchema}
         initialValues={data}
         onSubmit={onFormSubmit}
-        key={data.uk?.mainTitle || data.en?.mainTitle || "about"}
+        key={JSON.stringify(data.uk.content.gallery.map((i) => i?.secureUrl))}
       >
-        <FormBuilder data={data} config={createAboutFormBuilderConfig(data)} onReset={handleFormReset} />
+        {(methods) => {
+          formMethodsRef.current = methods;
 
-        {!!existingGallery.length && (
-          <div className="mt-10 space-y-6">
-            <h4 className="text-lg font-medium">Зображення галереї</h4>
-            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-              {existingGallery.map((item, index) => {
-                const currentImageSrc =
-                  removedImageIndexes.has(index) && !galleryFiles[index] ? null : (item?.secureUrl ?? null);
-
-                return (
-                  <div key={`about-gallery-image-${index}`}>
-                    <FormImg
-                      src={currentImageSrc}
-                      file={galleryFiles[index] ?? null}
-                      onRemove={() => handleGalleryRemove(index)}
-                      onFileChange={(file) => handleGalleryFileChange(index, file)}
-                      label={`Фото елемента #${index + 1}`}
-                    />
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+          return (
+            <AboutFormContent
+              data={data}
+              onReset={handleFormReset}
+              galleryFiles={galleryFiles}
+              removedImageIndexes={removedImageIndexes}
+              onGalleryFileChange={handleGalleryFileChange}
+              onGalleryItemRemove={handleGalleryItemRemove}
+              onGalleryImageRemove={handleGalleryImageRemove}
+            />
+          );
+        }}
       </FormWrapper>
 
       <ConfirmModal
         isOpen={isModalOpen}
-        isLoading={isLoading}
+        isLoading={isPending}
         title="Підтвердіть зміни"
         handleConfirm={handleConfirm}
         onClose={() => setIsModalOpen(false)}

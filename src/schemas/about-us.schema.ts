@@ -15,7 +15,6 @@ export const aboutUsSchema = z.object({
   mainTitle: z.string().min(1, "Заголовок секції обов'язковий"),
   description: z.string().min(1, "Заголовок секції обов'язковий"),
   content: z.object({
-    title: z.string().min(1, "Заголовок секції обов'язковий"),
     gallery: z.array(aboutUsItemSchema).min(1, "Додайте хоча б один елемент"),
   }),
 });

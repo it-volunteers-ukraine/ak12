@@ -38,23 +38,33 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
       return null;
     }
 
+    const galleryItems = content.content.gallery.filter((item) => {
+      const url = item?.secureUrl;
+
+      return Boolean(url && url.trim() !== "");
+    });
+
+    if (galleryItems.length === 0) {
+      return null;
+    }
+
     return (
       <section className="container mx-auto px-4 py-16" id="life-corps">
         <h2 className="mb-10 text-center text-3xl font-bold tracking-tight uppercase">{content.mainTitle}</h2>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {content.content.gallery.map((item, index) => (
+          {galleryItems.map((item, index) => (
             <div
               key={index}
               className="group overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-lg"
             >
               <div className="relative h-64 w-full bg-slate-100">
-                {item.image && item.image.trim() !== "" ? (
+                {item?.secureUrl && item.secureUrl.trim() !== "" ? (
                   <Image
                     width={500}
                     height={400}
-                    src={item.image}
                     alt={item.text}
+                    src={item.secureUrl}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
@@ -62,7 +72,7 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
                 )}
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-slate-900 uppercase">{item.text}</h3>
+                <h3 className="text-xl font-bold text-slate-900 uppercase">{item?.text}</h3>
               </div>
             </div>
           ))}

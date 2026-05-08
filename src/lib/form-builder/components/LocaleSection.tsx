@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 
 import { logger } from "@/lib/logger";
-import { TextArea, FormField, TextInput } from "@/components/form-elements";
+import { FormImg, TextArea, FormField, TextInput } from "@/components/form-elements";
 
 import { En, Uk } from "../../../../public/icons";
 import { LOCALES, SectionConfig } from "../types";
@@ -11,7 +11,14 @@ import { LOCALES, SectionConfig } from "../types";
 interface LocaleSectionProps {
   section: SectionConfig;
   showOutsideTitle: boolean;
+  removedImageIndexes?: Set<number>;
+  onGalleryRemove?: (index: number) => void;
+  galleryFiles?: Record<number, File | null>;
+  onGalleryItemRemove?: (index: number) => void;
+  gallerySrcByIndex?: Record<number, string | null>;
+  onGalleryFileChange?: (index: number, file: File | null) => void;
 }
+type RenderFieldOptions = Omit<LocaleSectionProps, "section" | "showOutsideTitle">;
 
 const COMPONENT_BY_TYPE = {
   text: TextInput,
@@ -24,13 +31,70 @@ const LANGUAGE_ICONS = {
   en: En,
 };
 
+const DEFAULT_LOCALE_TITLES: Record<(typeof LOCALES)[number], string> = {
+  uk: "Українська",
+  en: "English",
+};
+
+const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en", options: RenderFieldOptions) => {
+  if (field.type === "image") {
+    const imageIndex = Number(field.props?.imageIndex ?? -1);
+
+    if (imageIndex < 0) {
+      return null;
+    }
+
+    const isRemoved = options.removedImageIndexes?.has(imageIndex) ?? false;
+    const file = options.galleryFiles?.[imageIndex] ?? null;
+    const src = isRemoved && !file ? null : (options.gallerySrcByIndex?.[imageIndex] ?? null);
+    const imageLabel = field.props?.hideImageLabel
+      ? undefined
+      : (field.props?.imageLabel ?? field.label?.[locale] ?? "Фото");
+
+    const canRemoveGalleryItem = imageIndex >= 6;
+
+    return (
+      <div className="space-y-3">
+        <FormImg
+          src={src}
+          file={file}
+          label={imageLabel}
+          imageAspectClassName={field.props?.imageAspectClassName}
+          imageFrameClassName={field.props?.imageFrameClassName}
+          containerClassName={field.props?.containerClassName}
+          onRemove={() => options.onGalleryRemove?.(imageIndex)}
+          onFileChange={(nextFile) => options.onGalleryFileChange?.(imageIndex, nextFile)}
+        />
+        {canRemoveGalleryItem && (
+          <button
+            type="button"
+            onClick={() => options.onGalleryItemRemove?.(imageIndex)}
+            className="rounded-md border border-red-300 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+          >
+            Видалити елемент галереї
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <FormField
+      name={`${locale}.${field.name}`}
+      component={field.component || COMPONENT_BY_TYPE[field.type]}
+      className={field.className || "bg-white"}
+      {...field.props}
+    />
+  );
+};
+
 const FlagBadge = ({ children, size = "sm" }: { children: ReactNode; size?: "sm" | "md" }) => {
   const classes = size === "md" ? "h-8 w-8" : "h-5 w-5";
 
   return <span className={`inline-flex ${classes} overflow-hidden rounded-full`}>{children}</span>;
 };
 
-const SplitLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
+const SplitLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   return (
     <>
       {LOCALES.map((locale) => {
@@ -65,12 +129,7 @@ const SplitLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                       ) : (
                         <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>
                       ))}
-                    <FormField
-                      name={`${locale}.${field.name}`}
-                      component={field.component || COMPONENT_BY_TYPE[field.type]}
-                      className={field.className || "bg-white"}
-                      {...field.props}
-                    />
+                    {renderField(field, locale, options)}
                   </div>
                 ))}
             </div>
@@ -81,7 +140,7 @@ const SplitLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
   );
 };
 
-const CombinedLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
+const CombinedLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   return (
     <div className="rounded-xl border border-gray-200 bg-gray-100 p-6">
       {!showOutsideTitle && section.title && (
@@ -100,16 +159,13 @@ const CombinedLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                 <div key={`${locale}-${field.name}`}>
                   <div className="mb-2 flex items-center justify-between">
                     {field.label && <label className="block text-sm font-medium">{field.label[locale]}</label>}
-                    <FlagBadge>
-                      <Icon width={28} height={20} />
-                    </FlagBadge>
+                    {!section.hideLocaleBadge && (
+                      <FlagBadge>
+                        <Icon width={28} height={20} />
+                      </FlagBadge>
+                    )}
                   </div>
-                  <FormField
-                    name={`${locale}.${field.name}`}
-                    component={field.component || COMPONENT_BY_TYPE[field.type]}
-                    className={field.className || "bg-white"}
-                    {...field.props}
-                  />
+                  {renderField(field, locale, options)}
                 </div>
               );
             })}
@@ -120,7 +176,7 @@ const CombinedLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
   );
 };
 
-const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
+const ByFieldLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   return (
     <div className="rounded-xl border border-gray-200 bg-gray-100 p-6">
       {!showOutsideTitle && section.title && (
@@ -149,12 +205,7 @@ const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
                         <Icon width={28} height={20} />
                       </FlagBadge>
                     </div>
-                    <FormField
-                      name={`${locale}.${field.name}`}
-                      component={field.component || COMPONENT_BY_TYPE[field.type]}
-                      className={field.className || "bg-white"}
-                      {...field.props}
-                    />
+                    {renderField(field, locale, options)}
                   </div>
                 );
               })}
@@ -166,7 +217,7 @@ const ByFieldLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
   );
 };
 
-const ByLocaleLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
+const ByLocaleLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   return (
     <div className="rounded-xl border border-gray-200 bg-gray-100 p-6">
       {!showOutsideTitle && section.title && (
@@ -196,14 +247,58 @@ const ByLocaleLayout = ({ section, showOutsideTitle }: LocaleSectionProps) => {
               {localeFields.map((field) => (
                 <div key={`${locale}-${field.name}`}>
                   {field.label && <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>}
-                  <FormField
-                    name={`${locale}.${field.name}`}
-                    component={field.component || COMPONENT_BY_TYPE[field.type]}
-                    className={field.className || "bg-white"}
-                    {...field.props}
-                  />
+                  {renderField(field, locale, options)}
                 </div>
               ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
+  const imageFields = section.fields.filter((field) => field.type === "image");
+  const contentFields = section.fields.filter((field) => field.type !== "image");
+
+  return (
+    <div className="rounded-xl border border-gray-200 bg-gray-100 p-6">
+      {!showOutsideTitle && section.title && (
+        <div className="mb-6">
+          <h4 className="text-lg font-medium">{section.title}</h4>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="space-y-4">
+          {imageFields.map((field) => (
+            <div key={`gallery-image-${field.name}`}>{renderField(field, "uk", options)}</div>
+          ))}
+        </div>
+
+        {LOCALES.map((locale) => {
+          const Icon = LANGUAGE_ICONS[locale];
+
+          return (
+            <div key={`gallery-locale-${locale}`} className="space-y-4">
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-lg font-semibold">
+                  {section.localeTitles?.[locale] || DEFAULT_LOCALE_TITLES[locale]}
+                </p>
+                <FlagBadge>
+                  <Icon width={28} height={20} />
+                </FlagBadge>
+              </div>
+
+              {contentFields
+                .filter((field) => (field.locales || LOCALES).includes(locale))
+                .map((field) => (
+                  <div key={`gallery-${locale}-${field.name}`}>
+                    {field.label && <label className="mb-1 block text-sm">{field.label[locale]}</label>}
+                    {renderField(field, locale, options)}
+                  </div>
+                ))}
             </div>
           );
         })}
@@ -217,17 +312,18 @@ const LAYOUT_COMPONENTS: Record<string, React.FC<LocaleSectionProps>> = {
   combined: CombinedLayout,
   "by-field-2col": ByFieldLayout,
   "by-locale-2col": ByLocaleLayout,
+  "gallery-3col": GalleryThreeColLayout,
 };
 
-export const LocaleSection = ({ section, showOutsideTitle }: LocaleSectionProps) => {
+export const LocaleSection = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   const layout = section.localeLayout || "split";
   const LayoutComponent = LAYOUT_COMPONENTS[layout];
 
   if (!LayoutComponent) {
     logger.warn(`Unknown layout: ${layout}. Falling back to 'split'.`);
 
-    return <SplitLayout section={section} showOutsideTitle={showOutsideTitle} />;
+    return <SplitLayout section={section} showOutsideTitle={showOutsideTitle} {...options} />;
   }
 
-  return <LayoutComponent section={section} showOutsideTitle={showOutsideTitle} />;
+  return <LayoutComponent section={section} showOutsideTitle={showOutsideTitle} {...options} />;
 };

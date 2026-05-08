@@ -16,7 +16,13 @@ interface FormBuilderProps {
   onImageRemove?: () => void;
   bannerSrc?: LocaleBackgroundImage;
   isImageMarkedForRemoval?: boolean;
+  removedImageIndexes?: Set<number>;
+  onGalleryRemove?: (index: number) => void;
+  galleryFiles?: Record<number, File | null>;
   onImageChange?: (file: File | null) => void;
+  onGalleryItemRemove?: (index: number) => void;
+  gallerySrcByIndex?: Record<number, string | null>;
+  onGalleryFileChange?: (index: number, file: File | null) => void;
 }
 type LocaleBackgroundImage = {
   publicId?: string | null;
@@ -59,7 +65,13 @@ export const FormBuilder = ({
   bannerSrc,
   onImageChange,
   onImageRemove,
+  onGalleryRemove,
+  galleryFiles = {},
+  onGalleryFileChange,
+  onGalleryItemRemove,
+  gallerySrcByIndex = {},
   isImageMarkedForRemoval = false,
+  removedImageIndexes = new Set<number>(),
 }: FormBuilderProps) => {
   const { reset, formState } = useFormContext();
   const { isValid } = formState;
@@ -95,7 +107,16 @@ export const FormBuilder = ({
               />
             </div>
           )}
-          <LocaleSection section={section} showOutsideTitle={showOutsideTitle} />
+          <LocaleSection
+            section={section}
+            galleryFiles={galleryFiles}
+            onGalleryRemove={onGalleryRemove}
+            showOutsideTitle={showOutsideTitle}
+            gallerySrcByIndex={gallerySrcByIndex}
+            removedImageIndexes={removedImageIndexes}
+            onGalleryFileChange={onGalleryFileChange}
+            onGalleryItemRemove={onGalleryItemRemove}
+          />
         </div>
       </div>
     );

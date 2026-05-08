@@ -225,8 +225,12 @@ VALUES
         "mainTitle": "12-й Армійський корпус",
         "description": "Ми засновані у жовтні 2024 року як відповідь на виклики сучасної війни. Наша структура об’єднує штурмовий драйв, високотехнологічні безпілотні системи, надійний зв’язок та залізне ППО. Ми будуємо армію майбутнього, де досвід зустрічається з інноваціями.",
         "content": {
-          "title": "Життя корпусу",
           "gallery": [
+      {
+        "text": "Життя корпусу",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
       {
         "text": "Мотивація",
         "publicId": "ak12/Motivation",
@@ -269,8 +273,12 @@ VALUES
         "mainTitle": "12th Army Corps",
         "description": "We were founded in October 2024 in response to the challenges of modern warfare. Our organization combines an aggressive offensive mindset, high-tech unmanned systems, reliable communications, and robust air defense. We are building the army of the future, where experience meets innovation.",
         "content": {
-          "title": "The Life of the Corps",
           "gallery": [
+      {
+        "text": "The Life of the Corps",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
       {
         "text": "Motivation",
         "publicId": "ak12/Motivation",
