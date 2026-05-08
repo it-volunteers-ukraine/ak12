@@ -19,10 +19,10 @@
     "salary": "Зарплата",
     "from": "Від",
     "currency": "грн",
-    "requirements": "Вимоги",
-    "showMore": "Показати ще",
-    "readLess": "Згорнути",
     "apply": "Подати заявку",
+    "showMore": "Показати ще",
+    "readLess": "Показати менше",
+    "readMore": "Показати більше",
     "noResults": "Наразі вакансії відсутні"
   },
   "validation": {

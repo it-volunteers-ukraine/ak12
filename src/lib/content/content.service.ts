@@ -60,7 +60,6 @@ export const contentService = {
 
     if (!parsed.success) {
       logger.error({ section, error: z.flattenError(parsed.error) }, "Invalid section content");
-
       return null;
     }
 

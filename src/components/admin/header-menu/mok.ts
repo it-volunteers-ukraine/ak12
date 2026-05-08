@@ -24,8 +24,7 @@ export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {
     { id: "list", label: "Всі підрозділи ", status: "1min" },
   ],
   careers: [
-    { id: "combat", label: "Бойові вакансії", status: "1min" },
-    { id: "logistics", label: "Тилові вакансії", status: "1min" },
+    { id: "list", label: "Всі вакансії", status: "1min" },
   ],
   ceo: [
     { id: "general", label: "Загальні", status: "1min" },
