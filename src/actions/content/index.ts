@@ -25,9 +25,9 @@ type SaveContentAction = {
 };
 
 const schemasMap: Record<SectionKey, z.ZodType> = {
+  [SECTION_KEYS.ABOUT]: aboutUsSchema,
   [SECTION_KEYS.HERO]: heroContentSchema,
   [SECTION_KEYS.TRANSFER]: transferSchema,
-  [SECTION_KEYS.ABOUT]: aboutUsSchema,
   [SECTION_KEYS.FEEDBACK]: feedbackContentSchema,
   [SECTION_KEYS.MOBILIZATION]: mobilizationSchema,
   [SECTION_KEYS.CONTRACT_18_24]: contract1824Schema,
