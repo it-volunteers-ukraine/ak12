@@ -25,6 +25,7 @@ type RenderFieldOptions = Omit<LocaleSectionProps, "section" | "showOutsideTitle
 const COMPONENT_BY_TYPE = {
   text: TextInput,
   number: TextInput,
+  custom: TextInput,
   textarea: TextArea,
 };
 
@@ -76,7 +77,11 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
           onFileChange={(nextFile) => options.onGalleryFileChange?.(fieldId, nextFile)}
         />
         {canRemoveGalleryItem && (
-          <Button variant="danger" onClick={() => options.onGalleryItemRemove?.(imageIndex)}>
+          <Button
+            variant="danger"
+            onClick={() => options.onGalleryItemRemove?.(imageIndex)}
+            className="border border-red-400 bg-red-200 text-rose-600 hover:text-white"
+          >
             Видалити елемент галереї
           </Button>
         )}
@@ -84,11 +89,24 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
     );
   }
 
+  if (field.type === "custom") {
+    return (
+      <FormField
+        isCustom
+        locale={locale}
+        component={field.component}
+        name={`${locale}.${field.name}`}
+        className={field.className || "bg-white"}
+        {...field.props}
+      />
+    );
+  }
+
   return (
     <FormField
       name={`${locale}.${field.name}`}
-      component={field.component || COMPONENT_BY_TYPE[field.type]}
       className={field.className || "bg-white"}
+      component={field.component || COMPONENT_BY_TYPE[field.type]}
       {...field.props}
     />
   );

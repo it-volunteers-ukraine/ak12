@@ -14,7 +14,6 @@ import {
   transferSchema,
   heroContentSchema,
   contract1824Schema,
-  contactsContentSchema,
   feedbackContentSchema,
   headerAndFooterContentSchema,
 } from "@/schemas";
@@ -30,7 +29,6 @@ const schemasMap: Record<SectionKey, z.ZodType> = {
   [SECTION_KEYS.TRANSFER]: transferSchema,
   [SECTION_KEYS.ABOUT]: aboutUsSchema,
   [SECTION_KEYS.FEEDBACK]: feedbackContentSchema,
-  [SECTION_KEYS.CONTACTS]: contactsContentSchema,
   [SECTION_KEYS.MOBILIZATION]: mobilizationSchema,
   [SECTION_KEYS.CONTRACT_18_24]: contract1824Schema,
   [SECTION_KEYS.HEADER]: headerAndFooterContentSchema,

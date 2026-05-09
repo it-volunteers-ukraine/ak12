@@ -16,4 +16,5 @@ export type FormSelectProps<T extends FieldValues> = {
   className?: string;
   placeholder?: string;
   options: SelectOption[];
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };

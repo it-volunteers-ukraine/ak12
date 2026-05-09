@@ -4,7 +4,7 @@ import { DirectContact } from "./direct-contact";
 import { ResponseTime } from "./response-time";
 import { SocialMedia } from "./social-media";
 import { contentService } from "@/lib/content/content.service";
-import { contactsContentSchema, feedbackContentSchema } from "@/schemas";
+import { feedbackContentSchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants";
 
 interface FeedbackSectionProps {
@@ -13,7 +13,6 @@ interface FeedbackSectionProps {
 
 export const FeedbackSection = async ({ locale }: FeedbackSectionProps) => {
   const content = await contentService.get({ locale, schema: feedbackContentSchema, section: SECTION_KEYS.FEEDBACK });
-  const contacts = await contentService.get({ locale, schema: contactsContentSchema, section: SECTION_KEYS.CONTACTS });
 
   if (!content) {
     return null;
@@ -22,14 +21,18 @@ export const FeedbackSection = async ({ locale }: FeedbackSectionProps) => {
   return (
     <section className="bg-section overflow-hidden px-20 py-25" id="contacts">
       <h2 className="font-ermilov text-accent mb-16 text-center text-[56px] font-bold uppercase">
-        {content.form.title}
+        {content.form?.title}
       </h2>
       <div className="flex w-full gap-5">
-        <FeedbackForm content={content.form} />
+        {content.form && <FeedbackForm content={content.form} />}
         <div className="flex w-103.5 flex-col justify-between">
-          {contacts?.contacts && <DirectContact title={content.directContactTitle} contacts={contacts.contacts} />}
+          {content.contacts?.info && (
+            <DirectContact title={content.directContactTitle} contacts={content.contacts.info} />
+          )}
           <ResponseTime title={content.responseTimeTitle} description={content.responseTimeDescription} />
-          {contacts?.socialLinks && <SocialMedia title={content.socialMediaTitle} socialLinks={contacts.socialLinks} />}
+          {content?.contacts?.socialLinks && (
+            <SocialMedia title={content.socialMediaTitle} socialLinks={content?.contacts?.socialLinks} />
+          )}
         </div>
       </div>
     </section>

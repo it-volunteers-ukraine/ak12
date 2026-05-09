@@ -21,3 +21,9 @@ export { SubdivisionsListSection } from "./subdivisions-section/subdivisions-lis
 export { AdminViewSiteButton } from "./admin-view-site-button";
 
 export { TransferSection } from "./transfer-section";
+
+export { FeedbackSection } from "./feedback-section";
+
+export { VacancySection } from "@/components/admin/vacancies-section/index";
+
+export { VacanciesListSection } from "@/components/admin/vacancies-section/vacancies-list-section";

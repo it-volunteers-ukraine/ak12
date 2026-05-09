@@ -30,7 +30,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
 
   const handleReorder = async (reordered: Subdivision[]) => {
     const previousOrder = [...items];
-    
+
     setItems(reordered);
 
     const updates = reordered.flatMap((item, index) => {
@@ -55,6 +55,8 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
       return;
     }
 
+    const previousItems = [...items]; // зберегти для rollback
+
     setIsDeleting(true);
 
     try {
@@ -74,29 +76,33 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
         await deleteSubdivision(enVersion.id);
       }
 
+      setItems((prev) => prev.filter((s) => s.slug !== deletingSubdivision.slug));
       showMessage.success("Підрозділ видалено");
-      setDeletingSubdivision(null);
       router.refresh();
     } catch {
+      setItems(previousItems);
       showMessage.error("Не вдалося видалити підрозділ");
     } finally {
       setIsDeleting(false);
+      setDeletingSubdivision(null);
     }
   };
-
   if (editingSlug && editingUk) {
     return (
-      <SubdivisionSection data={{ uk: editingUk, en: editingEn ?? editingUk }} onSuccess={() => setEditingSlug(null)} />
+      <SubdivisionSection
+        data={{ uk: editingUk, en: editingEn ?? editingUk }}
+        onSuccess={() => setEditingSlug(null)}
+        onBack={() => setEditingSlug(null)}
+      />
     );
   }
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Всі підрозділи</h1>
         <button
           onClick={() => router.push("new")}
-          className="flex items-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-sm text-white hover:bg-green-800"
+          className="flex items-center gap-2 rounded-lg bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-700"
         >
           + Додати підрозділ
         </button>
@@ -129,7 +135,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
                       e.stopPropagation();
                       setEditingSlug(subdivision.slug);
                     }}
-                    onPointerDown={(e) => e.stopPropagation()} // зупиняє drag
+                    onPointerDown={(e) => e.stopPropagation()}
                     className="rounded-full p-1.5 hover:bg-gray-100"
                     aria-label="Редагувати"
                   >
@@ -140,7 +146,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
                       e.stopPropagation();
                       setDeletingSubdivision(subdivision);
                     }}
-                    onPointerDown={(e) => e.stopPropagation()} // зупиняє drag
+                    onPointerDown={(e) => e.stopPropagation()}
                     className="rounded-full p-1.5 hover:bg-red-50"
                     aria-label="Видалити"
                   >

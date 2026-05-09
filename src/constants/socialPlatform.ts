@@ -9,6 +9,7 @@ import {
   TelegramIcon,
   WhatsappIcon,
   InstagramIcon,
+  LinkIcon,
 } from "../../public/icons";
 import { ComponentType, SVGProps } from "react";
 
@@ -23,11 +24,13 @@ export enum SocialPlatform {
   TELEGRAM = "telegram",
   WHATSAPP = "whatsapp",
   INSTAGRAM = "instagram",
+  OTHER = "other",
 }
 
 export const socialPlatformsIconsMap: Record<SocialPlatform, ComponentType<SVGProps<SVGSVGElement>>> = {
   [SocialPlatform.X]: TwitterIcon,
   [SocialPlatform.VIBER]: ViberIcon,
+  [SocialPlatform.OTHER]: LinkIcon,
   [SocialPlatform.TIKTOK]: TiktokIcon,
   [SocialPlatform.DISCORD]: DiscordIcon,
   [SocialPlatform.YOUTUBE]: YoutubeIcon,

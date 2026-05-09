@@ -36,7 +36,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [galleryFieldIds, setGalleryFieldIds] = useState<string[]>([]);
+  const galleryFieldIdsRef = useRef<string[]>([]);
   const formMethodsRef = useRef<UseFormReturn<FormValues> | null>(null);
   const [pendingData, setPendingData] = useState<FormValues | null>(null);
   const [galleryFiles, setGalleryFiles] = useState<Record<string, File | null>>({});
@@ -59,7 +59,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
   };
 
   const handleGalleryItemRemove = (index: number) => {
-    const removedFieldId = galleryFieldIds[index];
+    const removedFieldId = galleryFieldIdsRef.current[index];
 
     if (!removedFieldId) {
       return;
@@ -84,7 +84,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
   const handleFormReset = () => {
     setGalleryFiles({});
     setRemovedImageFieldIds(new Set());
-    setGalleryFieldIds([]);
+    galleryFieldIdsRef.current = [];
   };
 
   const handleSubmit = async (values: FormValues): Promise<SubmitResult> => {
@@ -95,7 +95,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
       const nextUkGallery = [...(values.uk?.content?.gallery ?? [])];
 
       for (let index = 0; index < nextUkGallery.length; index += 1) {
-        const fieldId = galleryFieldIds[index];
+        const fieldId = galleryFieldIdsRef.current[index];
         const newFile = fieldId ? (galleryFiles[fieldId] ?? null) : null;
         const isRemoved = fieldId ? removedImageFieldIds.has(fieldId) : false;
         const currentItem = nextUkGallery[index];
@@ -240,7 +240,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
         setIsModalOpen(false);
         setGalleryFiles({});
         setRemovedImageFieldIds(new Set());
-        setGalleryFieldIds([]);
+        galleryFieldIdsRef.current = [];
       } catch {
         showMessage.error("Помилка при збереженні");
       }
@@ -264,7 +264,9 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
               onReset={handleFormReset}
               galleryFiles={galleryFiles}
               removedImageFieldIds={removedImageFieldIds}
-              onGalleryFieldIdsChange={setGalleryFieldIds}
+              onGalleryFieldIdsChange={(fieldIds) => {
+                galleryFieldIdsRef.current = fieldIds;
+              }}
               onGalleryFileChange={handleGalleryFileChange}
               onGalleryItemRemove={handleGalleryItemRemove}
               onGalleryImageRemove={handleGalleryImageRemove}
