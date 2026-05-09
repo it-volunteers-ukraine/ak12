@@ -14,15 +14,18 @@ interface FormBuilderProps {
   imageFile?: File | null;
   config: FormBuilderConfig;
   onImageRemove?: () => void;
+  addNewElementForArray?: boolean;
   bannerSrc?: LocaleBackgroundImage;
   isImageMarkedForRemoval?: boolean;
-  removedImageIndexes?: Set<number>;
-  onGalleryRemove?: (index: number) => void;
-  galleryFiles?: Record<number, File | null>;
+  removedImageFieldIds?: Set<string>;
+  addNewElementHandleClick?: () => void;
+  galleryFiles?: Record<string, File | null>;
+  onGalleryRemove?: (fieldId: string) => void;
   onImageChange?: (file: File | null) => void;
   onGalleryItemRemove?: (index: number) => void;
+  galleryFieldIdsByIndex?: Record<number, string>;
   gallerySrcByIndex?: Record<number, string | null>;
-  onGalleryFileChange?: (index: number, file: File | null) => void;
+  onGalleryFileChange?: (fieldId: string, file: File | null) => void;
 }
 type LocaleBackgroundImage = {
   publicId?: string | null;
@@ -70,8 +73,11 @@ export const FormBuilder = ({
   onGalleryFileChange,
   onGalleryItemRemove,
   gallerySrcByIndex = {},
+  addNewElementHandleClick,
+  galleryFieldIdsByIndex = {},
+  addNewElementForArray = false,
   isImageMarkedForRemoval = false,
-  removedImageIndexes = new Set<number>(),
+  removedImageFieldIds = new Set<string>(),
 }: FormBuilderProps) => {
   const { reset, formState } = useFormContext();
   const { isValid } = formState;
@@ -113,9 +119,10 @@ export const FormBuilder = ({
             onGalleryRemove={onGalleryRemove}
             showOutsideTitle={showOutsideTitle}
             gallerySrcByIndex={gallerySrcByIndex}
-            removedImageIndexes={removedImageIndexes}
             onGalleryFileChange={onGalleryFileChange}
             onGalleryItemRemove={onGalleryItemRemove}
+            removedImageFieldIds={removedImageFieldIds}
+            galleryFieldIdsByIndex={galleryFieldIdsByIndex}
           />
         </div>
       </div>
@@ -156,7 +163,11 @@ export const FormBuilder = ({
 
   return (
     <div className={config.className || "form-builder"}>
-      <div className={config.buttonsClassName}>
+      <div
+        className={`sticky top-18 z-30 mb-6 border-b border-gray-200 bg-white/95 px-2 py-5 backdrop-blur supports-backdrop-filter:bg-white/80 ${
+          config.buttonsClassName || ""
+        }`}
+      >
         <BtnGroup
           isValid={isValid}
           onReset={() => {
@@ -167,6 +178,8 @@ export const FormBuilder = ({
           submitText={submitText}
           resetClassName={config.resetClassName}
           submitClassName={config.submitClassName}
+          addNewElementForArray={addNewElementForArray}
+          addNewElementHandleClick={addNewElementHandleClick}
         />
       </div>
 

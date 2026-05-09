@@ -133,13 +133,13 @@ export const FormImg = ({
               onError={() => setHasError(true)}
               unoptimized={Boolean(previewUrl)}
             />
-            <div className="absolute top-3 right-3 flex gap-1">
+            <div className="absolute top-3 right-3 flex gap-3">
               <button
                 type="button"
                 disabled={disabled}
                 onClick={handlePickClick}
                 aria-label={"Оновити файл"}
-                className="rounded-full bg-white/80 p-1.25"
+                className="rounded-full bg-white/80 p-1.25 transition-all ease-in-out hover:scale-125 hover:bg-sky-300"
               >
                 <EditIcon className="h-4.5 w-4.5" />
               </button>
@@ -147,7 +147,7 @@ export const FormImg = ({
                 type="button"
                 onClick={handleRemove}
                 disabled={disabled}
-                className="rounded-full bg-white/80 p-1.25"
+                className="rounded-full bg-white/80 p-1.25 transition-all ease-in-out hover:scale-125 hover:bg-red-300"
                 aria-label={"Видалити файл"}
               >
                 <TrashIcon className="h-4.5 w-4.5" />

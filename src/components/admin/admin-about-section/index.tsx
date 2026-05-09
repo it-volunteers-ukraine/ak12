@@ -15,7 +15,6 @@ import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-ima
 
 import { FormWrapper } from "../form";
 import { AboutFormContent } from "./about-form-content";
-import { remapFilesAfterRemove, remapRemovedIndexesAfterRemove } from "./gallery.helpers";
 
 type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["about"];
@@ -35,37 +34,57 @@ export const adminSchema = ADMIN_SCHEMAS.about;
 
 export const AboutSectionAdmin = ({ data }: IAboutSection) => {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [pendingData, setPendingData] = useState<FormValues | null>(null);
-  const formMethodsRef = useRef<UseFormReturn<FormValues> | null>(null);
-  const [galleryFiles, setGalleryFiles] = useState<Record<number, File | null>>({});
-  const [removedImageIndexes, setRemovedImageIndexes] = useState<Set<number>>(new Set());
   const [isPending, startTransition] = useTransition();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [galleryFieldIds, setGalleryFieldIds] = useState<string[]>([]);
+  const formMethodsRef = useRef<UseFormReturn<FormValues> | null>(null);
+  const [pendingData, setPendingData] = useState<FormValues | null>(null);
+  const [galleryFiles, setGalleryFiles] = useState<Record<string, File | null>>({});
+  const [removedImageFieldIds, setRemovedImageFieldIds] = useState<Set<string>>(new Set());
 
-  const handleGalleryFileChange = (index: number, file: File | null) => {
-    setGalleryFiles((prev) => ({ ...prev, [index]: file }));
-    setRemovedImageIndexes((prev) => {
+  const handleGalleryFileChange = (fieldId: string, file: File | null) => {
+    setGalleryFiles((prev) => ({ ...prev, [fieldId]: file }));
+    setRemovedImageFieldIds((prev) => {
       const next = new Set(prev);
 
-      next.delete(index);
+      next.delete(fieldId);
 
       return next;
     });
   };
 
-  const handleGalleryImageRemove = (index: number) => {
-    setGalleryFiles((prev) => ({ ...prev, [index]: null }));
-    setRemovedImageIndexes((prev) => new Set(prev).add(index));
+  const handleGalleryImageRemove = (fieldId: string) => {
+    setGalleryFiles((prev) => ({ ...prev, [fieldId]: null }));
+    setRemovedImageFieldIds((prev) => new Set(prev).add(fieldId));
   };
 
   const handleGalleryItemRemove = (index: number) => {
-    setGalleryFiles((prev) => remapFilesAfterRemove(prev, index));
-    setRemovedImageIndexes((prev) => remapRemovedIndexesAfterRemove(prev, index));
+    const removedFieldId = galleryFieldIds[index];
+
+    if (!removedFieldId) {
+      return;
+    }
+
+    setGalleryFiles((prev) => {
+      const next = { ...prev };
+
+      delete next[removedFieldId];
+
+      return next;
+    });
+    setRemovedImageFieldIds((prev) => {
+      const next = new Set(prev);
+
+      next.delete(removedFieldId);
+
+      return next;
+    });
   };
 
   const handleFormReset = () => {
     setGalleryFiles({});
-    setRemovedImageIndexes(new Set());
+    setRemovedImageFieldIds(new Set());
+    setGalleryFieldIds([]);
   };
 
   const handleSubmit = async (values: FormValues): Promise<SubmitResult> => {
@@ -76,8 +95,9 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
       const nextUkGallery = [...(values.uk?.content?.gallery ?? [])];
 
       for (let index = 0; index < nextUkGallery.length; index += 1) {
-        const newFile = galleryFiles[index];
-        const isRemoved = removedImageIndexes.has(index);
+        const fieldId = galleryFieldIds[index];
+        const newFile = fieldId ? (galleryFiles[fieldId] ?? null) : null;
+        const isRemoved = fieldId ? removedImageFieldIds.has(fieldId) : false;
         const currentItem = nextUkGallery[index];
 
         if (!currentItem) {
@@ -219,7 +239,8 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
         router.refresh();
         setIsModalOpen(false);
         setGalleryFiles({});
-        setRemovedImageIndexes(new Set());
+        setRemovedImageFieldIds(new Set());
+        setGalleryFieldIds([]);
       } catch {
         showMessage.error("Помилка при збереженні");
       }
@@ -242,7 +263,8 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
               data={data}
               onReset={handleFormReset}
               galleryFiles={galleryFiles}
-              removedImageIndexes={removedImageIndexes}
+              removedImageFieldIds={removedImageFieldIds}
+              onGalleryFieldIdsChange={setGalleryFieldIds}
               onGalleryFileChange={handleGalleryFileChange}
               onGalleryItemRemove={handleGalleryItemRemove}
               onGalleryImageRemove={handleGalleryImageRemove}

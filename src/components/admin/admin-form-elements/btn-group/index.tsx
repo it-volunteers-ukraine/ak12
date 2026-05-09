@@ -8,38 +8,37 @@ interface IBtnGroup {
   resetText?: string;
   onReset: () => void;
   submitText?: string;
-  submitClassName?: string;
   resetClassName?: string;
+  submitClassName?: string;
+  addNewElementForArray?: boolean;
+  addNewElementHandleClick?: () => void;
 }
 
-export const BtnGroup = ({ 
-  isValid, 
-  onReset, 
-  submitText, 
-  resetText, 
+export const BtnGroup = ({
+  isValid,
+  onReset,
+  resetText,
   className,
+  submitText,
+  resetClassName,
   submitClassName,
-  resetClassName 
+  addNewElementForArray,
+  addNewElementHandleClick,
 }: IBtnGroup) => {
   const { wrapper } = getStyles();
 
   return (
     <div className={wrapper(className)}>
-      <Button 
-        variant="primary" 
-        type="submit" 
-        disabled={!isValid}
-        className={submitClassName}
-      >
+      {addNewElementForArray && (
+        <Button onClick={addNewElementHandleClick} variant="add" className="mr-auto">
+          Додати елемент галереї
+        </Button>
+      )}
+      <Button variant="primary" type="submit" disabled={!isValid} className={submitClassName}>
         {submitText || "Зберегти зміни"}
       </Button>
 
-      <Button 
-        variant="outline" 
-        type="reset" 
-        onClick={() => onReset()}
-        className={resetClassName}
-      >
+      <Button variant="outline" type="reset" onClick={() => onReset()} className={resetClassName}>
         {resetText || "Скасувати правки"}
       </Button>
     </div>

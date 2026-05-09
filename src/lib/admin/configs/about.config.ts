@@ -1,7 +1,7 @@
 import { FormBuilderConfig } from "@/lib/form-builder";
 import { SectionConfig } from "@/lib/form-builder/types";
 
-const previewItems = 6;
+const previewItems = 9;
 
 const baseSections: FormBuilderConfig["sections"] = [
   {

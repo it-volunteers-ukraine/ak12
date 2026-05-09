@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 
+import { Button } from "@/components";
 import { logger } from "@/lib/logger";
 import { FormImg, TextArea, FormField, TextInput } from "@/components/form-elements";
 
@@ -11,12 +12,13 @@ import { LOCALES, SectionConfig } from "../types";
 interface LocaleSectionProps {
   section: SectionConfig;
   showOutsideTitle: boolean;
-  removedImageIndexes?: Set<number>;
-  onGalleryRemove?: (index: number) => void;
-  galleryFiles?: Record<number, File | null>;
+  removedImageFieldIds?: Set<string>;
+  galleryFiles?: Record<string, File | null>;
+  onGalleryRemove?: (fieldId: string) => void;
   onGalleryItemRemove?: (index: number) => void;
+  galleryFieldIdsByIndex?: Record<number, string>;
   gallerySrcByIndex?: Record<number, string | null>;
-  onGalleryFileChange?: (index: number, file: File | null) => void;
+  onGalleryFileChange?: (fieldId: string, file: File | null) => void;
 }
 type RenderFieldOptions = Omit<LocaleSectionProps, "section" | "showOutsideTitle">;
 
@@ -44,14 +46,22 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
       return null;
     }
 
-    const isRemoved = options.removedImageIndexes?.has(imageIndex) ?? false;
-    const file = options.galleryFiles?.[imageIndex] ?? null;
+    const fieldId = options.galleryFieldIdsByIndex?.[imageIndex];
+
+    if (!fieldId) {
+      logger.warn(`Missing field id for gallery index: ${imageIndex}`);
+
+      return null;
+    }
+
+    const isRemoved = options.removedImageFieldIds?.has(fieldId) ?? false;
+    const file = options.galleryFiles?.[fieldId] ?? null;
     const src = isRemoved && !file ? null : (options.gallerySrcByIndex?.[imageIndex] ?? null);
     const imageLabel = field.props?.hideImageLabel
       ? undefined
       : (field.props?.imageLabel ?? field.label?.[locale] ?? "Фото");
 
-    const canRemoveGalleryItem = imageIndex >= 6;
+    const canRemoveGalleryItem = imageIndex >= 9;
 
     return (
       <div className="space-y-3">
@@ -59,20 +69,16 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
           src={src}
           file={file}
           label={imageLabel}
-          imageAspectClassName={field.props?.imageAspectClassName}
-          imageFrameClassName={field.props?.imageFrameClassName}
+          onRemove={() => options.onGalleryRemove?.(fieldId)}
           containerClassName={field.props?.containerClassName}
-          onRemove={() => options.onGalleryRemove?.(imageIndex)}
-          onFileChange={(nextFile) => options.onGalleryFileChange?.(imageIndex, nextFile)}
+          imageFrameClassName={field.props?.imageFrameClassName}
+          imageAspectClassName={field.props?.imageAspectClassName}
+          onFileChange={(nextFile) => options.onGalleryFileChange?.(fieldId, nextFile)}
         />
         {canRemoveGalleryItem && (
-          <button
-            type="button"
-            onClick={() => options.onGalleryItemRemove?.(imageIndex)}
-            className="rounded-md border border-red-300 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
-          >
+          <Button variant="danger" onClick={() => options.onGalleryItemRemove?.(imageIndex)}>
             Видалити елемент галереї
-          </button>
+          </Button>
         )}
       </div>
     );

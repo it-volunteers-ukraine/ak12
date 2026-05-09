@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -8,17 +8,18 @@ import { FormBuilder } from "@/lib/form-builder";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { createAboutFormBuilderConfig } from "@/lib/admin/configs/about.config";
 
-import { EMPTY_GALLERY_ITEM } from "./gallery.helpers";
+import { EMPTY_GALLERY_ITEM } from "./gallery.config";
 
 type AdminData = AdminDataMap["about"];
 interface AboutFormContentProps {
   data: AdminData;
   onReset: () => void;
-  removedImageIndexes: Set<number>;
-  galleryFiles: Record<number, File | null>;
+  removedImageFieldIds: Set<string>;
+  galleryFiles: Record<string, File | null>;
   onGalleryItemRemove: (index: number) => void;
-  onGalleryImageRemove: (index: number) => void;
-  onGalleryFileChange: (index: number, file: File | null) => void;
+  onGalleryImageRemove: (fieldId: string) => void;
+  onGalleryFieldIdsChange: (fieldIds: string[]) => void;
+  onGalleryFileChange: (fieldId: string, file: File | null) => void;
 }
 type AboutFormShape = {
   en: {
@@ -41,10 +42,11 @@ export const AboutFormContent = ({
   data,
   onReset,
   galleryFiles,
-  removedImageIndexes,
   onGalleryFileChange,
   onGalleryItemRemove,
   onGalleryImageRemove,
+  removedImageFieldIds,
+  onGalleryFieldIdsChange,
 }: AboutFormContentProps) => {
   const { control, watch } = useFormContext<AboutFormShape>();
   const ukGalleryArray = useFieldArray({
@@ -58,6 +60,10 @@ export const AboutFormContent = ({
 
   const watchedUkGallery = watch("uk.content.gallery") ?? [];
   const galleryLength = ukGalleryArray.fields.length;
+  const galleryFieldIdsByIndex = useMemo(
+    () => Object.fromEntries(ukGalleryArray.fields.map((field, index) => [index, field.id])) as Record<number, string>,
+    [ukGalleryArray.fields],
+  );
 
   const gallerySrcByIndex = useMemo(
     () =>
@@ -68,29 +74,37 @@ export const AboutFormContent = ({
     [watchedUkGallery],
   );
 
+  useEffect(() => {
+    onGalleryFieldIdsChange(ukGalleryArray.fields.map((field) => field.id));
+  }, [onGalleryFieldIdsChange, ukGalleryArray.fields]);
+
+  const handleClick = () => {
+    const currentLength = ukGalleryArray.fields.length;
+
+    const isPreviewLength = currentLength >= 9;
+
+    const createItem = (langText: string) => ({
+      ...EMPTY_GALLERY_ITEM,
+      text: isPreviewLength ? langText : "",
+    });
+
+    ukGalleryArray.append(createItem(`Зображення №${currentLength + 1}`));
+    enGalleryArray.append(createItem(`Image №${currentLength + 1}`));
+  };
+
   return (
     <div className="space-y-5">
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={() => {
-            ukGalleryArray.append({ ...EMPTY_GALLERY_ITEM });
-            enGalleryArray.append({ ...EMPTY_GALLERY_ITEM });
-          }}
-          className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium transition hover:bg-gray-50"
-        >
-          Додати елемент галереї
-        </button>
-      </div>
-
       <FormBuilder
         data={data}
         onReset={onReset}
         galleryFiles={galleryFiles}
+        addNewElementForArray={true}
         gallerySrcByIndex={gallerySrcByIndex}
+        addNewElementHandleClick={handleClick}
         onGalleryRemove={onGalleryImageRemove}
-        removedImageIndexes={removedImageIndexes}
         onGalleryFileChange={onGalleryFileChange}
+        removedImageFieldIds={removedImageFieldIds}
+        galleryFieldIdsByIndex={galleryFieldIdsByIndex}
         config={createAboutFormBuilderConfig(galleryLength)}
         onGalleryItemRemove={(index) => {
           ukGalleryArray.remove(index);

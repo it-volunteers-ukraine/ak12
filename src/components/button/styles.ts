@@ -2,7 +2,7 @@ import { cn } from "@/utils";
 
 interface IStyles {
   className?: string;
-  variant: "primary" | "secondary" | "danger" | "outline";
+  variant: "primary" | "secondary" | "danger" | "outline" | "add";
 }
 
 const variants = {
@@ -11,6 +11,7 @@ const variants = {
   primary: "bg-green-500 text-white hover:bg-green-600 disabled:bg-green-300",
   outline:
     "border border-gray-300 text-gray-500 bg-gray-100 hover:bg-gray-200 disabled:border-gray-400 disabled:text-gray-300",
+  add: "bg-sky-200 text-sky-700 hover:bg-sky-300 border-sky-200",
 };
 
 export const getStyles = ({ variant, className }: IStyles) => ({
