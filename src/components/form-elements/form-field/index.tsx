@@ -55,7 +55,7 @@ export const FormField = <TFieldValues extends FieldValues, TElement extends Rea
 
         {error && (
           <div className="min-h-5">
-            <p className={errorStyle}>{error.message}</p>
+            <span className={errorStyle}>{error.message}</span>
           </div>
         )}
       </div>

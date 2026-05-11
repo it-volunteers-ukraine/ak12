@@ -3,7 +3,7 @@ import React from "react";
 import { getStyles } from "./styles";
 import { Loader } from "../../../public/icons";
 
-type ButtonVariant = "primary" | "secondary" | "danger" | "outline";
+type ButtonVariant = "primary" | "secondary" | "danger" | "outline" | "add";
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   className?: string;
   disabled?: boolean;

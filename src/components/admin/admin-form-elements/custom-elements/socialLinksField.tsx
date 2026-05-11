@@ -1,16 +1,24 @@
 "use client";
 
 import { ComponentPropsWithoutRef } from "react";
-import { useFormContext, useFieldArray } from "react-hook-form";
+
+import { useFieldArray, useFormContext } from "react-hook-form";
+
+import { Locale } from "@/types";
+import { SocialPlatform } from "@/constants";
+import { FormField, FormSelect } from "@/components/form-elements";
 
 import { SOCIAL_LINKS_LABELS } from "./t";
-import { SocialPlatform } from "@/constants";
-import { Locale } from "@/types";
-import { FormField, FormSelect } from "@/components/form-elements";
 
 interface SocialLinksFieldProps extends ComponentPropsWithoutRef<"div"> {
   name: string;
   locale: Locale;
+}
+interface SocialLinkItemProps {
+  name: string;
+  index: number;
+  locale: Locale;
+  onRemove: () => void;
 }
 
 export const SocialLinksField = ({ name, className, locale }: SocialLinksFieldProps) => {
@@ -54,13 +62,6 @@ export const SocialLinksField = ({ name, className, locale }: SocialLinksFieldPr
     </div>
   );
 };
-
-interface SocialLinkItemProps {
-  name: string;
-  index: number;
-  locale: Locale;
-  onRemove: () => void;
-}
 
 const SocialLinkItem = ({ name, index, locale, onRemove }: SocialLinkItemProps) => {
   const t = SOCIAL_LINKS_LABELS[locale];

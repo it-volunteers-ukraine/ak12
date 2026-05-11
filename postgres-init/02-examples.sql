@@ -219,33 +219,101 @@ VALUES
       true,
       (SELECT id FROM language WHERE code = 'en')
     ),
-    (
-        'about',
-        '{
-          "title": "Про нас",
-          "description": "Ми допомагаємо кандидатам знайти напрям служби, у якому їхні вміння принесуть найбільшу користь. На платформі можна ознайомитися з підрозділами, вакансіями та залишити заявку для подальшого контакту.",
-          "images": [
-            "/images/about/about-1.jpg",
-            "/images/about/about-2.jpg",
-            "/images/about/about-3.jpg"
-          ]
-        }'::jsonb,
-        true,
-        (SELECT id FROM language WHERE code = 'uk')
+     (
+      'about',
+      '{
+        "mainTitle": "12-й Армійський корпус",
+        "description": "Ми засновані у жовтні 2024 року як відповідь на виклики сучасної війни. Наша структура об’єднує штурмовий драйв, високотехнологічні безпілотні системи, надійний зв’язок та залізне ППО. Ми будуємо армію майбутнього, де досвід зустрічається з інноваціями.",
+        "content": {
+          "gallery": [
+      {
+        "text": "Життя корпусу",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Мотивація",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Відвага",
+        "publicId": "ak12/Courage",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Навчання",
+        "publicId": "ak12/Education",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Людяність",
+        "publicId": "ak12/Humanity",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "ЧЕСТЬ",
+        "publicId": "ak12/Honor",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Побут",
+        "publicId": "ak12/Daily-Life",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      }
+    ]
+        }        
+      }'::jsonb,
+      true,
+      (SELECT id FROM language WHERE code = 'uk')
     ),
-    (
-        'about',
-        '{
-          "title": "About us",
-          "description": "We help candidates find the service direction where their abilities bring the most value. The platform allows users to explore subdivisions, vacancies and submit an application for further contact.",
-          "images": [
-            "/images/about/about-1.jpg",
-            "/images/about/about-2.jpg",
-            "/images/about/about-3.jpg"
-          ]
-        }'::jsonb,
-        true,
-        (SELECT id FROM language WHERE code = 'en')
+     (
+      'about',
+      '{
+        "mainTitle": "12th Army Corps",
+        "description": "We were founded in October 2024 in response to the challenges of modern warfare. Our organization combines an aggressive offensive mindset, high-tech unmanned systems, reliable communications, and robust air defense. We are building the army of the future, where experience meets innovation.",
+        "content": {
+          "gallery": [
+      {
+        "text": "The Life of the Corps",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Motivation",
+        "publicId": "ak12/Motivation",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Courage",
+        "publicId": "ak12/Courage",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Education",
+        "publicId": "ak12/Education",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Humanity",
+        "publicId": "ak12/Humanity",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Honor",
+        "publicId": "ak12/Honor",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      },
+      {
+        "text": "Daily Life",
+        "publicId": "ak12/Daily-Life",
+        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
+      }
+    ]
+        }        
+      }'::jsonb,
+      true,
+      (SELECT id FROM language WHERE code = 'en')
     ),
     (
         'advantages',

@@ -1,60 +1,67 @@
 import { ComponentType } from "react";
 
 export type Locale = "uk" | "en";
-
-export const LOCALES: Locale[] = ["uk", "en"];
-
-export type FieldType = "text" | "textarea" | "number" | "custom";
-
-export interface FieldConfig {
-  name: string;
-  label?: Record<Locale, string>;
+export type FieldType = "text" | "textarea" | "number" | "image" | "custom";
+interface FieldConfigBase {
+  id?: string;
   type: FieldType;
+  className?: string;
   locales?: Locale[];
   required?: boolean;
-  placeholder?: Record<Locale, string>;
-  component?: ComponentType<any>;
   props?: Record<string, any>;
-  className?: string;
+  component?: ComponentType<any>;
+  label?: Record<Locale, string>;
+  placeholder?: Record<Locale, string>;
 }
+
+interface ImageFieldConfig extends Omit<FieldConfigBase, "type"> {
+  type: "image";
+  name?: string;
+}
+
+interface NonImageFieldConfig extends Omit<FieldConfigBase, "type"> {
+  name: string;
+  type: Exclude<FieldType, "image">;
+}
+
+export type FieldConfig = ImageFieldConfig | NonImageFieldConfig;
 
 export interface SectionConfig {
   id: string;
-  title?: string;
-  titlePlacement?: "inside" | "outside";
-  localeLayout?: "split" | "combined" | "by-field-2col" | "by-locale-2col";
   group?: string;
+  title?: string;
   fields: FieldConfig[];
+  hideLocaleBadge?: boolean;
+  titlePlacement?: "inside" | "outside";
+  localeTitles?: Partial<Record<Locale, string>>;
+  localeLayout?: "split" | "combined" | "by-field-2col" | "by-locale-2col" | "gallery-3col";
 }
-
 export interface FormBuilderConfig {
   id: string;
+  className?: string;
+  resetClassName?: string;
+  submitClassName?: string;
+  buttonsClassName?: string;
   sections: SectionConfig[];
+  imageWrapperClassName?: string;
   sectionGroups?: Record<
     string,
     | string
     | {
-        className?: string;
         title?: string;
+        className?: string;
         titleClassName?: string;
       }
   >;
-
-  className?: string;
-  buttonsClassName?: string;
-  submitClassName?: string;
-  resetClassName?: string;
-  imageWrapperClassName?: string;
-
   options?: {
     hasImage?: boolean;
+    resetText?: string;
+    submitText?: string;
     imageConfig?: {
       label: string;
       maxSize?: number;
       accept?: string[];
     };
-
-    submitText?: string;
-    resetText?: string;
   };
 }
+export const LOCALES: Locale[] = ["uk", "en"];
