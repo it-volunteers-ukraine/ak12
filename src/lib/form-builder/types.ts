@@ -2,8 +2,8 @@ import { ComponentType } from "react";
 
 export type Locale = "uk" | "en";
 export type FieldType = "text" | "textarea" | "number" | "image" | "custom";
-export interface FieldConfig {
-  name: string;
+interface FieldConfigBase {
+  id?: string;
   type: FieldType;
   className?: string;
   locales?: Locale[];
@@ -13,6 +13,19 @@ export interface FieldConfig {
   label?: Record<Locale, string>;
   placeholder?: Record<Locale, string>;
 }
+
+interface ImageFieldConfig extends Omit<FieldConfigBase, "type"> {
+  type: "image";
+  name?: string;
+}
+
+interface NonImageFieldConfig extends Omit<FieldConfigBase, "type"> {
+  name: string;
+  type: Exclude<FieldType, "image">;
+}
+
+export type FieldConfig = ImageFieldConfig | NonImageFieldConfig;
+
 export interface SectionConfig {
   id: string;
   group?: string;
@@ -51,5 +64,4 @@ export interface FormBuilderConfig {
     };
   };
 }
-
 export const LOCALES: Locale[] = ["uk", "en"];

@@ -42,20 +42,31 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
   const [galleryFiles, setGalleryFiles] = useState<Record<string, File | null>>({});
   const [removedImageFieldIds, setRemovedImageFieldIds] = useState<Set<string>>(new Set());
 
-  const handleGalleryFileChange = (fieldId: string, file: File | null) => {
-    setGalleryFiles((prev) => ({ ...prev, [fieldId]: file }));
+  const updateRemovedImageSet = (fieldId: string, isRemoved: boolean) => {
     setRemovedImageFieldIds((prev) => {
       const next = new Set(prev);
 
-      next.delete(fieldId);
+      if (isRemoved) {
+        next.add(fieldId);
+      } else {
+        next.delete(fieldId);
+      }
 
       return next;
     });
   };
+  const handleGalleryFileChange = (fieldId: string, file: File | null) => {
+    setGalleryFiles((prev) => ({ ...prev, [fieldId]: file }));
+
+    if (file) {
+      updateRemovedImageSet(fieldId, false);
+    }
+  };
 
   const handleGalleryImageRemove = (fieldId: string) => {
     setGalleryFiles((prev) => ({ ...prev, [fieldId]: null }));
-    setRemovedImageFieldIds((prev) => new Set(prev).add(fieldId));
+
+    updateRemovedImageSet(fieldId, true);
   };
 
   const handleGalleryItemRemove = (index: number) => {

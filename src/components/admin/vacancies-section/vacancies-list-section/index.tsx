@@ -1,24 +1,24 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
 
-import { VacancyMapped } from "@/types/vacancy";
 import { ConfirmModal } from "@/components";
+import { VacancyMapped } from "@/types/vacancy";
 import { showMessage } from "@/components/toastify";
+import { DndSortableList } from "@/components/admin/dnd-sortable-list";
 import { deleteVacancy } from "@/actions/vacancies/delete-vacancy.action";
 import { reorderVacancies } from "@/actions/vacancies/reorder-vacancies.action";
 import { updateVacancyStatus } from "@/actions/vacancies/update-vacancy-status.action";
-import { DndSortableList } from "@/components/admin/dnd-sortable-list";
 
-import { VacancySection } from "../index";
+import { VacancySection } from "..";
 import { EditIcon, TrashIcon } from "../../../../../public/icons";
 
 interface Props {
-  vacanciesUk: VacancyMapped[];
   vacanciesEn: VacancyMapped[];
+  vacanciesUk: VacancyMapped[];
 }
-
 type VacancyItem = VacancyMapped & { id: string };
 
 export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {

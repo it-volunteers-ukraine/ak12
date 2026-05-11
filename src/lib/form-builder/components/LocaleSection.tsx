@@ -39,6 +39,20 @@ const DEFAULT_LOCALE_TITLES: Record<(typeof LOCALES)[number], string> = {
   en: "English",
 };
 
+const getFieldKey = (field: SectionConfig["fields"][number], fallback: string) => {
+  if (field.id) {
+    return field.id;
+  }
+
+  if (field.type === "image") {
+    const imageIndex = Number(field.props?.imageIndex ?? -1);
+
+    return imageIndex >= 0 ? `image-${imageIndex}` : fallback;
+  }
+
+  return field.name;
+};
+
 const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en", options: RenderFieldOptions) => {
   if (field.type === "image") {
     const imageIndex = Number(field.props?.imageIndex ?? -1);
@@ -141,7 +155,7 @@ const SplitLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionPro
               {section.fields
                 .filter((field) => (field.locales || LOCALES).includes(locale))
                 .map((field) => (
-                  <div key={`${locale}-${field.name}`}>
+                  <div key={`${locale}-${getFieldKey(field, "unnamed-field")}`}>
                     {field.label &&
                       (showOutsideTitle ? (
                         <div className="mb-2 flex items-center justify-between">
@@ -174,13 +188,13 @@ const CombinedLayout = ({ section, showOutsideTitle, ...options }: LocaleSection
       )}
 
       <div className="space-y-6">
-        {section.fields.map((field) => (
-          <div key={`combined-${field.name}`} className="space-y-4">
+        {section.fields.map((field, index) => (
+          <div key={`combined-${getFieldKey(field, `field-${index}`)}`} className="space-y-4">
             {(field.locales || LOCALES).map((locale) => {
               const Icon = LANGUAGE_ICONS[locale];
 
               return (
-                <div key={`${locale}-${field.name}`}>
+                <div key={`${locale}-${getFieldKey(field, `field-${index}`)}`}>
                   <div className="mb-2 flex items-center justify-between">
                     {field.label && <label className="block text-sm font-medium">{field.label[locale]}</label>}
                     {!section.hideLocaleBadge && (
@@ -210,19 +224,19 @@ const ByFieldLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionP
       )}
 
       <div className="space-y-6">
-        {section.fields.map((field) => {
+        {section.fields.map((field, index) => {
           const fieldLocales = field.locales || LOCALES;
 
           return (
             <div
-              key={`by-field-2col-${field.name}`}
+              key={`by-field-2col-${getFieldKey(field, `field-${index}`)}`}
               className={`grid ${fieldLocales.length === 1 ? "grid-cols-1" : "grid-cols-1 lg:grid-cols-2"} gap-6`}
             >
               {fieldLocales.map((locale) => {
                 const Icon = LANGUAGE_ICONS[locale];
 
                 return (
-                  <div key={`${locale}-${field.name}`}>
+                  <div key={`${locale}-${getFieldKey(field, `field-${index}`)}`}>
                     <div className="mb-2 flex items-center justify-between">
                       {field.label && <label className="block text-sm font-medium">{field.label[locale]}</label>}
                       <FlagBadge>
@@ -268,8 +282,8 @@ const ByLocaleLayout = ({ section, showOutsideTitle, ...options }: LocaleSection
                 </FlagBadge>
               </div>
 
-              {localeFields.map((field) => (
-                <div key={`${locale}-${field.name}`}>
+              {localeFields.map((field, index) => (
+                <div key={`${locale}-${getFieldKey(field, `field-${index}`)}`}>
                   {field.label && <label className="mb-2 block text-sm font-medium">{field.label[locale]}</label>}
                   {renderField(field, locale, options)}
                 </div>
@@ -296,8 +310,8 @@ const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: Locale
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-4">
-          {imageFields.map((field) => (
-            <div key={`gallery-image-${field.name}`}>{renderField(field, "uk", options)}</div>
+          {imageFields.map((field, index) => (
+            <div key={`gallery-image-${getFieldKey(field, `image-${index}`)}`}>{renderField(field, "uk", options)}</div>
           ))}
         </div>
 
@@ -317,8 +331,8 @@ const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: Locale
 
               {contentFields
                 .filter((field) => (field.locales || LOCALES).includes(locale))
-                .map((field) => (
-                  <div key={`gallery-${locale}-${field.name}`}>
+                .map((field, index) => (
+                  <div key={`gallery-${locale}-${getFieldKey(field, `field-${index}`)}`}>
                     {field.label && <label className="mb-1 block text-sm">{field.label[locale]}</label>}
                     {renderField(field, locale, options)}
                   </div>

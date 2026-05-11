@@ -51,7 +51,7 @@ export const createAboutFormBuilderConfig = (galleryLength: number): FormBuilder
       },
       fields: [
         {
-          name: `content.gallery.${index}.image`,
+          id: `gallery-image-${index}`,
           type: "image",
           locales: ["uk"],
 
@@ -86,7 +86,7 @@ export const createAboutFormBuilderConfig = (galleryLength: number): FormBuilder
 
       fields: [
         {
-          name: `content.gallery.${index}.image`,
+          id: `gallery-image-${index}`,
           type: "image",
           locales: ["uk"],
           props: {

@@ -24,6 +24,6 @@ export { TransferSection } from "./transfer-section";
 
 export { FeedbackSection } from "./feedback-section";
 
-export { VacancySection } from "@/components/admin/vacancies-section/index";
+export { VacancySection } from "./vacancies-section";
 
-export { VacanciesListSection } from "@/components/admin/vacancies-section/vacancies-list-section";
+export { VacanciesListSection } from "./vacancies-section/vacancies-list-section";
