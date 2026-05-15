@@ -3,16 +3,18 @@
 import Image from "next/image";
 
 import { cn } from "@/utils";
-import { useWindowWidth } from "@/hooks";
 
 interface ICard {
-    desktopOrder: number;
-    hideOnTablet: boolean;
-    cell: {
-        src?: string;
-        text?: string;
-        type: "text" | "image";
-};
+  gridIdx: number;
+  hideOnMobile: boolean;
+  hideOnTablet: boolean;
+  gridMobileOrder: number;
+  gridDesktopOrder: number;
+  cell: {
+    src?: string;
+    text?: string;
+    type: "text" | "image";
+  };
 }
 
 const CornerFrame = () => (
@@ -28,44 +30,49 @@ const CornerFrame = () => (
   </>
 );
 
-export const Card = ({cell, desktopOrder, hideOnTablet} : ICard) => {
-      const {isMobile, isNotMobile} = useWindowWidth()
-    
-  return <> {isNotMobile && (
-  
-              <div
-                className={cn("h-55 w-full lg:order-(--desktop-order)", hideOnTablet && "md:hidden lg:block")}
-                style={{ ["--desktop-order" as string]: desktopOrder }}
-              >
-                {cell.type === "text" ? (
-                  <div className="flex h-full w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 p-4">
-                    <span className="text-accent text-center font-ermilov text-[24px] uppercase lg:text-[30px]">
-                      {cell.text}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="relative h-full w-full overflow-hidden rounded-xl">
-                    <Image src={cell.src || "/placeholder.jpg"} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw" className="object-cover " />
-                    <CornerFrame />
-                  </div>
-                )}
-              </div> 
+export const RenderCard = ({ cell, gridDesktopOrder, hideOnTablet, gridMobileOrder, hideOnMobile, gridIdx }: ICard) => {
+  console.log(gridMobileOrder, cell.text);
+
+  return (
+    <div
+      className={cn(
+        "order-(--gridMobileOrder) w-full md:order-0 lg:order-(--gridDesktopOrder)",
+        hideOnMobile && "hidden md:block",
+        hideOnMobile && !hideOnTablet && "md:block",
+        hideOnTablet && "md:hidden lg:block",
+      )}
+      style={{ ["--gridMobileOrder" as string]: gridMobileOrder, ["--gridDesktopOrder" as string]: gridDesktopOrder }}
+    >
+      {cell.type === "text" ? (
+        <div
+          className={cn(
+            "flex h-full w-full",
+            gridIdx === 0 ? "md:items-start" : "items-center md:justify-center md:p-4",
+          )}
+        >
+          <span
+            className={cn(
+              "text-accent font-ermilov text-center uppercase",
+              gridIdx === 0
+                ? "md:text-start md:text-4xl md:leading-snug lg:text-[clamp(2.25rem,1.4rem+1.8vw,3rem)]"
+                : "text-[24px] lg:text-[30px]",
             )}
-            {isMobile && (
-              <div > 
-                 {cell.type === "text" ? (
-                  <div className="flex h-full w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 p-4">
-                    <span className="text-accent text-center font-ermilov text-[24px] uppercase lg:text-[30px]">
-                      {cell.text}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="relative  w-full overflow-hidden rounded-xl h-55">
-                    <Image src={cell.src || "/placeholder.jpg"} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw" className="object-cover w-full h-full" />
-                    <CornerFrame />
-                  </div>
-                )}
-              </div>
-  
-            )}</>;
+          >
+            {cell.text}
+          </span>
+        </div>
+      ) : (
+        <div className="relative h-55 w-full overflow-hidden">
+          <Image
+            fill
+            className="object-cover"
+            alt={cell.text || "Image"}
+            src={cell.src || "/placeholder.jpg"}
+            sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 100vw"
+          />
+          <CornerFrame />
+        </div>
+      )}
+    </div>
+  );
 };

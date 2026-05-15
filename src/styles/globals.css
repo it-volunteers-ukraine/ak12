@@ -116,7 +116,7 @@
     @apply outline-none;
   }
   .container-app {
-    @apply w-full px-4;
+    @apply w-full px-4 py-16;
   }
   @media (min-width: 768px) {
     .container-app {

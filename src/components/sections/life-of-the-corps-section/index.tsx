@@ -4,7 +4,7 @@ import { aboutUsSchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants/section-key";
 import { contentService } from "@/lib/content/content.service";
 
-import { Card } from "./card";
+import { RenderCard } from "./card";
 
 interface ILifeOfTheCorpsSectionProps {
   locale: Locale;
@@ -46,16 +46,52 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
   });
 
   return (
-   
-<section className="container-app w-full bg-black/90 ">
+    <section className="container-app md: w-full bg-black/90">
+      <h2 className="font-ermilov text-accent mb-4 flex justify-center text-[40px] uppercase md:hidden">
+        {cells[0].text}
+      </h2>
       <div className={cn("grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4")}>
         {cells.map((cell, gridIdx) => {
           const hideOnTablet = gridIdx >= 15;
-          const desktopOrder = calculateOrder(gridIdx, 4);
+          const gridDesktopOrder = calculateOrder(gridIdx, 4);
 
-          return ( 
-            <Card key={cell.id} cell={cell} hideOnTablet={hideOnTablet} desktopOrder={desktopOrder} />
-          )
+          let gridMobileOrder = gridIdx;
+
+          if (gridIdx === 1) {
+            gridMobileOrder = 5;
+          }
+          if (gridIdx === 4) {
+            gridMobileOrder = 6;
+          }
+          if (gridIdx === 6) {
+            gridMobileOrder = 4;
+          }
+          if (gridIdx === 7) {
+            gridMobileOrder = 5;
+          }
+          if (gridIdx === 5) {
+            gridMobileOrder = 7;
+          }
+          if (gridIdx === 9) {
+            gridMobileOrder = 7;
+          }
+          if (gridIdx === 13) {
+            gridMobileOrder = 9;
+          }
+
+          const hideOnMobile = [0, 15].includes(gridIdx);
+
+          return (
+            <RenderCard
+              cell={cell}
+              key={cell.id}
+              gridIdx={gridIdx}
+              hideOnTablet={hideOnTablet}
+              hideOnMobile={hideOnMobile}
+              gridMobileOrder={gridMobileOrder}
+              gridDesktopOrder={gridDesktopOrder}
+            />
+          );
         })}
       </div>
     </section>
