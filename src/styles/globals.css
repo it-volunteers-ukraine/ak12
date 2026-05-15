@@ -120,19 +120,19 @@
   }
   @media (min-width: 768px) {
     .container-app {
-      @apply md:px-10;
+      @apply md:px-10 md:py-25;
     }
   }
 
   @media (min-width: 1024px) {
     .container-app {
-      @apply desktop:px-15;
+      @apply desktop:px-15 desktop:py-30;
     }
   }
 
   @media (min-width: 1440px) {
     .container-app {
-      @apply px-20;
+      @apply px-20 py-40;
     }
   }
 
