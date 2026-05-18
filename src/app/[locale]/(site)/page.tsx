@@ -41,8 +41,6 @@ export default async function Home({
       <main>
         <HeroSection locale={locale} />
         <LifeOfTheCorpsSection locale={locale} />
-        {/*         <LifeOfTheUnit locale={locale} />
-         */}
         <SubdivisionsSection locale={locale} />
         <VacanciesSection
           vacancies={vacancies}
