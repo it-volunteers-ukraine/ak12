@@ -145,3 +145,25 @@
 html {
   scroll-behavior: smooth;
 }
+
+
+.gallery-swiper .swiper-button-next:after,
+.gallery-swiper .swiper-button-prev:after {
+  font-weight: 900; 
+}
+
+.gallery-swiper .swiper-button-next,
+.gallery-swiper .swiper-button-prev {
+  transition: transform 0.2s ease-in-out;
+}
+
+
+@media (hover: hover) {
+  .gallery-swiper .swiper-button-next:hover {
+    transform: scale(1.2); 
+  }
+  
+  .gallery-swiper .swiper-button-prev:hover {
+    transform: scale(1.2);
+  }
+}

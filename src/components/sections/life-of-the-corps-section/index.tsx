@@ -1,10 +1,12 @@
-import { cn } from "@/utils";
+import Image from "next/image";
+
 import { Locale } from "@/types";
 import { aboutUsSchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants/section-key";
 import { contentService } from "@/lib/content/content.service";
 
-import { RenderCard } from "./card";
+import { Background } from "../../../../public/images";
+import { LifeOfTheCorpsGalleryClient } from "./gallery/gallery-client";
 
 interface ILifeOfTheCorpsSectionProps {
   locale: Locale;
@@ -21,79 +23,47 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
     return null;
   }
 
-  const calculateOrder = (index: number, cols: number) => {
-    const row = Math.floor(index / cols);
-    const isEvenRow = row % 2 === 0;
+  const fullGallery = content.content.gallery ?? [];
+  const imageIndexByGalleryIndex = new Map<number, number>();
+  const images = fullGallery
+    .map((item, idx) => ({ item, idx }))
+    .filter(({ item }) => Boolean(item?.secureUrl))
+    .map(({ item, idx }, imageIndex) => {
+      imageIndexByGalleryIndex.set(idx, imageIndex);
 
-    if (isEvenRow) {
-      return index;
-    }
+      return {
+        text: item?.text,
+        id: `gallery-img-${idx}`,
+        src: item?.secureUrl || "/placeholder.jpg",
+      };
+    });
 
-    return index % 2 === 0 ? index + 1 : index - 1;
-  };
-
-  const cells = content.content.gallery.slice(0, 9).flatMap((item, idx) => {
+  const cells = fullGallery.slice(0, 9).flatMap((item, idx) => {
     const isImageOnly = idx >= 7;
+    const imageIndex = imageIndexByGalleryIndex.get(idx) ?? 0;
 
     if (isImageOnly) {
-      return [{ type: "image" as const, src: item?.secureUrl, id: `img-${idx}` }];
+      return [{ type: "image" as const, src: item?.secureUrl, id: `img-${idx}`, imageIndex }];
     }
 
     return [
       { type: "text" as const, text: item?.text, id: `txt-${idx}` },
-      { type: "image" as const, src: item?.secureUrl, id: `img-${idx}` },
+      { type: "image" as const, src: item?.secureUrl, id: `img-${idx}`, imageIndex },
     ];
   });
 
   return (
-    <section className="container-app md: w-full bg-black/90">
-      <h2 className="font-ermilov text-accent mb-4 flex justify-center text-[40px] uppercase md:hidden">
-        {cells[0].text}
-      </h2>
-      <div className={cn("grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4")}>
-        {cells.map((cell, gridIdx) => {
-          const hideOnTablet = gridIdx >= 15;
-          const gridDesktopOrder = calculateOrder(gridIdx, 4);
-
-          let gridMobileOrder = gridIdx;
-
-          if (gridIdx === 1) {
-            gridMobileOrder = 5;
-          }
-          if (gridIdx === 4) {
-            gridMobileOrder = 6;
-          }
-          if (gridIdx === 6) {
-            gridMobileOrder = 4;
-          }
-          if (gridIdx === 7) {
-            gridMobileOrder = 5;
-          }
-          if (gridIdx === 5) {
-            gridMobileOrder = 7;
-          }
-          if (gridIdx === 9) {
-            gridMobileOrder = 7;
-          }
-          if (gridIdx === 13) {
-            gridMobileOrder = 9;
-          }
-
-          const hideOnMobile = [0, 15].includes(gridIdx);
-
-          return (
-            <RenderCard
-              cell={cell}
-              key={cell.id}
-              gridIdx={gridIdx}
-              hideOnTablet={hideOnTablet}
-              hideOnMobile={hideOnMobile}
-              gridMobileOrder={gridMobileOrder}
-              gridDesktopOrder={gridDesktopOrder}
-            />
-          );
-        })}
-      </div>
+    <section className="container-app relative w-full overflow-hidden bg-black/95">
+      <Image
+        fill
+        priority
+        sizes="100vw"
+        src={Background}
+        alt="Background"
+        className="absolute inset-0 z-0 object-cover"
+      />
+      <div className="absolute inset-0 z-1 bg-linear-to-r from-black/85 via-black/55 to-transparent" />
+      <LifeOfTheCorpsGalleryClient cells={cells} images={images} />
     </section>
   );
 };
