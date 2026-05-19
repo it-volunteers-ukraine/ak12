@@ -56,9 +56,10 @@ type SectionConfig = {
 
 ```ts
 type FieldConfig = {
-  name: string; // напр. "title" або "support.value"
+  id?: string; // стабільний ключ для рендеру (рекомендовано)
+  name?: string; // для image optional, для інших типів обов'язкове
   label: { uk: string; en: string };
-  type: "text" | "textarea" | "number";
+  type: "text" | "textarea" | "number" | "image";
   locales?: ("uk" | "en")[]; // напр. ["uk"]
 };
 ```
@@ -69,6 +70,11 @@ type FieldConfig = {
 - `locales: ["uk"]`: поле показується тільки в `uk`
 
 Це зручно для значень, які однакові в `uk/en` (а в `onSubmit` ти копіюєш `uk -> en`).
+
+### `image` поля
+
+- для `type: "image"` `name` може бути відсутнім
+- рендер/привʼязка до gallery-item відбувається через `props.imageIndex`
 
 ## 4) Групи секцій (`sectionGroups`)
 
@@ -171,5 +177,3 @@ const LAYOUT_COMPONENTS = {
 - Кнопки форми (submit/reset)
 
 У більшості кейсів достатньо змін у конфізі або додавання нового layout в `LocaleSection.tsx`.
-
-

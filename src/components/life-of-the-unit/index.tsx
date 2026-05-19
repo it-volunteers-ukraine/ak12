@@ -1,8 +1,9 @@
-import { contentService } from "@/lib/content/content.service";
-import { SECTION_KEYS } from "@/constants";
-import { lifeOfUnitSchema } from "@/schemas/life-of-the-unit.schema";
 import Image from "next/image";
+
 import { logger } from "@/lib/logger";
+import { SECTION_KEYS } from "@/constants";
+import { aboutUsSchema } from "@/schemas/about-us.schema";
+import { contentService } from "@/lib/content/content.service";
 
 const ImageSkeleton = () => (
   <div className="flex h-full w-full animate-pulse items-center justify-center bg-slate-200">
@@ -29,11 +30,21 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
   try {
     const content = await contentService.get({
       locale: validLocale,
-      section: SECTION_KEYS.LIFE_OF_UNIT,
-      schema: lifeOfUnitSchema,
+      schema: aboutUsSchema,
+      section: SECTION_KEYS.ABOUT,
     });
 
-    if (!content || !content.items) {
+    if (!content || !content.content.gallery) {
+      return null;
+    }
+
+    const galleryItems = content.content.gallery.filter((item) => {
+      const url = item?.secureUrl;
+
+      return Boolean(url && url.trim() !== "");
+    });
+
+    if (galleryItems.length === 0) {
       return null;
     }
 
@@ -42,18 +53,18 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
         <h2 className="mb-10 text-center text-3xl font-bold tracking-tight uppercase">{content.mainTitle}</h2>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {content.items.map((item, index) => (
+          {galleryItems.map((item, index) => (
             <div
               key={index}
               className="group overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-lg"
             >
               <div className="relative h-64 w-full bg-slate-100">
-                {item.image && item.image.trim() !== "" ? (
+                {item?.secureUrl && item.secureUrl.trim() !== "" ? (
                   <Image
                     width={500}
                     height={400}
-                    src={item.image}
-                    alt={item.alt || item.title}
+                    alt={item.text}
+                    src={item.secureUrl}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
@@ -61,7 +72,7 @@ export const LifeOfTheUnit = async ({ locale }: { locale: string }) => {
                 )}
               </div>
               <div className="p-6">
-                <h3 className="text-xl font-bold text-slate-900 uppercase">{item.title}</h3>
+                <h3 className="text-xl font-bold text-slate-900 uppercase">{item?.text}</h3>
               </div>
             </div>
           ))}

@@ -39,6 +39,24 @@ export const vacancyService = {
     };
   },
 
+  async getAllAdmin(): Promise<{ uk: VacancyMapped[]; en: VacancyMapped[] }> {
+    const { data, error } = await supabaseServer
+      .from("vacancy")
+      .select("*, language:language_id!inner(code)")
+      .order("sort_order", { ascending: true });
+
+    if (error) {
+      logger.error({ error }, "Failed to fetch all vacancies for admin");
+      throw new Error(error.message);
+    }
+
+    const all = (data ?? []).map(mapVacancy);
+
+    return {
+      uk: all.filter((v) => v.language.code === "uk"),
+      en: all.filter((v) => v.language.code === "en"),
+    };
+  },
   async create(data: CreateVacancyDto): Promise<VacancyMapped[]> {
     const langMap = await getLanguageMap();
 

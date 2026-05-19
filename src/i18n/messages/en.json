@@ -19,10 +19,10 @@
     "salary": "Salary",
     "from": "From",
     "currency": "UAH",
-    "requirements": "Requirements",
     "showMore": "Show more",
-    "readLess": "Show less",
     "apply": "Apply",
+    "readLess": "Show less",
+    "readMore": "Show more",
     "noResults": "No vacancies available at the moment"
   },
   "validation": {

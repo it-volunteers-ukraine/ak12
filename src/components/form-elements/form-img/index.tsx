@@ -12,6 +12,9 @@ interface IFormImg {
   file?: File | null;
   src?: string | null;
   onRemove: () => void;
+  containerClassName?: string;
+  imageFrameClassName?: string;
+  imageAspectClassName?: string;
   onFileChange: (file: File | null) => void;
 }
 
@@ -19,7 +22,21 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = false }: IFormImg) => {
+export const FormImg = ({
+  src,
+  file,
+  label,
+  onRemove,
+  onFileChange,
+  disabled = false,
+  containerClassName,
+  imageFrameClassName,
+  imageAspectClassName,
+}: IFormImg) => {
+  const imageClassName = imageFrameClassName
+    ? "h-full w-full rounded-2xl object-cover"
+    : `${imageAspectClassName || "aspect-1.5/1"} w-full rounded-2xl object-cover`;
+
   const [hasError, setHasError] = useState(false);
   const [clientError, setClientError] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -90,35 +107,39 @@ export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = f
   }
 
   return (
-    <div className="h-full w-full rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-6">
+    <div
+      className={`h-full w-full rounded-2xl border border-gray-300 bg-[#F8F9FA]/80 px-6 py-6 ${containerClassName || ""}`}
+    >
       <input
-        ref={inputRef}
         type="file"
-        accept="image/jpeg,image/jpg,image/png,image/webp"
+        ref={inputRef}
         className="hidden"
         onChange={handleChange}
+        accept="image/jpeg,image/jpg,image/png,image/webp"
       />
       <div className="w-full">
-        <h2 className="mb-4 text-lg font-medium">{label}</h2>
+        {label ? <h2 className="mb-4 text-lg font-medium">{label}</h2> : null}
         {displayImage ? (
-          <div className="relative z-0 w-full overflow-hidden rounded-2xl border border-transparent">
+          <div
+            className={`relative z-0 w-full overflow-hidden rounded-2xl border border-transparent ${imageFrameClassName || ""}`}
+          >
             <Image
               priority
-              src={imageSrc as string}
               width={352}
               height={202}
               alt="main-banner"
+              src={imageSrc as string}
+              className={imageClassName}
               onError={() => setHasError(true)}
-              className="aspect-1.5/1 h-full w-full rounded-2xl object-cover"
               unoptimized={Boolean(previewUrl)}
             />
-            <div className="absolute top-3 right-3 flex gap-1">
+            <div className="absolute top-3 right-3 flex gap-3">
               <button
                 type="button"
-                onClick={handlePickClick}
                 disabled={disabled}
-                className="rounded-full bg-white/80 p-1.25"
+                onClick={handlePickClick}
                 aria-label={"Оновити файл"}
+                className="rounded-full bg-white/80 p-1.25 transition-all ease-in-out hover:scale-125 hover:bg-sky-300"
               >
                 <EditIcon className="h-4.5 w-4.5" />
               </button>
@@ -126,7 +147,7 @@ export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = f
                 type="button"
                 onClick={handleRemove}
                 disabled={disabled}
-                className="rounded-full bg-white/80 p-1.25"
+                className="rounded-full bg-white/80 p-1.25 transition-all ease-in-out hover:scale-125 hover:bg-red-300"
                 aria-label={"Видалити файл"}
               >
                 <TrashIcon className="h-4.5 w-4.5" />
@@ -134,7 +155,9 @@ export const FormImg = ({ src, file, onFileChange, onRemove, label, disabled = f
             </div>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-[#697077] p-6">
+          <div
+            className={`flex flex-col items-center justify-center gap-2 rounded-md border-2 border-dashed border-[#697077] p-6 ${imageFrameClassName || ""}`}
+          >
             <button type="button" onClick={handlePickClick} disabled={disabled} className="m-auto w-fit">
               <Upload width={44} height={44} />
             </button>

@@ -1,5 +1,5 @@
 import { cn } from "@/utils";
 
 export const getStyles = () => ({
-  wrapper: (wrapperClassName?: string) => cn("mb-8 flex justify-end gap-6", wrapperClassName),
+  wrapper: (wrapperClassName?: string) => cn(" flex justify-end gap-6 py-4", wrapperClassName),
 });

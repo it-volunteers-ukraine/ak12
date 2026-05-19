@@ -1,3 +1,5 @@
+export { AboutSectionAdmin } from "./admin-about-section";
+
 export { AdminHeader } from "./header-menu";
 
 export { Contract1824Section } from "./contract-18-24-section";
@@ -21,3 +23,7 @@ export { AdminViewSiteButton } from "./admin-view-site-button";
 export { TransferSection } from "./transfer-section";
 
 export { FeedbackSection } from "./feedback-section";
+
+export { VacancySection } from "./vacancies-section";
+
+export { VacanciesListSection } from "./vacancies-section/vacancies-list-section";
