@@ -33,9 +33,13 @@
     "phone": "Please enter a valid phone number"
   },
   "form": {
-    "firstName": "First Name",
+    "placeholderFirstName": "Enter your name",
+    "placeholderLastName": "Enter your last name",
+    "placeholderEmail": "Enter your email",
+    "placeholderPhone": "Enter your phone number",
+    "firstName": "Name",
     "lastName": "Last Name",
     "email": "Email",
-    "phone": "Phone"
+    "phone": "Phone Number"
   }
 }
