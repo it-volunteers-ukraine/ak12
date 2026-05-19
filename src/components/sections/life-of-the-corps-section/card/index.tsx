@@ -42,13 +42,16 @@ export const RenderCard = ({
   gridMobileOrder,
   gridDesktopOrder,
 }: ICard) => {
-  const { cardWrapperClassName, cardWrapperStyle, textStylesClassName, textWrapperClassName } = getStyles({
-    gridIdx,
-    hideOnMobile,
-    hideOnTablet,
-    gridMobileOrder,
-    gridDesktopOrder,
-  });
+  const isPlaceholder = cell.type === "image" && cell.imageIndex === -1;
+  const { cardWrapperClassName, cardWrapperStyle, textStylesClassName, textWrapperClassName, buttonImageClassName } =
+    getStyles({
+      gridIdx,
+      hideOnMobile,
+      hideOnTablet,
+      isPlaceholder,
+      gridMobileOrder,
+      gridDesktopOrder,
+    });
 
   return (
     <div className={cardWrapperClassName} style={cardWrapperStyle}>
@@ -58,8 +61,9 @@ export const RenderCard = ({
         </div>
       ) : (
         <button
+          disabled={isPlaceholder}
+          className={buttonImageClassName}
           onClick={() => onImageClick?.(cell.imageIndex ?? 0)}
-          className="relative h-55 w-full cursor-pointer transition-transform duration-300 lg:hover:z-20 lg:hover:scale-125"
         >
           <Image
             fill

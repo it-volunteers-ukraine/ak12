@@ -61,6 +61,11 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
   };
 
   const openGallery = (imageIndex: number) => {
+
+    if (imageIndex === -1) {
+      return;
+    }
+
     setActiveImageIndex(imageIndex);
     setIsOpen(true);
   };

@@ -40,7 +40,7 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
 
   const cells = fullGallery.slice(0, 9).flatMap((item, idx) => {
     const isImageOnly = idx >= 7;
-    const imageIndex = imageIndexByGalleryIndex.get(idx) ?? 0;
+    const imageIndex = imageIndexByGalleryIndex.get(idx) ?? -1;
 
     if (isImageOnly) {
       return [{ type: "image" as const, src: item?.secureUrl, id: `img-${idx}`, imageIndex }];
