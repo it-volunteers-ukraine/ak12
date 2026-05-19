@@ -33,9 +33,13 @@
     "phone": "Будь ласка, введіть дійсний номер телефону"
   },
   "form": {
+    "placeholderFirstName": "Введіть ім'я",
+    "placeholderLastName": "Введіть прізвище",
+    "placeholderEmail": "Введіть пошту",
+    "placeholderPhone": "Введіть номер телефону",
     "firstName": "Ім'я",
     "lastName": "Прізвище",
     "email": "Пошта",
-    "phone": "Телефон"
+    "phone": "Номер телефону"
   }
 }
