@@ -43,11 +43,13 @@ const MOBILE_ORDER_OVERRIDES: Record<number, number> = {
 
 const MOBILE_HIDDEN_INDEXES = new Set([0, 15]);
 
-const TABLET_HIDE_START_INDEX = 15;
-
 export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGalleryClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  // Index 15 is the last (16th) cell in the fixed grid of 9 basic elements.
+  // It is hidden by the design, since new elements from the CMS are only accessible within Swiper.
+
+  const TABLET_HIDE_START_INDEX = cells.length - 1;
 
   const calculateOrder = (index: number, cols: number) => {
     const row = Math.floor(index / cols);
@@ -61,7 +63,6 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
   };
 
   const openGallery = (imageIndex: number) => {
-
     if (imageIndex === -1) {
       return;
     }
@@ -92,7 +93,7 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
   const getGridMobileOrder = (index: number) => mobileOrders[index] ?? index;
   const shouldHideOnTablet = (index: number) => index >= TABLET_HIDE_START_INDEX;
   const shouldHideOnMobile = (index: number) => MOBILE_HIDDEN_INDEXES.has(index);
-  
+
   return (
     <>
       <h2 className="font-ermilov text-accent relative z-10 mb-4 flex justify-center text-[40px] uppercase md:hidden">

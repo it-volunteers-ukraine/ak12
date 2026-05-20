@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import { Locale } from "@/types";
+import { logger } from "@/lib/logger";
 import { aboutUsSchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants/section-key";
 import { contentService } from "@/lib/content/content.service";
@@ -13,11 +14,19 @@ interface ILifeOfTheCorpsSectionProps {
 }
 
 export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionProps) => {
-  const content = await contentService.get({
-    locale,
-    schema: aboutUsSchema,
-    section: SECTION_KEYS.ABOUT,
-  });
+  let content;
+
+  try {
+    content = await contentService.get({
+      locale,
+      schema: aboutUsSchema,
+      section: SECTION_KEYS.ABOUT,
+    });
+  } catch (error) {
+    logger.error({ error, locale, section: SECTION_KEYS.ABOUT }, "Failed to load LifeOfTheCorpsSection content");
+
+    return null;
+  }
 
   if (!content) {
     return null;
@@ -34,7 +43,7 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
       return {
         text: item?.text,
         id: `gallery-img-${idx}`,
-        src: item?.secureUrl || "/placeholder.jpg",
+        src: item?.secureUrl || "",
       };
     });
 
