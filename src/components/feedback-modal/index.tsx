@@ -13,16 +13,20 @@ interface FeedbackModalProps {
 
 export const FeedbackModal = ({ content, isOpen, onClose }: FeedbackModalProps) => {
   return (
-    <Modal isOpen={isOpen} closeModal={onClose} className="bg-surface-main relative w-[1280px] px-36.5 py-16">
+    <Modal
+      isOpen={isOpen}
+      closeModal={onClose}
+      className="bg-surface-main absolute top-0 flex w-full flex-col items-center px-4 pt-21 pb-9"
+    >
       <button
         type="button"
         onClick={onClose}
-        className="hover:text-accent focus:text-accent absolute top-0 right-0 p-6 text-white transition-colors"
+        className="hover:text-accent focus:text-accent absolute top-4 right-0 p-4 text-white transition-colors"
       >
-        <CloseIcon className="h-12 w-12" />
+        <CloseIcon className="h-6 w-6" />
       </button>
-      <h2 className="font-ermilov text-accent mb-16 text-center text-[56px]/16">{content.modalTitle}</h2>
-      <FeedbackForm content={content} />
+      <h2 className="font-ermilov text-accent mb-7 text-center text-[32px]/10">{content.modalTitle}</h2>
+      <FeedbackForm content={content} isModal />
     </Modal>
   );
 };

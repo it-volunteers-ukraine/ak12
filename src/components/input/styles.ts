@@ -6,8 +6,8 @@ interface GetStylesProps {
   classNameContainer?: string;
 }
 
-const BASE_PLACEHOLDER = "placeholder:text-darker-gray disabled:placeholder:text-text-disabled";
-const BASE_LABEL = "text-soft-blush mb-2";
+const BASE_PLACEHOLDER = "placeholder:text-warm-gray disabled:placeholder:text-text-disabled";
+const BASE_LABEL = "text-soft-blush font-medium mb-2";
 
 export const getStyles = ({ isError, isSuccess, classNameContainer }: GetStylesProps) => {
   const input = cn(
@@ -30,11 +30,11 @@ export const getStyles = ({ isError, isSuccess, classNameContainer }: GetStylesP
 
   return {
     container: cn("flex flex-col relative w-full", classNameContainer),
-    label: BASE_LABEL + " text-[14px]",
+    label: cn(BASE_LABEL, " text-[14px]"),
     input,
-    textarea: input + " resize-none h-32",
-    radioLabelGroup: BASE_LABEL + " text-[20px]/7",
-    radioContainer: "flex items-center gap-6",
+    textarea: cn(input, " resize-none h-32"),
+    radioLabelGroup: cn(BASE_LABEL, "text-[18px] desktop:text-[20px]"),
+    radioContainer: "flex items-center gap-2",
     radioLabel: "text-soft-blush text-[16px] flex items-center gap-1 cursor-pointer",
     radioBigCircle:
       "border-darker-gray peer-checked:!border-soft-blush peer-hover:border-soft-blush/50 peer-focus:border-soft-blush/50 flex h-5 w-5 items-center justify-center rounded-full border-2 transition-colors peer-hover:[&>div]:opacity-50 peer-focus:[&>div]:opacity-50 peer-checked:[&>div]:!opacity-100",
