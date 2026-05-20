@@ -8,4 +8,5 @@ export const SECTION_KEYS = {
   HEADER: "header-footer",
   MOBILIZATION: "mobilization",
   CONTRACT_18_24: "contract-18-24",
+  PRIVACY_POLICY: "privacy-policy",
 } as const;
