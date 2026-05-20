@@ -16,6 +16,7 @@ import {
   contract1824Schema,
   feedbackContentSchema,
   headerAndFooterContentSchema,
+  privacyPolicySchema,
 } from "@/schemas";
 
 type SaveContentAction = {
@@ -32,6 +33,7 @@ const schemasMap: Record<SectionKey, z.ZodType> = {
   [SECTION_KEYS.MOBILIZATION]: mobilizationSchema,
   [SECTION_KEYS.CONTRACT_18_24]: contract1824Schema,
   [SECTION_KEYS.HEADER]: headerAndFooterContentSchema,
+  [SECTION_KEYS.PRIVACY_POLICY]: privacyPolicySchema,
 };
 
 export const saveContentAction = async ({ locale, sectionKey, rawContent }: SaveContentAction) => {

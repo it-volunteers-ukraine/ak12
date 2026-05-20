@@ -8,6 +8,7 @@ import {
   contract1824Schema,
   feedbackContentSchema,
   headerAndFooterContentSchema,
+  privacyPolicySchema,
 } from "@/schemas";
 
 const withMultiLang = <S extends z.ZodRawShape>(schema: z.ZodObject<S>) => {
@@ -25,4 +26,5 @@ export const ADMIN_SCHEMAS = {
   mobilization: withMultiLang(mobilizationSchema),
   "contract-18-24": withMultiLang(contract1824Schema),
   "header-footer": withMultiLang(headerAndFooterContentSchema),
+  "privacy-policy": withMultiLang(privacyPolicySchema),
 } as const;
