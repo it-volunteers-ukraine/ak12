@@ -1,5 +1,5 @@
 "use client";
-import { FeedbackFormContent } from "@/schemas";
+import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
 import { FeedbackForm } from "../feedback-form";
 import { CloseIcon } from "../../../public/icons";
 
@@ -7,11 +7,12 @@ import { Modal } from "../modal";
 
 interface FeedbackModalProps {
   content: FeedbackFormContent;
+  privacyPolicyContent: PrivacyPolicyContent | null;
   isOpen: boolean;
   onClose: () => void;
 }
 
-export const FeedbackModal = ({ content, isOpen, onClose }: FeedbackModalProps) => {
+export const FeedbackModal = ({ content, privacyPolicyContent, isOpen, onClose }: FeedbackModalProps) => {
   return (
     <Modal isOpen={isOpen} closeModal={onClose} className="bg-surface-main relative w-[1280px] px-36.5 py-16">
       <button
@@ -22,7 +23,7 @@ export const FeedbackModal = ({ content, isOpen, onClose }: FeedbackModalProps) 
         <CloseIcon className="h-12 w-12" />
       </button>
       <h2 className="font-ermilov text-accent mb-16 text-center text-[56px]/16">{content.modalTitle}</h2>
-      <FeedbackForm content={content} />
+      <FeedbackForm content={content} privacyPolicyContent={privacyPolicyContent} />
     </Modal>
   );
 };

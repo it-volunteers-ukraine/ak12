@@ -9,9 +9,15 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { FormInput } from "../input";
 import { SubmitIcon } from "../../../public/icons";
 import { PolicyButton } from "../policy-modal";
-import { FeedbackFormContent, getFeedbackFormSchema, IFeedbackForm } from "@/schemas";
+import { FeedbackFormContent, getFeedbackFormSchema, IFeedbackForm, PrivacyPolicyContent } from "@/schemas";
 
-export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
+export const FeedbackForm = ({
+  content,
+  privacyPolicyContent,
+}: {
+  content: FeedbackFormContent;
+  privacyPolicyContent: PrivacyPolicyContent | null;
+}) => {
   const errorMessages = useTranslations("validation");
   const text = useTranslations("form");
 
@@ -35,8 +41,7 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
     },
   });
 
-  const onSubmit: SubmitHandler<IFeedbackForm> = async (data) => {
-
+  const onSubmit: SubmitHandler<IFeedbackForm> = async (_data) => {
     reset();
   };
 
@@ -78,7 +83,11 @@ export const FeedbackForm = ({ content }: { content: FeedbackFormContent }) => {
           <SubmitIcon className="text-card-bg group-disabled:text-text-disabled h-6 w-6" />
         </button>
       </form>
-      <PolicyButton text={content.privacyPolicyTitle} textLink={content.privacyPolicyTextLink} />
+      <PolicyButton
+        text={content.privacyPolicyTitle}
+        textLink={content.privacyPolicyTextLink}
+        privacyPolicyContent={privacyPolicyContent}
+      />
     </div>
   );
 };

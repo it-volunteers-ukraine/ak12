@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { FeedbackModal } from "../feedback-modal";
-import { FeedbackFormContent } from "@/schemas";
+import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
 import { useTranslations } from "next-intl";
 import { SubmitIcon } from "../../../public/icons";
 
@@ -18,7 +18,13 @@ const DEFAULT_CONTENT: FeedbackFormContent = {
   privacyPolicyTextLink: "Політикою конфіденційності",
 };
 
-export const ApplyButton = ({ contentModal }: { contentModal: FeedbackFormContent | null }) => {
+export const ApplyButton = ({
+  contentModal,
+  privacyPolicyContent,
+}: {
+  contentModal: FeedbackFormContent | null;
+  privacyPolicyContent: PrivacyPolicyContent | null;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("vacancies");
 
@@ -31,12 +37,15 @@ export const ApplyButton = ({ contentModal }: { contentModal: FeedbackFormConten
         onClick={() => setIsOpen(true)}
         className="bg-surface-main border-accent hover:bg-hover mt-auto flex w-full items-center justify-center gap-1 border-2 py-1.5 transition-colors"
       >
-        <span className="font-ermilov text-soft-blush text-[20px] leading-7 font-bold">
-          {t("apply")}
-        </span>
+        <span className="font-ermilov text-soft-blush text-[20px] leading-7 font-bold">{t("apply")}</span>
         <SubmitIcon className="h-4.5 w-4.5" />
       </button>
-      <FeedbackModal content={content} isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      <FeedbackModal
+        content={content}
+        privacyPolicyContent={privacyPolicyContent}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </>
   );
 };

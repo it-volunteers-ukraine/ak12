@@ -4,7 +4,7 @@ import { DirectContact } from "./direct-contact";
 import { ResponseTime } from "./response-time";
 import { SocialMedia } from "./social-media";
 import { contentService } from "@/lib/content/content.service";
-import { feedbackContentSchema } from "@/schemas";
+import { feedbackContentSchema, privacyPolicySchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants";
 
 interface FeedbackSectionProps {
@@ -12,7 +12,18 @@ interface FeedbackSectionProps {
 }
 
 export const FeedbackSection = async ({ locale }: FeedbackSectionProps) => {
-  const content = await contentService.get({ locale, schema: feedbackContentSchema, section: SECTION_KEYS.FEEDBACK });
+  const [content, contentPrivacyPolicy] = await Promise.all([
+    contentService.get({
+      locale,
+      schema: feedbackContentSchema,
+      section: SECTION_KEYS.FEEDBACK,
+    }),
+    contentService.get({
+      locale,
+      schema: privacyPolicySchema,
+      section: SECTION_KEYS.PRIVACY_POLICY,
+    }),
+  ]);
 
   if (!content) {
     return null;
@@ -24,7 +35,7 @@ export const FeedbackSection = async ({ locale }: FeedbackSectionProps) => {
         {content.form?.title}
       </h2>
       <div className="flex w-full gap-5">
-        {content.form && <FeedbackForm content={content.form} />}
+        {content.form && <FeedbackForm content={content.form} privacyPolicyContent={contentPrivacyPolicy} />}
         <div className="flex w-103.5 flex-col justify-between">
           {content.contacts?.info && (
             <DirectContact title={content.directContactTitle} contacts={content.contacts.info} />

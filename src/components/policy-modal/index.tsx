@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Modal } from "../modal";
+import { PrivacyPolicyContent } from "@/schemas";
 
 interface IPolicyButton {
   text: string;
   textLink: string;
+  privacyPolicyContent: PrivacyPolicyContent | null;
 }
 
-export const PolicyButton = ({ text, textLink }: IPolicyButton) => {
+export const PolicyButton = ({ text, textLink, privacyPolicyContent }: IPolicyButton) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -22,7 +24,10 @@ export const PolicyButton = ({ text, textLink }: IPolicyButton) => {
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
       >
-        Політика конфіденційності
+        <div>
+          <h3>{privacyPolicyContent?.title}</h3>
+          <p className="whitespace-pre-line">{privacyPolicyContent?.description}</p>
+        </div>
         <button className="text-[12px]" type="button" onClick={() => setIsOpen(false)}>
           Закрити
         </button>

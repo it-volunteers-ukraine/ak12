@@ -5,16 +5,17 @@ import { useTranslations } from "next-intl";
 import { VacancyType, VacancyMapped } from "@/types/vacancy";
 import { VACANCY_TYPES } from "@/constants/vacancies/filters";
 import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
-import { FeedbackFormContent } from "@/schemas";
+import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
 import { VacancyCard } from "./VacancyCard";
 
 export interface Props {
   vacancies: VacancyMapped[];
   initialType: VacancyType;
   contentModal: FeedbackFormContent | null;
+  privacyPolicyContent: PrivacyPolicyContent | null;
 }
 
-export function VacanciesSection({ vacancies, initialType, contentModal }: Props) {
+export function VacanciesSection({ vacancies, initialType, contentModal, privacyPolicyContent }: Props) {
   const t = useTranslations("vacancies");
   const [activeType, setActiveType] = useState<VacancyType>(initialType);
   const [page, setPage] = useState(0);
@@ -24,10 +25,7 @@ export function VacanciesSection({ vacancies, initialType, contentModal }: Props
     setPage(0);
   };
 
-  const filteredVacancies = useMemo(
-  () => vacancies.filter((v) => v.type === activeType), 
-  [vacancies, activeType],
-);
+  const filteredVacancies = useMemo(() => vacancies.filter((v) => v.type === activeType), [vacancies, activeType]);
 
   const visibleVacancies = filteredVacancies.slice(0, (page + 1) * DEFAULT_LIMIT);
   const remainingVacancies = filteredVacancies.length - visibleVacancies.length;
@@ -59,7 +57,12 @@ export function VacanciesSection({ vacancies, initialType, contentModal }: Props
         {visibleVacancies.length > 0 ? (
           <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
             {visibleVacancies.map((v) => (
-              <VacancyCard key={v.id} vacancy={v} contentModal={contentModal} />
+              <VacancyCard
+                key={v.id}
+                vacancy={v}
+                contentModal={contentModal}
+                privacyPolicyContent={privacyPolicyContent}
+              />
             ))}
           </ul>
         ) : (
