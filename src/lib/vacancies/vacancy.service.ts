@@ -124,15 +124,25 @@ export const vacancyService = {
   },
 
   async reorder(data: ReorderVacanciesDto): Promise<void> {
-    const { error } = await supabaseServer.rpc("reorder_vacancies_atomic", {
-      payload: data,
-    });
+  const updates = data.items.flatMap(({ ukId, enId, sortOrder }) => [
+    supabaseServer
+      .from("vacancy")
+      .update({ sort_order: sortOrder, updated_at: new Date().toISOString() })
+      .eq("id", ukId),
+    supabaseServer
+      .from("vacancy")
+      .update({ sort_order: sortOrder, updated_at: new Date().toISOString() })
+      .eq("id", enId),
+  ]);
 
-    if (error) {
-      logger.error({ error, data }, "Failed to reorder vacancies");
-      throw new Error(error.message);
-    }
+  const results = await Promise.all(updates);
+  const failed = results.filter((r) => r.error);
 
-    logger.info("Vacancies successfully reordered");
-  },
+  if (failed.length > 0) {
+    logger.error({ errors: failed.map((r) => r.error) }, "Failed to reorder vacancies");
+    throw new Error(`Failed to reorder ${failed.length} vacancies`);
+  }
+
+  logger.info("Vacancies successfully reordered");
+},
 };

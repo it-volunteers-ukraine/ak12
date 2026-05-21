@@ -24,32 +24,28 @@ export function VacanciesSection({ vacancies, initialType, contentModal }: Props
     setPage(0);
   };
 
-  const filteredVacancies = useMemo(
-  () => vacancies.filter((v) => v.type === activeType), 
-  [vacancies, activeType],
-);
+  const filteredVacancies = useMemo(() => vacancies.filter((v) => v.type === activeType), [vacancies, activeType]);
 
   const visibleVacancies = filteredVacancies.slice(0, (page + 1) * DEFAULT_LIMIT);
   const remainingVacancies = filteredVacancies.length - visibleVacancies.length;
 
-  const base =
-    "px-8 py-4 font-ermilov font-bold text-center text-[32px] leading-8 tracking-[0px] border border-accent transition-colors";
+  const tabBase =
+    "px-4 py-3 font-road-ui font-bold text-[20px] leading-[140%] text-center border border-accent transition-colors";
   const activeClass = "bg-accent text-surface-secondary";
   const inactiveClass = "bg-surface-secondary text-accent hover:bg-hover";
 
   return (
-    <section className="bg-surface-main text-secondary-text px-20 py-25" id="vacancy">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="font-ermilov text-accent mb-16 text-center text-[56px] leading-32 font-bold tracking-[-3px] uppercase">
+    <section className="bg-surface-main text-secondary-text tablet:py-25 desktop:py-40 py-16" id="vacancy">
+      <div className="container-app">
+        <h2 className="font-ermilov text-accent tablet:text-[40px] tablet:leading-[120%] tablet:mb-14 desktop:text-[56px] desktop:leading-[114%] desktop:mb-16 mb-4 text-center text-[32px] leading-[125%] font-bold capitalize">
           {t("title")}
         </h2>
-
-        <div className="mb-9 flex justify-center">
+        <div className="tablet:mb-12 desktop:mb-16 mb-8 flex justify-center">
           {VACANCY_TYPES.map((type) => (
             <button
               key={type}
               onClick={() => handleTabChange(type)}
-              className={`${base} ${activeType === type ? activeClass : inactiveClass}`}
+              className={`${tabBase} ${activeType === type ? activeClass : inactiveClass}`}
             >
               {t(type)}
             </button>
@@ -57,20 +53,20 @@ export function VacanciesSection({ vacancies, initialType, contentModal }: Props
         </div>
 
         {visibleVacancies.length > 0 ? (
-          <ul className="tablet:grid-cols-2 desktop:grid-cols-3 grid gap-8">
+          <ul className="vacancies-grid tablet:grid-cols-2 tablet:gap-4 laptop:grid-cols-3 laptop:gap-x-5 laptop:gap-y-8 grid grid-cols-1 gap-[13px]">
             {visibleVacancies.map((v) => (
               <VacancyCard key={v.id} vacancy={v} contentModal={contentModal} />
             ))}
           </ul>
         ) : (
-          <p className="text-center">{t("noResults")}</p>
+          <p className="text-warm-gray text-center">{t("noResults")}</p>
         )}
 
         {remainingVacancies > 0 && (
-          <div className="flex justify-center">
+          <div className="tablet:mt-12 desktop:mt-16 mt-7 flex justify-center">
             <button
               onClick={() => setPage((p) => p + 1)}
-              className="font-ermilov text-accent bg-surface-secondary border-accent hover:bg-hover border px-[45.5px] py-3 text-[18px] leading-8 tracking-[0px] transition-colors"
+              className="font-ermilov tablet:text-[18px] text-accent bg-surface-secondary border-accent hover:bg-hover border px-10 py-3 text-[16px] leading-[150%] font-bold transition-colors"
             >
               {t("showMore")} {remainingVacancies}
             </button>

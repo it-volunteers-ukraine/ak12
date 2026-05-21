@@ -29,9 +29,10 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
   const [deletingVacancy, setDeletingVacancy] = useState<VacancyItem | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Шукаємо EN пару по sort_order
-  const getEnVersion = (ukItem: VacancyItem): VacancyMapped | undefined =>
-    vacanciesEn.find((v) => v.sortOrder === ukItem.sortOrder);
+ const getEnVersion = (ukItem: VacancyItem): VacancyMapped | undefined =>
+  vacanciesEn.find((v) => 
+    ukItem.slug ? v.slug === ukItem.slug : v.position === ukItem.position
+  );
 
   const editingUk = items.find((v) => v.id === editingId) ?? null;
   const editingEn = editingUk ? (getEnVersion(editingUk) ?? null) : null;

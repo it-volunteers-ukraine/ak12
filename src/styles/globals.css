@@ -142,6 +142,15 @@
     }
   }
 }
+
+@layer utilities {
+  @media (min-width: 1919px) {
+    .vacancies-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
