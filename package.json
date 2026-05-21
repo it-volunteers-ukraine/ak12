@@ -34,6 +34,7 @@
     "react-toastify": "^11.0.5",
     "server-only": "^0.0.1",
     "slugify": "^1.6.9",
+    "swiper": "^12.1.4",
     "tailwind-merge": "^3.5.0",
     "transliteration": "^2.6.1",
     "typescript-eslint": "^8.57.2",

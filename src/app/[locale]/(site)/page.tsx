@@ -1,15 +1,14 @@
 import { Locale } from "@/types";
+import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
-import { HeroSection } from "@/components/sections";
+import { feedbackContentSchema } from "@/schemas";
+import { DEFAULT_TYPE } from "@/constants/vacancies";
 import { VacanciesSection } from "@/components/vacancies";
-import { LifeOfTheUnit } from "@/components/life-of-the-unit";
+import { contentService } from "@/lib/content/content.service";
 import { FeedbackSection } from "@/components/feedback-section";
 import { MarqueeLine, SubdivisionsSection } from "@/components";
-import { DEFAULT_TYPE } from "@/constants/vacancies";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
-import { SECTION_KEYS } from "@/constants";
-import { contentService } from "@/lib/content/content.service";
-import { feedbackContentSchema } from "@/schemas";
+import { HeroSection, LifeOfTheCorpsSection } from "@/components/sections";
 
 export interface SearchParamsProps {
   type?: VacancyType;
@@ -41,7 +40,7 @@ export default async function Home({
     <>
       <main>
         <HeroSection locale={locale} />
-        <LifeOfTheUnit locale={locale} />
+        <LifeOfTheCorpsSection locale={locale} />
         <SubdivisionsSection locale={locale} />
         <VacanciesSection
           vacancies={vacancies}
