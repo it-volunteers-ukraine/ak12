@@ -6,8 +6,11 @@
     "social": "Social"
   },
   "subdivisions": {
-    "title": "Choose a Unit",
+    "title": "Choose a subdivision",
     "subtitle": "Hover over a unit to get more information*",
+    "subtitleMobile": "Click on the icon ⓘ for more information*",
+    "showInfo": "Show information",
+    "closeInfo": "Close",
     "visitSite": "Our website",
     "imageAlt": "Unit emblem: {name}",
     "hoverImageAlt": "Unit photo: {name}"
