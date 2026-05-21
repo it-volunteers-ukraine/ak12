@@ -1,4 +1,3 @@
-// VacancyCard.tsx
 "use client";
 
 import { useState } from "react";
@@ -27,14 +26,7 @@ export function VacancyCard({ vacancy, contentModal }: Props) {
     isLong && !isExpanded ? vacancy.description.slice(0, DESCRIPTION_LIMIT).trimEnd() + "..." : vacancy.description;
 
   return (
-    <li
-      className="tablet:p-6 flex flex-col rounded-[2px] p-4 backdrop-blur-[5px] transition-transform hover:-translate-y-0.5"
-      style={{
-        border: "1px solid var(--stroke-green-24)",
-        boxShadow: "inset 0 1px 1px rgba(255, 255, 255, 0.08)",
-        background: "linear-gradient(177deg, #1a1a1a 8%, #1a1e1d 72%)",
-      }}
-    >
+    <li className="tablet:p-6 flex flex-col rounded-[2px] p-4 backdrop-blur-[5px] transition-transform hover:-translate-y-0.5 border border-vacancy-card-stroke/8 bg-gradient-to-b from-vacancy-card-start to-vacancy-card-end shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]">
       <div className="border-accent/8 mb-4 border-b pb-4">
         <h3 className="font-ermilov text-accent mb-3 text-[18px] leading-[144%] font-bold uppercase">
           {vacancy.position}
