@@ -9,9 +9,9 @@ export const privacyPolicyFormBuilderConfig: FormBuilderConfig = {
   },
   sections: [
     {
-      id: "privacy-policy",
+      id: "privacy-policy-title",
       titlePlacement: "outside",
-      title: "Редагування політики конфіденційності",
+      title: "Редагування заголовка",
       localeLayout: "split",
       fields: [
         {
@@ -19,20 +19,28 @@ export const privacyPolicyFormBuilderConfig: FormBuilderConfig = {
           type: "text",
           required: true,
           label: {
-            uk: "Заголовок",
-            en: "Title",
+            uk: "Заголовок українською",
+            en: "Title in English",
           },
         },
+      ],
+    },
+    {
+      id: "privacy-policy-description",
+      titlePlacement: "outside",
+      title: "Редагування опису",
+      localeLayout: "split",
+      fields: [
         {
           name: "description",
           type: "textarea",
           required: true,
           label: {
-            uk: "Опис",
-            en: "Description",
+            uk: "Опис українською",
+            en: "Description in English",
           },
           props: {
-            rows: 5,
+            rows: 10,
           },
         },
       ],
