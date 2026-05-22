@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "next-intl";
+
 import { ExternalLinkIcon } from "@/../public/icons";
 
 export function AdminViewSiteButton() {
@@ -12,7 +13,7 @@ export function AdminViewSiteButton() {
       href={`/${locale}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white"
+      className="flex shrink-0 items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-white"
     >
       Переглянути сайт
       <ExternalLinkIcon className="h-6 w-6" />

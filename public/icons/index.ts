@@ -69,3 +69,13 @@ export { default as YoutubeIcon } from "./youtube.svg";
 export { default as LocationIcon } from "./location.svg";
 
 export { default as LinkIcon } from "./link.svg";
+
+export { default as CEOIcon } from "./ceo.svg";
+
+export { default as ContentIcon } from "./content.svg";
+
+export { default as SubdivisionIcon } from "./subdivision.svg";
+
+export { default as VacancyIcon } from "./vacancy.svg";
+
+export { default as CheckIcon } from "./check.svg";
