@@ -87,6 +87,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
       setDeletingSubdivision(null);
     }
   };
+
   if (editingSlug && editingUk) {
     return (
       <SubdivisionSection
