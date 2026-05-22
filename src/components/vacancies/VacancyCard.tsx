@@ -27,27 +27,34 @@ export function VacancyCard({ vacancy, contentModal, privacyPolicyContent }: Pro
     isLong && !isExpanded ? vacancy.description.slice(0, DESCRIPTION_LIMIT).trimEnd() + "..." : vacancy.description;
 
   return (
-    <li className="border-vacancy-card-stroke/8 from-vacancy-card-start to-vacancy-card-end mb-10 flex flex-col border bg-linear-to-r p-6 transition-transform hover:-translate-y-0.5">
+    <li className="tablet:p-6 border-vacancy-card-stroke/8 from-vacancy-card-start to-vacancy-card-end flex flex-col rounded-[2px] border bg-gradient-to-b p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] backdrop-blur-[5px] transition-transform hover:-translate-y-0.5">
       <div className="border-accent/8 mb-4 border-b pb-4">
-        <h3 className="font-ermilov text-accent mb-3 text-[30px] leading-9 font-bold">{vacancy.position}</h3>
-        <div className="flex gap-1 text-xs">
-          <p className="text-warm-gray leading-4 tracking-[0px]">{t("salary")}:</p>
-          <p className="font-ermilov text-soft-blush leading-5 font-bold tracking-[0px]">
+        <h3 className="font-ermilov text-accent mb-3 text-[18px] leading-[144%] font-bold uppercase">
+          {vacancy.position}
+        </h3>
+        <div className="flex flex-wrap items-baseline gap-x-1">
+          <span className="font-road-ui text-warm-gray text-[14px] leading-[157%] font-medium">{t("salary")}:</span>
+          <span className="font-road-ui text-soft-blush text-[14px] leading-[157%] font-bold">
             {salaryMax ? `${salaryMin} - ${salaryMax}` : `${t("from")} ${salaryMin}`} {t("currency")}
-          </p>
+          </span>
         </div>
       </div>
-      <p className="mb-2 text-sm leading-5.5 tracking-[0px]">{displayedDescription}</p>
-      {isLong && (
+
+      <p className="font-road-ui text-soft-blush mb-2 text-[14px] leading-[157%] font-medium">{displayedDescription}</p>
+
+      {isLong ? (
         <button
           onClick={() => setIsExpanded((prev) => !prev)}
-          className="text-accent mb-8 self-start text-sm hover:underline"
+          className="font-road-ui text-accent tablet:mb-8 mb-6 self-start text-[14px] leading-[157%] font-medium hover:underline"
         >
           {isExpanded ? t("readLess") : t("readMore")}
         </button>
+      ) : (
+        <div className="tablet:mb-8 mb-6" />
       )}
-      {!isLong && <div className="mb-10" />}
-      <ApplyButton contentModal={contentModal} privacyPolicyContent={privacyPolicyContent} />
+      <div className="mt-auto">
+        <ApplyButton contentModal={contentModal} privacyPolicyContent={privacyPolicyContent} />
+      </div>
     </li>
   );
 }

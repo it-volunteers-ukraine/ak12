@@ -69,7 +69,7 @@ export const MarqueeLine = ({ itemList }: Props) => {
           <MarqueeItem key={`measure-${index}`} item={item} index={index} />
         ))}
       </div>
-      <Link href="#vacancy" ref={containerRef} className="bg-accent flex h-16 w-full items-center">
+      <a href="#vacancy" ref={containerRef} className="bg-accent flex h-16 w-full items-center">
         <div
           className={cn(
             "flex items-center whitespace-nowrap",
@@ -80,7 +80,7 @@ export const MarqueeLine = ({ itemList }: Props) => {
             <MarqueeItem key={`item-${index}`} item={item} index={index} />
           ))}
         </div>
-      </Link>
+      </a>
     </div>
   );
 };

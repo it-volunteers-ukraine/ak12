@@ -8,6 +8,9 @@
   "subdivisions": {
     "title": "Обрати підрозділ",
     "subtitle": "Наведіть курсор на підрозділ для отримання додаткової інформації*",
+    "subtitleMobile": "Натисніть на іконку ⓘ для отримання додаткової інформації*",
+    "showInfo": "Показати інформацію",
+    "closeInfo": "Закрити",
     "visitSite": "Наш сайт",
     "imageAlt": "Герб підрозділу: {name}",
     "hoverImageAlt": "Фото підрозділу: {name}"
@@ -33,9 +36,13 @@
     "phone": "Будь ласка, введіть дійсний номер телефону"
   },
   "form": {
+    "placeholderFirstName": "Введіть ім'я",
+    "placeholderLastName": "Введіть прізвище",
+    "placeholderEmail": "Введіть пошту",
+    "placeholderPhone": "Введіть номер телефону",
     "firstName": "Ім'я",
     "lastName": "Прізвище",
     "email": "Пошта",
-    "phone": "Телефон"
+    "phone": "Номер телефону"
   }
 }

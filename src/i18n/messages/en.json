@@ -6,8 +6,11 @@
     "social": "Social"
   },
   "subdivisions": {
-    "title": "Choose a Unit",
+    "title": "Choose a subdivision",
     "subtitle": "Hover over a unit to get more information*",
+    "subtitleMobile": "Click on the icon ⓘ for more information*",
+    "showInfo": "Show information",
+    "closeInfo": "Close",
     "visitSite": "Our website",
     "imageAlt": "Unit emblem: {name}",
     "hoverImageAlt": "Unit photo: {name}"
@@ -33,9 +36,13 @@
     "phone": "Please enter a valid phone number"
   },
   "form": {
-    "firstName": "First Name",
+    "placeholderFirstName": "Enter your name",
+    "placeholderLastName": "Enter your last name",
+    "placeholderEmail": "Enter your email",
+    "placeholderPhone": "Enter your phone number",
+    "firstName": "Name",
     "lastName": "Last Name",
     "email": "Email",
-    "phone": "Phone"
+    "phone": "Phone Number"
   }
 }

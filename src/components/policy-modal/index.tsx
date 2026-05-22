@@ -14,8 +14,8 @@ export const PolicyButton = ({ text, textLink, privacyPolicyContent }: IPolicyBu
 
   return (
     <>
-      <div className="flex">
-        <p className="text-warm-gray mr-1 text-[12px]">{text} </p>
+      <div className="tablet:flex-row flex flex-col items-center">
+        <p className="text-warm-gray mr-1 inline-block text-[12px]">{text} </p>
         <button className="text-accent text-[12px]" type="button" onClick={() => setIsOpen(true)}>
           {textLink}
         </button>

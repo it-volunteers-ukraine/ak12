@@ -34,7 +34,7 @@ export const HeroSection = async ({ locale }: { locale: Locale }) => {
 
       <div className="absolute inset-0 -z-10 bg-linear-to-r from-black/80 via-black/35 to-black/25" />
 
-      <div className="container-app flex flex-col justify-center py-15">
+      <div className="container-app flex flex-col justify-center pb-20">
         <div className="mb-24 md:mb-8 lg:mb-10">
           <h1 className="font-ermilov desktop:text-[116px] mb-4 max-w-121 text-5xl leading-tight font-bold uppercase md:text-7xl lg:max-w-200">
             {content.title}
