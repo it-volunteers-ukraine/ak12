@@ -53,7 +53,7 @@ export default async function Home({
           contentModal={contentFeedback?.form ?? null}
           privacyPolicyContent={contentPrivacyPolicy}
         />
-        <FeedbackSection locale={locale} />
+        <FeedbackSection locale={locale} privacyPolicyContent={contentPrivacyPolicy} />
         <MarqueeLine itemList={vacanciesTitleList} />
       </main>
     </>

@@ -23,24 +23,6 @@ export const Modal = ({ isOpen, className, classNameOverlay, children, closeModa
 
   useOutsideClick(() => closeModal(), modalRef);
 
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeModal();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, closeModal]);
-
   const style = getStyles({ isOpen, classNameOverlay });
 
   useEffect(() => {
