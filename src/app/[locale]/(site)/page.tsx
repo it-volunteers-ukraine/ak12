@@ -1,7 +1,7 @@
 import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
-import { feedbackContentSchema } from "@/schemas";
+import { feedbackContentSchema, privacyPolicySchema } from "@/schemas";
 import { DEFAULT_TYPE } from "@/constants/vacancies";
 import { VacanciesSection } from "@/components/vacancies";
 import { contentService } from "@/lib/content/content.service";
@@ -24,12 +24,17 @@ export default async function Home({
   const { locale } = await params;
   const initialType = (await searchParams).type || DEFAULT_TYPE;
 
-  const [{ vacancies: allVacancies }, contentFeedback] = await Promise.all([
+  const [{ vacancies: allVacancies }, contentFeedback, contentPrivacyPolicy] = await Promise.all([
     getVacancies(),
     contentService.get({
       locale,
       schema: feedbackContentSchema,
       section: SECTION_KEYS.FEEDBACK,
+    }),
+    contentService.get({
+      locale,
+      schema: privacyPolicySchema,
+      section: SECTION_KEYS.PRIVACY_POLICY,
     }),
   ]);
 
@@ -46,8 +51,9 @@ export default async function Home({
           vacancies={vacancies}
           initialType={initialType}
           contentModal={contentFeedback?.form ?? null}
+          privacyPolicyContent={contentPrivacyPolicy}
         />
-        <FeedbackSection locale={locale} />
+        <FeedbackSection locale={locale} privacyPolicyContent={contentPrivacyPolicy} />
         <MarqueeLine itemList={vacanciesTitleList} />
       </main>
     </>

@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Modal } from "../modal";
+import { PrivacyPolicyContent } from "@/schemas";
+import { CloseIcon } from "../../../public/icons";
 
 interface IPolicyButton {
   text: string;
   textLink: string;
+  privacyPolicyContent: PrivacyPolicyContent | null;
 }
 
-export const PolicyButton = ({ text, textLink }: IPolicyButton) => {
+export const PolicyButton = ({ text, textLink, privacyPolicyContent }: IPolicyButton) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -18,14 +21,25 @@ export const PolicyButton = ({ text, textLink }: IPolicyButton) => {
         </button>
       </div>
       <Modal
-        className="flex w-100 flex-col gap-8 rounded-md border border-green-100 bg-green-50 p-8 shadow-md shadow-green-200"
+        className="bg-surface-main border-accent relative flex h-150 w-180 flex-col border px-8 pt-12 pb-8"
         isOpen={isOpen}
         closeModal={() => setIsOpen(false)}
       >
-        Політика конфіденційності
-        <button className="text-[12px]" type="button" onClick={() => setIsOpen(false)}>
-          Закрити
+        <button
+          type="button"
+          onClick={() => setIsOpen(false)}
+          className="text-soft-blush hover:text-accent focus:text-accent absolute top-6 right-6 transition-colors"
+          aria-label={"Закрити"}
+        >
+          <CloseIcon className="h-6 w-6" />
         </button>
+        <h3 className="font-ermilov text-accent mb-6 px-12 text-center text-[20px] leading-[140%] font-bold">
+          {privacyPolicyContent?.title}
+        </h3>
+        <div className="bg-accent mb-6 h-px w-full" />
+        <div className="min-h-0 flex-1 overflow-y-auto pr-2">
+          <p className="text-soft-blush text-sm leading-7 whitespace-pre-line">{privacyPolicyContent?.description}</p>
+        </div>
       </Modal>
     </>
   );

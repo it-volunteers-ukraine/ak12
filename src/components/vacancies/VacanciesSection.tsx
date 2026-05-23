@@ -5,16 +5,17 @@ import { useTranslations } from "next-intl";
 import { VacancyType, VacancyMapped } from "@/types/vacancy";
 import { VACANCY_TYPES } from "@/constants/vacancies/filters";
 import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
-import { FeedbackFormContent } from "@/schemas";
+import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
 import { VacancyCard } from "./VacancyCard";
 
 export interface Props {
   vacancies: VacancyMapped[];
   initialType: VacancyType;
   contentModal: FeedbackFormContent | null;
+  privacyPolicyContent: PrivacyPolicyContent | null;
 }
 
-export function VacanciesSection({ vacancies, initialType, contentModal }: Props) {
+export function VacanciesSection({ vacancies, initialType, contentModal, privacyPolicyContent }: Props) {
   const t = useTranslations("vacancies");
   const [activeType, setActiveType] = useState<VacancyType>(initialType);
   const [page, setPage] = useState(0);
@@ -55,7 +56,12 @@ export function VacanciesSection({ vacancies, initialType, contentModal }: Props
         {visibleVacancies.length > 0 ? (
           <ul className="vacancies-grid tablet:grid-cols-2 tablet:gap-4 laptop:grid-cols-3 laptop:gap-x-5 laptop:gap-y-8 grid grid-cols-1 gap-[13px]">
             {visibleVacancies.map((v) => (
-              <VacancyCard key={v.id} vacancy={v} contentModal={contentModal} />
+              <VacancyCard
+                key={v.id}
+                vacancy={v}
+                contentModal={contentModal}
+                privacyPolicyContent={privacyPolicyContent}
+              />
             ))}
           </ul>
         ) : (

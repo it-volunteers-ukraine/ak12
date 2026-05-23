@@ -4,17 +4,18 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { VacancyMapped } from "@/types/vacancy";
 import { formatSalary } from "@/utils/vacancies/format-salary";
-import { FeedbackFormContent } from "@/schemas";
+import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
 import { ApplyButton } from "./ApplyButton";
 
 interface Props {
   vacancy: VacancyMapped;
   contentModal: FeedbackFormContent | null;
+  privacyPolicyContent: PrivacyPolicyContent | null;
 }
 
 const DESCRIPTION_LIMIT = 120;
 
-export function VacancyCard({ vacancy, contentModal }: Props) {
+export function VacancyCard({ vacancy, contentModal, privacyPolicyContent }: Props) {
   const t = useTranslations("vacancies");
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -26,7 +27,7 @@ export function VacancyCard({ vacancy, contentModal }: Props) {
     isLong && !isExpanded ? vacancy.description.slice(0, DESCRIPTION_LIMIT).trimEnd() + "..." : vacancy.description;
 
   return (
-    <li className="tablet:p-6 flex flex-col rounded-[2px] p-4 backdrop-blur-[5px] transition-transform hover:-translate-y-0.5 border border-vacancy-card-stroke/8 bg-gradient-to-b from-vacancy-card-start to-vacancy-card-end shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]">
+    <li className="tablet:p-6 border-vacancy-card-stroke/8 from-vacancy-card-start to-vacancy-card-end flex flex-col rounded-[2px] border bg-gradient-to-b p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] backdrop-blur-[5px] transition-transform hover:-translate-y-0.5">
       <div className="border-accent/8 mb-4 border-b pb-4">
         <h3 className="font-ermilov text-accent mb-3 text-[18px] leading-[144%] font-bold uppercase">
           {vacancy.position}
@@ -52,7 +53,7 @@ export function VacancyCard({ vacancy, contentModal }: Props) {
         <div className="tablet:mb-8 mb-6" />
       )}
       <div className="mt-auto">
-        <ApplyButton contentModal={contentModal} />
+        <ApplyButton contentModal={contentModal} privacyPolicyContent={privacyPolicyContent} />
       </div>
     </li>
   );

@@ -4,15 +4,20 @@ import { DirectContact } from "./direct-contact";
 import { ResponseTime } from "./response-time";
 import { SocialMedia } from "./social-media";
 import { contentService } from "@/lib/content/content.service";
-import { feedbackContentSchema } from "@/schemas";
+import { feedbackContentSchema, PrivacyPolicyContent } from "@/schemas";
 import { SECTION_KEYS } from "@/constants";
 
 interface FeedbackSectionProps {
   locale: Locale;
+  privacyPolicyContent: PrivacyPolicyContent | null;
 }
 
-export const FeedbackSection = async ({ locale }: FeedbackSectionProps) => {
-  const content = await contentService.get({ locale, schema: feedbackContentSchema, section: SECTION_KEYS.FEEDBACK });
+export const FeedbackSection = async ({ locale, privacyPolicyContent }: FeedbackSectionProps) => {
+  const content = await contentService.get({
+    locale,
+    schema: feedbackContentSchema,
+    section: SECTION_KEYS.FEEDBACK,
+  });
 
   if (!content) {
     return null;
@@ -27,8 +32,7 @@ export const FeedbackSection = async ({ locale }: FeedbackSectionProps) => {
         {content.form?.title}
       </h2>
       <div className="desktop:flex gap-5">
-        {content.form && <FeedbackForm content={content.form} />}
-
+        {content.form && <FeedbackForm content={content.form} privacyPolicyContent={privacyPolicyContent} />}
         <div className="desktop:m-0 desktop:gap-7.5 desktop-xl:min-w-180.75 desktop:min-w-103.5 tablet:grid-cols-3 desktop:grid-cols-1 tablet:mt-12 mt-7 grid gap-4">
           {content.contacts?.info && (
             <DirectContact title={content.directContactTitle} contacts={content.contacts.info} />

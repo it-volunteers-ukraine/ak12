@@ -9,10 +9,18 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { FormInput } from "../input";
 import { SubmitIcon } from "../../../public/icons";
 import { PolicyButton } from "../policy-modal";
-import { FeedbackFormContent, getFeedbackFormSchema, IFeedbackForm } from "@/schemas";
+import { FeedbackFormContent, getFeedbackFormSchema, IFeedbackForm, PrivacyPolicyContent } from "@/schemas";
 import { cn } from "@/utils";
 
-export const FeedbackForm = ({ content, isModal }: { content: FeedbackFormContent; isModal?: boolean }) => {
+export const FeedbackForm = ({
+  content,
+  privacyPolicyContent,
+  isModal,
+}: {
+  content: FeedbackFormContent;
+  privacyPolicyContent: PrivacyPolicyContent | null;
+  isModal?: boolean;
+}) => {
   const errorMessages = useTranslations("validation");
   const text = useTranslations("form");
 
@@ -36,8 +44,8 @@ export const FeedbackForm = ({ content, isModal }: { content: FeedbackFormConten
     },
   });
 
-  const onSubmit: SubmitHandler<IFeedbackForm> = async (data) => {
-
+  const onSubmit: SubmitHandler<IFeedbackForm> = async (_data) => {
+    // TODO: implement feedback form submission
     reset();
   };
 
@@ -105,7 +113,11 @@ export const FeedbackForm = ({ content, isModal }: { content: FeedbackFormConten
           <SubmitIcon className="text-card-bg group-disabled:text-text-disabled h-6 w-6" />
         </button>
       </form>
-      <PolicyButton text={content.privacyPolicyTitle} textLink={content.privacyPolicyTextLink} />
+      <PolicyButton
+        text={content.privacyPolicyTitle}
+        textLink={content.privacyPolicyTextLink}
+        privacyPolicyContent={privacyPolicyContent}
+      />
     </div>
   );
 };

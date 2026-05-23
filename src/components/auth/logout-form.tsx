@@ -17,10 +17,11 @@ export function LogoutForm() {
     <form action={action}>
       <button
         type="submit"
-        className="flex h-8 w-8 items-center justify-center bg-transparent"
+        className="flex items-center gap-2 rounded-lg bg-transparent px-4 py-2 transition-colors hover:bg-gray-100"
         aria-label="Вийти"
         title="Вийти"
       >
+        <span>Вийти</span>
         <LogoutIcon className="h-8 w-8" />
       </button>
     </form>
