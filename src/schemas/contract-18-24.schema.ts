@@ -3,6 +3,9 @@ import { z } from "zod";
 const REQUIRED_ERROR = z.string().min(1, "Обов'язкове поле");
 
 export const contract1824Schema = z.object({
+  sectionTitle: REQUIRED_ERROR,
+  sectionSubtitle: REQUIRED_ERROR,
+  menuButton: REQUIRED_ERROR,
   title: REQUIRED_ERROR,
   subtitle: REQUIRED_ERROR,
   buttonTitle: REQUIRED_ERROR,

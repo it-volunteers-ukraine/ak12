@@ -20,6 +20,44 @@ export const transferConfig: FormBuilderConfig = {
   },
   sections: [
     {
+      id: "title-section",
+      localeLayout: "split",
+      titlePlacement: "outside",
+      title: "Заголовок секції",
+      fields: [
+        {
+          name: "sectionTitle",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Заголовок",
+            en: "Title",
+          },
+        },
+        {
+          name: "sectionSubtitle",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Підзаголовок",
+            en: "Subtitle",
+          },
+          props: {
+            rows: 3,
+          },
+        },
+        {
+          name: "menuButton",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Текст кнопки",
+            en: "Button text",
+          },
+        },
+      ],
+    },
+    {
       id: "text-content",
       localeLayout: "split",
       title: "Основний контент",
@@ -29,8 +67,8 @@ export const transferConfig: FormBuilderConfig = {
           type: "text",
           required: true,
           label: {
-            uk: "Заголовок українською",
-            en: "Title in English",
+            uk: "Заголовок",
+            en: "Title",
           },
         },
         {
@@ -38,8 +76,8 @@ export const transferConfig: FormBuilderConfig = {
           type: "textarea",
           required: true,
           label: {
-            uk: "Підзаголовок українською",
-            en: "Subtitle in English",
+            uk: "Підзаголовок",
+            en: "Subtitle",
           },
           props: {
             rows: 3,
@@ -47,22 +85,7 @@ export const transferConfig: FormBuilderConfig = {
         },
       ],
     },
-    {
-      id: "button",
-      titlePlacement: "outside",
-      title: "Редагування кнопки",
-      fields: [
-        {
-          name: "buttonTitle",
-          type: "text",
-          required: true,
-          label: {
-            uk: "Текст кнопки українською",
-            en: "Button text in English",
-          },
-        },
-      ],
-    },
+
     {
       id: "transferLink",
       titlePlacement: "outside",
@@ -181,6 +204,22 @@ export const transferConfig: FormBuilderConfig = {
           },
           props: {
             rows: 3,
+          },
+        },
+      ],
+    },
+    {
+      id: "button",
+      titlePlacement: "outside",
+      title: "Редагування кнопки",
+      fields: [
+        {
+          name: "buttonTitle",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Текст кнопки українською",
+            en: "Button text in English",
           },
         },
       ],
