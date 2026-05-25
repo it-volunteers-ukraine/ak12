@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 import { HeaderContent } from "@/schemas";
 import { LogoutForm } from "@/components/auth/logout-form";
@@ -15,8 +15,7 @@ interface IAdminSidebarProps {
 }
 
 export const Sidebar = ({ content }: IAdminSidebarProps) => {
-  const params = useParams();
-  const activeSegment = params.sidebar as string;
+  const pathname = usePathname();
 
   return (
     <aside className="fixed top-0 left-0 flex h-screen w-64 flex-col gap-16 border-r border-gray-200 bg-white px-4 py-6">
@@ -40,11 +39,15 @@ export const Sidebar = ({ content }: IAdminSidebarProps) => {
             const firstSub = sidebarToSubmenuMap[slug]?.[0] || "index";
             const href = `/admin/${slug}/${firstSub.id?.toLowerCase()}`;
 
+            const currentPath = pathname.toLowerCase();
+
+            const isActive = currentPath.includes(`/admin/${slug}`);
+
             return (
               <div
                 key={item.label}
                 className={`flex gap-3 rounded-lg px-4 py-2 ${
-                  activeSegment === slug ? "bg-admin-menu-active-background" : "hover:bg-gray-100"
+                  isActive ? "bg-admin-menu-active-background" : "hover:bg-gray-100"
                 }`}
               >
                 <IconComponent width={24} height={24} className="shrink-0" />
