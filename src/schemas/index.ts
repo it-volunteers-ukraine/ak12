@@ -7,3 +7,4 @@ export * from "./transfer.schema";
 export * from "./mobilizationSchema";
 export * from "./headerFooterContent";
 export * from "./contract-18-24.schema";
+export * from "./privacy-policy.schema";

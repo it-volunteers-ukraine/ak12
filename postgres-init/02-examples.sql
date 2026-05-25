@@ -608,7 +608,25 @@ VALUES
         }'::jsonb,
         true,
         (SELECT id FROM language WHERE code = 'en')
-    )
+    ),
+    (
+        'privacy-policy',
+        '{
+          "title": "Політика конфіденційності",
+          "description": "Текст політики конфіденційності"
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'uk')
+      ),
+      (
+        'privacy-policy',
+        '{
+          "title": "Privacy Policy",
+          "description": "Privacy policy text"
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'en')
+      )
 ON CONFLICT (section_key, language_id) DO NOTHING;
 
 

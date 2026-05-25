@@ -22,6 +22,7 @@ export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {
     { id: "transfer", label: "Блок: переведення ", status: "1min" },
     { id: "feedback", label: "Блок: звортнього зв'язку", status: "1min" },
     { id: "header-footer", label: "Шапка та підвал сайту", status: "1min" },
+    { id: "privacy-policy", label: "Політика конфіденційності", status: "1min" },
   ],
   divisions: [{ id: "list", label: "Всі підрозділи ", status: "1min" }],
   careers: [{ id: "list", label: "Всі вакансії", status: "1min" }],

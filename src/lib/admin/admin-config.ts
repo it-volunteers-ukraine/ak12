@@ -7,6 +7,7 @@ import {
   mobilizationSchema,
   feedbackContentSchema,
   headerAndFooterContentSchema,
+  privacyPolicySchema,
 } from "@/schemas";
 import {
   HeroSection,
@@ -16,6 +17,7 @@ import {
   Contract1824Section,
   HeaderFooterSection,
   MobilizationSection,
+  PrivacyPolicySection,
 } from "@/components/admin";
 
 import { AdminSectionKey, IAdminSectionConfig } from "./admin-types";
@@ -45,7 +47,6 @@ export const ADMIN_CONFIG: { [K in AdminSectionKey]: IAdminSectionConfig<K> } = 
     sectionKey: SECTION_KEYS.CONTRACT_18_24,
     component: Contract1824Section,
   },
-
   transfer: {
     label: "Трансфер",
     schema: transferSchema,
@@ -63,6 +64,12 @@ export const ADMIN_CONFIG: { [K in AdminSectionKey]: IAdminSectionConfig<K> } = 
     schema: headerAndFooterContentSchema,
     sectionKey: SECTION_KEYS.HEADER,
     component: HeaderFooterSection,
+  },
+  "privacy-policy": {
+    label: "Політика конфіденційності",
+    schema: privacyPolicySchema,
+    sectionKey: SECTION_KEYS.PRIVACY_POLICY,
+    component: PrivacyPolicySection,
   },
 };
 

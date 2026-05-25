@@ -27,3 +27,5 @@ export { FeedbackSection } from "./feedback-section";
 export { VacancySection } from "./vacancies-section";
 
 export { VacanciesListSection } from "./vacancies-section/vacancies-list-section";
+
+export { PrivacyPolicySection } from "./privacy-policy-section";
