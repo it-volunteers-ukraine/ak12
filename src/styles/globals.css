@@ -26,7 +26,7 @@
   --color-text-disabled: #5b5d5c;
   --color-warm-gray: #b3b3b2;
   --color-white: #ffffff;
-
+  --color-admin-menu-active-background: #CBDCF5;
   --background-image-section:
     linear-gradient(90deg, #0d0d0d 0%, rgba(26, 26, 26, 70%) 50%, rgba(51, 64, 54, 60%) 100%),
     linear-gradient(#1a1e1d, #1a1e1d);
