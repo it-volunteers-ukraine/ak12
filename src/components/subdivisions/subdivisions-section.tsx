@@ -18,7 +18,7 @@ export const SubdivisionsSection = async ({ locale }: SubdivisionsSectionProps) 
   return (
     <section
       id="subdivisions"
-      className="bg-surface-main overflow-hidden py-16 tablet:py-16 desktop:py-[103px]"
+      className="bg-surface-main overflow-hidden"
     >
       <div className="container-app">
 
@@ -46,7 +46,6 @@ export const SubdivisionsSection = async ({ locale }: SubdivisionsSectionProps) 
           gap-4
           desktop:gap-x-5 desktop:gap-y-6
           desktop-xl:gap-y-5
-          mb-16 tablet:mb-20 desktop:mb-[142px]
         ">
           {subdivisions.map((subdivision) => (
             <li

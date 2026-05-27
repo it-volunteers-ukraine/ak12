@@ -9,6 +9,7 @@ import { FeedbackSection } from "@/components/feedback-section";
 import { MarqueeLine, SubdivisionsSection } from "@/components";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
 import { HeroSection, LifeOfTheCorpsSection } from "@/components/sections";
+import { AboutSection } from "@/components/about";
 
 export interface SearchParamsProps {
   type?: VacancyType;
@@ -45,6 +46,7 @@ export default async function Home({
     <>
       <main>
         <HeroSection locale={locale} />
+        <AboutSection locale={locale} />   
         <LifeOfTheCorpsSection locale={locale} />
         <SubdivisionsSection locale={locale} />
         <VacanciesSection

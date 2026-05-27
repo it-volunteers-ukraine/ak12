@@ -36,7 +36,7 @@ export function VacanciesSection({ vacancies, initialType, contentModal, privacy
   const inactiveClass = "bg-surface-secondary text-accent hover:bg-hover";
 
   return (
-    <section className="bg-surface-main text-secondary-text tablet:py-25 desktop:py-40 py-16" id="vacancy">
+    <section className="bg-surface-main text-secondary-text" id="vacancy">
       <div className="container-app">
         <h2 className="font-ermilov text-accent tablet:text-[40px] tablet:leading-[120%] tablet:mb-14 desktop:text-[56px] desktop:leading-[114%] desktop:mb-16 mb-4 text-center text-[32px] leading-[125%] font-bold capitalize">
           {t("title")}
