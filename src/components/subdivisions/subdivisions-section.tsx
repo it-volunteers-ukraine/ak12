@@ -2,14 +2,27 @@ import { getTranslations } from "next-intl/server";
 import { getSubdivisions } from "@/actions/subdivisions";
 import { SubdivisionCard } from "./subdivision-card";
 import { Locale } from "@/types";
+import { logger } from "@/lib/logger";
 
 interface SubdivisionsSectionProps {
   locale: Locale;
 }
 
 export const SubdivisionsSection = async ({ locale }: SubdivisionsSectionProps) => {
-  const t = await getTranslations({ locale, namespace: "subdivisions" });
-  const subdivisions = await getSubdivisions(locale);
+   let t;
+  let subdivisions;
+
+  try {
+    t = await getTranslations({ locale, namespace: "subdivisions" });
+    subdivisions = await getSubdivisions(locale);
+  } catch (error) {
+    logger.error(
+      { error, locale },
+      "Failed to load SubdivisionsSection content"
+    );
+
+    return null;
+  }
 
   if (!subdivisions.length) {
     return null;
@@ -18,7 +31,7 @@ export const SubdivisionsSection = async ({ locale }: SubdivisionsSectionProps) 
   return (
     <section
       id="subdivisions"
-      className="bg-surface-main overflow-hidden py-16 tablet:py-16 desktop:py-[103px]"
+      className="bg-surface-main overflow-hidden"
     >
       <div className="container-app">
 
@@ -46,7 +59,6 @@ export const SubdivisionsSection = async ({ locale }: SubdivisionsSectionProps) 
           gap-4
           desktop:gap-x-5 desktop:gap-y-6
           desktop-xl:gap-y-5
-          mb-16 tablet:mb-20 desktop:mb-[142px]
         ">
           {subdivisions.map((subdivision) => (
             <li
