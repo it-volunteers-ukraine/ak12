@@ -2,14 +2,27 @@ import { getTranslations } from "next-intl/server";
 import { getSubdivisions } from "@/actions/subdivisions";
 import { SubdivisionCard } from "./subdivision-card";
 import { Locale } from "@/types";
+import { logger } from "@/lib/logger";
 
 interface SubdivisionsSectionProps {
   locale: Locale;
 }
 
 export const SubdivisionsSection = async ({ locale }: SubdivisionsSectionProps) => {
-  const t = await getTranslations({ locale, namespace: "subdivisions" });
-  const subdivisions = await getSubdivisions(locale);
+   let t;
+  let subdivisions;
+
+  try {
+    t = await getTranslations({ locale, namespace: "subdivisions" });
+    subdivisions = await getSubdivisions(locale);
+  } catch (error) {
+    logger.error(
+      { error, locale },
+      "Failed to load SubdivisionsSection content"
+    );
+
+    return null;
+  }
 
   if (!subdivisions.length) {
     return null;

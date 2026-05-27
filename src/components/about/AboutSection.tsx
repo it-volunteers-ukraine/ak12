@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
+import { logger } from "@/lib/logger";
 import { aboutUsSchema } from "@/schemas/about-us.schema";
 import { contentService } from "@/lib/content/content.service";
 import { Logo } from "../../../public/images";
@@ -11,11 +12,19 @@ interface AboutSectionProps {
 }
 
 export const AboutSection = async ({ locale }: AboutSectionProps) => {
-  const data = await contentService.get({
-    locale,
-    schema: aboutUsSchema,
-    section: SECTION_KEYS.ABOUT,
-  });
+  let data;
+
+  try {
+    data = await contentService.get({
+      locale,
+      schema: aboutUsSchema,
+      section: SECTION_KEYS.ABOUT,
+    });
+  } catch (error) {
+    logger.error({ error, locale, section: SECTION_KEYS.ABOUT }, "Failed to load AboutSection content");
+
+    return null;
+  }
 
   if (!data) {
     return null;
