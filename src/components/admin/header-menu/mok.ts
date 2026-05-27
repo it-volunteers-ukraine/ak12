@@ -1,3 +1,5 @@
+import { CEOIcon, ContentIcon, VacancyIcon, SubdivisionIcon } from "../../../../public/icons";
+
 export type SubmenuItem = {
   id: string;
   label: string;
@@ -5,10 +7,10 @@ export type SubmenuItem = {
 };
 
 export const mainAdminNavigation = [
-  { id: "content", label: "Контент" },
-  { id: "divisions", label: "Підрозділи" },
-  { id: "careers", label: "Вакансії" },
-  { id: "ceo", label: "SEO" },
+  { id: "content", label: "Контент", icon: ContentIcon },
+  { id: "divisions", label: "Підрозділи", icon: SubdivisionIcon },
+  { id: "careers", label: "Вакансії", icon: VacancyIcon },
+  { id: "ceo", label: "SEO", icon: CEOIcon },
 ];
 
 export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {

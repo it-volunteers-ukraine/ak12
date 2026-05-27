@@ -5,6 +5,10 @@ export type TransferSchema = z.infer<typeof transferSchema>;
 const REQUIRED_STRING = z.string().trim().min(1, "Обов'язкове поле");
 
 export const transferSchema = z.object({
+  sectionTitle: REQUIRED_STRING,
+  sectionSubtitle: REQUIRED_STRING,
+  menuButton: REQUIRED_STRING,
+
   title: REQUIRED_STRING,
   subtitle: REQUIRED_STRING,
   buttonTitle: REQUIRED_STRING,

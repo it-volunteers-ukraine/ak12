@@ -2,6 +2,12 @@ import { FormBuilderConfig } from "@/lib/form-builder";
 
 export const mobilizationFormBuilderConfig: FormBuilderConfig = {
   id: "mobilization",
+  sectionGroups: {
+    cards: {
+      title: "Редагування карток",
+      className: "flex flex-col gap-8",
+    },
+  },
   options: {
     hasImage: false,
     submitText: "Зберегти зміни",
@@ -11,15 +17,15 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
     {
       id: "title-text",
       titlePlacement: "outside",
-      title: "Редагування заголовків",
+      title: "Заголовок секції",
       fields: [
         {
           name: "title",
           type: "text",
           required: true,
           label: {
-            uk: "Заголовок українською",
-            en: "Title in English",
+            uk: "Заголовок",
+            en: "Title",
           },
         },
         {
@@ -27,8 +33,118 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
           type: "textarea",
           required: true,
           label: {
-            uk: "Підзаголовок українською",
-            en: "Subtitle in English",
+            uk: "Підзаголовок",
+            en: "Subtitle",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "menuButton",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Текст кнопки",
+            en: "Button text",
+          },
+        },
+      ],
+    },
+    {
+      id: "card-1",
+      group: "cards",
+      title: "Картка 1",
+      fields: [
+        {
+          name: "cards[0].title",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Заголовок",
+            en: "Title",
+          },
+        },
+        {
+          name: "cards[0].subtitle",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Підзаголовок",
+            en: "Subtitle",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[0].primaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[0].buttonText",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Текст кнопки",
+            en: "Button text",
+          },
+        },
+      ],
+    },
+    {
+      id: "card-2",
+      group: "cards",
+      title: "Картка 2",
+      fields: [
+        {
+          name: "cards[1].title",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Заголовок",
+            en: "Title",
+          },
+        },
+        {
+          name: "cards[1].subtitle",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Підзаголовок",
+            en: "Subtitle",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[1].primaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[1].secondaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст картки",
+            en: "Text card",
           },
           props: {
             rows: 2,
@@ -37,36 +153,145 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
       ],
     },
     {
-      id: "content",
-      titlePlacement: "outside",
-      title: "Редагування текстового контенту",
+      id: "card-3",
+      group: "cards",
+      title: "Картка 3",
       fields: [
         {
-          name: "content",
+          name: "cards[2].title",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Заголовок",
+            en: "Title",
+          },
+        },
+        {
+          name: "cards[2].subtitle",
           type: "textarea",
           required: true,
           label: {
-            uk: "Текстовий контент українською",
-            en: "Text content in English",
+            uk: "Підзаголовок",
+            en: "Subtitle",
           },
           props: {
-            rows: 4,
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[2].primaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[2].secondaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 2,
           },
         },
       ],
     },
     {
-      id: "button",
-      titlePlacement: "outside",
-      title: "Редагування кнопки",
+      id: "card-4",
+      group: "cards",
+      title: "Картка 4",
       fields: [
         {
-          name: "buttonTitle",
+          name: "cards[3].title",
           type: "text",
           required: true,
           label: {
-            uk: "Текст кнопки українською",
-            en: "Button text in English",
+            uk: "Заголовок",
+            en: "Title",
+          },
+        },
+        {
+          name: "cards[3].subtitle",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Підзаголовок",
+            en: "Subtitle",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[3].primaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "cards[3].secondaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+      ],
+    },
+    {
+      id: "subsection-description",
+      titlePlacement: "outside",
+      title: "Редагування нижнього блоку",
+      fields: [
+        {
+          name: "primaryDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Основний опис",
+            en: "Primary description",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "accentedDescription",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Акцентований опис",
+            en: "Accented description",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+        {
+          name: "menuButton",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Додатковий опис",
+            en: "Secondary description",
           },
         },
       ],
