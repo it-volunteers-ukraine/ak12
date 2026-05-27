@@ -141,7 +141,8 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
 
       <div className="rounded-xl border border-gray-200 bg-white">
         {/* Header */}
-        <div className="grid grid-cols-[1fr_120px_160px_80px] border-b border-gray-200 px-6 py-3 text-sm font-medium text-gray-500">
+        <div className="grid grid-cols-[40px_1fr_120px_160px_80px] border-b border-gray-200 px-6 py-3 text-sm font-medium text-gray-500">
+          <span>#</span>
           <span>Посада</span>
           <span>Видимість</span>
           <span>Дата оновлення</span>
@@ -154,7 +155,7 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
           <DndSortableList
             items={items}
             onReorder={handleReorder}
-            renderItem={(vacancy) => {
+            renderItem={(vacancy, index) => {
               const hasEnPair = Boolean(getEnVersion(vacancy));
               const updatedAt = vacancy.updatedAt
                 ? new Date(vacancy.updatedAt).toLocaleDateString("uk-UA", {
@@ -165,8 +166,8 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
                 : "—";
 
               return (
-                <div className="grid grid-cols-[1fr_120px_160px_80px] items-center border-b border-gray-100 px-6 py-4 last:border-0 hover:bg-gray-50">
-                  {/* Посада */}
+                <div className="grid grid-cols-[40px_1fr_120px_160px_80px] items-center border-b border-gray-100 px-6 py-4 last:border-0 hover:bg-gray-50">
+                  <span className="text-sm text-gray-400">{index !== undefined ? index + 1 : ""}</span>
                   <span className="text-sm font-medium">{vacancy.position}</span>
 
                   {/* Видимість — toggle */}
