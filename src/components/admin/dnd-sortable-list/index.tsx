@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useId } from "react";
 import {
   DndContext,
   closestCenter,
@@ -53,14 +53,11 @@ export const SortableRow = ({ id, children }: SortableRowProps) => {
 interface DndSortableListProps<T extends SortableItem> {
   items: T[];
   onReorder: (items: T[]) => void;
-  renderItem: (item: T) => ReactNode;
+  renderItem: (item: T, index: number) => ReactNode;
 }
 
-export const DndSortableList = <T extends SortableItem>({
-  items,
-  onReorder,
-  renderItem,
-}: DndSortableListProps<T>) => {
+export const DndSortableList = <T extends SortableItem>({ items, onReorder, renderItem }: DndSortableListProps<T>) => {
+  const id = useId()
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -71,7 +68,9 @@ export const DndSortableList = <T extends SortableItem>({
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (!over || active.id === over.id) { return; }
+    if (!over || active.id === over.id) {
+      return;
+    }
 
     const oldIndex = items.findIndex((item) => item.id === active.id);
     const newIndex = items.findIndex((item) => item.id === over.id);
@@ -81,11 +80,11 @@ export const DndSortableList = <T extends SortableItem>({
   };
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+    <DndContext id={id} sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
-        {items.map((item) => (
+        {items.map((item, index) => (
           <SortableRow key={item.id} id={item.id}>
-            {renderItem(item)}
+            {renderItem(item, index)}
           </SortableRow>
         ))}
       </SortableContext>
