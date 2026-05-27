@@ -127,7 +127,7 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
             renderItem={(subdivision, index) => (
               <div className="grid grid-cols-[40px_40px_1fr_160px_80px] items-center border-b border-gray-100 py-4 pr-4 last:border-0 hover:bg-gray-50">
                 <span />
-                <span className="text-sm text-gray-400">{index + 1}</span>
+                <span className="text-sm text-gray-400">{index !== undefined ? index + 1 : ""}</span>
                 <span className="text-sm font-medium">{subdivision.hoverName ?? subdivision.name}</span>
                 <span className="text-sm text-gray-400">
                   {subdivision.updatedAt ? new Date(subdivision.updatedAt).toLocaleDateString("uk-UA") : "—"}

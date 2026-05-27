@@ -167,7 +167,7 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
 
               return (
                 <div className="grid grid-cols-[40px_1fr_120px_160px_80px] items-center border-b border-gray-100 px-6 py-4 last:border-0 hover:bg-gray-50">
-                  <span className="text-sm text-gray-400">{index + 1}</span>
+                  <span className="text-sm text-gray-400">{index !== undefined ? index + 1 : ""}</span>
                   <span className="text-sm font-medium">{vacancy.position}</span>
 
                   {/* Видимість — toggle */}
