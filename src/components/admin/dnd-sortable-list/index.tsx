@@ -53,7 +53,7 @@ export const SortableRow = ({ id, children }: SortableRowProps) => {
 interface DndSortableListProps<T extends SortableItem> {
   items: T[];
   onReorder: (items: T[]) => void;
-  renderItem: (item: T, index: number) => ReactNode;
+  renderItem: (item: T, index?: number) => ReactNode;
 }
 
 export const DndSortableList = <T extends SortableItem>({ items, onReorder, renderItem }: DndSortableListProps<T>) => {
