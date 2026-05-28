@@ -1,5 +1,9 @@
 import { z } from "zod";
 
+export type HeaderLink = z.infer<typeof headerLinkSchema>;
+export type FooterContent = z.infer<typeof footerContentSchema>;
+export type HeaderContent = z.infer<typeof headerContentSchema>;
+
 export const headerLinkSchema = z.object({
   idSection: z.string().optional(),
   label: z.string().trim().min(1, "Назва пункту є обов'язковим"),
@@ -44,8 +48,5 @@ export const footerContentSchema = z.object({
 export const headerAndFooterContentSchema = z.object({
   header: headerContentSchema,
   footer: footerContentSchema,
+  updatedAt: z.string().datetime().pipe(z.coerce.date()).optional(),
 });
-
-export type HeaderLink = z.infer<typeof headerLinkSchema>;
-export type FooterContent = z.infer<typeof footerContentSchema>;
-export type HeaderContent = z.infer<typeof headerContentSchema>;

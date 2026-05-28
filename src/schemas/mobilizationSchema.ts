@@ -20,4 +20,5 @@ export const mobilizationSchema = z.object({
   primaryDescription: requiredString(),
   accentedDescription: requiredString(),
   secondaryDescription: requiredString(),
+  updatedAt: z.string().datetime().pipe(z.coerce.date()).optional(),
 });

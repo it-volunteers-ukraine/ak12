@@ -31,4 +31,5 @@ export const contract1824Schema = z.object({
       .nullable()
       .optional(),
   }),
+  updatedAt: z.string().datetime().pipe(z.coerce.date()).optional(),
 });

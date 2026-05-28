@@ -8,7 +8,7 @@ export const heroContentSchema = z.object({
   title: REQUIRED_STRING,
   subtitle: REQUIRED_STRING,
   buttonTitle: REQUIRED_STRING,
-
+  updatedAt: z.string().datetime().pipe(z.coerce.date()).optional(),
   features: z
     .array(
       z.object({
