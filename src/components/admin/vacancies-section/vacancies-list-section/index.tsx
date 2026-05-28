@@ -40,6 +40,7 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
 
   const handleReorder = async (reordered: VacancyItem[]) => {
     const previousOrder = [...items];
+
     setItems(reordered);
 
     try {
@@ -67,6 +68,7 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
 
     if (!enVersion) {
       showMessage.error("Не знайдено EN версію вакансії");
+
       return;
     }
 
@@ -88,16 +90,19 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
   // ─── Delete ────────────────────────────────────────────────────────────────
 
   const handleDeleteConfirm = async () => {
-    if (!deletingVacancy) return;
+    if (!deletingVacancy) {return;}
 
     const enVersion = getEnVersion(deletingVacancy);
+
     if (!enVersion) {
       showMessage.error("Не знайдено EN версію вакансії");
       setDeletingVacancy(null);
+
       return;
     }
 
     const previousItems = [...items];
+
     setIsDeleting(true);
 
     try {
