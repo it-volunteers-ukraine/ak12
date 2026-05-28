@@ -92,7 +92,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
         {
           name: "cards[0].secondaryDescription",
           type: "textarea",
-          required: true,
+          required: false,
           label: {
             uk: "Текст картки",
             en: "Text card",
@@ -144,7 +144,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
         {
           name: "cards[1].secondaryDescription",
           type: "textarea",
-          required: true,
+          required: false,
           label: {
             uk: "Текст картки",
             en: "Text card",
@@ -196,7 +196,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
         {
           name: "cards[2].secondaryDescription",
           type: "textarea",
-          required: true,
+          required: false,
           label: {
             uk: "Текст картки",
             en: "Text card",
@@ -248,7 +248,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
         {
           name: "cards[3].secondaryDescription",
           type: "textarea",
-          required: true,
+          required: false,
           label: {
             uk: "Текст картки",
             en: "Text card",
