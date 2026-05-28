@@ -86,9 +86,18 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
-      - name: Run tests (if available)
-        run: npm run test --if-present 2>/dev/null || echo "No tests configured"
-        continue-on-error: true
+      - name: Run tests with coverage
+        run: npm run test:coverage -- --ci
+        env:
+          CI: true
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
