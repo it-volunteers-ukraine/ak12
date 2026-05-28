@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 
 import { getStyles } from "./styles";
+import { CornerFrame } from "@/components/cornerFrame";
 import { GalleryPlaceholder } from "../../../../../public/images";
 
 interface ICard {
@@ -19,19 +20,6 @@ interface ICard {
     type: "text" | "image";
   };
 }
-
-const CornerFrame = () => (
-  <>
-    {/* Верхній лівий кут */}
-    <span className="border-accent absolute top-0 left-0 h-5 w-5 border-t-2 border-l-2" />
-    {/* Верхній правий кут */}
-    <span className="border-accent absolute top-0 right-0 h-5 w-5 border-t-2 border-r-2" />
-    {/* Нижній лівий кут */}
-    <span className="border-accent absolute bottom-0 left-0 h-5 w-5 border-b-2 border-l-2" />
-    {/* Нижній правий кут */}
-    <span className="border-accent absolute right-0 bottom-0 h-5 w-5 border-r-2 border-b-2" />
-  </>
-);
 
 export const RenderCard = ({
   cell,

@@ -20,7 +20,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
       title: "Заголовок секції",
       fields: [
         {
-          name: "title",
+          name: "baseSection.sectionTitle",
           type: "text",
           required: true,
           label: {
@@ -29,7 +29,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "subtitle",
+          name: "baseSection.sectionSubtitle",
           type: "textarea",
           required: true,
           label: {
@@ -41,7 +41,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "menuButton",
+          name: "baseSection.menuButton",
           type: "text",
           required: true,
           label: {
@@ -90,12 +90,15 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "cards[0].buttonText",
-          type: "text",
+          name: "cards[0].secondaryDescription",
+          type: "textarea",
           required: true,
           label: {
-            uk: "Текст кнопки",
-            en: "Button text",
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 2,
           },
         },
       ],
@@ -257,6 +260,34 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
       ],
     },
     {
+      id: "button",
+      titlePlacement: "outside",
+      title: "Редагування кнопки Приєднатися",
+      fields: [
+        {
+          name: "baseSection.buttonJoinUs",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Текст кнопки",
+            en: "Button text",
+          },
+        },
+        {
+          name: "baseSection.message",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст повідомлення при відправці форми",
+            en: "Message on form submission",
+          },
+          props: {
+            rows: 2,
+          },
+        },
+      ],
+    },
+    {
       id: "subsection-description",
       titlePlacement: "outside",
       title: "Редагування нижнього блоку",
@@ -286,7 +317,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "menuButton",
+          name: "secondaryDescription",
           type: "text",
           required: true,
           label: {
