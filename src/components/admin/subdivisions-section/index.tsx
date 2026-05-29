@@ -142,6 +142,7 @@ export const SubdivisionSection = ({ data, onSuccess, onBack }: ISubdivisionSect
           file: imageFile,
           fileName: `subdivision-${values.uk.slug}`,
         });
+
         if (!result.success) {
           throw new Error(result.error);
         }
@@ -156,6 +157,7 @@ export const SubdivisionSection = ({ data, onSuccess, onBack }: ISubdivisionSect
           file: hoverImageFile,
           fileName: `subdivision-hover-${values.uk.slug}`,
         });
+
         if (!result.success) {
           throw new Error(result.error);
         }
@@ -190,11 +192,13 @@ export const SubdivisionSection = ({ data, onSuccess, onBack }: ISubdivisionSect
       }
 
       const imagePublicIdChanged = nextImage?.publicId !== oldImage?.publicId;
+
       if (oldImage?.publicId && (removeImage || (imageFile && imagePublicIdChanged))) {
         await deleteImageAction(oldImage.publicId);
       }
 
       const hoverPublicIdChanged = nextHoverImage?.publicId !== oldHoverImage?.publicId;
+
       if (oldHoverImage?.publicId && (removeHoverImage || (hoverImageFile && hoverPublicIdChanged))) {
         await deleteImageAction(oldHoverImage.publicId);
       }
@@ -216,6 +220,7 @@ export const SubdivisionSection = ({ data, onSuccess, onBack }: ISubdivisionSect
         await deleteImageAction(uploadedHoverPublicId);
       }
       showMessage.error("Не вдалося зберегти дані");
+
       return { success: false, error: String(error) };
     }
   };

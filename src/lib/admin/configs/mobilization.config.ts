@@ -86,7 +86,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
@@ -98,7 +98,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
       ],
@@ -138,7 +138,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
@@ -150,7 +150,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
       ],
@@ -190,7 +190,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
@@ -202,7 +202,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
       ],
@@ -242,7 +242,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
@@ -254,7 +254,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
       ],
@@ -294,35 +294,32 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
       fields: [
         {
           name: "primaryDescription",
-          type: "textarea",
+          type: "text",
           required: true,
           label: {
             uk: "Основний опис",
             en: "Primary description",
           },
-          props: {
-            rows: 2,
-          },
         },
         {
           name: "accentedDescription",
-          type: "textarea",
+          type: "text",
           required: true,
           label: {
             uk: "Акцентований опис",
             en: "Accented description",
           },
-          props: {
-            rows: 2,
-          },
         },
         {
           name: "secondaryDescription",
-          type: "text",
+          type: "textarea",
           required: true,
           label: {
             uk: "Додатковий опис",
             en: "Secondary description",
+          },
+          props: {
+            rows: 3,
           },
         },
       ],

@@ -123,9 +123,11 @@ export const VacancySection = ({ data, onSuccess, onBack }: IVacancySection) => 
       showMessage.success("Дані успішно збережено!");
       onSuccess?.();
       router.refresh();
+
       return { success: true };
     } catch (error) {
       showMessage.error("Не вдалося зберегти дані");
+
       return { success: false, error: String(error) };
     }
   };
@@ -137,7 +139,7 @@ export const VacancySection = ({ data, onSuccess, onBack }: IVacancySection) => 
 
   const handleConfirm = () => {
     setIsModalOpen(false);
-    if (!pendingData) return;
+    if (!pendingData) {return;}
     setIsLoading(true);
     handleSubmit(pendingData).finally(() => {
       setIsLoading(false);

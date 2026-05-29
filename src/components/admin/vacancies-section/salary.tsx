@@ -29,6 +29,7 @@ export const SalaryInput = ({ nameMin, nameMax, label = "Зарплата (гр�
     if (!raw) {
       setValue(nameMin, undefined, { shouldValidate: true });
       setValue(nameMax, undefined, { shouldValidate: true });
+
       return;
     }
 
@@ -37,10 +38,12 @@ export const SalaryInput = ({ nameMin, nameMax, label = "Зарплата (гр�
     if (parts.length >= 2) {
       const min = parseInt(parts[0], 10);
       const max = parseInt(parts[1], 10);
+
       setValue(nameMin, isNaN(min) ? undefined : min, { shouldValidate: true });
       setValue(nameMax, isNaN(max) ? undefined : max, { shouldValidate: true });
     } else {
       const min = parseInt(parts[0], 10);
+
       setValue(nameMin, isNaN(min) ? undefined : min, { shouldValidate: true });
       setValue(nameMax, undefined, { shouldValidate: true });
     }
