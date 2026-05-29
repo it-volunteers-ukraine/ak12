@@ -1,4 +1,4 @@
-import { CEOIcon, ContentIcon, VacancyIcon, SubdivisionIcon } from "../../../../public/icons";
+import { ContentIcon, VacancyIcon, SubdivisionIcon } from "../../../../public/icons";
 
 export type SubmenuItem = {
   id: string;
@@ -10,7 +10,10 @@ export const mainAdminNavigation = [
   { id: "content", label: "Контент", icon: ContentIcon },
   { id: "divisions", label: "Підрозділи", icon: SubdivisionIcon },
   { id: "careers", label: "Вакансії", icon: VacancyIcon },
-  { id: "ceo", label: "SEO", icon: CEOIcon },
+
+  // SEO section intentionally hidden from the admin UI.
+  // Related functionality is preserved.
+  // { id: "ceo", label: "SEO", icon: CEOIcon },
 ];
 
 export const sidebarToSubmenuMap: Record<string, SubmenuItem[]> = {
