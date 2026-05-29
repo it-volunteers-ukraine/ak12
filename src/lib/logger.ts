@@ -15,6 +15,7 @@ const transport = isServer && process.stdout?.isTTY
 // On client-side, create a minimal logger that uses console
 const createClientLogger = (): pino.Logger => {
   const noop = () => {};
+  /* eslint-disable no-console */
   const clientLogger = {
     debug: console.debug.bind(console),
     info: console.info.bind(console),

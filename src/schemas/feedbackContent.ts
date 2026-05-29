@@ -12,6 +12,7 @@ export const infoSchema = z.object({
     if (data.type === ContactsType.PHONE || data.type === ContactsType.EMAIL) {
       return true;
     }
+
     return data.textHref && data.textHref.length > 0;
   },
   {

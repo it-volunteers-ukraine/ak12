@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 
 import { cn } from "@/utils";
 import { MarqueeItem } from "../marquee-item";
