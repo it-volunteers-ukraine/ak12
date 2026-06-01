@@ -23,7 +23,7 @@ export const Mobilization = ({ content, buttonComponent }: MobilizationProps) =>
         ))}
       </div>
       <div className={styles.containerContent}>
-        <p className={styles.primaryDescription}>{content.primaryDescription}</p>
+        <p className={styles.primaryDescription}>{content.primaryDescription + " "}</p>
         <p className={styles.accentedDescription}>{content.accentedDescription}</p>
         <p className={styles.secondaryDescription}>{content.secondaryDescription}</p>
       </div>

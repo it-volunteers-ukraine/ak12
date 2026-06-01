@@ -4,6 +4,7 @@ import { CornerFrame } from "../cornerFrame";
 import { getContractStyles } from "./styles";
 import { Contract1824Content } from "@/schemas";
 import { BadgeIcon, HeadingIcon, ThumbsupIcon, WalletIcon } from "../../../public/icons";
+import { useTranslations } from "next-intl";
 
 interface ContractProps {
   content: Contract1824Content;
@@ -14,6 +15,8 @@ const iconsList = [BadgeIcon, ThumbsupIcon, WalletIcon];
 
 export const Contract = ({ content, buttonComponent }: ContractProps) => {
   const styles = getContractStyles();
+
+  const t = useTranslations("contractSection");
 
   return (
     <div className={styles.container}>
@@ -54,7 +57,7 @@ export const Contract = ({ content, buttonComponent }: ContractProps) => {
               width={800}
               height={600}
               className={styles.img}
-              alt="Фонове зображення"
+              alt={t("altPhotoText")}
               src={content.imgContent.backgroundImage.secureUrl}
             />
             <div className={styles.imgPostContainer}>

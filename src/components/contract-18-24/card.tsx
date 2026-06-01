@@ -19,7 +19,7 @@ export const StepCard = ({ step, content, buttonComponent }: StepCardProps) => {
       <BlockTabletIcon className={styles.iconTablet} preserveAspectRatio="none" />
 
       <div className={styles.containerContent}>
-        <p className={styles.step}>0{step}</p>
+        <p className={styles.step}>{String(step).padStart(2, "0")}</p>
 
         <h3 className={styles.title}>{content.title}</h3>
 
@@ -27,9 +27,7 @@ export const StepCard = ({ step, content, buttonComponent }: StepCardProps) => {
 
         <p className={styles.primaryDescription}>{content.primaryDescription}</p>
 
-        {content.secondaryDescription && content.secondaryDescription !== "" && (
-          <p className={styles.secondaryDescription}>{content.secondaryDescription}</p>
-        )}
+        {content.secondaryDescription && <p className={styles.secondaryDescription}>{content.secondaryDescription}</p>}
 
         {buttonComponent && <div className={styles.buttonContainer}>{buttonComponent}</div>}
       </div>

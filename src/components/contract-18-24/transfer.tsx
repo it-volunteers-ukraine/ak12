@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 import { TransferContent } from "@/schemas";
 import { getTransferStyles } from "./styles";
@@ -13,6 +14,8 @@ const iconsList = [HeadsetIcon, HitMarkerIcon, BoltIcon];
 
 export const Transfer = ({ content, buttonComponent }: TransferProps) => {
   const styles = getTransferStyles();
+
+  const t = useTranslations("contractSection");
 
   return (
     <div className={styles.container}>
@@ -47,7 +50,7 @@ export const Transfer = ({ content, buttonComponent }: TransferProps) => {
           <Image
             width={800}
             height={600}
-            alt="Фонове зображення"
+            alt={t("altPhotoText")}
             src={content.backgroundImage?.secureUrl}
             className={styles.img}
           />

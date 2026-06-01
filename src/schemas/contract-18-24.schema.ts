@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { baseSectionSchema } from "./mobilizationSchema";
 
-const REQUIRED_ERROR = z.string().min(1, "Обов'язкове поле");
+const REQUIRED_ERROR = z.string().trim().min(1, "Обов'язкове поле");
 
 export const contract1824Schema = z.object({
   baseSection: baseSectionSchema,

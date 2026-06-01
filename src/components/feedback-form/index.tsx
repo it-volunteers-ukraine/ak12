@@ -46,8 +46,8 @@ export const FeedbackForm = ({
 
   const onSubmit: SubmitHandler<IFeedbackForm> = async (_data) => {
     // TODO: implement feedback form submission
-    console.log(_data);
-    console.log("Message from content:", content.message);
+    // console.log(_data);
+    // console.log("Message from content:", content.message);
 
     reset();
   };
