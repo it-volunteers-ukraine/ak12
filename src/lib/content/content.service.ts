@@ -27,7 +27,7 @@ const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) 
 
   const { data, error } = await supabaseServer
     .from("site_content")
-    .select("id, content")
+    .select("id, content, updated_at")
     .eq("section_key", sectionKey)
     .eq("is_active", true)
     .eq("language_id", languageRow.id)
@@ -44,7 +44,31 @@ const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) 
   return data;
 });
 
+const normalizeTimestampToIsoUtc = (value: string | Date): string => {
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+
+  const normalizedValue = value.includes("T") ? value : value.replace(" ", "T");
+
+  if (/[zZ]|[+-]\d{2}:\d{2}$/.test(normalizedValue)) {
+    return normalizedValue;
+  }
+
+  return `${normalizedValue}Z`;
+};
+
 export const contentService = {
+  async getUpdatedAt({ locale, section }: { locale: Locale; section: SectionKey }): Promise<string | null> {
+    const record = await _findContentRecord(section, locale);
+
+    if (!record?.updated_at) {
+      return null;
+    }
+
+    return normalizeTimestampToIsoUtc(record.updated_at);
+  },
+
   async get<Schema extends z.ZodTypeAny>({
     locale,
     schema,
@@ -60,6 +84,7 @@ export const contentService = {
 
     if (!parsed.success) {
       logger.error({ section, error: z.flattenError(parsed.error) }, "Invalid section content");
+
       return null;
     }
 

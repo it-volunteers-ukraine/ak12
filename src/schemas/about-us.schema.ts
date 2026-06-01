@@ -17,6 +17,4 @@ export const aboutUsSchema = z.object({
   content: z.object({
     gallery: z.array(aboutUsItemSchema).min(1, "Додайте хоча б один елемент"),
   }),
-    updatedAt: z.string().datetime().pipe(z.coerce.date()).optional(),
-
 });

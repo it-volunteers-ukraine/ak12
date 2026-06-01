@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { FieldValues, useFormContext } from "react-hook-form";
 
@@ -166,7 +166,7 @@ export const FormBuilder = ({
     <div className={config.className || "form-builder"}>
       <div
         className={cn(
-          `sticky top-24 z-30 mb-6 border-b border-gray-200 bg-white/95 px-2 py-5 backdrop-blur supports-backdrop-filter:bg-white/80 ${
+          `sticky top-22 z-30 mb-6 border-b border-gray-200 bg-white/95 px-2 backdrop-blur supports-backdrop-filter:bg-white/80 ${
             config.buttonsClassName || ""
           }`,
         )}

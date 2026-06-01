@@ -48,5 +48,4 @@ export const footerContentSchema = z.object({
 export const headerAndFooterContentSchema = z.object({
   header: headerContentSchema,
   footer: footerContentSchema,
-  updatedAt: z.string().datetime().pipe(z.coerce.date()).optional(),
 });

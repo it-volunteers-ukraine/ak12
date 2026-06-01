@@ -8,7 +8,6 @@ import { logger } from "@/lib/logger";
 import { SectionKey, SECTION_KEYS } from "@/constants";
 import { aboutUsSchema } from "@/schemas/about-us.schema";
 import { AdminDataMap, AdminSectionKey } from "@/lib/admin";
-import { withTimestamp } from "@/utils/withTimestamp";
 import { contentService } from "@/lib/content/content.service";
 import { mobilizationSchema } from "@/schemas/mobilizationSchema";
 import {
@@ -44,13 +43,10 @@ export const saveContentAction = async ({ locale, sectionKey, rawContent }: Save
     return { success: false, error: `Schema for section ${sectionKey} not found` };
   }
 
-  const contentToSave =
-    rawContent && typeof rawContent === "object" ? withTimestamp(rawContent as Record<string, unknown>) : rawContent;
-
   const result = await contentService.save({
     locale,
     schema,
-    rawContent: contentToSave,
+    rawContent,
     sectionKey,
   });
 

@@ -56,7 +56,6 @@ export const feedbackContentSchema = z.object({
   responseTimeTitle: z.string().min(1, "Обов'язкове поле"),
   responseTimeDescription: z.string().min(1, "Обов'язкове поле"),
   socialMediaTitle: z.string().min(1, "Обов'язкове поле"),
-  updatedAt: z.string().datetime().pipe(z.coerce.date()).optional(),
 });
 
 export type ContactsInfo = z.infer<typeof infoSchema>;
