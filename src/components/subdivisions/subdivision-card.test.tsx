@@ -6,6 +6,8 @@ import { SubdivisionCard } from "@/components/subdivisions/subdivision-card";
 jest.mock("next-intl", () => ({
   useTranslations: () => (key: string, params?: Record<string, string>) => {
     const translations: Record<string, string> = {
+      closeInfo: "Закрити",
+      showInfo: "Показати інформацію",
       visitSite: "Наш сайт",
       imageAlt: params?.name ?? "",
       hoverImageAlt: params?.name ?? "",
@@ -20,14 +22,30 @@ jest.mock("next/image", () => ({
   default: ({ src, alt, className }: any) => <img src={src} alt={alt} className={className} />,
 }));
 
+jest.mock("../../../public/icons/info-circle.svg", () => ({
+  __esModule: true,
+  default: (props: any) => <svg data-testid="info-circle-icon" {...props} />,
+}));
+
+jest.mock("../../../public/icons/times.svg", () => ({
+  __esModule: true,
+  default: (props: any) => <svg data-testid="times-icon" {...props} />,
+}));
+
 const mockSubdivision: Subdivision = {
   id: "1",
   name: "157 БРИГАДА",
   slug: "157-omvr",
   description: "157-ма окрема механізована бригада. Бригада сформована у 2024 році.",
   siteUrl: "https://157ombr.army/",
-  imageUrl: "/images/subdivisions/157-omvr.webp",
-  hoverImageUrl: "/images/subdivisions/hover-image.webp",
+  imageUrl: {
+    publicId: "157-omvr",
+    secureUrl: "/images/subdivisions/157-omvr.webp",
+  },
+  hoverImageUrl: {
+    publicId: "hover-image",
+    secureUrl: "/images/subdivisions/hover-image.webp",
+  },
   hoverName: "157 окрема механізована бригада",
   hoverDescription: "Повний опис 157 бригади для hover стану.",
   isActive: true,
@@ -37,7 +55,7 @@ const mockSubdivision: Subdivision = {
 };
 
 describe("SubdivisionCard", () => {
-  it("should render both default and hover content in the DOM", () => {
+  it("should render both default and desktop hover content in the DOM", () => {
     render(<SubdivisionCard subdivision={mockSubdivision} />);
 
     expect(screen.getByText("157 БРИГАДА")).toBeInTheDocument();
@@ -46,6 +64,8 @@ describe("SubdivisionCard", () => {
     const images = screen.getAllByRole("img");
 
     expect(images).toHaveLength(2);
+    expect(images[0]).toHaveAttribute("src", "/images/subdivisions/157-omvr.webp");
+    expect(images[1]).toHaveAttribute("src", "/images/subdivisions/hover-image.webp");
   });
 
   it("should have correct Tailwind classes for CSS hover transition", () => {
@@ -59,7 +79,7 @@ describe("SubdivisionCard", () => {
     const expectedText = "157-ма окрема механізована бригада.\nБригада сформована у 2024 році.";
 
     const descriptionElement = screen.getByText(expectedText, {
-      normalizer: (s) => s, // Вимикаємо стандартну нормалізацію пробілів
+      normalizer: (s) => s,
     });
 
     expect(descriptionElement).toBeInTheDocument();
@@ -71,14 +91,17 @@ describe("SubdivisionCard", () => {
     const link = screen.getByRole("link", { name: "Наш сайт" });
 
     expect(link).toHaveAttribute("href", "https://157ombr.army/");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
   });
 
-  it("should render visitSite as span when siteUrl is missing", () => {
+  it("should not render site link when siteUrl is missing", () => {
     const subdivisionWithoutSite = { ...mockSubdivision, siteUrl: null };
 
     render(<SubdivisionCard subdivision={subdivisionWithoutSite} />);
+
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
-    expect(screen.getByText("Наш сайт").tagName).toBe("SPAN");
+    expect(screen.queryByText("Наш сайт")).not.toBeInTheDocument();
   });
 
   it("should fallback to name when hoverName is null", () => {
@@ -87,7 +110,7 @@ describe("SubdivisionCard", () => {
     render(<SubdivisionCard subdivision={subdivisionWithoutHoverName} />);
     const titles = screen.getAllByText("157 БРИГАДА");
 
-    expect(titles.length).toBe(2);
+    expect(titles).toHaveLength(2);
   });
 
   it("should fallback to description when hoverDescription is null", () => {
@@ -101,6 +124,15 @@ describe("SubdivisionCard", () => {
       normalizer: (s) => s,
     });
 
-    expect(descriptions.length).toBe(2);
+    expect(descriptions).toHaveLength(2);
+  });
+
+  it("should render image placeholder when imageUrl is missing", () => {
+    const subdivisionWithoutImage = { ...mockSubdivision, imageUrl: null };
+
+    render(<SubdivisionCard subdivision={subdivisionWithoutImage} />);
+
+    expect(screen.getAllByRole("img")).toHaveLength(1);
+    expect(screen.getByText("157 БРИГАДА")).toBeInTheDocument();
   });
 });

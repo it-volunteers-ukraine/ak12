@@ -2,26 +2,25 @@ import { z } from "zod";
 
 import { ContactsType, SocialPlatform } from "@/constants";
 
-export const infoSchema = z
-  .object({
-    type: z.nativeEnum(ContactsType, { message: "Оберіть тип контакту" }),
-    href: z.string().min(1, "Контакт є обов'язковим"),
-    label: z.string().min(1, "Заголовок контакту є обов'язковим"),
-    textHref: z.string().min(1, "Текст посилання є обов'язковим"),
-  })
-  .refine(
-    (data) => {
-      if (data.type === ContactsType.PHONE || data.type === ContactsType.EMAIL) {
-        return true;
-      }
+export const infoSchema = z.object({
+  type: z.nativeEnum(ContactsType, { message: "Оберіть тип контакту" }),
+  href: z.string().min(1, "Контакт є обов'язковим"),
+  label: z.string().min(1, "Заголовок контакту є обов'язковим"),
+  textHref: z.string().min(1, "Текст посилання є обов'язковим"),
+}).refine(
 
-      return data.textHref && data.textHref.length > 0;
-    },
-    {
-      message: "Текст посилання є обов'язковим",
-      path: ["textHref"],
-    },
-  );
+(data) => {
+    if (data.type === ContactsType.PHONE || data.type === ContactsType.EMAIL) {
+      return true;
+    }
+
+    return data.textHref && data.textHref.length > 0;
+  },
+  {
+    message: "Текст посилання є обов'язковим",
+    path: ["textHref"],
+  }
+);
 
 export const socialLinkSchema = z.object({
   platform: z.nativeEnum(SocialPlatform, { message: "Оберіть соціальну мережу" }),

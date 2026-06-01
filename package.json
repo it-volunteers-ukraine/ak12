@@ -10,7 +10,8 @@
     "lint": "eslint",
     "update": "npm i -g npm-check-updates && ncu -u",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
