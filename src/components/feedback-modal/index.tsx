@@ -1,12 +1,12 @@
 "use client";
-import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
+import { FeedbackFormContentWithMessage, PrivacyPolicyContent } from "@/schemas";
 import { FeedbackForm } from "../feedback-form";
 import { CloseIcon } from "../../../public/icons";
 
 import { Modal } from "../modal";
 
 interface FeedbackModalProps {
-  content: FeedbackFormContent;
+  content: FeedbackFormContentWithMessage;
   privacyPolicyContent: PrivacyPolicyContent | null;
   isOpen: boolean;
   onClose: () => void;

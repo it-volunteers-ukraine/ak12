@@ -44,5 +44,8 @@
     "lastName": "Прізвище",
     "email": "Пошта",
     "phone": "Номер телефону"
+  },
+  "contractSection": {
+    "altPhotoText": "Фонове зображення"
   }
 }

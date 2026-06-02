@@ -20,13 +20,12 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
   },
   sections: [
     {
-      id: "title-section",
-      localeLayout: "split",
+      id: "title-text",
       titlePlacement: "outside",
       title: "Заголовок секції",
       fields: [
         {
-          name: "sectionTitle",
+          name: "baseSection.sectionTitle",
           type: "text",
           required: true,
           label: {
@@ -35,7 +34,7 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "sectionSubtitle",
+          name: "baseSection.sectionSubtitle",
           type: "textarea",
           required: true,
           label: {
@@ -43,11 +42,11 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
             en: "Subtitle",
           },
           props: {
-            rows: 3,
+            rows: 2,
           },
         },
         {
-          name: "menuButton",
+          name: "baseSection.menuButton",
           type: "text",
           required: true,
           label: {
@@ -211,15 +210,27 @@ export const contract1824FormBuilderConfig: FormBuilderConfig = {
     {
       id: "button",
       titlePlacement: "outside",
-      title: "Редагування кнопки",
+      title: "Редагування кнопки Приєднатися",
       fields: [
         {
-          name: "buttonTitle",
+          name: "baseSection.buttonJoinUs",
           type: "text",
           required: true,
           label: {
             uk: "Текст кнопки українською",
             en: "Button text in English",
+          },
+        },
+        {
+          name: "baseSection.message",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст повідомлення при відправці форми",
+            en: "Message on form submission",
+          },
+          props: {
+            rows: 2,
           },
         },
       ],

@@ -9,6 +9,7 @@ import { SocialPlatform } from "@/constants";
 import { FormField, FormSelect } from "@/components/form-elements";
 
 import { SOCIAL_LINKS_LABELS } from "./t";
+import { cn } from "@/utils";
 
 interface SocialLinksFieldProps extends ComponentPropsWithoutRef<"div"> {
   name: string;
@@ -34,7 +35,7 @@ export const SocialLinksField = ({ name, className, locale }: SocialLinksFieldPr
   };
 
   return (
-    <div className={className}>
+    <div className={cn(className, "bg-transparent")}>
       <div className="mb-4">
         <p className="text-sm font-medium">{t.title}</p>
         <p className="text-xs text-gray-500">{t.description}</p>

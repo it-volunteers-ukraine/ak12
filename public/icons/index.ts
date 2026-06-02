@@ -79,3 +79,21 @@ export { default as SubdivisionIcon } from "./subdivision.svg";
 export { default as VacancyIcon } from "./vacancy.svg";
 
 export { default as CheckIcon } from "./check.svg";
+
+export { default as HeadingIcon } from "./heading.svg";
+
+export { default as WalletIcon } from "./wallet.svg";
+
+export { default as ThumbsupIcon } from "./thumbsup.svg";
+
+export { default as BadgeIcon } from "./badge.svg";
+
+export { default as HeadsetIcon } from "./headset.svg";
+
+export { default as BoltIcon } from "./bolt.svg";
+
+export { default as HitMarkerIcon } from "./hit-marker.svg";
+
+export { default as BlockMobileIcon } from "./block-mobile.svg";
+
+export { default as BlockTabletIcon } from "./block-tablet.svg";
