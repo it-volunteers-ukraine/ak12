@@ -22,15 +22,6 @@ interface ICard {
   };
 }
 
-const CornerFrame = () => (
-  <>
-    <span className="border-accent absolute top-0 left-0 h-5 w-5 border-t-2 border-l-2" />
-    <span className="border-accent absolute top-0 right-0 h-5 w-5 border-t-2 border-r-2" />
-    <span className="border-accent absolute bottom-0 left-0 h-5 w-5 border-b-2 border-l-2" />
-    <span className="border-accent absolute right-0 bottom-0 h-5 w-5 border-r-2 border-b-2" />
-  </>
-);
-
 const getYouTubeVideoId = (url: string): string | null => {
   if (!url) {
     return null;
