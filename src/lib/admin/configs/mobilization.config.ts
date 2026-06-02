@@ -20,7 +20,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
       title: "Заголовок секції",
       fields: [
         {
-          name: "title",
+          name: "baseSection.sectionTitle",
           type: "text",
           required: true,
           label: {
@@ -29,7 +29,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "subtitle",
+          name: "baseSection.sectionSubtitle",
           type: "textarea",
           required: true,
           label: {
@@ -41,7 +41,7 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
           },
         },
         {
-          name: "menuButton",
+          name: "baseSection.menuButton",
           type: "text",
           required: true,
           label: {
@@ -86,16 +86,19 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
-          name: "cards[0].buttonText",
-          type: "text",
-          required: true,
+          name: "cards[0].secondaryDescription",
+          type: "textarea",
+          required: false,
           label: {
-            uk: "Текст кнопки",
-            en: "Button text",
+            uk: "Текст картки",
+            en: "Text card",
+          },
+          props: {
+            rows: 4,
           },
         },
       ],
@@ -135,19 +138,19 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
           name: "cards[1].secondaryDescription",
           type: "textarea",
-          required: true,
+          required: false,
           label: {
             uk: "Текст картки",
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
       ],
@@ -187,19 +190,19 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
           name: "cards[2].secondaryDescription",
           type: "textarea",
-          required: true,
+          required: false,
           label: {
             uk: "Текст картки",
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
       ],
@@ -239,16 +242,44 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
             en: "Text card",
           },
           props: {
-            rows: 2,
+            rows: 4,
           },
         },
         {
           name: "cards[3].secondaryDescription",
           type: "textarea",
-          required: true,
+          required: false,
           label: {
             uk: "Текст картки",
             en: "Text card",
+          },
+          props: {
+            rows: 4,
+          },
+        },
+      ],
+    },
+    {
+      id: "button",
+      titlePlacement: "outside",
+      title: "Редагування кнопки Приєднатися",
+      fields: [
+        {
+          name: "baseSection.buttonJoinUs",
+          type: "text",
+          required: true,
+          label: {
+            uk: "Текст кнопки",
+            en: "Button text",
+          },
+        },
+        {
+          name: "baseSection.message",
+          type: "textarea",
+          required: true,
+          label: {
+            uk: "Текст повідомлення при відправці форми",
+            en: "Message on form submission",
           },
           props: {
             rows: 2,
@@ -263,35 +294,32 @@ export const mobilizationFormBuilderConfig: FormBuilderConfig = {
       fields: [
         {
           name: "primaryDescription",
-          type: "textarea",
+          type: "text",
           required: true,
           label: {
             uk: "Основний опис",
             en: "Primary description",
           },
-          props: {
-            rows: 2,
-          },
         },
         {
           name: "accentedDescription",
-          type: "textarea",
+          type: "text",
           required: true,
           label: {
             uk: "Акцентований опис",
             en: "Accented description",
           },
-          props: {
-            rows: 2,
-          },
         },
         {
-          name: "menuButton",
-          type: "text",
+          name: "secondaryDescription",
+          type: "textarea",
           required: true,
           label: {
             uk: "Додатковий опис",
             en: "Secondary description",
+          },
+          props: {
+            rows: 3,
           },
         },
       ],

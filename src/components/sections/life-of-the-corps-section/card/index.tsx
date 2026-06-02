@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
 import Image from "next/image";
 
 import { getStyles } from "./styles";
+import { CornerFrame } from "@/components/cornerFrame";
 import { GalleryPlaceholder } from "../../../../../public/images";
 
 interface ICard {

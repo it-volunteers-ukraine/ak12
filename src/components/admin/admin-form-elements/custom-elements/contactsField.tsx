@@ -7,6 +7,7 @@ import { CONTACTS_LABELS } from "./t";
 import { ContactsType } from "@/constants";
 import { Locale } from "@/types";
 import { FormField, FormSelect } from "@/components/form-elements";
+import { cn } from "@/utils";
 
 interface ContactsFieldProp extends ComponentPropsWithoutRef<"div"> {
   name: string;
@@ -26,7 +27,7 @@ export const ContactsField = ({ name, className, locale }: ContactsFieldProp) =>
   };
 
   return (
-    <div className={className}>
+    <div className={cn(className, "bg-transparent")}>
       <div className="mb-4 flex items-center justify-between gap-4">
         <div>
           <p className="text-sm font-medium">{t.title}</p>

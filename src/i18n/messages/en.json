@@ -44,5 +44,8 @@
     "lastName": "Last Name",
     "email": "Email",
     "phone": "Phone Number"
+  },
+  "contractSection": {
+    "altPhotoText": "Background image"
   }
 }
