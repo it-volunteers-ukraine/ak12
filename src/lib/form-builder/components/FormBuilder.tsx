@@ -184,6 +184,9 @@ export const FormBuilder = ({
           addNewElementForArray={addNewElementForArray}
           addNewElementHandleClick={addNewElementHandleClick}
         />
+        {addNewElementForArray && ( // ← додати цей блок
+          <p className="mt-2 text-sm text-red-500">* Для кожного елементу додайте фото або YouTube відео</p>
+        )}
       </div>
 
       {sectionGroups.map((item, itemIndex) => {

@@ -19,14 +19,18 @@ type Cell = {
   id: string;
   src?: string;
   text?: string;
+  videoUrl?: string;
   imageIndex?: number;
   type: "text" | "image";
 };
+
 type GalleryImage = {
   id: string;
   src: string;
   text?: string;
+  videoUrl?: string;
 };
+
 interface ILifeOfTheCorpsGalleryClientProps {
   cells: Cell[];
   images: GalleryImage[];
@@ -43,11 +47,30 @@ const MOBILE_ORDER_OVERRIDES: Record<number, number> = {
 
 const MOBILE_HIDDEN_INDEXES = new Set([0, 15]);
 
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  if (!url) {
+    return null;
+  }
+
+  try {
+    const urlObj = new URL(url);
+    let videoId: string | null = null;
+
+    if (urlObj.hostname === "youtu.be") {
+      videoId = urlObj.pathname.slice(1).split("?")[0];
+    } else if (urlObj.hostname.includes("youtube.com")) {
+      videoId = urlObj.searchParams.get("v");
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+  } catch {
+    return null;
+  }
+};
+
 export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGalleryClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  // Index 15 is the last (16th) cell in the fixed grid of 9 basic elements.
-  // It is hidden by the design, since new elements from the CMS are only accessible within Swiper.
 
   const TABLET_HIDE_START_INDEX = cells.length - 1;
 
@@ -150,20 +173,34 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
             } as React.CSSProperties
           }
         >
-          {images.map((image, idx) => (
-            <SwiperSlide key={`${image.id}-${idx}`}>
-              <div className="relative flex h-[70vh] min-h-80 w-full items-center justify-center overflow-hidden rounded-md bg-black">
-                <Image
-                  fill
-                  src={image.src}
-                  className="object-contain"
-                  priority={idx === activeImageIndex}
-                  alt={image.text || `Image ${idx + 1}`}
-                  sizes="(max-width: 768px) 92vw, (max-width: 1200px) 80vw, 1200px"
-                />
-              </div>
-            </SwiperSlide>
-          ))}
+          {images.map((image, idx) => {
+            const embedUrl = image.videoUrl ? getYouTubeEmbedUrl(image.videoUrl) : null;
+
+            return (
+              <SwiperSlide key={`${image.id}-${idx}`}>
+                <div className="relative flex h-[70vh] min-h-80 w-full items-center justify-center overflow-hidden rounded-md bg-black">
+                  {embedUrl ? (
+                    <iframe
+                      src={embedUrl}
+                      title={image.text || `Video ${idx + 1}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="h-full w-full"
+                    />
+                  ) : (
+                    <Image
+                      fill
+                      src={image.src}
+                      className="object-contain"
+                      priority={idx === activeImageIndex}
+                      alt={image.text || `Image ${idx + 1}`}
+                      sizes="(max-width: 768px) 92vw, (max-width: 1200px) 80vw, 1200px"
+                    />
+                  )}
+                </div>
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
       </Modal>
     </>

@@ -30,9 +30,9 @@ export const BtnGroup = ({
   return (
     <div className={wrapper(className)}>
       {addNewElementForArray && (
-        <Button onClick={addNewElementHandleClick} variant="add" className="mr-auto">
-          Додати елемент галереї
-        </Button>
+         <Button onClick={addNewElementHandleClick} variant="add" className="mr-auto">
+    Додати елемент галереї
+  </Button>
       )}
       <Button variant="primary" type="submit" disabled={!isValid} className={submitClassName}>
         {submitText || "Зберегти зміни"}

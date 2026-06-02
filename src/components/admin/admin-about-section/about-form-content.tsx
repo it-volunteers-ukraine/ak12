@@ -26,6 +26,7 @@ type AboutFormShape = {
     content: {
       gallery: Array<{
         secureUrl?: string | null;
+        videoUrl?: string | null;
       }>;
     };
   };
@@ -33,6 +34,7 @@ type AboutFormShape = {
     content: {
       gallery: Array<{
         secureUrl?: string | null;
+        videoUrl?: string | null;
       }>;
     };
   };

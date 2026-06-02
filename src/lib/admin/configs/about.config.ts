@@ -61,6 +61,12 @@ export const createAboutFormBuilderConfig = (galleryLength: number): FormBuilder
           },
         },
         {
+          id: `gallery-video-${index}`,
+          type: "video",
+          locales: ["uk"],
+          props: { videoIndex: index },
+        },
+        {
           name: `content.gallery.${index}.text`,
           type: "text",
           required: true,
@@ -94,6 +100,12 @@ export const createAboutFormBuilderConfig = (galleryLength: number): FormBuilder
             hideImageLabel: true,
             imageFrameClassName: "h-[220px]",
           },
+        },
+        {
+          id: `gallery-video-${index}`,
+          type: "video",
+          locales: ["uk"],
+          props: { videoIndex: index },
         },
       ],
     };

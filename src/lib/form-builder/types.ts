@@ -1,7 +1,7 @@
 import { ComponentType } from "react";
 
 export type Locale = "uk" | "en";
-export type FieldType = "text" | "textarea" | "number" | "image" | "custom";
+export type FieldType = "text" | "textarea" | "number" | "image" | "custom" | "video";
 interface FieldConfigBase {
   id?: string;
   type: FieldType;
@@ -19,12 +19,17 @@ interface ImageFieldConfig extends Omit<FieldConfigBase, "type"> {
   name?: string;
 }
 
+interface VideoFieldConfig extends Omit<FieldConfigBase, "type"> {
+  type: "video";
+  name?: string;
+}
+
 interface NonImageFieldConfig extends Omit<FieldConfigBase, "type"> {
   name: string;
   type: Exclude<FieldType, "image">;
 }
 
-export type FieldConfig = ImageFieldConfig | NonImageFieldConfig;
+export type FieldConfig = ImageFieldConfig | VideoFieldConfig | NonImageFieldConfig;
 
 export interface SectionConfig {
   id: string;

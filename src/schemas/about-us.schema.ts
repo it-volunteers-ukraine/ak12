@@ -7,6 +7,7 @@ const aboutUsItemSchema = z
     text: z.string().min(1, "Назва обов'язкова"),
     secureUrl: z.string().optional().or(z.literal("")),
     publicId: z.string().optional(),
+    videoUrl: z.string().optional().or(z.literal("")),
   })
   .nullable()
   .optional();
@@ -18,3 +19,4 @@ export const aboutUsSchema = z.object({
     gallery: z.array(aboutUsItemSchema).min(1, "Додайте хоча б один елемент"),
   }),
 });
+

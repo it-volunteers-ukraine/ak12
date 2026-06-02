@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { useFormContext } from "react-hook-form";
 
 import { Button } from "@/components";
 import { logger } from "@/lib/logger";
@@ -39,6 +40,55 @@ const DEFAULT_LOCALE_TITLES: Record<(typeof LOCALES)[number], string> = {
   en: "English",
 };
 
+// ─── YouTube утиліта ────────────────────────────────────────────────────────
+
+const getYouTubeEmbedUrl = (url: string): string | null => {
+  if (!url) {
+    return null;
+  }
+  try {
+    const urlObj = new URL(url);
+    let videoId: string | null = null;
+
+    if (urlObj.hostname === "youtu.be") {
+      videoId = urlObj.pathname.slice(1).split("?")[0];
+    } else if (urlObj.hostname.includes("youtube.com")) {
+      videoId = urlObj.searchParams.get("v");
+    }
+
+    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
+  } catch {
+    return null;
+  }
+};
+
+// ─── VideoField компонент ────────────────────────────────────────────────────
+
+const VideoField = ({ fieldName }: { fieldName: string }) => {
+  const { watch } = useFormContext();
+  const value: string = watch(fieldName) ?? "";
+  const embedUrl = getYouTubeEmbedUrl(value);
+
+  return (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium">YouTube посилання</label>
+      <FormField name={fieldName} className="bg-white" component={TextInput} placeholder="https://youtu.be/..." />
+      {embedUrl && (
+        <div className="overflow-hidden rounded-lg border border-gray-200">
+          <iframe
+            src={embedUrl}
+            title="YouTube preview"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="aspect-video w-full"
+          />
+        </div>
+      )}
+      {value && !embedUrl && <p className="text-xs text-red-500">Невалідне YouTube посилання</p>}
+    </div>
+  );
+};
+
 const getFieldKey = (field: SectionConfig["fields"][number], fallback: string) => {
   if (field.id) {
     return field.id;
@@ -50,10 +100,17 @@ const getFieldKey = (field: SectionConfig["fields"][number], fallback: string) =
     return imageIndex >= 0 ? `image-${imageIndex}` : fallback;
   }
 
+  if (field.type === "video") {
+    const videoIndex = Number(field.props?.videoIndex ?? -1);
+
+    return videoIndex >= 0 ? `video-${videoIndex}` : fallback;
+  }
+
   return field.name;
 };
 
 const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en", options: RenderFieldOptions) => {
+  // ── image ──────────────────────────────────────────────────────────────────
   if (field.type === "image") {
     const imageIndex = Number(field.props?.imageIndex ?? -1);
 
@@ -103,6 +160,18 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
     );
   }
 
+  // ── video ──────────────────────────────────────────────────────────────────
+  if (field.type === "video") {
+    const videoIndex = Number(field.props?.videoIndex ?? -1);
+
+    if (videoIndex < 0) {
+      return null;
+    }
+
+    return <VideoField fieldName={`uk.content.gallery.${videoIndex}.videoUrl`} />;
+  }
+
+  // ── custom ─────────────────────────────────────────────────────────────────
   if (field.type === "custom") {
     return (
       <FormField
@@ -116,6 +185,7 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
     );
   }
 
+  // ── text / textarea / number ───────────────────────────────────────────────
   return (
     <FormField
       name={`${locale}.${field.name}`}
@@ -126,11 +196,15 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
   );
 };
 
+// ─── Flag badge ───────────────────────────────────────────────────────────────
+
 const FlagBadge = ({ children, size = "sm" }: { children: ReactNode; size?: "sm" | "md" }) => {
   const classes = size === "md" ? "h-8 w-8" : "h-5 w-5";
 
   return <span className={`inline-flex ${classes} overflow-hidden rounded-full`}>{children}</span>;
 };
+
+// ─── Layouts ──────────────────────────────────────────────────────────────────
 
 const SplitLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   return (
@@ -298,7 +372,8 @@ const ByLocaleLayout = ({ section, showOutsideTitle, ...options }: LocaleSection
 
 const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   const imageFields = section.fields.filter((field) => field.type === "image");
-  const contentFields = section.fields.filter((field) => field.type !== "image");
+  const videoFields = section.fields.filter((field) => field.type === "video");
+  const contentFields = section.fields.filter((field) => field.type !== "image" && field.type !== "video");
 
   return (
     <div className="rounded-xl border border-gray-200 bg-gray-100 p-6">
@@ -312,6 +387,9 @@ const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: Locale
         <div className="space-y-4">
           {imageFields.map((field, index) => (
             <div key={`gallery-image-${getFieldKey(field, `image-${index}`)}`}>{renderField(field, "uk", options)}</div>
+          ))}
+          {videoFields.map((field, index) => (
+            <div key={`gallery-video-${getFieldKey(field, `video-${index}`)}`}>{renderField(field, "uk", options)}</div>
           ))}
         </div>
 
@@ -344,6 +422,8 @@ const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: Locale
     </div>
   );
 };
+
+// ─── Layout registry ──────────────────────────────────────────────────────────
 
 const LAYOUT_COMPONENTS: Record<string, React.FC<LocaleSectionProps>> = {
   split: SplitLayout,

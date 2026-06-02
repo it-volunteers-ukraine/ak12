@@ -33,31 +33,49 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
   }
 
   const fullGallery = content.content.gallery ?? [];
-  const imageIndexByGalleryIndex = new Map<number, number>();
+
+  const mediaIndexByGalleryIndex = new Map<number, number>();
+
+  // images тепер включає і фото і відео (для Swiper)
   const images = fullGallery
     .map((item, idx) => ({ item, idx }))
-    .filter(({ item }) => Boolean(item?.secureUrl))
-    .map(({ item, idx }, imageIndex) => {
-      imageIndexByGalleryIndex.set(idx, imageIndex);
+    .filter(({ item }) => Boolean(item?.secureUrl) || Boolean(item?.videoUrl))
+    .map(({ item, idx }, mediaIndex) => {
+      mediaIndexByGalleryIndex.set(idx, mediaIndex);
 
       return {
         text: item?.text,
-        id: `gallery-img-${idx}`,
+        id: `gallery-media-${idx}`,
         src: item?.secureUrl || "",
+        videoUrl: item?.videoUrl || "",
       };
     });
 
   const cells = fullGallery.slice(0, 9).flatMap((item, idx) => {
     const isImageOnly = idx >= 7;
-    const imageIndex = imageIndexByGalleryIndex.get(idx) ?? -1;
+    const mediaIndex = mediaIndexByGalleryIndex.get(idx) ?? -1;
 
     if (isImageOnly) {
-      return [{ type: "image" as const, src: item?.secureUrl, id: `img-${idx}`, imageIndex }];
+      return [
+        {
+          type: "image" as const,
+          src: item?.secureUrl,
+          videoUrl: item?.videoUrl,
+          id: `img-${idx}`,
+          imageIndex: mediaIndex,
+        },
+      ];
     }
 
     return [
       { type: "text" as const, text: item?.text, id: `txt-${idx}` },
-      { type: "image" as const, src: item?.secureUrl, id: `img-${idx}`, imageIndex },
+      {
+        type: "image" as const,
+        src: item?.secureUrl,
+        videoUrl: item?.videoUrl,
+        id: `img-${idx}`,
+        imageIndex: mediaIndex,
+      },
     ];
   });
 
