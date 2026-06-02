@@ -59,6 +59,54 @@ const normalizeTimestampToIsoUtc = (value: string | Date): string => {
 };
 
 export const contentService = {
+  async getBatchWithLatestTimestamps({
+    locale,
+    sections,
+  }: {
+    locale: Locale;
+    sections: SectionKey[];
+  }): Promise<Record<string, string>> {
+    if (!sections.length) {
+      return {};
+    }
+
+    try {
+      const languageRow = await languageService.ensure(locale);
+
+      const { data, error } = await supabaseServer
+        .from("site_content")
+        .select("section_key, updated_at")
+        .eq("is_active", true)
+        .eq("language_id", languageRow.id)
+        .in("section_key", sections)
+        .order("updated_at", { ascending: false });
+
+      if (error) {
+        logger.error({ locale, sections, error }, "Failed to fetch batch timestamps");
+
+        return {};
+      }
+
+      if (!data) {
+        return {};
+      }
+
+      const timestampMap: Record<string, string> = {};
+
+      for (const record of data) {
+        if (record.section_key && record.updated_at && !timestampMap[record.section_key]) {
+          timestampMap[record.section_key] = normalizeTimestampToIsoUtc(record.updated_at);
+        }
+      }
+
+      return timestampMap;
+    } catch (error) {
+      logger.error({ locale, sections, error }, "Unexpected error in getBatchWithLatestTimestamps");
+
+      return {};
+    }
+  },
+
   async getUpdatedAt({ locale, section }: { locale: Locale; section: SectionKey }): Promise<string | null> {
     const record = await _findContentRecord(section, locale);
 

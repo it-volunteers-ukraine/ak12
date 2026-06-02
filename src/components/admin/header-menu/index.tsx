@@ -1,5 +1,7 @@
 'use client';
 
+import { useState, useEffect } from "react";
+
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -14,11 +16,19 @@ interface IAdminHeaderProps {
 
 export const AdminHeader = ({ contentMenu, sidebarSegment }: IAdminHeaderProps) => {
   const params = useParams();
-  const timeZone = "Europe/Kyiv";
+
   const showUpdatedAt = sidebarSegment === "content";
 
   const activeSubsection = params.subsidebar as string;
   const locale = params.locale as string;
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const timeZone = isMounted ? Intl.DateTimeFormat().resolvedOptions().timeZone : "Europe/Kyiv";
 
   return (
     <header className="sticky top-0 z-50 flex justify-between gap-6 border-b-3 bg-white">

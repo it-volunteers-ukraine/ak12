@@ -1,30 +1,32 @@
 import type { Locale } from "@/types";
-import type { SectionKey } from "@/constants";
 import { ADMIN_SCHEMAS } from "@/lib/admin";
+import type { SectionKey } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
-import { sidebarToSubmenuMap, type SubmenuItem } from "@/components/admin/header-menu/mok";
+import { type SubmenuItem, sidebarToSubmenuMap } from "@/components/admin/header-menu/mok";
 
 export const getDynamicSidebarMenu = async (locale: Locale, currentSidebar: string): Promise<SubmenuItem[]> => {
   const menuItems = sidebarToSubmenuMap[currentSidebar] || [];
 
-  return Promise.all(
-    menuItems.map(async (item) => {
-      const sectionKey = item.id as SectionKey;
-      const schema = ADMIN_SCHEMAS[sectionKey];
+  const sectionKeys = menuItems.map((item) => item.id as SectionKey).filter((key) => !!ADMIN_SCHEMAS[key]);
 
-      if (!schema) {
-        return item;
-      }
+  const timestampsMap = await contentService.getBatchWithLatestTimestamps({
+    locale,
+    sections: sectionKeys,
+  });
 
-      const updatedAt = await contentService.getUpdatedAt({
-        locale,
-        section: sectionKey,
-      });
+  return menuItems.map((item) => {
+    const sectionKey = item.id as SectionKey;
+    const schema = ADMIN_SCHEMAS[sectionKey];
 
-      return {
-        ...item,
-        updatedAt: updatedAt ?? undefined,
-      };
-    }),
-  );
+    if (!schema) {
+      return item;
+    }
+
+    const updatedAt = timestampsMap[sectionKey];
+
+    return {
+      ...item,
+      updatedAt: updatedAt ?? undefined,
+    };
+  });
 };
