@@ -32,7 +32,7 @@ describe('upload-image actions', () => {
       (cookies as jest.Mock).mockResolvedValue({
         get: jest.fn(() => ({ value: 'token' })),
       });
-      (verifySession as jest.Mock).mockReturnValue(true);
+      (verifySession as jest.Mock).mockResolvedValue(true);
       (uploadImage as jest.Mock).mockResolvedValue(MOCK_STORED_IMAGE);
 
       const result = await uploadImageAction({

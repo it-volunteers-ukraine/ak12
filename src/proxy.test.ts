@@ -22,7 +22,11 @@ jest.mock('@/lib/auth/session.service', () => ({
   generateSessionToken: jest.fn(),
   getSessionPayload: jest.fn(),
   shouldRefreshSession: jest.fn(),
-  getSessionCookieOptions: jest.fn(() => ({ path: '/', httpOnly: true })),
+  getSessionCookieOptions: jest.fn((ttl: number) => ({
+    path: '/',
+    httpOnly: true,
+    ...(ttl === 0 ? { maxAge: 0 } : { maxAge: ttl * 1000 }),
+  })),
 }));
 
 const MOCK_COOKIE_OPTIONS = { path: '/', httpOnly: true };
