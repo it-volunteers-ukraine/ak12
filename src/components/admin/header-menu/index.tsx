@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from "react";
-
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -22,13 +20,7 @@ export const AdminHeader = ({ contentMenu, sidebarSegment }: IAdminHeaderProps) 
   const activeSubsection = params.subsidebar as string;
   const locale = params.locale as string;
 
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  const timeZone = isMounted ? Intl.DateTimeFormat().resolvedOptions().timeZone : "Europe/Kyiv";
+const KYIV_TIMEZONE = "Europe/Kyiv";
 
   return (
     <header className="sticky top-0 z-50 flex justify-between gap-6 border-b-3 bg-white">
@@ -54,14 +46,14 @@ export const AdminHeader = ({ contentMenu, sidebarSegment }: IAdminHeaderProps) 
                           Оновлено:{" "}
                           {item.updatedAt
                             ? new Date(item.updatedAt).toLocaleDateString("uk-UA", {
-                                timeZone,
+                                timeZone: KYIV_TIMEZONE,
                               })
                             : "---"}
                         </span>
                         <span className="text-sm">
                           {item.updatedAt
                             ? new Date(item.updatedAt).toLocaleTimeString("uk-UA", {
-                                timeZone,
+                                timeZone: KYIV_TIMEZONE,
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })

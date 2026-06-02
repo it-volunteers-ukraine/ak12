@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import type { Locale } from "@/types";
 import { AdminHeader } from "@/components/admin";
 import { getDynamicSidebarMenu } from "@/lib/admin/sidebar-menu";
@@ -12,6 +14,12 @@ export default async function SectionLayout({
 }) {
   const { locale, sidebar } = await params;
   const currentSidebar = sidebar?.toLowerCase();
+
+  const isValidSidebar = currentSidebar === "content" || currentSidebar in sidebarToSubmenuMap;
+
+  if (!isValidSidebar) {
+    notFound();
+  }
 
   const topMenu =
     currentSidebar === "content"

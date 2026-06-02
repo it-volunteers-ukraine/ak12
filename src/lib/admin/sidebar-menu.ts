@@ -19,7 +19,10 @@ export const getDynamicSidebarMenu = async (locale: Locale, currentSidebar: stri
     const schema = ADMIN_SCHEMAS[sectionKey];
 
     if (!schema) {
-      return item;
+      return {
+        ...item,
+        updatedAt: undefined,
+      };
     }
 
     const updatedAt = timestampsMap[sectionKey];

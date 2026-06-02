@@ -44,18 +44,23 @@ const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) 
   return data;
 });
 
-const normalizeTimestampToIsoUtc = (value: string | Date): string => {
+const normalizeTimestampToIsoUtc = (value: string | Date): string | null => {
   if (value instanceof Date) {
-    return value.toISOString();
+    return Number.isNaN(value.getTime()) ? null : value.toISOString();
   }
 
-  const normalizedValue = value.includes("T") ? value : value.replace(" ", "T");
+  const trimmed = value.trim();
+  const withT = trimmed.includes("T") ? trimmed : trimmed.replaceAll(" ", "T");
 
-  if (/[zZ]|[+-]\d{2}:\d{2}$/.test(normalizedValue)) {
-    return normalizedValue;
+  const normalized = /[zZ]|[+-]\d{2}:\d{2}$/.test(withT) ? withT : `${withT}Z`;
+
+  const date = new Date(normalized);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
   }
 
-  return `${normalizedValue}Z`;
+  return date.toISOString();
 };
 
 export const contentService = {
@@ -95,7 +100,11 @@ export const contentService = {
 
       for (const record of data) {
         if (record.section_key && record.updated_at && !timestampMap[record.section_key]) {
-          timestampMap[record.section_key] = normalizeTimestampToIsoUtc(record.updated_at);
+          const normalized = normalizeTimestampToIsoUtc(record.updated_at);
+
+          if (normalized !== null) {
+            timestampMap[record.section_key] = normalized;
+          }
         }
       }
 
