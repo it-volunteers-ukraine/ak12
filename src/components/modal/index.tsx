@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useId } from "react";
 
 import { useMounted, useOutsideClick } from "@/hooks";
 import { Portal } from "../portal";
@@ -14,12 +14,32 @@ interface IModal {
   children?: React.ReactNode;
 }
 
+const modalStack: string[] = [];
+
+const registerModal = (id: string) => {
+  modalStack.push(id);
+};
+
+const unregisterModal = (id: string) => {
+  const index = modalStack.lastIndexOf(id);
+
+  if (index !== -1) {
+    modalStack.splice(index, 1);
+  }
+};
+
+const isTopModal = (id: string) => {
+  return modalStack[modalStack.length - 1] === id;
+};
+
 export const Modal = ({ isOpen, className, classNameOverlay, children, closeModal }: IModal) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const { isUnmounted } = useMounted({ isOpened: isOpen, duration: 300 });
+
+  const modalId = useId();
 
   useOutsideClick(() => closeModal(), modalRef);
 
@@ -29,6 +49,8 @@ export const Modal = ({ isOpen, className, classNameOverlay, children, closeModa
     if (!isOpen) {
       return;
     }
+
+    registerModal(modalId);
 
     const currentCount = parseInt(document.body.getAttribute("data-modals-open") || "0", 10);
     const newCount = currentCount + 1;
@@ -43,6 +65,8 @@ export const Modal = ({ isOpen, className, classNameOverlay, children, closeModa
     }
 
     return () => {
+      unregisterModal(modalId);
+
       if (timerRef.current) {
         clearTimeout(timerRef.current);
       }
@@ -63,7 +87,31 @@ export const Modal = ({ isOpen, className, classNameOverlay, children, closeModa
         document.body.setAttribute("data-modals-open", updatedCount.toString());
       }
     };
-  }, [isOpen]);
+  }, [isOpen, modalId]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+
+      if (!isTopModal(modalId)) {
+        return;
+      }
+
+      closeModal();
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, modalId, closeModal]);
 
   return (
     <Portal opened={isUnmounted}>
