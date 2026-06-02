@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { FeedbackModal } from "../feedback-modal";
-import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
-import { useTranslations } from "next-intl";
-import { SubmitIcon } from "../../../public/icons";
 
-const DEFAULT_CONTENT: FeedbackFormContent = {
+import { cn } from "@/utils";
+import { useTranslations } from "next-intl";
+import { FeedbackModal } from "../feedback-modal";
+import { SubmitIcon } from "../../../public/icons";
+import { FeedbackFormContentWithMessage, PrivacyPolicyContent } from "@/schemas";
+
+const DEFAULT_CONTENT: FeedbackFormContentWithMessage = {
   title: "Подати заявку",
   modalTitle: "Залишити повідомлення",
   descriptionInputTitle: "Ваше повідомлення",
@@ -18,13 +20,14 @@ const DEFAULT_CONTENT: FeedbackFormContent = {
   privacyPolicyTextLink: "Політикою конфіденційності",
 };
 
-export const ApplyButton = ({
-  contentModal,
-  privacyPolicyContent,
-}: {
-  contentModal: FeedbackFormContent | null;
+interface ApplyButtonProps {
+  className?: string;
+  textButton?: string;
+  contentModal: FeedbackFormContentWithMessage | null;
   privacyPolicyContent: PrivacyPolicyContent | null;
-}) => {
+}
+
+export const ApplyButton = ({ className, textButton, contentModal, privacyPolicyContent }: ApplyButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("vacancies");
 
@@ -35,16 +38,19 @@ export const ApplyButton = ({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="bg-surface-main border-accent hover:bg-hover mt-auto flex w-full items-center justify-center gap-1 border-2 py-1.5 transition-colors"
+        className={cn(
+          "bg-surface-main border-accent hover:bg-hover mt-auto flex w-full items-center justify-center gap-1 border-2 py-1.5 transition-colors",
+          className,
+        )}
       >
-        <span className="font-ermilov text-soft-blush text-[20px] leading-7 font-bold">{t("apply")}</span>
+        <span className="font-ermilov text-soft-blush text-[20px] leading-7 font-bold">{textButton || t("apply")}</span>
         <SubmitIcon className="h-4.5 w-4.5" />
       </button>
       <FeedbackModal
-        content={content}
-        privacyPolicyContent={privacyPolicyContent}
         isOpen={isOpen}
+        content={content}
         onClose={() => setIsOpen(false)}
+        privacyPolicyContent={privacyPolicyContent}
       />
     </>
   );

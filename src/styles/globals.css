@@ -26,7 +26,9 @@
   --color-text-disabled: #5b5d5c;
   --color-warm-gray: #b3b3b2;
   --color-white: #ffffff;
-  --color-admin-menu-active-background: #CBDCF5;
+  --color-admin-menu-active-background: #cbdcf5;
+  --color-space: #404743;
+
   --background-image-section:
     linear-gradient(90deg, #0d0d0d 0%, rgba(26, 26, 26, 70%) 50%, rgba(51, 64, 54, 60%) 100%),
     linear-gradient(#1a1e1d, #1a1e1d);
@@ -155,10 +157,9 @@ html {
   scroll-behavior: smooth;
 }
 
-
 .gallery-swiper .swiper-button-next:after,
 .gallery-swiper .swiper-button-prev:after {
-  font-weight: 900; 
+  font-weight: 900;
 }
 
 .gallery-swiper .swiper-button-next,
@@ -166,12 +167,11 @@ html {
   transition: transform 0.2s ease-in-out;
 }
 
-
 @media (hover: hover) {
   .gallery-swiper .swiper-button-next:hover {
-    transform: scale(1.2); 
+    transform: scale(1.2);
   }
-  
+
   .gallery-swiper .swiper-button-prev:hover {
     transform: scale(1.2);
   }

@@ -1,0 +1,20 @@
+<svg width="100%" height="100%" viewBox="0 0 692 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+<foreignObject x="-6" y="-6" width="704" height="332"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(3px);clip-path:url(#bgblur_0_2685_3910_clip_path);height:100%;width:100%"></div></foreignObject><g filter="url(#filter0_i_2685_3910)" data-figma-bg-blur-radius="6">
+<path d="M4 8.00001C4 5.79087 5.79086 4 8 4H506.9C507.897 4 508.859 4.37268 509.595 5.04494L541.505 34.1551C542.241 34.8273 543.203 35.2 544.2 35.2H684C686.209 35.2 688 36.9909 688 39.2V312C688 314.209 686.209 316 684 316H73.9504C72.9529 316 71.9915 315.627 71.2546 314.955L5.30415 254.79C4.47337 254.032 4 252.959 4 251.835L4 8.00001Z" fill="#0D0D0D"/>
+<path d="M506.899 2C508.396 2 509.838 2.559 510.943 3.56738L542.853 32.6777C543.221 33.0137 543.702 33.2001 544.2 33.2002H684C687.314 33.2002 690 35.8865 690 39.2002V312C690 315.314 687.314 318 684 318H73.9502C72.4541 318 71.0115 317.441 69.9062 316.433L3.95605 256.268C2.70995 255.131 2.00008 253.522 2 251.835V8C2 4.6863 4.68629 2 8 2H506.899Z" stroke="#46614F" stroke-opacity="0.24" stroke-width="4"/>
+</g>
+<defs>
+<filter id="filter0_i_2685_3910" x="-6" y="-6" width="704" height="332" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="1.06259" operator="erode" in="SourceAlpha" result="effect1_innerShadow_2685_3910"/>
+<feOffset dy="1"/>
+<feGaussianBlur stdDeviation="0.5"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.15 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_2685_3910"/>
+</filter>
+<clipPath id="bgblur_0_2685_3910_clip_path" transform="translate(6 6)"><path d="M4 8.00001C4 5.79087 5.79086 4 8 4H506.9C507.897 4 508.859 4.37268 509.595 5.04494L541.505 34.1551C542.241 34.8273 543.203 35.2 544.2 35.2H684C686.209 35.2 688 36.9909 688 39.2V312C688 314.209 686.209 316 684 316H73.9504C72.9529 316 71.9915 315.627 71.2546 314.955L5.30415 254.79C4.47337 254.032 4 252.959 4 251.835L4 8.00001Z"/>
+</clipPath></defs>
+</svg>

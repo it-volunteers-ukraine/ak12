@@ -26,7 +26,7 @@ export const FormRadioButton = ({ name, className, locale }: FormRadioButtonProp
   };
 
   return (
-    <div className={className}>
+    <div className={cn(className, "bg-transparent")}>
       <div className="mb-4">
         <p className="text-sm font-medium">{t.title}</p>
         <p className="text-xs text-gray-500">{t.description}</p>

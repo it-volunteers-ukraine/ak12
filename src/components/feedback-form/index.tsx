@@ -7,19 +7,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { FormInput } from "../input";
-import { SubmitIcon } from "../../../public/icons";
 import { PolicyButton } from "../policy-modal";
-import { FeedbackFormContent, getFeedbackFormSchema, IFeedbackForm, PrivacyPolicyContent } from "@/schemas";
+import { SubmitIcon } from "../../../public/icons";
+import { FeedbackFormContentWithMessage, getFeedbackFormSchema, IFeedbackForm, PrivacyPolicyContent } from "@/schemas";
 import { cn } from "@/utils";
 
 export const FeedbackForm = ({
   content,
-  privacyPolicyContent,
   isModal,
+  privacyPolicyContent,
 }: {
-  content: FeedbackFormContent;
-  privacyPolicyContent: PrivacyPolicyContent | null;
   isModal?: boolean;
+  content: FeedbackFormContentWithMessage;
+  privacyPolicyContent: PrivacyPolicyContent | null;
 }) => {
   const errorMessages = useTranslations("validation");
   const text = useTranslations("form");
@@ -46,6 +46,9 @@ export const FeedbackForm = ({
 
   const onSubmit: SubmitHandler<IFeedbackForm> = async (_data) => {
     // TODO: implement feedback form submission
+    // console.log(_data);
+    // console.log("Message from content:", content.message);
+
     reset();
   };
 
