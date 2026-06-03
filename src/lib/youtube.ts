@@ -10,7 +10,14 @@ export const getYouTubeVideoId = (url: string): string | null => {
       return pathname.slice(1).split("?")[0];
     }
 
-    if (hostname.includes("youtube.com")) {
+    const allowedYouTubeHosts = new Set([
+      "youtube.com",
+      "www.youtube.com",
+      "m.youtube.com",
+      "music.youtube.com",
+    ]);
+
+    if (allowedYouTubeHosts.has(hostname)) {
       return searchParams.get("v");
     }
 
