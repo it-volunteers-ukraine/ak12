@@ -40,10 +40,32 @@ const MOCK_LOCALE = "uk";
 const MAIN_TITLE = "ЖИТТЯ КОРПУСУ";
 const SECTION_DESCRIPTION = "Опис секції";
 const TRAINING_IMAGE_URL = "https://test.com/training.jpg";
-const TRAINING_GALLERY_ITEM = { text: "НАВЧАННЯ", secureUrl: TRAINING_IMAGE_URL, publicId: "training" };
-const EMPTY_GALLERY_ITEM = { text: "БЕЗ ФОТО", secureUrl: "", publicId: "" };
 
-const mockAboutContent = (gallery: typeof TRAINING_GALLERY_ITEM[] | typeof EMPTY_GALLERY_ITEM[]) => ({
+const TRAINING_GALLERY_ITEM = {
+  text: "НАВЧАННЯ",
+  secureUrl: TRAINING_IMAGE_URL,
+  publicId: "training",
+  mediaType: "image" as const,
+  videoUrl: "",
+};
+
+const EMPTY_GALLERY_ITEM = {
+  text: "БЕЗ ФОТО",
+  secureUrl: "",
+  publicId: "",
+  mediaType: "image" as const,
+  videoUrl: "",
+};
+
+const VIDEO_GALLERY_ITEM = {
+  text: "ВІДЕО",
+  secureUrl: "",
+  publicId: "",
+  mediaType: "video" as const,
+  videoUrl: "https://youtu.be/abc123",
+};
+
+const mockAboutContent = (gallery: any[]) => ({
   mainTitle: MAIN_TITLE,
   description: SECTION_DESCRIPTION,
   content: { gallery },
@@ -70,7 +92,7 @@ describe("LifeOfTheCorpsSection Component", () => {
     expect(screen.getByRole("img", { name: "img-0" })).toHaveAttribute("src", TRAINING_IMAGE_URL);
   });
 
-  it("should pass only gallery items with secureUrl to images", async () => {
+  it("should pass only image items with secureUrl to images when mediaType is image", async () => {
     (contentService.get as jest.Mock).mockResolvedValue(
       mockAboutContent([TRAINING_GALLERY_ITEM, EMPTY_GALLERY_ITEM]),
     );
@@ -84,8 +106,30 @@ describe("LifeOfTheCorpsSection Component", () => {
     expect(images).toEqual([
       {
         text: "НАВЧАННЯ",
-        id: "gallery-img-0",
+        id: "gallery-media-0",
         src: TRAINING_IMAGE_URL,
+        videoUrl: "",
+      },
+    ]);
+  });
+
+  it("should pass video items to images when mediaType is video", async () => {
+    (contentService.get as jest.Mock).mockResolvedValue(
+      mockAboutContent([VIDEO_GALLERY_ITEM]),
+    );
+
+    const Result = await LifeOfTheCorpsSection({ locale: MOCK_LOCALE });
+
+    render(Result!);
+
+    const images = JSON.parse(screen.getByTestId("images").textContent ?? "[]");
+
+    expect(images).toEqual([
+      {
+        text: "ВІДЕО",
+        id: "gallery-media-0",
+        src: "",
+        videoUrl: "https://youtu.be/abc123",
       },
     ]);
   });
