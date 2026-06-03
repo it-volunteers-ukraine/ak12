@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 
+import { getYouTubeVideoId } from "@/lib/youtube";
 import { getStyles } from "./styles";
 import { CornerFrame } from "@/components/cornerFrame";
 import { GalleryPlaceholder } from "../../../../../public/images";
@@ -21,28 +22,6 @@ interface ICard {
     type: "text" | "image";
   };
 }
-
-const getYouTubeVideoId = (url: string): string | null => {
-  if (!url) {
-    return null;
-  }
-
-  try {
-    const urlObj = new URL(url);
-
-    if (urlObj.hostname === "youtu.be") {
-      return urlObj.pathname.slice(1).split("?")[0];
-    }
-
-    if (urlObj.hostname.includes("youtube.com")) {
-      return urlObj.searchParams.get("v");
-    }
-
-    return null;
-  } catch {
-    return null;
-  }
-};
 
 const PlayIcon = () => (
   <div className="absolute inset-0 flex items-center justify-center">

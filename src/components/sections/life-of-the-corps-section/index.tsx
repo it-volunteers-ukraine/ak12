@@ -36,31 +36,50 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
 
   const mediaIndexByGalleryIndex = new Map<number, number>();
 
-  // images тепер включає і фото і відео (для Swiper)
+  // Будуємо список медіа для Swiper — враховуємо mediaType
   const images = fullGallery
     .map((item, idx) => ({ item, idx }))
-    .filter(({ item }) => Boolean(item?.secureUrl) || Boolean(item?.videoUrl))
+    .filter(({ item }) => {
+      if (!item) {
+        return false;
+      }
+
+      const mediaType = item.mediaType ?? "image";
+
+      if (mediaType === "video") {
+        return Boolean(item.videoUrl);
+      }
+
+      return Boolean(item.secureUrl);
+    })
     .map(({ item, idx }, mediaIndex) => {
       mediaIndexByGalleryIndex.set(idx, mediaIndex);
+
+      const mediaType = item?.mediaType ?? "image";
 
       return {
         text: item?.text,
         id: `gallery-media-${idx}`,
-        src: item?.secureUrl || "",
-        videoUrl: item?.videoUrl || "",
+        src: mediaType === "image" ? (item?.secureUrl || "") : "",
+        videoUrl: mediaType === "video" ? (item?.videoUrl || "") : "",
       };
     });
 
   const cells = fullGallery.slice(0, 9).flatMap((item, idx) => {
     const isImageOnly = idx >= 7;
     const mediaIndex = mediaIndexByGalleryIndex.get(idx) ?? -1;
+    const mediaType = item?.mediaType ?? "image";
+
+    // Визначаємо що показувати в клітинці гріду
+    const cellSrc = mediaType === "image" ? item?.secureUrl : undefined;
+    const cellVideoUrl = mediaType === "video" ? item?.videoUrl : undefined;
 
     if (isImageOnly) {
       return [
         {
           type: "image" as const,
-          src: item?.secureUrl,
-          videoUrl: item?.videoUrl,
+          src: cellSrc,
+          videoUrl: cellVideoUrl,
           id: `img-${idx}`,
           imageIndex: mediaIndex,
         },
@@ -71,8 +90,8 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
       { type: "text" as const, text: item?.text, id: `txt-${idx}` },
       {
         type: "image" as const,
-        src: item?.secureUrl,
-        videoUrl: item?.videoUrl,
+        src: cellSrc,
+        videoUrl: cellVideoUrl,
         id: `img-${idx}`,
         imageIndex: mediaIndex,
       },

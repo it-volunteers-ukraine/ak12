@@ -7,6 +7,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Navigation, Pagination } from "swiper/modules";
 
 import { Modal } from "@/components/modal";
+import { logger } from "@/lib/logger";
+import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 import { RenderCard } from "../card";
 import { CloseIcon } from "../../../../../public/icons";
@@ -46,27 +48,6 @@ const MOBILE_ORDER_OVERRIDES: Record<number, number> = {
 };
 
 const MOBILE_HIDDEN_INDEXES = new Set([0, 15]);
-
-const getYouTubeEmbedUrl = (url: string): string | null => {
-  if (!url) {
-    return null;
-  }
-
-  try {
-    const urlObj = new URL(url);
-    let videoId: string | null = null;
-
-    if (urlObj.hostname === "youtu.be") {
-      videoId = urlObj.pathname.slice(1).split("?")[0];
-    } else if (urlObj.hostname.includes("youtube.com")) {
-      videoId = urlObj.searchParams.get("v");
-    }
-
-    return videoId ? `https://www.youtube.com/embed/${videoId}` : null;
-  } catch {
-    return null;
-  }
-};
 
 export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGalleryClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -186,6 +167,10 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                       className="h-full w-full"
+                      onError={(e) => {
+                        logger.error({ embedUrl }, "Failed to load YouTube iframe");
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
                   ) : (
                     <Image

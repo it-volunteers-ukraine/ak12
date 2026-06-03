@@ -2,5 +2,6 @@ export const EMPTY_GALLERY_ITEM = {
   text: "",
   secureUrl: "",
   publicId: undefined,
-   videoUrl: "",
+  videoUrl: "",
+  mediaType: "image" as const,
 };
