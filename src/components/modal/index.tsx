@@ -21,7 +21,7 @@ const registerModal = (id: string) => {
 };
 
 const unregisterModal = (id: string) => {
-  const index = modalStack.lastIndexOf(id);
+  const index = modalStack.indexOf(id);
 
   if (index !== -1) {
     modalStack.splice(index, 1);
@@ -37,13 +37,19 @@ export const Modal = ({ isOpen, className, classNameOverlay, children, closeModa
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const closeModalRef = useRef(closeModal);
+
   const { isUnmounted } = useMounted({ isOpened: isOpen, duration: 300 });
 
   const modalId = useId();
 
-  useOutsideClick(() => closeModal(), modalRef);
+  useOutsideClick(closeModal, modalRef);
 
   const style = getStyles({ isOpen, classNameOverlay });
+
+  useEffect(() => {
+    closeModalRef.current = closeModal;
+  }, [closeModal]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -103,7 +109,7 @@ export const Modal = ({ isOpen, className, classNameOverlay, children, closeModa
         return;
       }
 
-      closeModal();
+      closeModalRef.current();
     };
 
     document.addEventListener("keydown", handleKeyDown);
@@ -111,7 +117,7 @@ export const Modal = ({ isOpen, className, classNameOverlay, children, closeModa
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isOpen, modalId, closeModal]);
+  }, [isOpen, modalId]);
 
   return (
     <Portal opened={isUnmounted}>
