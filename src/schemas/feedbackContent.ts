@@ -1,5 +1,6 @@
-import { ContactsType, SocialPlatform } from "@/constants";
 import { z } from "zod";
+
+import { ContactsType, SocialPlatform } from "@/constants";
 
 export const infoSchema = z
   .object({

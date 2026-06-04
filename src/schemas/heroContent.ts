@@ -8,7 +8,6 @@ export const heroContentSchema = z.object({
   title: REQUIRED_STRING,
   subtitle: REQUIRED_STRING,
   buttonTitle: REQUIRED_STRING,
-
   features: z
     .array(
       z.object({

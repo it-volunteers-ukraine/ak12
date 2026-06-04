@@ -27,7 +27,7 @@ const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) 
 
   const { data, error } = await supabaseServer
     .from("site_content")
-    .select("id, content")
+    .select("id, content, updated_at")
     .eq("section_key", sectionKey)
     .eq("is_active", true)
     .eq("language_id", languageRow.id)
@@ -44,7 +44,88 @@ const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) 
   return data;
 });
 
+const normalizeTimestampToIsoUtc = (value: string | Date): string | null => {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? null : value.toISOString();
+  }
+
+  const trimmed = value.trim();
+  const withT = trimmed.includes("T") ? trimmed : trimmed.replaceAll(" ", "T");
+
+  const normalized = /[zZ]|[+-]\d{2}:\d{2}$/.test(withT) ? withT : `${withT}Z`;
+
+  const date = new Date(normalized);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return date.toISOString();
+};
+
 export const contentService = {
+  async getBatchWithLatestTimestamps({
+    locale,
+    sections,
+  }: {
+    locale: Locale;
+    sections: SectionKey[];
+  }): Promise<Record<string, string>> {
+    if (!sections.length) {
+      return {};
+    }
+
+    try {
+      const languageRow = await languageService.ensure(locale);
+
+      const { data, error } = await supabaseServer
+        .from("site_content")
+        .select("section_key, updated_at")
+        .eq("is_active", true)
+        .eq("language_id", languageRow.id)
+        .in("section_key", sections)
+        .order("updated_at", { ascending: false });
+
+      if (error) {
+        logger.error({ locale, sections, error }, "Failed to fetch batch timestamps");
+
+        return {};
+      }
+
+      if (!data) {
+        return {};
+      }
+
+      const timestampMap: Record<string, string> = {};
+
+      for (const record of data) {
+        if (record.section_key && record.updated_at && !timestampMap[record.section_key]) {
+          const normalized = normalizeTimestampToIsoUtc(record.updated_at);
+
+          if (normalized !== null) {
+            timestampMap[record.section_key] = normalized;
+          }
+        }
+      }
+
+      return timestampMap;
+    } catch (error) {
+      logger.error({ locale, sections, error }, "Unexpected error in getBatchWithLatestTimestamps");
+
+      return {};
+    }
+  },
+
+  async getUpdatedAt({ locale, section }: { locale: Locale; section: SectionKey }): Promise<string | null> {
+    const record = await _findContentRecord(section, locale);
+
+    if (!record?.updated_at) {
+      return null;
+    }
+
+    return normalizeTimestampToIsoUtc(record.updated_at);
+  },
+
   async get<Schema extends z.ZodTypeAny>({
     locale,
     schema,
