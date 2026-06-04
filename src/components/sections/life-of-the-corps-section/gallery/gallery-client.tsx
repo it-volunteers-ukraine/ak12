@@ -7,6 +7,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Navigation, Pagination } from "swiper/modules";
 
 import { Modal } from "@/components/modal";
+import { logger } from "@/lib/logger";
+import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 import { RenderCard } from "../card";
 import { CloseIcon } from "../../../../../public/icons";
@@ -19,14 +21,18 @@ type Cell = {
   id: string;
   src?: string;
   text?: string;
+  videoUrl?: string;
   imageIndex?: number;
   type: "text" | "image";
 };
+
 type GalleryImage = {
   id: string;
   src: string;
   text?: string;
+  videoUrl?: string;
 };
+
 interface ILifeOfTheCorpsGalleryClientProps {
   cells: Cell[];
   images: GalleryImage[];
@@ -46,8 +52,6 @@ const MOBILE_HIDDEN_INDEXES = new Set([0, 15]);
 export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGalleryClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  // Index 15 is the last (16th) cell in the fixed grid of 9 basic elements.
-  // It is hidden by the design, since new elements from the CMS are only accessible within Swiper.
 
   const TABLET_HIDE_START_INDEX = cells.length - 1;
 
@@ -150,20 +154,38 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
             } as React.CSSProperties
           }
         >
-          {images.map((image, idx) => (
-            <SwiperSlide key={`${image.id}-${idx}`}>
-              <div className="relative flex h-[70vh] min-h-80 w-full items-center justify-center overflow-hidden rounded-md bg-black">
-                <Image
-                  fill
-                  src={image.src}
-                  className="object-contain"
-                  priority={idx === activeImageIndex}
-                  alt={image.text || `Image ${idx + 1}`}
-                  sizes="(max-width: 768px) 92vw, (max-width: 1200px) 80vw, 1200px"
-                />
-              </div>
-            </SwiperSlide>
-          ))}
+          {images.map((image, idx) => {
+            const embedUrl = image.videoUrl ? getYouTubeEmbedUrl(image.videoUrl) : null;
+
+            return (
+              <SwiperSlide key={`${image.id}-${idx}`}>
+                <div className="relative flex h-[70vh] min-h-80 w-full items-center justify-center overflow-hidden rounded-md bg-black">
+                  {embedUrl ? (
+                    <iframe
+                      src={embedUrl}
+                      title={image.text || `Video ${idx + 1}`}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="h-full w-full"
+                      onError={(e) => {
+                        logger.error({ embedUrl }, "Failed to load YouTube iframe");
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <Image
+                      fill
+                      src={image.src}
+                      className="object-contain"
+                      priority={idx === activeImageIndex}
+                      alt={image.text || `Image ${idx + 1}`}
+                      sizes="(max-width: 768px) 92vw, (max-width: 1200px) 80vw, 1200px"
+                    />
+                  )}
+                </div>
+              </SwiperSlide>
+            );
+          })}
         </Swiper>
       </Modal>
     </>

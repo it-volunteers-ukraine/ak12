@@ -170,6 +170,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
           ...enItem,
           secureUrl: ukGalleryItem?.secureUrl ?? undefined,
           publicId: ukGalleryItem?.publicId ?? undefined,
+           videoUrl: ukGalleryItem?.videoUrl ?? undefined,
         };
       });
 
@@ -264,7 +265,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
         schema={adminSchema}
         initialValues={data}
         onSubmit={onFormSubmit}
-        key={JSON.stringify(data.uk.content.gallery.map((i) => i?.secureUrl))}
+        key={JSON.stringify(data.uk.content.gallery.map((i) => `${i?.secureUrl ?? ""}|${i?.videoUrl ?? ""}`))}
       >
         {(methods) => {
           formMethodsRef.current = methods;

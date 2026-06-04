@@ -51,20 +51,16 @@ export const createAboutFormBuilderConfig = (galleryLength: number): FormBuilder
       },
       fields: [
         {
-          id: `gallery-image-${index}`,
-          type: "image",
-          locales: ["uk"],
-
-          props: {
-            imageIndex: index,
-            hideImageLabel: true,
-          },
+          id: `gallery-media-${index}`,
+          type: "media-selector" as const,
+          locales: ["uk"] as const,
+          props: { imageIndex: index, videoIndex: index },
+          name: `content.gallery.${index}.__media`,
         },
         {
           name: `content.gallery.${index}.text`,
           type: "text",
           required: true,
-
           label: {
             uk: isFirst ? "Заголовок" : "Опис",
             en: isFirst ? "Заголовок" : "Опис",
@@ -83,17 +79,13 @@ export const createAboutFormBuilderConfig = (galleryLength: number): FormBuilder
       group: "about-other-gallery",
       localeLayout: "combined",
       hideLocaleBadge: true,
-
       fields: [
         {
-          id: `gallery-image-${index}`,
-          type: "image",
-          locales: ["uk"],
-          props: {
-            imageIndex: index,
-            hideImageLabel: true,
-            imageFrameClassName: "h-[220px]",
-          },
+          id: `gallery-media-${index}`,
+          type: "media-selector" as const,
+          locales: ["uk"] as const,
+          props: { imageIndex: index, videoIndex: index },
+          name: `content.gallery.${index}.__media`,
         },
       ],
     };

@@ -1,7 +1,8 @@
 import { ComponentType } from "react";
 
 export type Locale = "uk" | "en";
-export type FieldType = "text" | "textarea" | "number" | "image" | "custom";
+export type FieldType = "text" | "textarea" | "number" | "image" | "custom" | "video" | "media-selector";
+
 interface FieldConfigBase {
   id?: string;
   type: FieldType;
@@ -19,12 +20,22 @@ interface ImageFieldConfig extends Omit<FieldConfigBase, "type"> {
   name?: string;
 }
 
-interface NonImageFieldConfig extends Omit<FieldConfigBase, "type"> {
-  name: string;
-  type: Exclude<FieldType, "image">;
+interface VideoFieldConfig extends Omit<FieldConfigBase, "type"> {
+  type: "video";
+  name?: string;
 }
 
-export type FieldConfig = ImageFieldConfig | NonImageFieldConfig;
+interface MediaSelectorFieldConfig extends Omit<FieldConfigBase, "type"> {
+  type: "media-selector";
+  name: string;
+}
+
+interface NonImageFieldConfig extends Omit<FieldConfigBase, "type"> {
+  name: string;
+  type: Exclude<FieldType, "image" | "video" | "media-selector">;
+}
+
+export type FieldConfig = ImageFieldConfig | VideoFieldConfig | MediaSelectorFieldConfig | NonImageFieldConfig;
 
 export interface SectionConfig {
   id: string;
@@ -36,6 +47,7 @@ export interface SectionConfig {
   localeTitles?: Partial<Record<Locale, string>>;
   localeLayout?: "split" | "combined" | "by-field-2col" | "by-locale-2col" | "gallery-3col";
 }
+
 export interface FormBuilderConfig {
   id: string;
   className?: string;
@@ -64,4 +76,5 @@ export interface FormBuilderConfig {
     };
   };
 }
+
 export const LOCALES: Locale[] = ["uk", "en"];
