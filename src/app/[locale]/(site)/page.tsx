@@ -1,13 +1,6 @@
 import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
-import {
-  contract1824Schema,
-  feedbackContentSchema,
-  mobilizationSchema,
-  privacyPolicySchema,
-  transferSchema,
-} from "@/schemas";
 import { AboutSection } from "@/components/about";
 import { DEFAULT_TYPE } from "@/constants/vacancies";
 import { VacanciesSection } from "@/components/vacancies";
@@ -17,6 +10,13 @@ import { FeedbackSection } from "@/components/feedback-section";
 import { MarqueeLine, SubdivisionsSection } from "@/components";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
 import { HeroSection, LifeOfTheCorpsSection } from "@/components/sections";
+import {
+  transferSchema,
+  contract1824Schema,
+  mobilizationSchema,
+  privacyPolicySchema,
+  feedbackContentSchema,
+} from "@/schemas";
 
 export interface SearchParamsProps {
   type?: VacancyType;
@@ -79,7 +79,7 @@ export default async function Home({
 
   return (
     <>
-      <main>
+      <main className="bg-section">
         <HeroSection locale={locale} />
         <AboutSection locale={locale} />
         <LifeOfTheCorpsSection locale={locale} />
