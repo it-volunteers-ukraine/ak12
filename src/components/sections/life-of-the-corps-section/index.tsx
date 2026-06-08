@@ -1,12 +1,9 @@
-import Image from "next/image";
-
 import { Locale } from "@/types";
 import { logger } from "@/lib/logger";
 import { aboutUsSchema } from "@/schemas";
 import { SECTION_KEYS } from "@/constants/section-key";
 import { contentService } from "@/lib/content/content.service";
 
-import { Background } from "../../../../public/images";
 import { LifeOfTheCorpsGalleryClient } from "./gallery/gallery-client";
 
 interface ILifeOfTheCorpsSectionProps {
@@ -99,16 +96,7 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
   });
 
   return (
-    <section className="bg-back relative w-full overflow-hidden">
-      <Image
-        fill
-        priority
-        sizes="100vw"
-        src={Background}
-        alt="Background"
-        className="absolute inset-0 z-0 object-cover"
-      />
-      <div className="absolute inset-0 z-1 bg-linear-to-r from-black/85 via-black/55 to-transparent" />
+    <section className="bg-surface-main w-full overflow-hidden">
       <LifeOfTheCorpsGalleryClient cells={cells} images={images} />
     </section>
   );

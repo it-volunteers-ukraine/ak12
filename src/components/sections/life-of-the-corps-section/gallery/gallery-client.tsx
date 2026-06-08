@@ -12,6 +12,7 @@ import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 import { RenderCard } from "../card";
 import { CloseIcon } from "../../../../../public/icons";
+import { Background } from "../../../../../public/images";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -97,7 +98,16 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
   const shouldHideOnMobile = (index: number) => MOBILE_HIDDEN_INDEXES.has(index);
 
   return (
-    <div className="container-app">
+    <div className="container-app relative">
+      <Image
+        fill
+        priority
+        sizes="100vw"
+        src={Background}
+        alt="Background"
+        className="absolute inset-0 z-0 object-cover"
+      />
+      <div className="absolute inset-0 z-1 bg-linear-to-r from-black/85 via-black/55 to-transparent" />
       <h2 className="font-ermilov text-accent relative z-10 mb-4 flex justify-center text-[40px] uppercase md:hidden">
         {cells[0]?.text}
       </h2>
