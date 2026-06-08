@@ -1,12 +1,1 @@
-<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clipPath="url(#info-clip)">
-              <path d="M14 15V17H10V15H11V10H10V9H13V15H14Z" fill="white"/>
-              <path d="M13 6H11V8H13V6Z" fill="white"/>
-              <path d="M22 9V7H21V5H20V4H19V3H17V2H15V1H9V2H7V3H5V4H4V5H3V7H2V9H1V15H2V17H3V19H4V20H5V21H7V22H9V23H15V22H17V21H19V20H20V19H21V17H22V15H23V9H22ZM21 15H20V17H19V18H18V19H17V20H15V21H9V20H7V19H6V18H5V17H4V15H3V9H4V7H5V6H6V5H7V4H9V3H15V4H17V5H18V6H19V7H20V9H21V15Z" fill="white"/>
-            </g>
-            <defs>
-              <clipPath id="info-clip">
-                <rect width="24" height="24" fill="white"/>
-              </clipPath>
-            </defs>
-          </svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info-icon lucide-info"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>

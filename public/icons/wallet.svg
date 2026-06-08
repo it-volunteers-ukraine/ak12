@@ -1,3 +1,1 @@
-<svg width="100%" height="100%" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M14.668 5.33301V4.66634H2.66797V3.33301H14.668V1.99967H14.0013V1.33301H1.33464V1.99967H0.667969V13.9997H1.33464V14.6663H14.668V13.9997H15.3346V5.33301H14.668ZM14.0013 9.99967H13.3346V10.6663H12.0013V9.99967H11.3346V8.66634H12.0013V7.99967H13.3346V8.66634H14.0013V9.99967Z" fill="currentColor"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet-icon lucide-wallet"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
