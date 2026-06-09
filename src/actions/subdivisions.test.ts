@@ -68,196 +68,6 @@ const MOCK_CREATE_PAYLOAD = {
   languageCode: "uk" as const,
 };
 
-describe("subdivisions actions", () => {
-  beforeEach(() => {
-    jest.resetModules();
-    jest.clearAllMocks();
-  });
-
-  describe("getSubdivisions", () => {
-    it("returns mapped subdivisions for locale", async () => {
-      const languageChain = createLanguageChain();
-      const subdivisionChain = createSubdivisionChain("order", [MOCK_SUBDIVISION_ROW]);
-
-      (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-        switch (table) {
-          case "language":
-            return languageChain;
-          case "subdivision":
-            return subdivisionChain;
-          default:
-            return {} as any;
-        }
-      });
-
-      const result = await getSubdivisions("uk" as any);
-
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe(MOCK_SUBDIVISION_ROW.id);
-      expect(result[0].imageUrl).toEqual(MOCK_SUBDIVISION_ROW.image_url);
-    });
-
-    it("uses cached language id on second call", async () => {
-      const languageChain = createLanguageChain();
-      const subdivisionChain = createSubdivisionChain("order", [MOCK_SUBDIVISION_ROW]);
-
-      const fromMock = jest.fn((table: string) => {
-        if (table === "language") {
-          return languageChain;
-        }
-
-        return subdivisionChain;
-      });
-
-      (supabaseServer.from as jest.Mock).mockImplementation(fromMock);
-
-      await getSubdivisions("en" as any);
-      await getSubdivisions("en" as any);
-
-      expect(fromMock).toHaveBeenCalledWith("language");
-
-      const languageCalls = fromMock.mock.calls.filter(([table]) => table === "language");
-
-      expect(languageCalls).toHaveLength(1);
-    });
-
-    it("handles invalid image fields safely", async () => {
-      const languageChain = createLanguageChain();
-
-      const badRow = {
-        ...MOCK_SUBDIVISION_ROW,
-        image_url: "invalid-json",
-        hover_image_url: "invalid-json",
-      };
-
-      const subdivisionChain = createSubdivisionChain("order", [badRow]);
-
-      (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-        if (table === "language") {
-          return languageChain;
-        }
-
-        return subdivisionChain;
-      });
-
-      const result = await getSubdivisions("uk" as any);
-
-      expect(result[0].imageUrl).toBeNull();
-      expect(result[0].hoverImageUrl).toBeNull();
-    });
-
-    it("throws error when subdivision query fails", async () => {
-      const languageChain = createLanguageChain();
-      const subdivisionChain = {
-        select: jest.fn().mockReturnThis(),
-        eq: jest.fn().mockReturnThis(),
-        order: jest.fn().mockResolvedValue({ data: null, error: { message: "DB Error" } }),
-      };
-
-      (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-        if (table === "language") {
-          return languageChain;
-        }
-
-        return subdivisionChain;
-      });
-
-      await expect(getSubdivisions("uk" as any)).rejects.toThrow("Failed to load subdivisions for uk: DB Error");
-    });
-  });
-
-  describe("createSubdivision", () => {
-    it("inserts and calls revalidatePath", async () => {
-      const languageChain = createLanguageChain();
-      const insertChain: any = {
-        insert: jest.fn().mockReturnThis(),
-        select: jest.fn().mockReturnThis(),
-        single: jest.fn().mockResolvedValue({ data: MOCK_INSERTED_ROW, error: null }),
-      };
-
-      (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-        switch (table) {
-          case "language":
-            return languageChain;
-          case "subdivision":
-            return insertChain;
-          default:
-            return {} as any;
-        }
-      });
-
-      const created = await createSubdivision(MOCK_CREATE_PAYLOAD as any);
-
-      expect(created.id).toBe(MOCK_INSERTED_ROW.id);
-      expect(revalidatePath).toHaveBeenCalledWith("/");
-    });
-
-    it("throws when languageId is missing on create", async () => {
-      const languageChain = {
-        select: jest.fn().mockReturnThis(),
-        eq: jest.fn().mockReturnThis(),
-
-        single: jest.fn().mockResolvedValue({ data: null, error: { message: "Language row not found" } }),
-      };
-
-      (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-        if (table === "language") {
-          return languageChain;
-        }
-
-        return {
-          insert: jest.fn().mockReturnThis(),
-          select: jest.fn().mockReturnThis(),
-          single: jest.fn().mockResolvedValue({ data: null, error: null }),
-        };
-      });
-
-      const payloadWithUncachedLocale = {
-        ...MOCK_CREATE_PAYLOAD,
-        languageCode: "fr" as const,
-      };
-
-      await expect(createSubdivision(payloadWithUncachedLocale as any)).rejects.toThrow(/Language not found/);
-    });
-  });
-
-  describe("updateSubdivisionsOrder", () => {
-    it("updates items and calls revalidatePath", async () => {
-      const updateResult = Promise.resolve({ error: null });
-
-      (supabaseServer.from as jest.Mock).mockImplementation(() => ({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockReturnValue(updateResult),
-        }),
-      }));
-
-      await updateSubdivisionsOrder([
-        { id: "a", sortOrder: 1 },
-        { id: "b", sortOrder: 2 },
-      ]);
-
-      expect(revalidatePath).toHaveBeenCalledWith("/");
-    });
-
-    it("throws when updateSubdivisionsOrder fails", async () => {
-      (supabaseServer.from as jest.Mock).mockImplementation(() => ({
-        update: jest.fn().mockReturnValue({
-          eq: jest.fn().mockResolvedValue({
-            error: { message: "fail" },
-          }),
-        }),
-      }));
-
-      await expect(
-        updateSubdivisionsOrder([
-          { id: "a", sortOrder: 1 },
-          { id: "b", sortOrder: 2 },
-        ]),
-      ).rejects.toThrow();
-    });
-  });
-});
-
 function createLanguageChain(returnData: any = { id: MOCK_LANGUAGE_ID }) {
   return {
     select: jest.fn().mockReturnThis(),
@@ -280,6 +90,185 @@ function createSubdivisionChain(method: "order" | "single", data: any) {
   return chain;
 }
 
+function mockSupabaseFrom(languageChain: any, subdivisionChain?: any, insertChain?: any) {
+  (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
+    switch (table) {
+      case "language":
+        return languageChain;
+      case "subdivision":
+        return subdivisionChain ?? insertChain;
+      default:
+        return {} as any;
+    }
+  });
+}
+
+function mockSupabaseSingleChain(chain: any) {
+  (supabaseServer.from as jest.Mock).mockReturnValue(chain);
+}
+
+describe("subdivisions actions", () => {
+  beforeEach(() => {
+    jest.resetModules();
+    jest.clearAllMocks();
+  });
+
+  describe("getSubdivisions", () => {
+    it("returns mapped subdivisions for locale", async () => {
+      const languageChain = createLanguageChain();
+      const subdivisionChain = createSubdivisionChain("order", [MOCK_SUBDIVISION_ROW]);
+
+      mockSupabaseFrom(languageChain, subdivisionChain);
+
+      const result = await getSubdivisions("uk" as any);
+
+      expect(result).toHaveLength(1);
+      expect(result[0].id).toBe(MOCK_SUBDIVISION_ROW.id);
+      expect(result[0].imageUrl).toEqual(MOCK_SUBDIVISION_ROW.image_url);
+    });
+
+    it("uses cached language id on second call", async () => {
+      await jest.isolateModulesAsync(async () => {
+        const languageChain = createLanguageChain();
+        const subdivisionChain = createSubdivisionChain("order", [MOCK_SUBDIVISION_ROW]);
+
+        const fromMock = jest.fn((table: string) => {
+          if (table === "language") {
+            return languageChain;
+          }
+
+          return subdivisionChain;
+        });
+
+        jest.doMock("@/lib/supabase-server", () => ({
+          supabaseServer: {
+            from: fromMock,
+          },
+        }));
+
+        jest.doMock("next/cache", () => ({
+          revalidatePath: jest.fn(),
+        }));
+
+        const { getSubdivisions } = require("@/actions/subdivisions");
+
+        await getSubdivisions("en" as any);
+        await getSubdivisions("en" as any);
+
+        const languageCalls = fromMock.mock.calls.filter(([t]) => t === "language");
+
+        expect(languageCalls).toHaveLength(1);
+      });
+    });
+
+    it("handles invalid image fields safely", async () => {
+      const languageChain = createLanguageChain();
+
+      const badRow = {
+        ...MOCK_SUBDIVISION_ROW,
+        image_url: "invalid-json",
+        hover_image_url: "invalid-json",
+      };
+
+      const subdivisionChain = createSubdivisionChain("order", [badRow]);
+
+      mockSupabaseFrom(languageChain, subdivisionChain);
+
+      const result = await getSubdivisions("uk" as any);
+
+      expect(result[0].imageUrl).toBeNull();
+      expect(result[0].hoverImageUrl).toBeNull();
+    });
+
+    it("throws error when subdivision query fails", async () => {
+      const languageChain = createLanguageChain();
+      const subdivisionChain = {
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        order: jest.fn().mockResolvedValue({ data: null, error: { message: "DB Error" } }),
+      };
+
+      mockSupabaseFrom(languageChain, subdivisionChain);
+
+      await expect(getSubdivisions("uk" as any)).rejects.toThrow("Failed to load subdivisions for uk: DB Error");
+    });
+  });
+
+  describe("createSubdivision", () => {
+    it("inserts and calls revalidatePath", async () => {
+      const languageChain = createLanguageChain();
+      const insertChain: any = {
+        insert: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({ data: MOCK_INSERTED_ROW, error: null }),
+      };
+
+      mockSupabaseFrom(languageChain, undefined, insertChain);
+
+      const created = await createSubdivision(MOCK_CREATE_PAYLOAD as any);
+
+      expect(created.id).toBe(MOCK_INSERTED_ROW.id);
+      expect(revalidatePath).toHaveBeenCalledWith("/");
+    });
+
+    it("throws when languageId is missing on create", async () => {
+      const languageChain = {
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+
+        single: jest.fn().mockResolvedValue({ data: null, error: { message: "Language row not found" } }),
+      };
+
+      const insertChain = {
+        insert: jest.fn().mockReturnThis(),
+        select: jest.fn().mockReturnThis(),
+        single: jest.fn().mockResolvedValue({ data: null, error: null }),
+      };
+
+      mockSupabaseFrom(languageChain, undefined, insertChain);
+
+      const payloadWithUncachedLocale = {
+        ...MOCK_CREATE_PAYLOAD,
+        languageCode: "fr" as const,
+      };
+
+      await expect(createSubdivision(payloadWithUncachedLocale as any)).rejects.toThrow(/Language not found/);
+    });
+  });
+
+  describe("updateSubdivisionsOrder", () => {
+    it("updates items and calls revalidatePath", async () => {
+      (supabaseServer.from as jest.Mock).mockReturnValue({
+        update: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockResolvedValue({ error: null }),
+      });
+
+      await updateSubdivisionsOrder([
+        { id: "a", sortOrder: 1 },
+        { id: "b", sortOrder: 2 },
+      ]);
+
+      expect(revalidatePath).toHaveBeenCalledWith("/");
+    });
+
+    it("throws when updateSubdivisionsOrder fails", async () => {
+      (supabaseServer.from as jest.Mock).mockReturnValue({
+        update: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockResolvedValue({
+          error: { message: "fail" },
+        }),
+      });
+
+      await expect(
+        updateSubdivisionsOrder([
+          { id: "a", sortOrder: 1 },
+          { id: "b", sortOrder: 2 },
+        ]),
+      ).rejects.toThrow();
+    });
+  });
+});
+
 describe("getSubdivisionBySlug", () => {
   it("returns subdivision by slug", async () => {
     const languageChain = createLanguageChain();
@@ -293,16 +282,7 @@ describe("getSubdivisionBySlug", () => {
       }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-      if (table === "subdivision") {
-        return subdivisionChain;
-      }
-
-      return {} as any;
-    });
+    mockSupabaseFrom(languageChain, subdivisionChain);
 
     const result = await getSubdivisionBySlug("slug-1", "uk" as any);
 
@@ -322,16 +302,7 @@ describe("getSubdivisionBySlug", () => {
       }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-      if (table === "subdivision") {
-        return subdivisionChain;
-      }
-
-      return {} as any;
-    });
+    mockSupabaseFrom(languageChain, subdivisionChain);
 
     const result = await getSubdivisionBySlug("missing", "uk" as any);
 
@@ -350,13 +321,7 @@ describe("getSubdivisionBySlug", () => {
       }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-
-      return subdivisionChain;
-    });
+    mockSupabaseFrom(languageChain, subdivisionChain);
 
     const result = await getSubdivisionBySlug("slug", "uk" as any);
 
@@ -370,16 +335,7 @@ describe("getAllSubdivisions", () => {
 
     const subdivisionChain = createSubdivisionChain("order", [MOCK_SUBDIVISION_ROW]);
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-      if (table === "subdivision") {
-        return subdivisionChain;
-      }
-
-      return {} as any;
-    });
+    mockSupabaseFrom(languageChain, subdivisionChain);
 
     const result = await getAllSubdivisions("uk" as any);
 
@@ -394,13 +350,7 @@ describe("getAllSubdivisions", () => {
       order: jest.fn().mockResolvedValue({ data: null, error: { message: "Fetch All Error" } }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-
-      return subdivisionChain;
-    });
+    mockSupabaseFrom(languageChain, subdivisionChain);
 
     await expect(getAllSubdivisions("uk" as any)).rejects.toThrow(
       "Failed to load all subdivisions for uk: Fetch All Error",
@@ -410,13 +360,7 @@ describe("getAllSubdivisions", () => {
   it("returns empty array when language not found", async () => {
     const languageChain = createLanguageChain(null);
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-
-      return {} as any;
-    });
+    mockSupabaseFrom(languageChain);
 
     const result = await getAllSubdivisions("xx" as any);
 
@@ -438,16 +382,7 @@ describe("updateSubdivision", () => {
       }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-      if (table === "subdivision") {
-        return updateChain;
-      }
-
-      return {} as any;
-    });
+    mockSupabaseFrom(languageChain, updateChain);
 
     const result = await updateSubdivision("s1", {
       name: "Updated",
@@ -470,16 +405,7 @@ describe("updateSubdivision", () => {
       }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-      if (table === "subdivision") {
-        return updateChain;
-      }
-
-      return {} as any;
-    });
+    mockSupabaseFrom(languageChain, updateChain);
 
     await expect(updateSubdivision("s1", { name: "x" })).rejects.toThrow("Failed to update subdivision");
   });
@@ -497,13 +423,7 @@ describe("updateSubdivision", () => {
       }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
-      if (table === "language") {
-        return languageChain;
-      }
-
-      return updateChain;
-    });
+    mockSupabaseFrom(languageChain, updateChain);
 
     await updateSubdivision("s1", {});
 
@@ -533,7 +453,7 @@ describe("updateSubdivision", () => {
       single: jest.fn().mockResolvedValue({ data: MOCK_SUBDIVISION_ROW, error: null }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation(() => updateChain);
+    mockSupabaseSingleChain(updateChain);
 
     const result = await updateSubdivision("s1", fullPayload as any);
 
@@ -549,7 +469,7 @@ describe("updateSubdivision", () => {
       single: jest.fn().mockResolvedValue({ data: null, error: { message: "Update DB Error" } }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation(() => updateChain);
+    mockSupabaseSingleChain(updateChain);
 
     await expect(updateSubdivision("s1", { name: "Test" })).rejects.toThrow(
       "Failed to update subdivision s1: Update DB Error",
@@ -564,7 +484,7 @@ describe("deleteSubdivision", () => {
       eq: jest.fn().mockResolvedValue({ error: null }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation(() => deleteChain);
+    mockSupabaseSingleChain(deleteChain);
 
     await deleteSubdivision("s1");
 
@@ -579,7 +499,7 @@ describe("deleteSubdivision", () => {
       }),
     };
 
-    (supabaseServer.from as jest.Mock).mockImplementation(() => deleteChain);
+    mockSupabaseSingleChain(deleteChain);
 
     await expect(deleteSubdivision("s1")).rejects.toThrow("Failed to delete subdivision s1");
   });
