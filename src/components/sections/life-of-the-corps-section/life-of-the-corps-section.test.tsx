@@ -18,7 +18,11 @@ jest.mock("@/lib/logger", () => ({
 
 jest.mock("next/image", () => ({
   __esModule: true,
-  default: ({ src, alt, ...props }: any) => <img src={typeof src === "string" ? src : src?.src} alt={alt} {...props} />,
+  default: ({ src, alt, fill, priority, ...props }: any) => (
+    <picture>
+      <img src={typeof src === "string" ? src : src?.src} alt={alt} {...props} />
+    </picture>
+  ),
 }));
 
 jest.mock("@/components/sections/life-of-the-corps-section/gallery/gallery-client", () => ({
@@ -29,7 +33,11 @@ jest.mock("@/components/sections/life-of-the-corps-section/gallery/gallery-clien
       {cells.map((cell: any) => (
         <div key={cell.id}>
           {cell.text && <span>{cell.text}</span>}
-          {cell.src && <img src={cell.src} alt={cell.id} />}
+          {cell.src && (
+            <picture>
+              <img src={cell.src} alt={cell.id} />
+            </picture>
+          )}
         </div>
       ))}
     </div>
@@ -93,9 +101,7 @@ describe("LifeOfTheCorpsSection Component", () => {
   });
 
   it("should pass only image items with secureUrl to images when mediaType is image", async () => {
-    (contentService.get as jest.Mock).mockResolvedValue(
-      mockAboutContent([TRAINING_GALLERY_ITEM, EMPTY_GALLERY_ITEM]),
-    );
+    (contentService.get as jest.Mock).mockResolvedValue(mockAboutContent([TRAINING_GALLERY_ITEM, EMPTY_GALLERY_ITEM]));
 
     const Result = await LifeOfTheCorpsSection({ locale: MOCK_LOCALE });
 
@@ -114,9 +120,7 @@ describe("LifeOfTheCorpsSection Component", () => {
   });
 
   it("should pass video items to images when mediaType is video", async () => {
-    (contentService.get as jest.Mock).mockResolvedValue(
-      mockAboutContent([VIDEO_GALLERY_ITEM]),
-    );
+    (contentService.get as jest.Mock).mockResolvedValue(mockAboutContent([VIDEO_GALLERY_ITEM]));
 
     const Result = await LifeOfTheCorpsSection({ locale: MOCK_LOCALE });
 
