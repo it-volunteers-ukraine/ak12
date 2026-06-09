@@ -27,23 +27,13 @@ beforeEach(() => {
 });
 
 describe("logout", () => {
-  it("should delete session and redirect to provided locale", async () => {
-    const formData = makeFormData({
-      locale: "en",
-    });
-
+  it.each([
+    ["en locale", makeFormData({ locale: "en" }), "/en"],
+    ["default locale", new FormData(), "/uk"],
+  ])("should redirect using %s", async (_, formData, expectedRedirect) => {
     await expect(logout(formData)).rejects.toThrow("NEXT_REDIRECT");
 
     expect(deleteSession).toHaveBeenCalledTimes(1);
-    expect(redirect).toHaveBeenCalledWith("/en");
-  });
-
-  it("should default to uk locale when locale is not provided", async () => {
-    const formData = new FormData();
-
-    await expect(logout(formData)).rejects.toThrow("NEXT_REDIRECT");
-
-    expect(deleteSession).toHaveBeenCalledTimes(1);
-    expect(redirect).toHaveBeenCalledWith("/uk");
+    expect(redirect).toHaveBeenCalledWith(expectedRedirect);
   });
 });
