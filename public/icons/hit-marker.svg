@@ -1,8 +1,1 @@
-<svg width="100%" height="100%" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M5.81818 13.818V15.9998H0.727273V15.2725H0V10.1816H2.18182V13.818H5.81818Z" fill="currentColor"/>
-<path d="M5.81818 0V2.18182H2.18182V5.81818H0V0.727273H0.727273V0H5.81818Z" fill="currentColor"/>
-<path d="M16.0018 10.1816V15.2725H15.2745V15.9998H10.1836V13.818H13.82V10.1816H16.0018Z" fill="currentColor"/>
-<path d="M16.0018 0.727273V5.81818H13.82V2.18182H10.1836V0H15.2745V0.727273H16.0018Z" fill="currentColor"/>
-<rect x="6.54688" y="7.70996" width="2.90909" height="0.581818" fill="currentColor"/>
-<rect x="8.29297" y="6.5459" width="2.90909" height="0.581818" transform="rotate(90 8.29297 6.5459)" fill="currentColor"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scan-icon lucide-scan"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M5 12h14"/><path d="M12 5v14"/></svg>

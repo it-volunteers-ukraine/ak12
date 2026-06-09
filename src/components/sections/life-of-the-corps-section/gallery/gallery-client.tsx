@@ -6,12 +6,13 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Navigation, Pagination } from "swiper/modules";
 
-import { Modal } from "@/components/modal";
 import { logger } from "@/lib/logger";
+import { Modal } from "@/components/modal";
 import { getYouTubeEmbedUrl } from "@/lib/youtube";
 
 import { RenderCard } from "../card";
 import { CloseIcon } from "../../../../../public/icons";
+import { Background } from "../../../../../public/images";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -25,14 +26,12 @@ type Cell = {
   imageIndex?: number;
   type: "text" | "image";
 };
-
 type GalleryImage = {
   id: string;
   src: string;
   text?: string;
   videoUrl?: string;
 };
-
 interface ILifeOfTheCorpsGalleryClientProps {
   cells: Cell[];
   images: GalleryImage[];
@@ -99,7 +98,16 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
   const shouldHideOnMobile = (index: number) => MOBILE_HIDDEN_INDEXES.has(index);
 
   return (
-    <>
+    <div className="container-app relative">
+      <Image
+        fill
+        priority
+        sizes="100vw"
+        src={Background}
+        alt="Background"
+        className="absolute inset-0 z-0 object-cover"
+      />
+      <div className="absolute inset-0 z-1 bg-linear-to-r from-black/85 via-black/55 to-transparent" />
       <h2 className="font-ermilov text-accent relative z-10 mb-4 flex justify-center text-[40px] uppercase md:hidden">
         {cells[0]?.text}
       </h2>
@@ -188,6 +196,6 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
           })}
         </Swiper>
       </Modal>
-    </>
+    </div>
   );
 };

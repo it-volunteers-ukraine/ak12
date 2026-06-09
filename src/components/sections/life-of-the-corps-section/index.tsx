@@ -1,10 +1,7 @@
 "use client";
 
-import Image from "next/image";
-
 import { AboutUsContent } from "@/schemas";
 
-import { Background } from "../../../../public/images";
 import { LifeOfTheCorpsGalleryClient } from "./gallery/gallery-client";
 import { useRef } from "react";
 import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
@@ -45,8 +42,8 @@ export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | n
       return {
         text: item?.text,
         id: `gallery-media-${idx}`,
-        src: mediaType === "image" ? (item?.secureUrl || "") : "",
-        videoUrl: mediaType === "video" ? (item?.videoUrl || "") : "",
+        src: mediaType === "image" ? item?.secureUrl || "" : "",
+        videoUrl: mediaType === "video" ? item?.videoUrl || "" : "",
       };
     });
 
@@ -91,15 +88,6 @@ export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | n
         top,
       }}
     >
-      <Image
-        fill
-        priority
-        sizes="100vw"
-        src={Background}
-        alt="Background"
-        className="absolute inset-0 z-0 object-cover"
-      />
-      <div className="absolute inset-0 z-1 bg-linear-to-r from-black/85 via-black/55 to-transparent" />
       <LifeOfTheCorpsGalleryClient cells={cells} images={images} />
     </section>
   );
