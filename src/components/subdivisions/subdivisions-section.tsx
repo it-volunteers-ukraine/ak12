@@ -1,81 +1,51 @@
-import { getTranslations } from "next-intl/server";
-import { getSubdivisions } from "@/actions/subdivisions";
+"use client";
+
+import { useTranslations } from "next-intl";
+
+import { Subdivision } from "@/types";
 import { SubdivisionCard } from "./subdivision-card";
-import { Locale } from "@/types";
-import { logger } from "@/lib/logger";
+import { useRef } from "react";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
-interface SubdivisionsSectionProps {
-  locale: Locale;
-}
+export const SubdivisionsSection = ({ content }: { content: Subdivision[] | null }) => {
+  const t = useTranslations("subdivisions");
 
-export const SubdivisionsSection = async ({ locale }: SubdivisionsSectionProps) => {
-   let t;
-  let subdivisions;
+  const sectionRef = useRef<HTMLElement>(null);
+  const top = useTopFromViewportMinusContent(sectionRef);
 
-  try {
-    t = await getTranslations({ locale, namespace: "subdivisions" });
-    subdivisions = await getSubdivisions(locale);
-  } catch (error) {
-    logger.error(
-      { error, locale },
-      "Failed to load SubdivisionsSection content"
-    );
-
-    return null;
-  }
-
-  if (!subdivisions.length) {
+  if (!content?.length) {
     return null;
   }
 
   return (
     <section
+      ref={sectionRef}
       id="subdivisions"
-      className="bg-surface-main overflow-hidden"
+      style={{
+        top,
+      }}
+      className="bg-surface-main sticky overflow-hidden"
     >
       <div className="container-app">
-
-        <h2 className="
-          font-ermilov text-accent text-center font-bold
-          text-[32px] leading-[125%]
-          tablet:text-[40px] tablet:leading-[120%]
-          desktop:text-[56px] desktop:leading-[114%]
-        ">
+        <h2 className="font-ermilov text-accent tablet:text-[40px] tablet:leading-[120%] desktop:text-[56px] desktop:leading-[114%] text-center text-[32px] leading-[125%] font-bold">
           {t("title")}
         </h2>
 
-        <p className="
-          font-road-ui text-warm-gray text-center text-[14px] leading-[143%] font-normal
-          mt-2 mb-4
-          desktop:mb-16
-        ">
+        <p className="font-road-ui text-warm-gray desktop:mb-16 mt-2 mb-4 text-center text-[14px] leading-[143%] font-normal">
           <span className="desktop:hidden">{t("subtitleMobile")}</span>
-          <span className="hidden desktop:inline">{t("subtitle")}</span>
+          <span className="desktop:inline hidden">{t("subtitle")}</span>
         </p>
 
-        <ul className="
-          m-0 list-none p-0
-          flex flex-wrap justify-center
-          gap-4
-          desktop:gap-x-5 desktop:gap-y-6
-          desktop-xl:gap-y-5
-        ">
-          {subdivisions.map((subdivision) => (
+        <ul className="desktop:gap-x-5 desktop:gap-y-6 desktop-xl:gap-y-5 m-0 flex list-none flex-wrap justify-center gap-4 p-0">
+          {content?.map((subdivision) => (
             <li
               key={subdivision.id}
-              className="
-                flex
-                w-full
-                tablet:w-[calc(50%-8px)]
-                laptop:w-[calc(33.333%-11px)]
-                desktop:w-[413px]
-              "
+              className="tablet:w-[calc(50%-8px)] laptop:w-[calc(33.333%-11px)] desktop:w-[413px] flex w-full"
             >
               <SubdivisionCard subdivision={subdivision} />
             </li>
           ))}
         </ul>
-
       </div>
     </section>
   );

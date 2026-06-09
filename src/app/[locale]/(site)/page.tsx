@@ -2,14 +2,17 @@ import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
 import {
+  aboutUsSchema,
+  transferSchema,
+  heroContentSchema,
   contract1824Schema,
-  feedbackContentSchema,
   mobilizationSchema,
   privacyPolicySchema,
-  transferSchema,
+  feedbackContentSchema,
 } from "@/schemas";
 import { AboutSection } from "@/components/about";
 import { DEFAULT_TYPE } from "@/constants/vacancies";
+import { getSubdivisions } from "@/actions/subdivisions";
 import { VacanciesSection } from "@/components/vacancies";
 import { JoinUsSection } from "@/components/contract-18-24";
 import { contentService } from "@/lib/content/content.service";
@@ -77,13 +80,27 @@ export default async function Home({
   const vacancies = allVacancies.filter((v) => v.isActive);
   const vacanciesTitleList = vacancies.map((item) => item.position);
 
+  const heroContent = await contentService.get({
+    locale,
+    schema: heroContentSchema,
+    section: SECTION_KEYS.HERO,
+  });
+
+  const aboutContent = await contentService.get({
+    locale,
+    schema: aboutUsSchema,
+    section: SECTION_KEYS.ABOUT,
+  });
+
+  const contentSubdivisions = await getSubdivisions(locale);
+
   return (
     <>
       <main>
-        <HeroSection locale={locale} />
-        <AboutSection locale={locale} />
-        <LifeOfTheCorpsSection locale={locale} />
-        <SubdivisionsSection locale={locale} />
+        <HeroSection content={heroContent} />
+        <AboutSection content={aboutContent} />
+        <LifeOfTheCorpsSection content={aboutContent} />
+        <SubdivisionsSection content={contentSubdivisions} />
         <VacanciesSection
           vacancies={vacancies}
           initialType={initialType}

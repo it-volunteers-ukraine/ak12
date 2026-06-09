@@ -1,32 +1,17 @@
+"use client";
+
 import Image from "next/image";
 
-import { Locale } from "@/types";
-import { logger } from "@/lib/logger";
-import { aboutUsSchema } from "@/schemas";
-import { SECTION_KEYS } from "@/constants/section-key";
-import { contentService } from "@/lib/content/content.service";
+import { AboutUsContent } from "@/schemas";
 
 import { Background } from "../../../../public/images";
 import { LifeOfTheCorpsGalleryClient } from "./gallery/gallery-client";
+import { useRef } from "react";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
-interface ILifeOfTheCorpsSectionProps {
-  locale: Locale;
-}
-
-export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionProps) => {
-  let content;
-
-  try {
-    content = await contentService.get({
-      locale,
-      schema: aboutUsSchema,
-      section: SECTION_KEYS.ABOUT,
-    });
-  } catch (error) {
-    logger.error({ error, locale, section: SECTION_KEYS.ABOUT }, "Failed to load LifeOfTheCorpsSection content");
-
-    return null;
-  }
+export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | null }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const top = useTopFromViewportMinusContent(sectionRef);
 
   if (!content) {
     return null;
@@ -99,7 +84,13 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
   });
 
   return (
-    <section className="container-app relative w-full overflow-hidden bg-black/95">
+    <section
+      ref={sectionRef}
+      className="container-app sticky w-full overflow-hidden bg-black/95"
+      style={{
+        top,
+      }}
+    >
       <Image
         fill
         priority

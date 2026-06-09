@@ -2,8 +2,7 @@ import { z } from "zod";
 
 export type LifeOfUnitData = z.infer<typeof aboutUsSchema>;
 
-const isValidYouTubeUrl = (url: string) =>
-  /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+$/.test(url);
+const isValidYouTubeUrl = (url: string) => /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+$/.test(url);
 
 const aboutUsItemSchema = z
   .object({
@@ -29,3 +28,5 @@ export const aboutUsSchema = z.object({
     gallery: z.array(aboutUsItemSchema).min(1, "Додайте хоча б один елемент"),
   }),
 });
+
+export type AboutUsContent = z.infer<typeof aboutUsSchema>;

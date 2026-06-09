@@ -25,7 +25,7 @@ export const FeedbackSection = async ({ locale, privacyPolicyContent }: Feedback
 
   return (
     <section
-      className="bg-card-bg desktop-xl:py-40 desktop:py-30 desktop:px-20 tablet:bg-section tablet:py-25 tablet:px-10 px-4 pt-6 pb-10"
+      className="bg-card-bg desktop-xl:py-40 desktop:py-30 desktop:px-20 tablet:bg-section tablet:py-25 tablet:px-10 relative px-4 pt-6 pb-10"
       id="contacts"
     >
       <h2 className="font-ermilov text-accent desktop:text-[56px] desktop:mb-16 tablet:text-[40px] tablet:mb-8 mb-7 text-center text-[32px] font-bold">
