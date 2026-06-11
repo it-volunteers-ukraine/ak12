@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
-import { cn } from "@/utils";
+import { cn, scrollToSection } from "@/utils";
+
 import { MarqueeItem } from "../marquee-item";
-
-const WIDTH_MULTIPLIER = 1.5;
 
 interface Props {
   itemList: string[];
 }
+
+const WIDTH_MULTIPLIER = 1.5;
 
 export const MarqueeLine = ({ itemList }: Props) => {
   const containerRef = useRef<HTMLAnchorElement>(null);
@@ -68,7 +69,17 @@ export const MarqueeLine = ({ itemList }: Props) => {
           <MarqueeItem key={`measure-${index}`} item={item} index={index} />
         ))}
       </div>
-      <a href="#vacancy" ref={containerRef} className="bg-accent flex h-16 w-full items-center">
+      <a
+        id="marquee"
+        href="#vacancy"
+        ref={containerRef}
+        onClick={(event) => {
+          event.preventDefault();
+          window.requestAnimationFrame(() => scrollToSection("vacancy"));
+        }}
+        className="bg-accent flex h-16 w-full items-center"
+        style={{ zIndex: 8 }}
+      >
         <div
           className={cn(
             "flex items-center whitespace-nowrap",

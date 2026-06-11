@@ -1,28 +1,31 @@
-"use client";
+'use client';
 
-import { useState, useMemo, useRef } from "react";
+import { useRef, useMemo, useState } from "react";
+
 import { useTranslations } from "next-intl";
+
 import { VacancyType, VacancyMapped } from "@/types/vacancy";
 import { VACANCY_TYPES } from "@/constants/vacancies/filters";
 import { DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
 import { FeedbackFormContent, PrivacyPolicyContent } from "@/schemas";
-import { VacancyCard } from "./VacancyCard";
 import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
+import { VacancyCard } from "./VacancyCard";
+
 export interface Props {
-  vacancies: VacancyMapped[];
   initialType: VacancyType;
+  vacancies: VacancyMapped[];
   contentModal: FeedbackFormContent | null;
   privacyPolicyContent: PrivacyPolicyContent | null;
 }
 
 export function VacanciesSection({ vacancies, initialType, contentModal, privacyPolicyContent }: Props) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const top = useTopFromViewportMinusContent(sectionRef);
+
   const t = useTranslations("vacancies");
   const [activeType, setActiveType] = useState<VacancyType>(initialType);
   const [page, setPage] = useState(0);
-
-  const sectionRef = useRef<HTMLElement>(null);
-  const top = useTopFromViewportMinusContent(sectionRef);
 
   const handleTabChange = (type: VacancyType) => {
     setActiveType(type);
@@ -40,14 +43,7 @@ export function VacanciesSection({ vacancies, initialType, contentModal, privacy
   const inactiveClass = "bg-surface-secondary text-accent hover:bg-hover";
 
   return (
-    <section
-      ref={sectionRef}
-      style={{
-        top,
-      }}
-      className="bg-surface-main text-secondary-text sticky"
-      id="vacancy"
-    >
+    <section ref={sectionRef} className="bg-surface-main text-secondary-text sticky" id="vacancy" style={{ top: `${top}px`, zIndex: 5 }}>
       <div className="container-app">
         <h2 className="font-ermilov text-accent tablet:text-[40px] tablet:leading-[120%] tablet:mb-14 desktop:text-[56px] desktop:leading-[114%] desktop:mb-16 mb-4 text-center text-[32px] leading-[125%] font-bold capitalize">
           {t("title")}

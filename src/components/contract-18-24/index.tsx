@@ -1,14 +1,9 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useMemo, useState } from "react";
 
-import { Menu } from "./menu";
-import { Title } from "./title";
-import { Contract } from "./contract";
-import { Transfer } from "./transfer";
 import { SECTION_KEYS } from "@/constants";
-import { Mobilization } from "./mobilization";
-import { ApplyButton } from "../vacancies/ApplyButton";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 import {
   TransferContent,
   Contract1824Content,
@@ -17,21 +12,26 @@ import {
   PrivacyPolicyContent,
   FeedbackFormContentWithMessage,
 } from "@/schemas";
-import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
+
+import { Menu } from "./menu";
+import { Title } from "./title";
+import { Contract } from "./contract";
+import { Transfer } from "./transfer";
+import { Mobilization } from "./mobilization";
+import { ApplyButton } from "../vacancies/ApplyButton";
 
 export type BlockListItem =
   | typeof SECTION_KEYS.TRANSFER
   | typeof SECTION_KEYS.MOBILIZATION
   | typeof SECTION_KEYS.CONTRACT_18_24;
-
 interface JoinUsSectionProps {
-  contentJoinUs: {
-    transfer: TransferContent | null;
-    mobilization: MobilizationContent | null;
-    contract1824: Contract1824Content | null;
-  };
   contentModal: FeedbackFormContent | null;
   privacyPolicyContent: PrivacyPolicyContent | null;
+  contentJoinUs: {
+    transfer: TransferContent | null;
+    contract1824: Contract1824Content | null;
+    mobilization: MobilizationContent | null;
+  };
 }
 
 export const JoinUsSection = ({ contentJoinUs, contentModal, privacyPolicyContent }: JoinUsSectionProps) => {
@@ -109,12 +109,10 @@ export const JoinUsSection = ({ contentJoinUs, contentModal, privacyPolicyConten
 
   return (
     <section
-      ref={sectionRef}
-      style={{
-        top,
-      }}
       id="join"
+      ref={sectionRef}
       className="bg-section tablet:pb-25 desktop:pb-29 desktop-xl:pb-40 sticky pb-16"
+      style={{ zIndex: 6, top: `${top}px` }}
     >
       <Title title={activeSection.content.sectionTitle} subTitle={activeSection.content.sectionSubtitle} />
       <Menu activeBlock={activeBlock} blockList={blockList} onChangeBlock={setActiveBlock} />

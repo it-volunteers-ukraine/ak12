@@ -6,6 +6,7 @@ type BlobButtonProps = {
   href: string;
   className?: string;
   openInNewTab?: boolean;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
   children: React.ReactNode;
   typeStyles?: "primary" | "sub";
 };
@@ -15,11 +16,13 @@ export const BlobButton = ({
   children,
   className,
   openInNewTab = true,
+  onClick,
   typeStyles = "primary",
 }: BlobButtonProps) => {
   return (
     <a
       href={href}
+      onClick={onClick}
       target={openInNewTab ? "_blank" : undefined}
       rel={openInNewTab ? "noopener noreferrer" : undefined}
       className={cn(

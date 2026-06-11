@@ -1,18 +1,24 @@
-import { getStyles } from "./styles";
-import { ContactsSchema, FooterContent, HeaderLink } from "@/schemas";
+"use client";
+
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+
+import { scrollToSection } from "@/utils";
+import { ContactsType } from "@/constants";
+import { HeaderLink, FooterContent, ContactsSchema } from "@/schemas";
+
+import { getStyles } from "./styles";
 import { Logo } from "../../../public/images";
 import { SocialLinkList } from "../socialLinkList";
-import { ContactsType } from "@/constants";
 
 type FooterProps = {
   menu: HeaderLink[] | null;
-  translations: (key: string) => string;
   content: FooterContent | null;
   contacts: ContactsSchema | null;
 };
 
-export const Footer = ({ contacts, content, menu, translations }: FooterProps) => {
+export const Footer = ({ contacts, content, menu }: FooterProps) => {
+  const t = useTranslations("footer");
   const styles = getStyles();
 
   return (
@@ -35,13 +41,24 @@ export const Footer = ({ contacts, content, menu, translations }: FooterProps) =
         <div className={styles.containerNavAndContact}>
           {menu && menu.length > 0 && (
             <nav>
-              <p className={styles.subTitle}>{translations("navigation")}</p>
+              <p className={styles.subTitle}>{t("navigation")}</p>
 
               <ul className={styles.menuList}>
                 {menu.map((item, index) => {
                   return (
                     <li key={item.idSection || index} className="flex h-5 items-center">
-                      <a href={`#${item.idSection}`} className={styles.link}>
+                      <a
+                        href={`#${item.idSection}`}
+                        onClick={(event) => {
+                          if (!item.idSection) {
+                            return;
+                          }
+
+                          event.preventDefault();
+                          window.requestAnimationFrame(() => scrollToSection(item.idSection));
+                        }}
+                        className={styles.link}
+                      >
                         {item.label}
                       </a>
                     </li>
@@ -53,7 +70,7 @@ export const Footer = ({ contacts, content, menu, translations }: FooterProps) =
 
           {contacts?.info && contacts.info.length > 0 && (
             <div className="justify-self-end">
-              <p className={styles.subTitle}>{translations("contact")}</p>
+              <p className={styles.subTitle}>{t("contact")}</p>
               <ul className="tablet:gap-4 flex flex-col gap-2">
                 {contacts.info.map((item, index) => {
                   let href = item.href;
@@ -82,7 +99,7 @@ export const Footer = ({ contacts, content, menu, translations }: FooterProps) =
 
           {contacts?.socialLinks && contacts.socialLinks.length > 0 && (
             <div>
-              <p className={styles.socialTitle}>{translations("social")}</p>
+              <p className={styles.socialTitle}>{t("social")}</p>
               <SocialLinkList isFooter socialLinks={contacts.socialLinks} />
             </div>
           )}

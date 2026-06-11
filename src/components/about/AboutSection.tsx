@@ -1,12 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 
-import { Logo } from "../../../public/images";
+import Image from "next/image";
+
 import { AboutUsContent } from "@/schemas/about-us.schema";
-import Ak12RightSection from "../../../public/icons/ak12-right-section.svg";
 import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
+
+import { Logo } from "../../../public/images";
+import Ak12RightSection from "../../../public/icons/ak12-right-section.svg";
 
 export const AboutSection = ({ content }: { content: AboutUsContent | null }) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -25,7 +27,7 @@ export const AboutSection = ({ content }: { content: AboutUsContent | null }) =>
       id="about"
       ref={sectionRef}
       className="sticky clear-both block w-full overflow-hidden"
-      style={{ backgroundImage: `var(--background-image-section)`, top }}
+      style={{ backgroundImage: `var(--background-image-section)`, top: `${top}px`, zIndex: 2 }}
     >
       <div className="container-app relative flex flex-col justify-between">
         {/* ================= HEADER TOP (CORNERS) ================= */}

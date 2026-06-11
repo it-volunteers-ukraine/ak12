@@ -1,12 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
 
+import Image from "next/image";
+
 import { HeroContent } from "@/schemas";
+import { scrollToSection } from "@/utils";
 import { BlobButton } from "@/components/blobButton";
-import { ArrowDown } from "../../../../public/icons";
 import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
+
+import { ArrowDown } from "../../../../public/icons";
 
 export const HeroSection = ({ content }: { content: HeroContent | null }) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -18,10 +21,12 @@ export const HeroSection = ({ content }: { content: HeroContent | null }) => {
 
   return (
     <section
-      ref={sectionRef}
+        ref={sectionRef}
+      id="hero"
       className="desktop-xl:max-w-480 desktop-xl:mx-auto sticky isolate overflow-hidden pt-18 text-white"
       style={{
-        top,
+        top: `${top}px`,
+        zIndex: 1,
       }}
     >
       {content.backgroundImage?.secureUrl && (
@@ -61,6 +66,10 @@ export const HeroSection = ({ content }: { content: HeroContent | null }) => {
           typeStyles="sub"
           href={"#vacancy"}
           openInNewTab={false}
+          onClick={(event) => {
+            event.preventDefault();
+            window.requestAnimationFrame(() => scrollToSection("vacancy"));
+          }}
           className="order-3 flex h-15 w-full max-w-90 self-center md:order-2 md:mt-0 md:mb-23 md:w-70 md:max-w-none md:self-start md:py-3 xl:mb-36"
         >
           <span className="font-ermilov flex items-center gap-1 py-3 text-[20px] text-black md:py-0">

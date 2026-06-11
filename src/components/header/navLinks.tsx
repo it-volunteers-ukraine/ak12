@@ -1,5 +1,5 @@
 import { Links } from ".";
-import { cn } from "@/utils";
+import { cn, scrollToSection } from "@/utils";
 
 type NavLinkProps = {
   links: Links;
@@ -23,7 +23,15 @@ export const NavLinks = ({ activeSection, links, onClickAction, type = "desktop"
           <li key={item.idSection}>
             <a
               href={`#${item.idSection}`}
-              onClick={onClickAction}
+              onClick={(event) => {
+                if (!item.idSection) {
+                  return;
+                }
+
+                event.preventDefault();
+                onClickAction?.();
+                window.requestAnimationFrame(() => scrollToSection(item.idSection));
+              }}
               aria-current={activeSection === item.idSection ? "page" : undefined}
               className={cn(
                 "text-soft-blush focus:text-accent/50 active:text-accent hover:text-accent/50 text-[16px] font-semibold transition-colors active:underline active:underline-offset-1",

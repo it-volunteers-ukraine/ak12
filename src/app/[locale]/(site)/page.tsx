@@ -1,15 +1,6 @@
 import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
-import {
-  aboutUsSchema,
-  transferSchema,
-  heroContentSchema,
-  contract1824Schema,
-  mobilizationSchema,
-  privacyPolicySchema,
-  feedbackContentSchema,
-} from "@/schemas";
 import { AboutSection } from "@/components/about";
 import { DEFAULT_TYPE } from "@/constants/vacancies";
 import { getSubdivisions } from "@/actions/subdivisions";
@@ -20,6 +11,15 @@ import { FeedbackSection } from "@/components/feedback-section";
 import { MarqueeLine, SubdivisionsSection } from "@/components";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
 import { HeroSection, LifeOfTheCorpsSection } from "@/components/sections";
+import {
+  aboutUsSchema,
+  transferSchema,
+  heroContentSchema,
+  contract1824Schema,
+  mobilizationSchema,
+  privacyPolicySchema,
+  feedbackContentSchema,
+} from "@/schemas";
 
 export interface SearchParamsProps {
   type?: VacancyType;
@@ -92,6 +92,12 @@ export default async function Home({
     section: SECTION_KEYS.ABOUT,
   });
 
+  const feedbackContent = await contentService.get({
+    locale,
+    schema: feedbackContentSchema,
+    section: SECTION_KEYS.FEEDBACK,
+  });
+
   const contentSubdivisions = await getSubdivisions(locale);
 
   return (
@@ -112,7 +118,7 @@ export default async function Home({
           contentModal={contentFeedback?.form ?? null}
           privacyPolicyContent={contentPrivacyPolicy}
         />
-        <FeedbackSection locale={locale} privacyPolicyContent={contentPrivacyPolicy} />
+        <FeedbackSection locale={locale} privacyPolicyContent={contentPrivacyPolicy} content={feedbackContent} />
         <MarqueeLine itemList={vacanciesTitleList} />
       </main>
     </>
