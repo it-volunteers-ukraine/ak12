@@ -1,4 +1,3 @@
-// import proxy from "@/proxy";
 import proxy, { config } from "@/proxy";
 import { NextResponse } from "next/server";
 import {
