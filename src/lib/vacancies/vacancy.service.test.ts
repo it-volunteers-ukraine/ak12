@@ -7,6 +7,7 @@ import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-statu
 import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
 import { PostgrestSingleResponse, PostgrestError } from "@supabase/postgrest-js";
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
+import { logger } from "@/lib/logger";
 
 jest.mock("@/lib/supabase-server", () => ({
   supabaseServer: {
@@ -22,6 +23,15 @@ jest.mock("@/utils/vacancies/get-language-map", () => ({
 jest.mock("transliteration", () => ({
   slugify: (value: string) => value.toLowerCase().replace(/\s+/g, "-"),
 }));
+
+jest.mock("@/lib/logger", () => ({
+  logger: {
+    error: jest.fn(),
+    info: jest.fn(),
+  },
+}));
+
+const mockedLogger = jest.mocked(logger);
 
 const UK_ID = "5cb2dac0-1be1-4212-b10f-e9e56fa1c23b";
 const EN_ID = "8fae0102-cfc8-4f19-81f7-922f6a724112";
@@ -222,10 +232,7 @@ describe("vacancyService", () => {
 
   it("should split admin vacancies by language code", async () => {
     const order = jest.fn().mockResolvedValue({
-      data: [
-        rawRow({ id: "uk-1", language: { code: "uk" } }),
-        rawRow({ id: "en-1", language: { code: "en" } }),
-      ],
+      data: [rawRow({ id: "uk-1", language: { code: "uk" } }), rawRow({ id: "en-1", language: { code: "en" } })],
       error: null,
     });
 
@@ -327,5 +334,141 @@ describe("vacancyService", () => {
       uk_id: UK_ID,
       en_id: EN_ID,
     });
+  });
+
+  it("should throw error when getAll fails", async () => {
+    mockedSupabase.from.mockReturnValue({
+      select: () => ({
+        eq: () => ({
+          eq: () => ({
+            order: jest.fn().mockResolvedValue({
+              data: null,
+              error: { message: "DB error" },
+            }),
+          }),
+        }),
+      }),
+    } as never);
+
+    await expect(vacancyService.getAll({ locale: "uk" })).rejects.toThrow("DB error");
+  });
+
+  it("should throw error in getAllAdmin", async () => {
+    mockedSupabase.from.mockReturnValue({
+      select: () => ({
+        order: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: "fail admin" },
+        }),
+      }),
+    } as never);
+
+    await expect(vacancyService.getAllAdmin()).rejects.toThrow("fail admin");
+  });
+
+  it("should throw error on create vacancy failure", async () => {
+    (getLanguageMap as jest.Mock).mockResolvedValue({ uk: "uk", en: "en" });
+
+    mockedSupabase.from.mockReturnValue({
+      insert: () => ({
+        select: jest.fn().mockResolvedValue({
+          data: null,
+          error: { message: "insert failed" },
+        }),
+      }),
+    } as never);
+
+    await expect(
+      vacancyService.create({
+        type: "backline",
+        salaryMin: 1000,
+        uk: { position: "A", description: "B" },
+        en: { position: "C", description: "D" },
+      }),
+    ).rejects.toThrow("insert failed");
+  });
+
+  it("should throw error on update failure", async () => {
+    mockedSupabase.rpc.mockResolvedValue({
+      data: null,
+      error: { message: "rpc failed" },
+    } as never);
+
+    await expect(
+      vacancyService.update({
+        ukId: UK_ID,
+        enId: EN_ID,
+        type: "frontline",
+        salaryMin: 1,
+        uk: { position: "x", description: "x", slug: "x" },
+        en: { position: "y", description: "y", slug: "y" },
+      }),
+    ).rejects.toThrow("rpc failed");
+  });
+
+  it("should throw error on delete failure", async () => {
+    mockedSupabase.rpc.mockResolvedValue({
+      data: null,
+      error: { message: "delete failed" },
+    } as never);
+
+    await expect(
+      vacancyService.delete({
+        ukId: UK_ID,
+        enId: EN_ID,
+      }),
+    ).rejects.toThrow("delete failed");
+  });
+
+  it("should throw error on reorder failure", async () => {
+    const validData: ReorderVacanciesDto = {
+      items: [
+        {
+          ukId: UK_ID,
+          enId: EN_ID,
+          sortOrder: 1,
+        },
+      ],
+    };
+
+    mockedSupabase.rpc.mockResolvedValue({
+      data: null,
+      error: { message: "reorder failed" },
+    } as never);
+
+    await expect(vacancyService.reorder(validData)).rejects.toThrow("reorder failed");
+  });
+
+  it("should call logger.error when updateStatus fails", async () => {
+    const validData: UpdateVacancyStatusDto = {
+      ukId: UK_ID,
+      enId: EN_ID,
+      isActive: true,
+    };
+
+    mockedSupabase.rpc.mockResolvedValue({
+      data: null,
+      error: { message: "status failed" },
+    } as never);
+
+    await expect(vacancyService.updateStatus(validData)).rejects.toThrow("status failed");
+
+    expect(mockedLogger.error).toHaveBeenCalled();
+  });
+
+  it("should handle undefined data in getAllAdmin", async () => {
+    const order = jest.fn().mockResolvedValue({
+      data: undefined,
+      error: null,
+    });
+
+    mockedSupabase.from.mockReturnValue({
+      select: () => ({ order }),
+    } as never);
+
+    const result = await vacancyService.getAllAdmin();
+
+    expect(result.uk).toEqual([]);
+    expect(result.en).toEqual([]);
   });
 });
