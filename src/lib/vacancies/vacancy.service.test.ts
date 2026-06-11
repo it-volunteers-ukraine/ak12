@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 import { supabaseServer } from "@/lib/supabase-server";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-status.schema";
