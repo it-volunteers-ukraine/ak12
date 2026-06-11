@@ -18,6 +18,7 @@ export const HeroSection = ({ content }: { content: HeroContent | null }) => {
 
   return (
     <section
+      id="hero"
       ref={sectionRef}
       className="desktop-xl:max-w-480 desktop-xl:mx-auto sticky isolate overflow-hidden pt-18 text-white"
       style={{

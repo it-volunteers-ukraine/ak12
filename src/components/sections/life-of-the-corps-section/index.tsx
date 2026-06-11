@@ -82,6 +82,7 @@ export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | n
 
   return (
     <section
+      id="life-of-the-corps"
       ref={sectionRef}
       className="container-app sticky w-full overflow-hidden bg-black/95"
       style={{
