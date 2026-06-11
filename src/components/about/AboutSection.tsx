@@ -1,44 +1,31 @@
+"use client";
+
 import Image from "next/image";
-import { Locale } from "@/types";
-import { SECTION_KEYS } from "@/constants";
-import { logger } from "@/lib/logger";
-import { aboutUsSchema } from "@/schemas/about-us.schema";
-import { contentService } from "@/lib/content/content.service";
+import { useRef } from "react";
+
 import { Logo } from "../../../public/images";
+import { AboutUsContent } from "@/schemas/about-us.schema";
 import Ak12RightSection from "../../../public/icons/ak12-right-section.svg";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
-interface AboutSectionProps {
-  locale: Locale;
-}
+export const AboutSection = ({ content }: { content: AboutUsContent | null }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const top = useTopFromViewportMinusContent(sectionRef);
 
-export const AboutSection = async ({ locale }: AboutSectionProps) => {
-  let data;
-
-  try {
-    data = await contentService.get({
-      locale,
-      schema: aboutUsSchema,
-      section: SECTION_KEYS.ABOUT,
-    });
-  } catch (error) {
-    logger.error({ error, locale, section: SECTION_KEYS.ABOUT }, "Failed to load AboutSection content");
-
+  if (!content) {
     return null;
   }
 
-  if (!data) {
-    return null;
-  }
-
-  const { mainTitle, description } = data;
+  const { mainTitle, description } = content;
 
   const cornerClass = "pointer-events-none absolute border-accent opacity-50 w-9 h-9 border-2 tablet:w-16 tablet:h-16";
 
   return (
     <section
       id="about"
-      className="relative clear-both block w-full overflow-hidden"
-      style={{ backgroundImage: `var(--background-image-section)` }}
+      ref={sectionRef}
+      className="sticky clear-both block w-full overflow-hidden"
+      style={{ backgroundImage: `var(--background-image-section)`, top }}
     >
       <div className="container-app relative flex flex-col justify-between">
         {/* ================= HEADER TOP (CORNERS) ================= */}

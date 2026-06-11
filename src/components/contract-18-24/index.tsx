@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { Menu } from "./menu";
 import { Title } from "./title";
@@ -17,6 +17,7 @@ import {
   PrivacyPolicyContent,
   FeedbackFormContentWithMessage,
 } from "@/schemas";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
 export type BlockListItem =
   | typeof SECTION_KEYS.TRANSFER
@@ -34,6 +35,9 @@ interface JoinUsSectionProps {
 }
 
 export const JoinUsSection = ({ contentJoinUs, contentModal, privacyPolicyContent }: JoinUsSectionProps) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const top = useTopFromViewportMinusContent(sectionRef);
+
   const sections = useMemo(() => {
     return {
       [SECTION_KEYS.MOBILIZATION]: contentJoinUs.mobilization
@@ -104,7 +108,14 @@ export const JoinUsSection = ({ contentJoinUs, contentModal, privacyPolicyConten
   );
 
   return (
-    <section id="join" className="bg-section tablet:pb-25 desktop:pb-29 desktop-xl:pb-40 pb-16">
+    <section
+      ref={sectionRef}
+      style={{
+        top,
+      }}
+      id="join"
+      className="bg-section tablet:pb-25 desktop:pb-29 desktop-xl:pb-40 sticky pb-16"
+    >
       <Title title={activeSection.content.sectionTitle} subTitle={activeSection.content.sectionSubtitle} />
       <Menu activeBlock={activeBlock} blockList={blockList} onChangeBlock={setActiveBlock} />
       {activeSection.render(buttonComponent)}

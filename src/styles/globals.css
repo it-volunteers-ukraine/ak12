@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-@variant dark {
-  &:where(.dark, .dark *)
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   color-scheme: light;
@@ -16,6 +14,7 @@
   --color-auth-primary: #0f62fe;
   --color-auth-surface-border: #dde1e6;
   --color-auth-text: #21272a;
+
   --color-black: #0a0a0a;
   --color-card-bg: #1a1a1a;
   --color-charcoal: #383232;
@@ -38,7 +37,7 @@
   --color-space: #404743;
 
   --background-image-section:
-    linear-gradient(90deg, #0d0d0d 0%, rgba(26, 26, 26, 70%) 50%, rgba(51, 64, 54, 60%) 100%),
+    linear-gradient(90deg, #0d0d0d 0%, rgba(26, 26, 26, 0.7) 50%, rgba(51, 64, 54, 0.6) 100%),
     linear-gradient(#1a1e1d, #1a1e1d);
 
   /* vacancies */
@@ -49,68 +48,73 @@
   --color-vacancy-card-stroke: var(--color-stroke-green);
   --color-hover: #383232;
 
-  --breakpoint-mobile: 23.4375rem; /* 375px */
-  --breakpoint-tablet: 48rem; /* 768px */
-  --breakpoint-laptop: 62rem; /* 992px */
-  --breakpoint-desktop: 90rem; /* 1440px */
-  --breakpoint-desktop-xl: 120rem; /* 1920 */
+  --breakpoint-mobile: 23.4375rem;
+  --breakpoint-tablet: 48rem;
+  --breakpoint-laptop: 62rem;
+  --breakpoint-desktop: 90rem;
+  --breakpoint-desktop-xl: 120rem;
 
   --font-montserrat: Montserrat, sans-serif;
   --font-scada: var(--font-scada), sans-serif;
   --font-roboto: var(--font-roboto), sans-serif;
   --font-roboto-condensed: var(--font-robotoCondensed), sans-serif;
+  --font-road-ui: var(--font-road-ui), sans-serif;
+  --font-ermilov: var(--font-ermilov), sans-serif;
 
   --animate-fade-in: fade-in 300ms ease-out forwards;
   --animate-fade-out: fade-out 300ms ease-in forwards;
   --animate-fade-in-opacity: fade-in-opacity 300ms ease-out forwards;
   --animate-fade-out-opacity: fade-out-opacity 300ms ease-in forwards;
   --animate-marquee: marquee 30s linear infinite alternate;
-
-  @keyframes fade-in {
-    from {
-      width: 0;
-    }
-    to {
-      width: 400px;
-    }
-  }
-
-  @keyframes fade-out {
-    from {
-      width: 400px;
-    }
-    to {
-      width: 0;
-    }
-  }
-  @keyframes fade-in-opacity {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 100%;
-    }
-  }
-  @keyframes fade-out-opacity {
-    from {
-      opacity: 100%;
-    }
-    to {
-      opacity: 0;
-    }
-  }
-  @keyframes marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-  --font-road-ui: var(--font-road-ui), sans-serif;
-  --font-ermilov: var(--font-ermilov), sans-serif;
 }
 
+/* ✅ keyframes ОБОВʼЯЗКОВО поза @theme */
+@keyframes fade-in {
+  from {
+    width: 0;
+  }
+  to {
+    width: 400px;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    width: 400px;
+  }
+  to {
+    width: 0;
+  }
+}
+
+@keyframes fade-in-opacity {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out-opacity {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* BASE */
 @layer base {
   button:not(:disabled),
   [role="button"]:not(:disabled) {
@@ -118,25 +122,29 @@
   }
 }
 
+/* COMPONENTS */
 @layer components {
   * {
     @apply font-road-ui box-border text-base font-normal text-inherit;
   }
+
   input {
     @apply outline-none;
   }
+
   .container-app {
     @apply w-full px-4 py-16;
   }
+
   @media (min-width: 768px) {
     .container-app {
-      @apply md:px-10 md:py-25;
+      @apply px-10 py-25;
     }
   }
 
   @media (min-width: 1024px) {
     .container-app {
-      @apply desktop:px-15 desktop:py-30;
+      @apply px-15 py-30;
     }
   }
 
@@ -153,6 +161,7 @@
   }
 }
 
+/* UTILITIES */
 @layer utilities {
   @media (min-width: 1919px) {
     .vacancies-grid {
@@ -176,10 +185,7 @@ html {
 }
 
 @media (hover: hover) {
-  .gallery-swiper .swiper-button-next:hover {
-    transform: scale(1.2);
-  }
-
+  .gallery-swiper .swiper-button-next:hover,
   .gallery-swiper .swiper-button-prev:hover {
     transform: scale(1.2);
   }

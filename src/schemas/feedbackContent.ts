@@ -66,3 +66,5 @@ export type FeedbackFormContent = z.infer<typeof formSchema>;
 export type FeedbackFormContentWithMessage = FeedbackFormContent & {
   message?: string | null;
 };
+
+export type FeedbackContent = z.infer<typeof feedbackContentSchema>;
