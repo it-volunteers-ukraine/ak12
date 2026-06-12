@@ -1,5 +1,6 @@
 import { getLanguageMap } from "./get-language-map";
 import { supabaseServer } from "@/lib/supabase-server";
+import { logger } from "@/lib/logger";
 
 jest.mock("@/lib/logger", () => ({
   logger: { error: jest.fn() },
@@ -18,24 +19,42 @@ const stubLanguageTable = (data: Array<{ id: string; code: string }>) => {
 };
 
 describe("getLanguageMap", () => {
-  it.each([
-    {
-      label: "a populated language table",
-      data: [
-        { id: "lang-uk-id", code: "uk" },
-        { id: "lang-en-id", code: "en" },
-      ],
-      expected: { uk: "lang-uk-id", en: "lang-en-id" },
-    },
-    {
-      label: "an empty language table",
-      data: [],
-      expected: {},
-    },
-  ])("should map $label into a code→id record", async ({ data, expected }) => {
-    stubLanguageTable(data);
+  it("should return a code→id record for the language table", async () => {
+    stubLanguageTable([
+      { id: "lang-uk-id", code: "uk" },
+      { id: "lang-en-id", code: "en" },
+    ]);
 
-    expect(await getLanguageMap()).toEqual(expected);
+    await expect(getLanguageMap()).resolves.toEqual({
+      uk: "lang-uk-id",
+      en: "lang-en-id",
+    });
+
     expect(supabaseServer.from).toHaveBeenCalledWith("language");
+  });
+
+  it("should return an empty record when the language table is empty", async () => {
+    stubLanguageTable([]);
+
+    await expect(getLanguageMap()).resolves.toEqual({});
+
+    expect(supabaseServer.from).toHaveBeenCalledWith("language");
+  });
+
+  it("should log and throw when supabase returns an error", async () => {
+    const error = {
+      message: "Database failure",
+    };
+
+    (supabaseServer.from as jest.Mock).mockReturnValue({
+      select: jest.fn().mockResolvedValue({
+        data: null,
+        error,
+      }),
+    });
+
+    await expect(getLanguageMap()).rejects.toThrow(error.message);
+
+    expect(logger.error).toHaveBeenCalledWith({ error }, "Failed to get languages");
   });
 });

@@ -10,7 +10,7 @@ export const SESSION_INACTIVITY_TTL = 60 * 10; // 10 minutes
 export const SESSION_REFRESH_DEBOUNCE_MS = 60 * 1000; // 1 minute
 
 // Internal config validation (fail fast on invalid setup)
-function validateSessionConfig() {
+export function validateSessionConfig() {
   if (SESSION_INACTIVITY_TTL > SESSION_TTL) {
     throw new Error("SESSION_INACTIVITY_TTL must be less than or equal to SESSION_TTL");
   }

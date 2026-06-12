@@ -5,11 +5,11 @@ import { logger } from "@/lib/logger";
 import { AdminDataMap } from "@/lib/admin";
 import { SECTION_KEYS } from "@/constants";
 
-import { saveContentAction } from "../content";
+import { saveContentAction } from "../content/content";
 
-type AdminData = AdminDataMap["contract-18-24"];
+type AdminData = AdminDataMap["about"];
 
-export const updateContract1824MultiLangAction = async (values: AdminData) => {
+export const updateAboutMultiLangAction = async (values: AdminData) => {
   try {
     const languages = Object.keys(values) as Locale[];
 
@@ -17,9 +17,9 @@ export const updateContract1824MultiLangAction = async (values: AdminData) => {
       const rawContent = values[locale];
 
       return saveContentAction({
+        locale,
         rawContent,
-        locale: locale,
-        sectionKey: SECTION_KEYS.CONTRACT_18_24,
+        sectionKey: SECTION_KEYS.ABOUT,
       });
     });
 
@@ -35,7 +35,7 @@ export const updateContract1824MultiLangAction = async (values: AdminData) => {
 
     return { success: true };
   } catch (error) {
-    logger.error({ error, section: SECTION_KEYS.CONTRACT_18_24 }, "Multi-lang update fatal error");
+    logger.error({ error, section: SECTION_KEYS.ABOUT }, "Multi-lang update fatal error");
 
     return { success: false, error: "Internal Server Error" };
   }

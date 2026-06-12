@@ -10,7 +10,7 @@ import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { updateContract1824MultiLangAction } from "@/actions/contract-18-24";
+import { updateContract1824MultiLangAction } from "@/actions/contract-18-24/contract-18-24";
 import { contract1824FormBuilderConfig } from "@/lib/admin/configs/contract1824.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
