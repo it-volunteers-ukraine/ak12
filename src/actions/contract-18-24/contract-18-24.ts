@@ -5,7 +5,7 @@ import { logger } from "@/lib/logger";
 import { AdminDataMap } from "@/lib/admin";
 import { SECTION_KEYS } from "@/constants";
 
-import { saveContentAction } from "../content";
+import { saveContentAction } from "../content/content";
 
 type AdminData = AdminDataMap["contract-18-24"];
 

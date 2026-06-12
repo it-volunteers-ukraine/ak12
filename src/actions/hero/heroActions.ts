@@ -5,7 +5,7 @@ import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
 import { AdminDataMap } from "@/lib/admin";
 
-import { saveContentAction } from "../content";
+import { saveContentAction } from "../content/content";
 
 type AdminData = AdminDataMap["hero"];
 

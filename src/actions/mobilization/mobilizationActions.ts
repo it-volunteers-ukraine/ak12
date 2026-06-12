@@ -4,7 +4,7 @@ import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
 import { MobilizationSchema } from "@/schemas/mobilizationSchema";
 
-import { saveContentAction } from "../content";
+import { saveContentAction } from "../content/content";
 
 interface MultiLangMobilizationValues {
   en: MobilizationSchema;

@@ -1,9 +1,9 @@
 import { updateContract1824MultiLangAction } from "./contract-18-24";
-import { saveContentAction } from "../content";
+import { saveContentAction } from "../content/content";
 import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
 
-jest.mock("../content", () => ({
+jest.mock("../content/content", () => ({
   saveContentAction: jest.fn(),
 }));
 
