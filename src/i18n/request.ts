@@ -5,17 +5,15 @@ import { locales } from "../constants";
 import { Locale, ActiveLanguage } from "../types";
 
 export default getRequestConfig(async ({ requestLocale }) => {
-    const locale = await requestLocale;
-    const supportedLocale = locales.includes(locale as Locale)
-        ? locale
-        : ActiveLanguage.UK;
+  const locale = await requestLocale;
+  const supportedLocale = locales.includes(locale as Locale) ? locale : ActiveLanguage.UK;
 
-    if (!supportedLocale) {
-        notFound();
-    }
+  if (!supportedLocale) {
+    notFound();
+  }
 
-    return {
-        locale: supportedLocale,
-        messages: (await import(`./messages/${supportedLocale}.json`)).default,
-    };
+  return {
+    locale: supportedLocale,
+    messages: (await import(`./messages/${supportedLocale}.json`)).default,
+  };
 });
