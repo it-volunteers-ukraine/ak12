@@ -10,7 +10,7 @@ import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { updateTransferMultiLangAction } from "@/actions/transfer";
+import { updateTransferMultiLangAction } from "@/actions/transfer/transfer";
 import { transferConfig } from "@/lib/admin/configs/transfer.config";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 

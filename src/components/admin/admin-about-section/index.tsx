@@ -10,7 +10,7 @@ import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { updateAboutMultiLangAction } from "@/actions/about";
+import { updateAboutMultiLangAction } from "@/actions/about/about";
 import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
 
 import { FormWrapper } from "../form";
@@ -170,7 +170,7 @@ export const AboutSectionAdmin = ({ data }: IAboutSection) => {
           ...enItem,
           secureUrl: ukGalleryItem?.secureUrl ?? undefined,
           publicId: ukGalleryItem?.publicId ?? undefined,
-           videoUrl: ukGalleryItem?.videoUrl ?? undefined,
+          videoUrl: ukGalleryItem?.videoUrl ?? undefined,
         };
       });
 
