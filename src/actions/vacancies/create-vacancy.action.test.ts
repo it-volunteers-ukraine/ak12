@@ -14,61 +14,58 @@ jest.mock("@/lib/vacancies/vacancy.service", () => ({
   },
 }));
 
+const payload = {
+  type: "frontline",
+  salaryMin: 23000,
+  salaryMax: 100000,
+  uk: {
+    position: "Кухар",
+    description: "Шукаємо відповідальну людину з досвідом роботи кухарем або профільною освітою.",
+  },
+  en: {
+    position: "Cook",
+    description: "We are looking for a responsible person with cooking experience or relevant education.",
+  },
+};
+
+const baseCreatedVacancy = {
+  slug: null,
+  type: payload.type,
+  salaryMin: payload.salaryMin,
+  salaryMax: payload.salaryMax,
+  isActive: true,
+  sortOrder: 10,
+  createdAt: "2026-01-01T00:00:00.000Z",
+  updatedAt: "2026-01-01T00:00:00.000Z",
+};
+
+const created = [
+  {
+    ...baseCreatedVacancy,
+    id: "uk-id",
+    position: payload.uk.position,
+    description: payload.uk.description,
+    language: {
+      code: "uk",
+    },
+  },
+  {
+    ...baseCreatedVacancy,
+    id: "en-id",
+    position: payload.en.position,
+    description: payload.en.description,
+    language: {
+      code: "en",
+    },
+  },
+];
+
 describe("createVacancy", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it("creates vacancies when data is valid", async () => {
-    const payload = {
-      type: "frontline",
-      salaryMin: 23000,
-      salaryMax: 100000,
-      uk: {
-        position: "Кухар",
-        description: "Шукаємо відповідальну людину з досвідом роботи кухарем або профільною освітою.",
-      },
-      en: {
-        position: "Cook",
-        description: "We are looking for a responsible person with cooking experience or relevant education.",
-      },
-    };
-
-    const created = [
-      {
-        id: "uk-id",
-        position: "Кухар",
-        slug: null,
-        description: payload.uk.description,
-        type: "frontline",
-        salaryMin: 23000,
-        salaryMax: 100000,
-        isActive: true,
-        sortOrder: 10,
-        language: {
-          code: "uk",
-        },
-        createdAt: "2026-01-01T00:00:00.000Z",
-        updatedAt: "2026-01-01T00:00:00.000Z",
-      },
-      {
-        id: "en-id",
-        position: "Cook",
-        slug: null,
-        description: payload.en.description,
-        type: "frontline",
-        salaryMin: 23000,
-        salaryMax: 100000,
-        isActive: true,
-        sortOrder: 10,
-        language: {
-          code: "en",
-        },
-        createdAt: "2026-01-01T00:00:00.000Z",
-        updatedAt: "2026-01-01T00:00:00.000Z",
-      },
-    ];
-
     (vacancyService.create as jest.Mock).mockResolvedValue(created);
 
     await expect(createVacancy(payload)).resolves.toEqual(created);

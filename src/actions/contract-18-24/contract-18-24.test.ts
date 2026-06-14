@@ -14,43 +14,47 @@ jest.mock("@/lib/logger", () => ({
   },
 }));
 
+const mockContract = {
+  baseSection: {
+    sectionTitle: "Контракт для молодих",
+    sectionSubtitle: "Тобі 18-24? Спробуй себе, отримай досвід і повертайся до цивільного життя або залишайся з нами",
+    menuButton: "Контракт 18-24",
+    buttonJoinUs: "Подати заявку",
+    message: 'Ця форма відправлена з блоку "Контракт 18-24"',
+  },
+  title: "Що ти отримуєш",
+  subtitle: "Забезпечення, технології та можливість самостійно обрати свій шлях у 18–24 роки",
+  content: [
+    {
+      title: "Контракт однорічний або дворічний",
+      subtitle: "Чітка дата демобілізації",
+    },
+    {
+      title: "Якісне навчання та підготовку",
+      subtitle: "Можливість навчання за кордоном",
+    },
+  ],
+  contact: {
+    startText: "Телефонуй",
+    number: "0505050550",
+    endText: "або заповнюй анкету",
+  },
+  imgContent: {
+    title: "Про піхоту дбають. Якщо щось потрібно, пишеш старшині. Він усе збере.",
+    subtitle: "72 ОМБр ім. Чорних Запорожців",
+    backgroundImage: {
+      publicId: "ak12/contract-18-24-background",
+      secureUrl: "https://res.cloudinary.com/korneiko/image/upload/v1779788292/ak12/contract-18-24-background.jpg",
+    },
+  },
+};
+
+const values = {
+  en: mockContract,
+  uk: mockContract,
+};
+
 describe("updateContract1824MultiLangAction", () => {
-  const mockContract = () => ({
-    baseSection: {
-      sectionTitle: "title",
-      sectionSubtitle: "subtitle",
-      menuButton: "menu",
-      buttonJoinUs: "join",
-      message: "msg",
-    },
-    title: "title",
-    subtitle: "subtitle",
-    content: [
-      {
-        title: "content title",
-        subtitle: "content subtitle",
-      },
-    ],
-    contact: {
-      startText: "start",
-      number: "+380000000000",
-      endText: "end",
-    },
-    imgContent: {
-      title: "img title",
-      subtitle: "img subtitle",
-      backgroundImage: {
-        publicId: "public-id",
-        secureUrl: "https://example.com/image.jpg",
-      },
-    },
-  });
-
-  const values = {
-    en: mockContract(),
-    uk: mockContract(),
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
   });

@@ -15,39 +15,39 @@ jest.mock("@/lib/logger", () => ({
   },
 }));
 
-describe("updateHeroMultiLangAction", () => {
-  const mockHero = () => ({
-    title: "title",
-    subtitle: "subtitle",
-    buttonTitle: "button",
-    features: [
-      {
-        type: "hiringChance" as const,
-        label: "Hiring chance",
-        value: "100%",
-      },
-      {
-        type: "majors" as const,
-        label: "Majors",
-        value: "30+",
-      },
-      {
-        type: "support" as const,
-        label: "Support",
-        value: "24/7",
-      },
-    ],
-    backgroundImage: {
-      publicId: "id",
-      secureUrl: "url",
+const mockHero = {
+  title: "Здобувай Перемагай",
+  subtitle: "Твій розвиток — наша спільна сила. Один корпус — одна мета. Не зволікай — обирай",
+  buttonTitle: "Дивитись вакансії",
+  features: [
+    {
+      type: "hiringChance" as const,
+      label: "Гарантія посади",
+      value: "100%",
     },
-  });
+    {
+      type: "majors" as const,
+      label: "спеціальностей",
+      value: "30+",
+    },
+    {
+      type: "support" as const,
+      label: "Підтримка",
+      value: "24/7",
+    },
+  ],
+  backgroundImage: {
+    publicId: "ak12/hero-background",
+    secureUrl: "https://res.cloudinary.com/korneiko/image/upload/v1777475167/ak12/hero-background.png",
+  },
+};
 
-  const values = {
-    en: mockHero(),
-    uk: mockHero(),
-  };
+const values = {
+  en: mockHero,
+  uk: mockHero,
+};
 
+describe("updateHeroMultiLangAction", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
