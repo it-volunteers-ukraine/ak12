@@ -1,6 +1,7 @@
 import { mapCreateVacancy } from "./map-create-vacancy";
 import { CreateVacancyDto } from "@/schemas/vacancies/create-vacancy.schema";
 import { ActiveLanguage } from "@/types/enum";
+import { logger } from "@/lib/logger";
 
 jest.mock("@/lib/logger", () => ({
   logger: { error: jest.fn() },
@@ -34,50 +35,79 @@ const langMap: Record<ActiveLanguage, string> = {
   en: "lang-en-id",
 };
 
-const sharedRowFields = {
-  type: "backline",
-  salary_min: 25000,
-  salary_max: 40000,
-};
-
 describe("mapCreateVacancy", () => {
-  it("should return two rows: one for uk and one for en", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return two rows", () => {
     expect(mapCreateVacancy(baseDto, langMap)).toHaveLength(2);
   });
 
-  it.each([
-    {
-      label: "uk",
-      rowIndex: 0,
-      expected: {
-        position: "Інженер",
-        slug: expect.any(String),
-        description: "Опис ролі інженера у тилу.",
-        language_id: "lang-uk-id",
-        ...sharedRowFields,
-      },
-    },
-    {
-      label: "en",
-      rowIndex: 1,
-      expected: {
-        position: "Engineer",
-        slug: "engineer",
-        description: "Backline engineer role description.",
-        language_id: "lang-en-id",
-        ...sharedRowFields,
-      },
-    },
-  ])("should map the $label row with the corresponding language id and slugified position", ({ rowIndex, expected }) => {
+  it("should map the ukrainian vacancy correctly", () => {
     const rows = mapCreateVacancy(baseDto, langMap);
 
-    expect(rows[rowIndex]).toEqual(expected);
+    expect(rows[0]).toEqual({
+      position: "Інженер",
+      slug: expect.any(String),
+      description: "Опис ролі інженера у тилу.",
+      type: "backline",
+      salary_min: 25000,
+      salary_max: 40000,
+      language_id: "lang-uk-id",
+    });
+  });
+
+  it("should map the english vacancy correctly", () => {
+    const rows = mapCreateVacancy(baseDto, langMap);
+
+    expect(rows[1]).toEqual({
+      position: "Engineer",
+      slug: "engineer",
+      description: "Backline engineer role description.",
+      type: "backline",
+      salary_min: 25000,
+      salary_max: 40000,
+      language_id: "lang-en-id",
+    });
   });
 
   it("should default missing salaryMax to null on both rows", () => {
-    const rows = mapCreateVacancy({ ...baseDto, salaryMax: undefined }, langMap);
+    const rows = mapCreateVacancy(
+      {
+        ...baseDto,
+        salaryMax: undefined,
+      },
+      langMap,
+    );
 
     expect(rows[0].salary_max).toBeNull();
     expect(rows[1].salary_max).toBeNull();
+  });
+
+  it("should log and throw when uk language id is missing", () => {
+    const invalidLangMap = {
+      uk: "",
+      en: "lang-en-id",
+    } as Record<ActiveLanguage, string>;
+
+    expect(() => mapCreateVacancy(baseDto, invalidLangMap)).toThrow(
+      "Missing language IDs for required locales: en, uk",
+    );
+
+    expect(logger.error).toHaveBeenCalledWith("Missing language IDs for required locales: en, uk");
+  });
+
+  it("should log and throw when en language id is missing", () => {
+    const invalidLangMap = {
+      uk: "lang-uk-id",
+      en: "",
+    } as Record<ActiveLanguage, string>;
+
+    expect(() => mapCreateVacancy(baseDto, invalidLangMap)).toThrow(
+      "Missing language IDs for required locales: en, uk",
+    );
+
+    expect(logger.error).toHaveBeenCalledWith("Missing language IDs for required locales: en, uk");
   });
 });
