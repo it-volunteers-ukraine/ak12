@@ -25,3 +25,5 @@ export const heroContentSchema = z.object({
     .nullable()
     .optional(),
 });
+
+export type HeroContent = z.infer<typeof heroContentSchema>;

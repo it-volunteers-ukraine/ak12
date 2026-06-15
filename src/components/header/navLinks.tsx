@@ -1,15 +1,31 @@
-import { Links } from ".";
+"use client";
+
 import { cn } from "@/utils";
+import { HeaderLinks } from "@/schemas";
+import { calculateSectionsPositions } from "./calculateSectionsPositions";
 
 type NavLinkProps = {
-  links: Links;
   className?: string;
+  links: HeaderLinks;
   activeSection?: string;
   onClickAction?: () => void;
   type?: "desktop" | "mobile";
 };
 
 export const NavLinks = ({ activeSection, links, onClickAction, type = "desktop", className }: NavLinkProps) => {
+  const handleClick = (section: HeaderLinks[number]) => {
+    const positionsSections = calculateSectionsPositions(links);
+
+    const scrollTo = positionsSections.find((s) => s.idSection === section.idSection)?.position ?? 0;
+
+    window.scrollTo({
+      top: scrollTo,
+      behavior: "smooth",
+    });
+
+    onClickAction?.();
+  };
+
   return (
     <nav className={cn(type === "desktop" && "desktop:flex hidden items-center")}>
       <ul
@@ -21,9 +37,8 @@ export const NavLinks = ({ activeSection, links, onClickAction, type = "desktop"
       >
         {links.map((item) => (
           <li key={item.idSection}>
-            <a
-              href={`#${item.idSection}`}
-              onClick={onClickAction}
+            <button
+              onClick={() => handleClick(item)}
               aria-current={activeSection === item.idSection ? "page" : undefined}
               className={cn(
                 "text-soft-blush focus:text-accent/50 active:text-accent hover:text-accent/50 text-[16px] font-semibold transition-colors active:underline active:underline-offset-1",
@@ -33,7 +48,7 @@ export const NavLinks = ({ activeSection, links, onClickAction, type = "desktop"
               )}
             >
               {item.label}
-            </a>
+            </button>
           </li>
         ))}
       </ul>

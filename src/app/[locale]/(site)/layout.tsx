@@ -1,5 +1,3 @@
-import { getTranslations } from "next-intl/server";
-
 import { SECTION_KEYS } from "@/constants";
 import { Footer, Header } from "@/components";
 import { contentService } from "@/lib/content/content.service";
@@ -28,17 +26,11 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
     section: SECTION_KEYS.FEEDBACK,
   });
 
-  const t = await getTranslations({
-    locale: locale,
-    namespace: "footer",
-  });
-
   return (
     <>
       <Header content={contentHeader?.header ?? null} socialLinks={contentFeedback?.contacts?.socialLinks || null} />
       {children}
       <Footer
-        translations={t}
         content={contentHeader?.footer ?? null}
         menu={contentHeader?.header.links || null}
         contacts={contentFeedback?.contacts ?? null}

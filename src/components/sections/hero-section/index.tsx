@@ -1,26 +1,30 @@
+"use client";
+
 import Image from "next/image";
+import { useRef } from "react";
 
-import { Locale } from "@/types";
-import { SECTION_KEYS } from "@/constants";
-import { heroContentSchema } from "@/schemas";
+import { HeroContent } from "@/schemas";
 import { BlobButton } from "@/components/blobButton";
-import { contentService } from "@/lib/content/content.service";
-
 import { ArrowDown } from "../../../../public/icons";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
-export const HeroSection = async ({ locale }: { locale: Locale }) => {
-  const content = await contentService.get({
-    locale,
-    schema: heroContentSchema,
-    section: SECTION_KEYS.HERO,
-  });
+export const HeroSection = ({ content }: { content: HeroContent | null }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const top = useTopFromViewportMinusContent(sectionRef);
 
   if (!content) {
     return null;
   }
 
   return (
-    <section className="desktop-xl:max-w-480 desktop-xl:mx-auto relative isolate overflow-hidden pt-18 text-white">
+    <section
+      id="hero"
+      ref={sectionRef}
+      className="desktop-xl:max-w-480 desktop-xl:mx-auto sticky isolate overflow-hidden pt-18 text-white"
+      style={{
+        top,
+      }}
+    >
       {content.backgroundImage?.secureUrl && (
         <Image
           fill

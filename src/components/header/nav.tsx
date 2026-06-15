@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 
-import { Links } from ".";
 import { Modal } from "../modal";
 import { NavLinks } from "./navLinks";
 import { BarsIcon, CloseIcon } from "../../../public/icons";
 import { useActiveSection } from "@/hooks";
+import { HeaderLinks } from "@/schemas";
 
-export const Nav = ({ links }: { links: Links }) => {
+export const Nav = ({ links }: { links: HeaderLinks }) => {
   if (!links) {
     return null;
   }

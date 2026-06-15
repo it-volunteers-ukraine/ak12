@@ -1,29 +1,14 @@
-import { Locale } from "@/types";
-import { logger } from "@/lib/logger";
-import { aboutUsSchema } from "@/schemas";
-import { SECTION_KEYS } from "@/constants/section-key";
-import { contentService } from "@/lib/content/content.service";
+"use client";
+
+import { AboutUsContent } from "@/schemas";
 
 import { LifeOfTheCorpsGalleryClient } from "./gallery/gallery-client";
+import { useRef } from "react";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
-interface ILifeOfTheCorpsSectionProps {
-  locale: Locale;
-}
-
-export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionProps) => {
-  let content;
-
-  try {
-    content = await contentService.get({
-      locale,
-      schema: aboutUsSchema,
-      section: SECTION_KEYS.ABOUT,
-    });
-  } catch (error) {
-    logger.error({ error, locale, section: SECTION_KEYS.ABOUT }, "Failed to load LifeOfTheCorpsSection content");
-
-    return null;
-  }
+export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | null }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const top = useTopFromViewportMinusContent(sectionRef);
 
   if (!content) {
     return null;
@@ -96,7 +81,14 @@ export const LifeOfTheCorpsSection = async ({ locale }: ILifeOfTheCorpsSectionPr
   });
 
   return (
-    <section className="bg-surface-main w-full overflow-hidden">
+    <section
+      id="life-of-the-corps"
+      ref={sectionRef}
+      className="container-app sticky w-full overflow-hidden bg-black/95"
+      style={{
+        top,
+      }}
+    >
       <LifeOfTheCorpsGalleryClient cells={cells} images={images} />
     </section>
   );
