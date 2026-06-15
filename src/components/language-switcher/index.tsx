@@ -45,7 +45,7 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
         aria-label="Change language"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "text-soft-blush focus:border-accent flex h-6 w-12 items-center justify-between border border-transparent px-0.5 py-1 text-[16px] font-bold transition-colors focus:ring-0 focus:outline-none",
+          "text-soft-blush focus:border-accent flex w-15 items-center justify-between border border-transparent px-2 py-1 text-[16px] font-bold transition-colors focus:ring-0 focus:outline-none",
           !isOpen && "focus:bg-dark-khaki hover:bg-olive-brown hover:border-accent/50 rounded-xs",
           isOpen && "bg-dark-khaki hover:border-accent/50 rounded-t-xs",
           className,
@@ -60,7 +60,7 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
         role="listbox"
         aria-label="Language options"
         className={cn(
-          "bg-disabled absolute top-full left-0 z-50 flex h-6 w-12 origin-top flex-col rounded-b-xs shadow-lg transition-all duration-200 ease-in-out",
+          "bg-disabled absolute top-full left-0 z-50 flex w-15 origin-top flex-col rounded-b-xs shadow-lg transition-all duration-200 ease-in-out",
           isOpen ? "pointer-events-auto scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0",
           className,
         )}
@@ -73,7 +73,7 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
           aria-selected={false}
           tabIndex={!isOpen ? -1 : 0}
           onClick={() => switchLanguage(isUk ? ActiveLanguage.EN : ActiveLanguage.UK)}
-          className="text-soft-blush hover:border-accent/50 focus:border-accent flex h-6 w-full items-center justify-start rounded-b-xs border border-transparent px-0.5 py-1 text-[16px] font-bold transition-colors focus:ring-0 focus:outline-none"
+          className="text-soft-blush hover:border-accent/50 focus:border-accent flex w-full items-center justify-start rounded-b-xs border border-transparent px-2 py-1 text-[16px] font-bold transition-colors focus:ring-0 focus:outline-none"
         >
           {isUk ? "Eng" : "Укр"}
         </button>
