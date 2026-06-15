@@ -28,7 +28,7 @@ export const getMobilizationStyles = () => ({
     containerCardsChildrenStep,
   ),
   containerContent:
-    "tablet:w-max desktop:px-8 tablet:mx-auto bg-surface-main border-accent tablet:mt-16 tablet:text-center tablet:py-8 tablet:px-3.5 mt-8 border-b-4 p-4",
+    "tablet:max-w-max laptop:px-8 tablet:mx-auto bg-surface-main border-accent tablet:mt-16 tablet:text-center tablet:py-8 tablet:px-3.5 mt-8 border-b-4 p-4",
   primaryDescription: "text-warm-gray tablet:inline tablet:text-[20px] mb-0.5 text-center text-[16px]",
   accentedDescription: "text-accent tablet:inline mb-4 text-center text-[20px]",
   secondaryDescription: "text-warm-gray tablet:text-[20px] text-center text-[16px]",
