@@ -1,123 +1,102 @@
 import { renderHook, act } from "@testing-library/react";
-import { useActiveSection } from "./useActiveSection";
+import { useActiveSection } from "./useActiveSection"; // Перевір шлях до файлу!
 
 describe("useActiveSection", () => {
-  let callback: IntersectionObserverCallback;
-  let observe: jest.Mock;
-  let disconnect: jest.Mock;
-
   beforeEach(() => {
-    jest.useFakeTimers();
-
-    observe = jest.fn();
-    disconnect = jest.fn();
-
-    global.IntersectionObserver = jest.fn((cb) => {
-      callback = cb;
-
-      return {
-        observe,
-        disconnect,
-        unobserve: jest.fn(),
-        takeRecords: jest.fn(),
-        root: null,
-        rootMargin: "",
-        thresholds: [],
-      };
-    }) as any;
+    Object.defineProperty(window, "innerHeight", {
+      writable: true,
+      configurable: true,
+      value: 1000,
+    });
 
     document.body.innerHTML = `
       <div id="section-1"></div>
       <div id="section-2"></div>
+      <div id="section-3"></div>
     `;
+
+    mockBoundingClientRect("section-1", { top: 2000, bottom: 3000 });
+    mockBoundingClientRect("section-2", { top: 4000, bottom: 5000 });
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
     jest.clearAllMocks();
   });
 
-  const createEntry = (id: string, isIntersecting: boolean): IntersectionObserverEntry =>
-    ({
-      isIntersecting,
-      target: document.getElementById(id)!,
-    }) as unknown as IntersectionObserverEntry;
+  const mockBoundingClientRect = (id: string, rect: { top: number; bottom: number }) => {
+    const el = document.getElementById(id);
 
-  it("returns empty string initially", () => {
-    const { result } = renderHook(() => useActiveSection(["section-1"]));
+    if (el) {
+      el.getBoundingClientRect = jest.fn(() => ({
+        top: rect.top,
+        bottom: rect.bottom,
+        left: 0,
+        right: 0,
+        width: 100,
+        height: rect.bottom - rect.top,
+        x: 0,
+        y: 0,
+        toJSON: () => {},
+      }));
+    }
+  };
+
+  const fireScrollEvent = () => {
+    act(() => {
+      window.dispatchEvent(new Event("scroll"));
+    });
+  };
+
+  it("returns empty string initially when no section is in the center", () => {
+    const { result } = renderHook(() => useActiveSection(["section-1", "section-2"]));
 
     expect(result.current).toBe("");
   });
 
-  it("observes elements after timeout", () => {
-    renderHook(() => useActiveSection(["section-1", "section-2"]));
+  it("sets active section immediately if it is in the center on mount", () => {
+    mockBoundingClientRect("section-1", { top: 100, bottom: 900 });
 
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    expect(observe).toHaveBeenCalledTimes(2);
-    expect(observe).toHaveBeenCalledWith(document.getElementById("section-1"));
-    expect(observe).toHaveBeenCalledWith(document.getElementById("section-2"));
-  });
-
-  it("updates active section when element intersects", () => {
-    const { result } = renderHook(() => useActiveSection(["section-1"]));
-
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    act(() => {
-      callback([createEntry("section-1", true)], {} as IntersectionObserver);
-    });
+    const { result } = renderHook(() => useActiveSection(["section-1", "section-2"]));
 
     expect(result.current).toBe("section-1");
   });
 
-  it("does not update when element is not intersecting", () => {
+  it("updates active section when scrolling makes an element hit the center", () => {
+    const { result } = renderHook(() => useActiveSection(["section-1", "section-2"]));
+
+    expect(result.current).toBe(""); // Спочатку нічого немає в центрі
+
+    mockBoundingClientRect("section-2", { top: 300, bottom: 1200 });
+    fireScrollEvent();
+
+    expect(result.current).toBe("section-2");
+  });
+
+  it("clears active section when scrolled away from all sections", () => {
+    mockBoundingClientRect("section-1", { top: 0, bottom: 1000 });
     const { result } = renderHook(() => useActiveSection(["section-1"]));
 
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
+    expect(result.current).toBe("section-1");
 
-    act(() => {
-      callback([createEntry("section-1", false)], {} as IntersectionObserver);
-    });
+    mockBoundingClientRect("section-1", { top: -1000, bottom: 0 });
+    fireScrollEvent();
 
     expect(result.current).toBe("");
   });
 
-  it("does nothing when sectionIds is empty", () => {
-    renderHook(() => useActiveSection([]));
+  it("skips missing elements without throwing errors", () => {
+    const { result } = renderHook(() => useActiveSection(["section-missing"]));
 
-    expect(global.IntersectionObserver).not.toHaveBeenCalled();
+    expect(result.current).toBe("");
   });
 
-  it("disconnects observer on unmount", () => {
-    const { unmount } = renderHook(() => useActiveSection(["section-1"]));
+  it("removes event listener on unmount", () => {
+    const removeEventListenerSpy = jest.spyOn(window, "removeEventListener");
 
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
+    const { unmount } = renderHook(() => useActiveSection(["section-1"]));
 
     unmount();
 
-    expect(disconnect).toHaveBeenCalled();
-  });
-
-  it("skips missing elements", () => {
-    document.body.innerHTML = `<div id="section-1"></div>`;
-
-    renderHook(() => useActiveSection(["section-1", "missing"]));
-
-    act(() => {
-      jest.advanceTimersByTime(100);
-    });
-
-    expect(observe).toHaveBeenCalledTimes(1);
-    expect(observe).toHaveBeenCalledWith(document.getElementById("section-1"));
+    expect(removeEventListenerSpy).toHaveBeenCalledWith("scroll", expect.any(Function));
   });
 });
