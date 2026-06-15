@@ -14,7 +14,6 @@ export function useTopFromViewportMinusContent<T extends HTMLElement>(ref: RefOb
 
     const updateTop = () => {
       const contentHeight = element.clientHeight;
-
       const nextTop = Math.min(0, window.innerHeight - contentHeight);
 
       setTop(nextTop);
@@ -22,16 +21,27 @@ export function useTopFromViewportMinusContent<T extends HTMLElement>(ref: RefOb
 
     updateTop();
 
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const debouncedUpdateTop = () => {
+      clearTimeout(timeoutId);
+
+      timeoutId = setTimeout(() => {
+        updateTop();
+      }, 100);
+    };
+
     const resizeObserver = new ResizeObserver(() => {
-      updateTop();
+      debouncedUpdateTop();
     });
 
     resizeObserver.observe(element);
-    window.addEventListener("resize", updateTop);
+    window.addEventListener("resize", debouncedUpdateTop);
 
     return () => {
       resizeObserver.disconnect();
-      window.removeEventListener("resize", updateTop);
+      window.removeEventListener("resize", debouncedUpdateTop);
+      clearTimeout(timeoutId);
     };
   }, [ref]);
 

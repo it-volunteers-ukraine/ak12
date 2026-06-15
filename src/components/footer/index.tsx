@@ -1,19 +1,36 @@
+"use client";
+
 import { getStyles } from "./styles";
-import { ContactsSchema, FooterContent, HeaderLink } from "@/schemas";
+import { ContactsSchema, FooterContent, HeaderLink, HeaderLinks } from "@/schemas";
 import Image from "next/image";
 import { Logo } from "../../../public/images";
 import { SocialLinkList } from "../socialLinkList";
 import { ContactsType } from "@/constants";
+import { calculateSectionsPositions } from "../header/calculateSectionsPositions";
+import { useTranslations } from "next-intl";
 
 type FooterProps = {
   menu: HeaderLink[] | null;
-  translations: (key: string) => string;
+
   content: FooterContent | null;
   contacts: ContactsSchema | null;
 };
 
-export const Footer = ({ contacts, content, menu, translations }: FooterProps) => {
+export const Footer = ({ contacts, content, menu }: FooterProps) => {
+  const translations = useTranslations("footer");
+
   const styles = getStyles();
+
+  const handleClick = (section: HeaderLinks[number]) => {
+    const positionsSections = calculateSectionsPositions(menu ?? []);
+
+    const scrollTo = positionsSections.find((s) => s.idSection === section.idSection)?.position ?? 0;
+
+    window.scrollTo({
+      top: scrollTo,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <footer className={styles.footer}>
@@ -41,9 +58,9 @@ export const Footer = ({ contacts, content, menu, translations }: FooterProps) =
                 {menu.map((item, index) => {
                   return (
                     <li key={item.idSection || index} className="flex h-5 items-center">
-                      <a href={`#${item.idSection}`} className={styles.link}>
+                      <button onClick={() => handleClick(item)} className={styles.link}>
                         {item.label}
-                      </a>
+                      </button>
                     </li>
                   );
                 })}

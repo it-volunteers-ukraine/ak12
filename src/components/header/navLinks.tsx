@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/utils";
 import { HeaderLinks } from "@/schemas";
 import { calculateSectionsPositions } from "./calculateSectionsPositions";

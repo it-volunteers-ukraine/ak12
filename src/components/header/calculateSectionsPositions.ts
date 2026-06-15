@@ -5,6 +5,12 @@ type SectionWithPosition = HeaderLinks[number] & {
 };
 
 export const calculateSectionsPositions = (sections: HeaderLinks): SectionWithPosition[] => {
+  const isBrowser = typeof window !== "undefined" && typeof document !== "undefined";
+
+  if (!isBrowser) {
+    return [];
+  }
+
   let currentPosition = 0;
 
   const newSections = [...sections];
