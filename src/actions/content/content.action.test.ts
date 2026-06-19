@@ -1,10 +1,8 @@
 import { revalidatePath } from "next/cache";
-
+import { SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
 import { logger } from "@/lib/logger";
-import { SECTION_KEYS } from "@/constants";
-
-import { saveContentAction, updateContentMultiLang } from "./content";
+import { saveContentAction, updateContentMultiLang } from "@/actions/content/content.action";
 
 jest.mock("next/cache", () => ({
   revalidatePath: jest.fn(),

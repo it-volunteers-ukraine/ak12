@@ -1,10 +1,9 @@
-import { updateHeroMultiLangAction } from "./heroActions";
-
-import { saveContentAction } from "../content/content";
-import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
+import { logger } from "@/lib/logger";
+import { updateHeroMultiLangAction } from "@/actions/hero/hero.action";
+import { saveContentAction } from "@/actions/content/content.action";
 
-jest.mock("../content/content", () => ({
+jest.mock("@/actions/content/content.action", () => ({
   saveContentAction: jest.fn(),
 }));
 

@@ -1,10 +1,9 @@
 "use server";
 
-import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
 import { MobilizationSchema } from "@/schemas/mobilizationSchema";
-
-import { saveContentAction } from "../content/content";
+import { logger } from "@/lib/logger";
+import { saveContentAction } from "@/actions/content/content.action";
 
 interface MultiLangMobilizationValues {
   en: MobilizationSchema;

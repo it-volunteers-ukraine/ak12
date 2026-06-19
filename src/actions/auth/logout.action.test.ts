@@ -1,6 +1,6 @@
-import { logout } from "./logout";
-import { deleteSession } from "@/lib/auth/session.service";
 import { redirect } from "next/navigation";
+import { deleteSession } from "@/lib/auth/session.service";
+import { logout } from "@/actions/auth/logout.action";
 
 jest.mock("@/lib/auth/session.service", () => ({
   deleteSession: jest.fn(),

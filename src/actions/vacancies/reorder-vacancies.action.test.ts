@@ -1,10 +1,9 @@
 /**
  * @jest-environment node
  */
-import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
-
-import { reorderVacancies } from "./reorder-vacancies.action";
+import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { reorderVacancies } from "@/actions/vacancies/reorder-vacancies.action";
 
 jest.mock("@/lib/supabase-server", () => ({
   supabaseServer: {

@@ -1,6 +1,6 @@
-import { updateVacancy } from "@/actions/vacancies/update-vacancy.action";
 import { logger } from "@/lib/logger";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { updateVacancy } from "@/actions/vacancies/update-vacancy.action";
 
 jest.mock("@/lib/logger", () => ({
   logger: {

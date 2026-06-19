@@ -2,15 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { locales } from "@/constants";
-import { supabaseServer } from "@/lib/supabase-server";
 import { Locale, Subdivision } from "@/types";
+import { supabaseServer } from "@/lib/supabase-server";
 import { storedImageSchema } from "@/components/admin/subdivisions-section/config";
 
-// HELPERS
-
 const isLocale = (value: string): value is Locale => locales.includes(value as Locale);
-
-// Gets language row id by locale code (e.g. 'uk' -> UUID)
 const languageIdCache = new Map<string, string>();
 
 const getLanguageId = async (locale: string): Promise<string | null> => {
@@ -28,15 +24,12 @@ const getLanguageId = async (locale: string): Promise<string | null> => {
     throw new Error(`Language not found for locale: ${locale}`);
   }
 
-  // Зберегти в кеш
   languageIdCache.set(locale, data.id);
 
   return data.id;
 };
 
-// Maps a raw Supabase row to our Subdivision type
 const mapRow = (row: Record<string, any>, languageCode: Locale): Subdivision => {
-
   const parsedImage = storedImageSchema.safeParse(row.image_url);
   const parsedHoverImage = storedImageSchema.safeParse(row.hover_image_url);
 
@@ -58,9 +51,6 @@ const mapRow = (row: Record<string, any>, languageCode: Locale): Subdivision => 
   };
 };
 
-// PUBLIC (frontend)
-
-// Returns only active subdivisions for the given locale, sorted by sort_order.
 export async function getSubdivisions(locale: Locale): Promise<Subdivision[]> {
   const languageId = await getLanguageId(locale);
 
@@ -82,7 +72,6 @@ export async function getSubdivisions(locale: Locale): Promise<Subdivision[]> {
   return (data ?? []).map((row) => mapRow(row, locale));
 }
 
-// Returns a single subdivision by slug and locale.
 export async function getSubdivisionBySlug(slug: string, locale: Locale): Promise<Subdivision | null> {
   const languageId = await getLanguageId(locale);
 
@@ -108,9 +97,6 @@ export async function getSubdivisionBySlug(slug: string, locale: Locale): Promis
   return mapRow(data, locale);
 }
 
-// ─── ADMIN ────────────────────────────────────────────────────────────────────
-
-// Returns ALL subdivisions for the given locale, including inactive ones.
 export async function getAllSubdivisions(locale: Locale): Promise<Subdivision[]> {
   const languageId = await getLanguageId(locale);
 
@@ -131,7 +117,6 @@ export async function getAllSubdivisions(locale: Locale): Promise<Subdivision[]>
   return (data ?? []).map((row) => mapRow(row, locale));
 }
 
-// Creates a new subdivision.
 export async function createSubdivision(data: Omit<Subdivision, "id">): Promise<Subdivision> {
   const languageId = await getLanguageId(data.languageCode);
 
@@ -166,7 +151,6 @@ export async function createSubdivision(data: Omit<Subdivision, "id">): Promise<
   return mapRow(inserted, data.languageCode);
 }
 
-// Updates an existing subdivision by id.
 export async function updateSubdivision(id: string, data: Partial<Omit<Subdivision, "id">>): Promise<Subdivision> {
   const updatePayload: Record<string, unknown> = {};
 
@@ -201,8 +185,8 @@ export async function updateSubdivision(id: string, data: Partial<Omit<Subdivisi
     updatePayload.sort_order = data.sortOrder;
   }
   if (data.updatedAt !== undefined) {
-  updatePayload.updated_at = data.updatedAt;
-}
+    updatePayload.updated_at = data.updatedAt;
+  }
 
   const { data: updated, error } = await supabaseServer
     .from("subdivision")
@@ -222,7 +206,6 @@ export async function updateSubdivision(id: string, data: Partial<Omit<Subdivisi
   return mapRow(updated, locale);
 }
 
-// Deletes a subdivision by id.
 export async function deleteSubdivision(id: string): Promise<void> {
   const { error } = await supabaseServer.from("subdivision").delete().eq("id", id);
 
@@ -233,15 +216,9 @@ export async function deleteSubdivision(id: string): Promise<void> {
   revalidatePath("/");
 }
 
-// Update sortOrder for an array of subdivisions with a single query
-export async function updateSubdivisionsOrder(
-  items: { id: string; sortOrder: number }[],
-): Promise<void> {
+export async function updateSubdivisionsOrder(items: { id: string; sortOrder: number }[]): Promise<void> {
   const updates = items.map(({ id, sortOrder }) =>
-    supabaseServer
-      .from("subdivision")
-      .update({ sort_order: sortOrder })
-      .eq("id", id),
+    supabaseServer.from("subdivision").update({ sort_order: sortOrder }).eq("id", id),
   );
 
   const results = await Promise.all(updates);

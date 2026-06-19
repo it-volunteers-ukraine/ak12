@@ -11,8 +11,8 @@ import { BtnGroup } from "@/components/admin/admin-form-elements";
 import { LocaleSection } from "@/lib/form-builder/components/LocaleSection";
 import { StoredImage } from "@/lib/admin/upload-image.service";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { uploadImageAction, deleteImageAction } from "@/actions/admin/upload-image.actions";
-import { createSubdivision, updateSubdivision } from "@/actions/subdivisions";
+import { uploadImageAction, deleteImageAction } from "@/actions/admin/upload-image.action";
+import { createSubdivision, updateSubdivision } from "@/actions/subdivisions/subdivisions.action";
 import { subdivisionFormBuilderConfig } from "@/lib/admin/configs/subdivision.config";
 
 import { FormWrapper } from "../form";
