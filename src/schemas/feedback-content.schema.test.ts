@@ -1,4 +1,4 @@
-import { infoSchema, socialLinkSchema, feedbackContentSchema } from "./feedbackContent";
+import { infoSchema, socialLinkSchema, feedbackContentSchema } from "@/schemas/feedback-content.schema";
 import { ContactsType, SocialPlatform } from "@/constants";
 
 describe("infoSchema", () => {

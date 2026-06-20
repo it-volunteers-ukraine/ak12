@@ -1,7 +1,7 @@
 "use server";
 
 import { SECTION_KEYS } from "@/constants";
-import { MobilizationSchema } from "@/schemas/mobilizationSchema";
+import { MobilizationSchema } from "@/schemas/mobilization.schema";
 import { logger } from "@/lib/logger";
 import { saveContentAction } from "@/actions/content/content.action";
 

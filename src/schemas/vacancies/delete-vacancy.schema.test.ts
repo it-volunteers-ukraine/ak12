@@ -1,4 +1,4 @@
-import { deleteVacancySchema } from "./delete-vacancy.schema";
+import { deleteVacancySchema } from "@/schemas/vacancies/delete-vacancy.schema";
 
 describe("deleteVacancySchema", () => {
   it("should accept a valid pair of uuids", () => {

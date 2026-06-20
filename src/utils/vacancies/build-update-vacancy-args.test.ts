@@ -1,4 +1,4 @@
-import { buildUpdateVacancyArgs } from "./build-update-vacancy-args";
+import { buildUpdateVacancyArgs } from "@/utils/vacancies/build-update-vacancy-args";
 import { UpdateVacancyDto } from "@/schemas/vacancies/update-vacancy.schema";
 
 const baseDto: UpdateVacancyDto = {

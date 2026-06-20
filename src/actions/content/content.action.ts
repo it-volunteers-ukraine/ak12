@@ -13,7 +13,7 @@ import {
   headerAndFooterContentSchema,
   privacyPolicySchema,
 } from "@/schemas";
-import { mobilizationSchema } from "@/schemas/mobilizationSchema";
+import { mobilizationSchema } from "@/schemas/mobilization.schema";
 import { logger } from "@/lib/logger";
 import { AdminDataMap, AdminSectionKey } from "@/lib/admin";
 import { contentService } from "@/lib/content/content.service";
