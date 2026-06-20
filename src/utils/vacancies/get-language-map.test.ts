@@ -1,4 +1,4 @@
-import { getLanguageMap } from "./get-language-map";
+import { getLanguageMap } from "@/utils/vacancies/get-language-map";
 import { supabaseServer } from "@/lib/supabase-server";
 import { logger } from "@/lib/logger";
 
