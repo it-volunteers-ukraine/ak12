@@ -1,4 +1,4 @@
-import config from "./request";
+import config from "@/i18n/request";
 
 jest.mock("next/navigation", () => ({
   notFound: jest.fn(),
