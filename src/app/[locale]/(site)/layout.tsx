@@ -13,18 +13,18 @@ type SiteLayoutProps = {
 export default async function SiteLayout({ children, params }: SiteLayoutProps) {
   const { locale } = await params;
   const validLocale = locale === "en" ? "en" : "uk";
-
-  const contentHeader = await contentService.get({
-    locale: validLocale,
-    schema: headerAndFooterContentSchema,
-    section: SECTION_KEYS.HEADER,
-  });
-
-  const contentFeedback = await contentService.get({
-    locale: validLocale,
-    schema: feedbackContentSchema,
-    section: SECTION_KEYS.FEEDBACK,
-  });
+  const [contentHeader, contentFeedback] = await Promise.all([
+    contentService.get({
+      locale: validLocale,
+      schema: headerAndFooterContentSchema,
+      section: SECTION_KEYS.HEADER,
+    }),
+    contentService.get({
+      locale: validLocale,
+      schema: feedbackContentSchema,
+      section: SECTION_KEYS.FEEDBACK,
+    }),
+  ]);
 
   return (
     <>
