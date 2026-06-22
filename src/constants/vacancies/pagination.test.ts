@@ -1,4 +1,4 @@
-import { DEFAULT_PAGE, DEFAULT_LIMIT } from "./pagination";
+import { DEFAULT_PAGE, DEFAULT_LIMIT } from "@/constants/vacancies/pagination";
 
 describe("pagination constants", () => {
   it("DEFAULT_PAGE should be 0", () => {

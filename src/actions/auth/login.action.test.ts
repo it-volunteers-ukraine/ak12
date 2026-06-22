@@ -1,6 +1,6 @@
-import { adminLogin } from "./login";
-import { createSession, validateAdmin } from "@/lib/auth/session.service";
 import { redirect } from "next/navigation";
+import { createSession, validateAdmin } from "@/lib/auth/session.service";
+import { adminLogin } from "@/actions/auth/login.action";
 
 jest.mock("@/lib/auth/session.service", () => ({
   createSession: jest.fn(),

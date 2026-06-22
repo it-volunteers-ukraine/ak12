@@ -1,10 +1,10 @@
 "use server";
 
-import { createSession, validateAdmin } from "@/lib/auth/session.service";
-import { loginSchema } from "@/schemas";
+import { z } from "zod";
 import { redirect } from "next/navigation";
 import type { FieldErrors, State } from "@/types";
-import { z } from "zod";
+import { loginSchema } from "@/schemas";
+import { createSession, validateAdmin } from "@/lib/auth/session.service";
 
 export async function adminLogin(_prevState: State, formData: FormData): Promise<State> {
   const data = {

@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState } from "react";
 
@@ -6,9 +6,9 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Keyboard, Navigation, Pagination } from "swiper/modules";
 
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 import { Modal } from "@/components/modal";
-import { getYouTubeEmbedUrl } from "@/lib/youtube";
+import { getYouTubeEmbedUrl } from "@/lib/youtube/youtube";
 
 import { RenderCard } from "../card";
 import { CloseIcon } from "../../../../../public/icons";

@@ -1,5 +1,5 @@
-import { mapVacancy } from "./map-vacancy";
 import { VacancyWithLanguage, VacancyMapped } from "@/types/vacancy";
+import { mapVacancy } from "@/utils/vacancies/map-vacancy";
 
 const baseVacancy: VacancyWithLanguage = {
   id: "vac-1",

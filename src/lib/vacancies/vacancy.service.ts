@@ -1,16 +1,16 @@
 import { Locale } from "@/types/locale";
 import { VacancyMapped } from "@/types/vacancy";
-import { supabaseServer } from "@/lib/supabase-server";
-import { logger } from "@/lib/logger";
-import { mapVacancy } from "@/utils/vacancies/map-vacancy";
-import { CreateVacancyDto } from "../../schemas/vacancies/create-vacancy.schema";
-import { getLanguageMap } from "@/utils/vacancies/get-language-map";
-import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
+import { CreateVacancyDto } from "@/schemas/vacancies/create-vacancy.schema";
 import { UpdateVacancyDto } from "@/schemas/vacancies/update-vacancy.schema";
-import { buildUpdateVacancyArgs } from "@/utils/vacancies/build-update-vacancy-args";
 import { DeleteVacancyDto } from "@/schemas/vacancies/delete-vacancy.schema";
 import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-status.schema";
 import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
+import { mapVacancy } from "@/utils/vacancies/map-vacancy";
+import { getLanguageMap } from "@/utils/vacancies/get-language-map";
+import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
+import { buildUpdateVacancyArgs } from "@/utils/vacancies/build-update-vacancy-args";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { logger } from "@/lib/logger/logger";
 
 interface Params {
   locale: Locale;
@@ -18,8 +18,6 @@ interface Params {
 
 export const vacancyService = {
   async getAll({ locale }: Params): Promise<{ vacancies: VacancyMapped[] }> {
-    // Recommended index:
-    // CREATE INDEX idx_vacancy_active_lang_type_sort ON vacancy(type, is_active, language_id, sort_order);
     const query = supabaseServer
       .from("vacancy")
       .select("*, language:language_id!inner(code)")

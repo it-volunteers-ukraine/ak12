@@ -1,5 +1,5 @@
-import { supabaseServer } from "@/lib/supabase-server";
 import { revalidatePath } from "next/cache";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
 import {
   getSubdivisions,
   createSubdivision,
@@ -8,9 +8,9 @@ import {
   getAllSubdivisions,
   updateSubdivision,
   deleteSubdivision,
-} from "@/actions/subdivisions";
+} from "@/actions/subdivisions/subdivisions.action";
 
-jest.mock("@/lib/supabase-server", () => ({
+jest.mock("@/lib/supabase-server/supabase-server", () => ({
   supabaseServer: {
     from: jest.fn(),
   },
@@ -140,7 +140,7 @@ describe("subdivisions actions", () => {
           return subdivisionChain;
         });
 
-        jest.doMock("@/lib/supabase-server", () => ({
+        jest.doMock("@/lib/supabase-server/supabase-server", () => ({
           supabaseServer: {
             from: fromMock,
           },
@@ -150,7 +150,7 @@ describe("subdivisions actions", () => {
           revalidatePath: jest.fn(),
         }));
 
-        const { getSubdivisions } = require("@/actions/subdivisions");
+        const { getSubdivisions } = require("@/actions/subdivisions/subdivisions.action");
 
         await getSubdivisions("en" as any);
         await getSubdivisions("en" as any);

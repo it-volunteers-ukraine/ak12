@@ -1,15 +1,15 @@
-import { languageService } from "@/lib/language/language.service";
-import { supabaseServer } from "@/lib/supabase-server";
-import { logger } from "@/lib/logger";
 import { Locale } from "@/types";
+import { languageService } from "@/lib/language/language.service";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { logger } from "@/lib/logger/logger";
 
-jest.mock("@/lib/supabase-server", () => ({
+jest.mock("@/lib/supabase-server/supabase-server", () => ({
   supabaseServer: {
     from: jest.fn(),
   },
 }));
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: {
     error: jest.fn(),
     info: jest.fn(),

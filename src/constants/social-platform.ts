@@ -1,3 +1,4 @@
+import { ComponentType, SVGProps } from "react";
 import {
   ViberIcon,
   TiktokIcon,
@@ -11,7 +12,6 @@ import {
   InstagramIcon,
   LinkIcon,
 } from "../../public/icons";
-import { ComponentType, SVGProps } from "react";
 
 export enum SocialPlatform {
   X = "x",

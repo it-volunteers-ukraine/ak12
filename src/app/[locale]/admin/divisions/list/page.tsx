@@ -1,18 +1,12 @@
-import { getAllSubdivisions } from "@/actions/subdivisions";
+import { getAllSubdivisions } from "@/actions/subdivisions/subdivisions.action";
 import { SubdivisionsListSection } from "@/components/admin/subdivisions-section/subdivisions-list-section";
 
 export default async function SubdivisionsListPage() {
-  const [subdivisionsUk, subdivisionsEn] = await Promise.all([
-    getAllSubdivisions("uk"),
-    getAllSubdivisions("en"),
-  ]);
+  const [subdivisionsUk, subdivisionsEn] = await Promise.all([getAllSubdivisions("uk"), getAllSubdivisions("en")]);
 
   return (
     <div className="px-4 py-6">
-      <SubdivisionsListSection
-        subdivisionsUk={subdivisionsUk}
-        subdivisionsEn={subdivisionsEn}
-      />
+      <SubdivisionsListSection subdivisionsUk={subdivisionsUk} subdivisionsEn={subdivisionsEn} />
     </div>
   );
 }

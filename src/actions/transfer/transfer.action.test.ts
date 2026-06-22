@@ -1,14 +1,13 @@
-import { updateTransferMultiLangAction } from "./transfer";
-
-import { saveContentAction } from "../content/content";
-import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
+import { logger } from "@/lib/logger/logger";
+import { updateTransferMultiLangAction } from "@/actions/transfer/transfer.action";
+import { saveContentAction } from "@/actions/content/content.action";
 
-jest.mock("../content/content", () => ({
+jest.mock("@/actions/content/content.action", () => ({
   saveContentAction: jest.fn(),
 }));
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: {
     warn: jest.fn(),
     error: jest.fn(),

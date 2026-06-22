@@ -1,7 +1,7 @@
-import { Locale } from "@/types";
 import { cache } from "react";
-import { supabaseServer } from "../supabase-server";
-import { logger } from "../logger";
+import { Locale } from "@/types";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { logger } from "@/lib/logger/logger";
 
 type LanguageRow = {
   id: string;

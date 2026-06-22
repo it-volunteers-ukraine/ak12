@@ -1,4 +1,4 @@
-import { getYouTubeVideoId, getYouTubeEmbedUrl } from "./youtube";
+import { getYouTubeVideoId, getYouTubeEmbedUrl } from "@/lib/youtube/youtube";
 
 describe("getYouTubeVideoId", () => {
   it("should return null for an empty string", () => {

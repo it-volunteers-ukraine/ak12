@@ -1,11 +1,9 @@
-'use client';
+"use client";
 
 import { FieldValues, useFormContext } from "react-hook-form";
-
 import { cn } from "@/utils";
 import { FormImg } from "@/components/form-elements";
 import { BtnGroup } from "@/components/admin/admin-form-elements";
-
 import { FormBuilderConfig } from "../types";
 import { LocaleSection } from "./LocaleSection";
 
@@ -44,7 +42,7 @@ const SECTION_GRIDS: Record<string, string> = {
   button: "grid-cols-1 lg:grid-cols-2",
   subtitle: "grid-cols-1 lg:grid-cols-2",
   statistics: "grid-cols-1 lg:grid-cols-2",
-  "text-content": "grid-cols-1 lg:grid-cols-3", // [Фото | UK | EN]
+  "text-content": "grid-cols-1 lg:grid-cols-3", // [Photo | UK | EN]
 };
 
 const getSectionGrid = (sectionId: string, localeMode: string, hasImage: boolean): string => {
@@ -184,7 +182,7 @@ export const FormBuilder = ({
           addNewElementForArray={addNewElementForArray}
           addNewElementHandleClick={addNewElementHandleClick}
         />
-        {addNewElementForArray && ( // ← додати цей блок
+        {addNewElementForArray && (
           <p className="mt-2 text-sm text-red-500">* Для кожного елементу додайте фото або YouTube відео</p>
         )}
       </div>

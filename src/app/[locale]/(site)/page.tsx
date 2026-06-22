@@ -12,7 +12,7 @@ import {
 } from "@/schemas";
 import { AboutSection } from "@/components/about";
 import { DEFAULT_TYPE } from "@/constants/vacancies";
-import { getSubdivisions } from "@/actions/subdivisions";
+import { getSubdivisions } from "@/actions/subdivisions/subdivisions.action";
 import { VacanciesSection } from "@/components/vacancies";
 import { JoinUsSection } from "@/components/contract-18-24";
 import { contentService } from "@/lib/content/content.service";

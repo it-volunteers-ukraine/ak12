@@ -1,7 +1,6 @@
 import { z } from "zod";
-
-import { heroContentSchema } from "@/schemas/heroContent";
-import { mobilizationSchema } from "@/schemas/mobilizationSchema";
+import { heroContentSchema } from "@/schemas/hero-content.schema";
+import { mobilizationSchema } from "@/schemas/mobilization.schema";
 import {
   aboutUsSchema,
   transferSchema,

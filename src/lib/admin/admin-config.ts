@@ -9,6 +9,7 @@ import {
   headerAndFooterContentSchema,
   privacyPolicySchema,
 } from "@/schemas";
+import { AdminSectionKey, IAdminSectionConfig } from "@/lib/admin/admin-types";
 import {
   HeroSection,
   FeedbackSection,
@@ -19,8 +20,6 @@ import {
   MobilizationSection,
   PrivacyPolicySection,
 } from "@/components/admin";
-
-import { AdminSectionKey, IAdminSectionConfig } from "./admin-types";
 
 export const ADMIN_CONFIG: { [K in AdminSectionKey]: IAdminSectionConfig<K> } = {
   about: {

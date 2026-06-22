@@ -1,5 +1,6 @@
 import proxy, { config } from "@/proxy";
 import { NextResponse } from "next/server";
+import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
 import {
   verifySession,
   generateSessionToken,
@@ -7,7 +8,6 @@ import {
   shouldRefreshSession,
   getSessionCookieOptions,
 } from "@/lib/auth/session.service";
-import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
 
 jest.mock("next-intl/middleware", () => ({
   __esModule: true,

@@ -1,5 +1,5 @@
-import { getAllVacanciesAdmin } from "./get-all-vacancies-admin.action";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { getAllVacanciesAdmin } from "@/actions/vacancies/get-all-vacancies-admin.action";
 
 jest.mock("@/lib/vacancies/vacancy.service", () => ({
   vacancyService: {

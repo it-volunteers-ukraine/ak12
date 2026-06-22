@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { render, fireEvent } from "@testing-library/react";
-import { useOutsideClick } from "./outSideClick";
+import { useOutsideClick } from "@/hooks/outSideClick";
 
 describe("useOutsideClick", () => {
   const callback = jest.fn();

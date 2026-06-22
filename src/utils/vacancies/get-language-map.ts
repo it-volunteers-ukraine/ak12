@@ -1,6 +1,6 @@
-import { logger } from "@/lib/logger";
-import { supabaseServer } from "@/lib/supabase-server";
 import { ActiveLanguage } from "@/types";
+import { logger } from "@/lib/logger/logger";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
 
 export async function getLanguageMap(): Promise<Record<ActiveLanguage, string>> {
   const { data, error } = await supabaseServer.from("language").select("id, code");
