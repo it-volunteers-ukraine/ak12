@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { useActiveSection } from "./useActiveSection"; // Перевір шлях до файлу!
+import { useActiveSection } from "@/hooks/useActiveSection";
 
 describe("useActiveSection", () => {
   beforeEach(() => {
@@ -64,7 +64,7 @@ describe("useActiveSection", () => {
   it("updates active section when scrolling makes an element hit the center", () => {
     const { result } = renderHook(() => useActiveSection(["section-1", "section-2"]));
 
-    expect(result.current).toBe(""); // Спочатку нічого немає в центрі
+    expect(result.current).toBe("");
 
     mockBoundingClientRect("section-2", { top: 300, bottom: 1200 });
     fireScrollEvent();

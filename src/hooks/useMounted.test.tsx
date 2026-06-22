@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { useMounted } from "./useMounted";
+import { useMounted } from "@/hooks/useMounted";
 
 describe("useMounted", () => {
   beforeEach(() => {
