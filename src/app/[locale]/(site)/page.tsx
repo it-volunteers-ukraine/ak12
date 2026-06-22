@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
 import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
@@ -29,13 +30,11 @@ export interface SearchParamsProps {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const isUk = locale === "uk";
+  const t = await getTranslations({ locale, namespace: "metadata" });
 
   return {
-    title: isUk ? "12-й Aрмійський корпус" : "12th Army Corps",
-    description: isUk
-      ? "Офіційний веб-портал для пошуку вакансій та інформації про діяльність корпусу."
-      : "Official web portal for job vacancies and corps activities information.",
+    title: t("title"),
+    description: t("description"),
   };
 }
 
