@@ -33,7 +33,6 @@ export const HeroSection = ({ content }: { content: HeroContent | null }) => {
           priority
           sizes="100vw"
           alt={content.title}
-          fetchPriority="high"
           className="-z-20 object-cover"
           src={content.backgroundImage.secureUrl}
         />
