@@ -1,7 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 import { saveContentAction, updateContentMultiLang } from "@/actions/content/content.action";
 
 jest.mock("next/cache", () => ({
@@ -14,7 +14,7 @@ jest.mock("@/lib/content/content.service", () => ({
   },
 }));
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: {
     error: jest.fn(),
   },

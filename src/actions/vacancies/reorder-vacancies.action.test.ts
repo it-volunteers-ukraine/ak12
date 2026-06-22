@@ -5,7 +5,7 @@ import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema"
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { reorderVacancies } from "@/actions/vacancies/reorder-vacancies.action";
 
-jest.mock("@/lib/supabase-server", () => ({
+jest.mock("@/lib/supabase-server/supabase-server", () => ({
   supabaseServer: {
     rpc: jest.fn(),
   },

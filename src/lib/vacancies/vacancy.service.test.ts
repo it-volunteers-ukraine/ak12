@@ -1,12 +1,12 @@
-import { supabaseServer } from "@/lib/supabase-server";
-import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { PostgrestSingleResponse, PostgrestError } from "@supabase/postgrest-js";
 import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-status.schema";
 import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
-import { PostgrestSingleResponse, PostgrestError } from "@supabase/postgrest-js";
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
-import { logger } from "@/lib/logger";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { logger } from "@/lib/logger/logger";
 
-jest.mock("@/lib/supabase-server", () => ({
+jest.mock("@/lib/supabase-server/supabase-server", () => ({
   supabaseServer: {
     rpc: jest.fn(),
     from: jest.fn(),
@@ -21,7 +21,7 @@ jest.mock("transliteration", () => ({
   slugify: (value: string) => value.toLowerCase().replace(/\s+/g, "-"),
 }));
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: {
     error: jest.fn(),
     info: jest.fn(),

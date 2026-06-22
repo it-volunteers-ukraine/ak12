@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { locales } from "@/constants";
 import { Locale, Subdivision } from "@/types";
-import { supabaseServer } from "@/lib/supabase-server";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
 import { storedImageSchema } from "@/components/admin/subdivisions-section/config";
 
 const isLocale = (value: string): value is Locale => locales.includes(value as Locale);

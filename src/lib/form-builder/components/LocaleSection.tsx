@@ -2,14 +2,12 @@
 
 import { ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
-
-import { getYouTubeEmbedUrl } from "@/lib/youtube";
-import { Button } from "@/components";
-import { logger } from "@/lib/logger";
-import { FormImg, TextArea, FormField, TextInput } from "@/components/form-elements";
-
 import { En, Uk } from "../../../../public/icons";
 import { LOCALES, SectionConfig } from "../types";
+import { getYouTubeEmbedUrl } from "@/lib/youtube/youtube";
+import { logger } from "@/lib/logger/logger";
+import { Button } from "@/components";
+import { FormImg, TextArea, FormField, TextInput } from "@/components/form-elements";
 
 interface LocaleSectionProps {
   section: SectionConfig;
@@ -41,8 +39,7 @@ const DEFAULT_LOCALE_TITLES: Record<(typeof LOCALES)[number], string> = {
   en: "English",
 };
 
-// ─── VideoField ───────────────────────────────────────────────────────────────
-
+// VideoField
 const VideoField = ({ fieldName }: { fieldName: string }) => {
   const { watch } = useFormContext();
   const value: string = watch(fieldName) ?? "";
@@ -68,8 +65,7 @@ const VideoField = ({ fieldName }: { fieldName: string }) => {
   );
 };
 
-// ─── MediaSelectorField ───────────────────────────────────────────────────────
-
+// MediaSelectorField
 const MediaSelectorField = ({
   imageIndex,
   videoIndex,
@@ -159,8 +155,7 @@ const MediaSelectorField = ({
   );
 };
 
-// ─── getFieldKey ──────────────────────────────────────────────────────────────
-
+// getFieldKey
 const getFieldKey = (field: SectionConfig["fields"][number], fallback: string) => {
   if (field.id) {
     return field.id;
@@ -187,10 +182,9 @@ const getFieldKey = (field: SectionConfig["fields"][number], fallback: string) =
   return field.name;
 };
 
-// ─── renderField ──────────────────────────────────────────────────────────────
-
+// RenderField
 const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en", options: RenderFieldOptions) => {
-  // ── image ───────────────────────────────────────────────────────────────────
+  // Image
   if (field.type === "image") {
     const imageIndex = Number(field.props?.imageIndex ?? -1);
 
@@ -240,7 +234,7 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
     );
   }
 
-  // ── video ───────────────────────────────────────────────────────────────────
+  // Video
   if (field.type === "video") {
     const videoIndex = Number(field.props?.videoIndex ?? -1);
 
@@ -251,7 +245,7 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
     return <VideoField fieldName={`uk.content.gallery.${videoIndex}.videoUrl`} />;
   }
 
-  // ── media-selector ──────────────────────────────────────────────────────────
+  // Media-selector
   if (field.type === "media-selector") {
     const imageIndex = Number(field.props?.imageIndex ?? -1);
     const videoIndex = Number(field.props?.videoIndex ?? -1);
@@ -263,7 +257,7 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
     return <MediaSelectorField imageIndex={imageIndex} videoIndex={videoIndex} options={options} />;
   }
 
-  // ── custom ──────────────────────────────────────────────────────────────────
+  // Custom
   if (field.type === "custom") {
     return (
       <FormField
@@ -277,7 +271,7 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
     );
   }
 
-  // ── text / textarea / number ─────────────────────────────────────────────────
+  // Text / Textarea / Number
   return (
     <FormField
       name={`${locale}.${field.name}`}
@@ -288,16 +282,14 @@ const renderField = (field: SectionConfig["fields"][number], locale: "uk" | "en"
   );
 };
 
-// ─── FlagBadge ────────────────────────────────────────────────────────────────
-
+// FlagBadge
 const FlagBadge = ({ children, size = "sm" }: { children: ReactNode; size?: "sm" | "md" }) => {
   const classes = size === "md" ? "h-8 w-8" : "h-5 w-5";
 
   return <span className={`inline-flex ${classes} overflow-hidden rounded-full`}>{children}</span>;
 };
 
-// ─── Layouts ──────────────────────────────────────────────────────────────────
-
+// Layouts
 const SplitLayout = ({ section, showOutsideTitle, ...options }: LocaleSectionProps) => {
   return (
     <>
@@ -483,9 +475,7 @@ const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: Locale
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="space-y-4">
           {mediaFields.map((field, index) => (
-            <div key={`gallery-media-${getFieldKey(field, `media-${index}`)}`}>
-              {renderField(field, "uk", options)}
-            </div>
+            <div key={`gallery-media-${getFieldKey(field, `media-${index}`)}`}>{renderField(field, "uk", options)}</div>
           ))}
         </div>
         {LOCALES.map((locale) => {
@@ -518,8 +508,7 @@ const GalleryThreeColLayout = ({ section, showOutsideTitle, ...options }: Locale
   );
 };
 
-// ─── Layout registry ──────────────────────────────────────────────────────────
-
+// Layout registry
 const LAYOUT_COMPONENTS: Record<string, React.FC<LocaleSectionProps>> = {
   split: SplitLayout,
   combined: CombinedLayout,

@@ -3,14 +3,15 @@ import pino from "pino";
 // Check if we're running on the server (Node.js environment)
 const isServer = typeof window === "undefined";
 
-const transport = isServer && process.stdout?.isTTY
-  ? {
-      transport: {
-        target: "pino-pretty",
-        options: { colorize: true },
-      },
-    }
-  : {};
+const transport =
+  isServer && process.stdout?.isTTY
+    ? {
+        transport: {
+          target: "pino-pretty",
+          options: { colorize: true },
+        },
+      }
+    : {};
 
 // On client-side, create a minimal logger that uses console
 const createClientLogger = (): pino.Logger => {
@@ -28,11 +29,11 @@ const createClientLogger = (): pino.Logger => {
     silent: noop,
     msgPrefix: "",
   };
-  
+
   return clientLogger as unknown as pino.Logger;
 };
 
-export const logger: pino.Logger = isServer 
+export const logger: pino.Logger = isServer
   ? pino({
       level: process.env.NODE_ENV === "production" ? "info" : "debug",
       ...transport,

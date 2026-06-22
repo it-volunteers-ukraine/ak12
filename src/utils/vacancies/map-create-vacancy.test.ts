@@ -1,9 +1,9 @@
 import { ActiveLanguage } from "@/types/enum";
 import { CreateVacancyDto } from "@/schemas/vacancies/create-vacancy.schema";
 import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: { error: jest.fn() },
 }));
 

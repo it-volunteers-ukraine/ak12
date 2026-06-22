@@ -1,4 +1,4 @@
-import { transferConfig } from "./transfer.config";
+import { transferConfig } from "@/lib/admin/configs/transfer.config";
 
 describe("transferConfig", () => {
   it("should have correct base structure", () => {

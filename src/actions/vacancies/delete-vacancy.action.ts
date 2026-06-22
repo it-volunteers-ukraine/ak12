@@ -2,7 +2,7 @@
 
 import { ZodIssue } from "zod";
 import { deleteVacancySchema } from "@/schemas/vacancies/delete-vacancy.schema";
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 
 export async function deleteVacancy(data: unknown): Promise<void | ZodIssue[]> {

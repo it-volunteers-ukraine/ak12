@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 
-import { getYouTubeVideoId } from "@/lib/youtube";
+import { getYouTubeVideoId } from "@/lib/youtube/youtube";
 import { getStyles } from "./styles";
 import { CornerFrame } from "@/components/cornerFrame";
 import { GalleryPlaceholder } from "../../../../../public/images";

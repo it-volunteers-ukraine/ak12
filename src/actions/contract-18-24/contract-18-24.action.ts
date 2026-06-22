@@ -2,7 +2,7 @@
 
 import { SECTION_KEYS } from "@/constants";
 import { Locale } from "@/types";
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 import { AdminDataMap } from "@/lib/admin";
 import { saveContentAction } from "@/actions/content/content.action";
 

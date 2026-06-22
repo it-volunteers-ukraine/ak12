@@ -2,7 +2,7 @@
 
 import { ZodIssue } from "zod";
 import { reorderVacanciesSchema } from "@/schemas/vacancies/reorder-vacancy.schema";
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 
 export async function reorderVacancies(data: unknown): Promise<void | ZodIssue[]> {

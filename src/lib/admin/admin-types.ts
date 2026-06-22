@@ -1,8 +1,6 @@
 import z, { ZodType } from "zod";
-
 import { SectionKey } from "@/constants";
-
-import { ADMIN_SCHEMAS } from "./admin-schemas";
+import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 
 export type AdminDataMap = {
   [K in keyof typeof ADMIN_SCHEMAS]: z.infer<(typeof ADMIN_SCHEMAS)[K]>;
@@ -21,6 +19,6 @@ export interface IAdminSectionConfig<K extends AdminSectionKey> {
   sectionKey: SectionKey;
   component: TAdminFormComponent<K>;
   schema: ZodType<AdminDataMap[K]["uk"]>;
-};
+}
 
 export const isAdminSectionKey = (value: string): value is AdminSectionKey => value in ADMIN_SCHEMAS;

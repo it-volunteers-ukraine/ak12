@@ -1,12 +1,12 @@
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
-import { supabaseServer } from "@/lib/supabase-server";
-import { logger } from "@/lib/logger";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { logger } from "@/lib/logger/logger";
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: { error: jest.fn() },
 }));
 
-jest.mock("@/lib/supabase-server", () => ({
+jest.mock("@/lib/supabase-server/supabase-server", () => ({
   supabaseServer: {
     from: jest.fn(),
   },

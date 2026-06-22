@@ -5,7 +5,7 @@ import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-statu
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { updateVacancyStatus } from "@/actions/vacancies/update-vacancy-status.action";
 
-jest.mock("@/lib/supabase-server", () => ({
+jest.mock("@/lib/supabase-server/supabase-server", () => ({
   supabaseServer: {
     rpc: jest.fn(),
   },
