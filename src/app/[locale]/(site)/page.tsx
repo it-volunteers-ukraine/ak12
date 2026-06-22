@@ -1,15 +1,8 @@
+import { Metadata } from "next";
+
 import { Locale } from "@/types";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
-import {
-  aboutUsSchema,
-  transferSchema,
-  heroContentSchema,
-  contract1824Schema,
-  mobilizationSchema,
-  privacyPolicySchema,
-  feedbackContentSchema,
-} from "@/schemas";
 import { AboutSection } from "@/components/about";
 import { DEFAULT_TYPE } from "@/constants/vacancies";
 import { getSubdivisions } from "@/actions/subdivisions";
@@ -20,9 +13,30 @@ import { FeedbackSection } from "@/components/feedback-section";
 import { MarqueeLine, SubdivisionsSection } from "@/components";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
 import { HeroSection, LifeOfTheCorpsSection } from "@/components/sections";
+import {
+  aboutUsSchema,
+  transferSchema,
+  heroContentSchema,
+  contract1824Schema,
+  mobilizationSchema,
+  privacyPolicySchema,
+  feedbackContentSchema,
+} from "@/schemas";
 
 export interface SearchParamsProps {
   type?: VacancyType;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const isUk = locale === "uk";
+
+  return {
+    title: isUk ? "12-й Aрмійський корпус" : "12th Army Corps",
+    description: isUk
+      ? "Офіційний веб-портал для пошуку вакансій та інформації про діяльність корпусу."
+      : "Official web portal for job vacancies and corps activities information.",
+  };
 }
 
 export default async function Home({
