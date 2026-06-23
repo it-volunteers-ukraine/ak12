@@ -38,8 +38,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   };
 }
 
-export const revalidate = 60;
-
 export default async function Home({
   params,
   searchParams,
