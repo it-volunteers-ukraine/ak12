@@ -7,6 +7,7 @@ import Image from "next/image";
 import { HeroContent } from "@/schemas";
 import { BlobButton } from "@/components/blobButton";
 import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
+import { scrollToSection } from "@/utils/scrollToSection";
 
 import { ArrowDown } from "../../../../public/icons";
 
@@ -64,6 +65,9 @@ export const HeroSection = ({ content }: { content: HeroContent | null }) => {
           typeStyles="sub"
           href={"#vacancy"}
           openInNewTab={false}
+          onClick={() => {
+            scrollToSection("vacancy");
+          }}
           className="order-3 flex h-15 w-full max-w-90 self-center md:order-2 md:mt-0 md:mb-23 md:w-70 md:max-w-none md:self-start md:py-3 xl:mb-36"
         >
           <span className="font-ermilov flex items-center gap-1 py-3 text-[20px] text-black md:py-0">
