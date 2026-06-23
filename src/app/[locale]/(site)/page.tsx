@@ -6,7 +6,6 @@ import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
 import { AboutSection } from "@/components/about";
 import { DEFAULT_TYPE } from "@/constants/vacancies";
-import { getSubdivisions } from "@/actions/subdivisions";
 import { VacanciesSection } from "@/components/vacancies";
 import { JoinUsSection } from "@/components/contract-18-24";
 import { contentService } from "@/lib/content/content.service";
@@ -14,6 +13,7 @@ import { FeedbackSection } from "@/components/feedback-section";
 import { MarqueeLine, SubdivisionsSection } from "@/components";
 import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
 import { HeroSection, LifeOfTheCorpsSection } from "@/components/sections";
+import { getSubdivisions } from "@/actions/subdivisions/subdivisions.action";
 import {
   aboutUsSchema,
   transferSchema,

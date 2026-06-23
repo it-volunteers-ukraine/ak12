@@ -1,11 +1,10 @@
 "use server";
 
-import { Locale } from "@/types";
-import { logger } from "@/lib/logger";
-import { AdminDataMap } from "@/lib/admin";
 import { SECTION_KEYS } from "@/constants";
-
-import { saveContentAction } from "../content/content";
+import { Locale } from "@/types";
+import { logger } from "@/lib/logger/logger";
+import { AdminDataMap } from "@/lib/admin";
+import { saveContentAction } from "@/actions/content/content.action";
 
 type AdminData = AdminDataMap["transfer"];
 

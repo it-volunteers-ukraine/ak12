@@ -1,4 +1,4 @@
-import { formatSalary } from "./format-salary";
+import { formatSalary } from "@/utils/vacancies/format-salary";
 
 const normalizeSpaces = (value: string) => value.replace(/\s/g, " ");
 

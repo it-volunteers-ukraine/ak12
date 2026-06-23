@@ -1,4 +1,4 @@
-import { buildLocalPath } from "./buildLocalPath";
+import { buildLocalPath } from "@/utils/build-local-path";
 
 describe("buildLocalPath", () => {
   it("should prepend the locale to the path", () => {

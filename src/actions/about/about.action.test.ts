@@ -1,16 +1,16 @@
-import { logger } from "@/lib/logger";
 import { SECTION_KEYS } from "@/constants";
-import { saveContentAction } from "../content/content";
-import { updateAboutMultiLangAction } from "./about";
+import { logger } from "@/lib/logger/logger";
+import { saveContentAction } from "@/actions/content/content.action";
+import { updateAboutMultiLangAction } from "@/actions/about/about.action";
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: {
     warn: jest.fn(),
     error: jest.fn(),
   },
 }));
 
-jest.mock("../content/content", () => ({
+jest.mock("@/actions/content/content.action", () => ({
   saveContentAction: jest.fn(),
 }));
 

@@ -1,4 +1,4 @@
-import { getFeedbackFormSchema } from "./feedbackForm";
+import { getFeedbackFormSchema } from "@/schemas/feedback-form.schema";
 
 const error = (key: string, params?: Record<string, unknown>) => (params ? `${key}:${JSON.stringify(params)}` : key);
 

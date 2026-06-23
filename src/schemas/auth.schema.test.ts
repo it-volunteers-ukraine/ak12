@@ -1,4 +1,4 @@
-import { loginSchema } from "./auth";
+import { loginSchema } from "@/schemas/auth.schema";
 
 describe("loginSchema", () => {
   it("should accept a strong password matching all required character classes", () => {

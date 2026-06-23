@@ -23,11 +23,11 @@ jest.mock("@/schemas/about-us.schema", () => ({
   aboutUsSchema: {},
 }));
 
-jest.mock("@/actions/hero/heroActions", () => ({}));
-jest.mock("@/actions/admin/upload-image.actions", () => ({}));
+jest.mock("@/actions/hero/hero.action", () => ({}));
+jest.mock("@/actions/admin/upload-image.action", () => ({}));
 
-import { ADMIN_CONFIG, getAdminSectionConfig } from "./admin-config";
 import { SECTION_KEYS } from "@/constants";
+import { ADMIN_CONFIG, getAdminSectionConfig } from "@/lib/admin/admin-config";
 
 describe("ADMIN_CONFIG", () => {
   it("should contain all keys", () => {

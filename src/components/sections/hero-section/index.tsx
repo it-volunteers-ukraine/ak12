@@ -1,12 +1,14 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
+
+import Image from "next/image";
 
 import { HeroContent } from "@/schemas";
 import { BlobButton } from "@/components/blobButton";
-import { ArrowDown } from "../../../../public/icons";
 import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
+
+import { ArrowDown } from "../../../../public/icons";
 
 export const HeroSection = ({ content }: { content: HeroContent | null }) => {
   const sectionRef = useRef<HTMLElement>(null);

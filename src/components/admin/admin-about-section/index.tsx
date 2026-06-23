@@ -10,8 +10,8 @@ import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { updateAboutMultiLangAction } from "@/actions/about/about";
-import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
+import { updateAboutMultiLangAction } from "@/actions/about/about.action";
+import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.action";
 
 import { FormWrapper } from "../form";
 import { AboutFormContent } from "./about-form-content";

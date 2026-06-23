@@ -1,4 +1,4 @@
-import { getDynamicSidebarMenu } from "./sidebar-menu";
+import { getDynamicSidebarMenu } from "@/lib/admin/sidebar-menu";
 import { contentService } from "@/lib/content/content.service";
 
 jest.mock("@/lib/content/content.service", () => ({

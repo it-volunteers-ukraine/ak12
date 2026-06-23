@@ -12,9 +12,9 @@ import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { updateContentMultiLang } from "@/actions/content/content";
+import { updateContentMultiLang } from "@/actions/content/content.action";
 import { headerFooterFormBuilderConfig } from "@/lib/admin/configs/headerFooter.config";
-import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.actions";
+import { deleteImageAction, uploadImageAction } from "@/actions/admin/upload-image.action";
 
 type FormValues = z.infer<typeof adminSchema>;
 type AdminData = AdminDataMap["header-footer"];
