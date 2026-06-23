@@ -38,6 +38,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   };
 }
 
+export const revalidate = 60;
+
 export default async function Home({
   params,
   searchParams,
@@ -55,6 +57,9 @@ export default async function Home({
     mobilizationContent,
     contract1824Content,
     transferContent,
+    heroContent,
+    aboutContent,
+    contentSubdivisions,
   ] = await Promise.all([
     getVacancies(),
     contentService.get({
@@ -82,6 +87,19 @@ export default async function Home({
       schema: transferSchema,
       section: SECTION_KEYS.TRANSFER,
     }),
+    contentService.get({
+      locale,
+      schema: heroContentSchema,
+      section: SECTION_KEYS.HERO,
+    }),
+
+    contentService.get({
+      locale,
+      schema: aboutUsSchema,
+      section: SECTION_KEYS.ABOUT,
+    }),
+
+    getSubdivisions(locale),
   ]);
 
   const contentJoinUs = {
@@ -92,20 +110,6 @@ export default async function Home({
 
   const vacancies = allVacancies.filter((v) => v.isActive);
   const vacanciesTitleList = vacancies.map((item) => item.position);
-
-  const heroContent = await contentService.get({
-    locale,
-    schema: heroContentSchema,
-    section: SECTION_KEYS.HERO,
-  });
-
-  const aboutContent = await contentService.get({
-    locale,
-    schema: aboutUsSchema,
-    section: SECTION_KEYS.ABOUT,
-  });
-
-  const contentSubdivisions = await getSubdivisions(locale);
 
   return (
     <>
