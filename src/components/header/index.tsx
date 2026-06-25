@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 
 import { Nav } from "./nav";
@@ -19,7 +20,7 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
 
   return (
     <header className="bg-card-bg tablet:px-10 tablet:py-5 desktop:px-20 fixed z-50 flex w-full items-center justify-between px-4 py-3">
-      <a href="#" className="desktop:gap-2 desktop-xl:gap-2.5 flex h-12 items-center gap-1">
+      <Link href="/" className="desktop:gap-2 desktop-xl:gap-2.5 flex h-12 items-center gap-1">
         <Image
           width={35}
           height={40}
@@ -31,7 +32,7 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
           <span className="laptop:hidden text-[20px] font-bold">{content?.subLogoText || "Logo"}</span>
           <span className="laptop:block hidden text-[20px] font-bold">{content?.logoText || "Logo"}</span>
         </p>
-      </a>
+      </Link>
 
       <div className="flex items-center">
         <Nav links={links} />

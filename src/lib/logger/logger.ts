@@ -13,19 +13,18 @@ const transport =
       }
     : {};
 
-// On client-side, create a minimal logger that uses console
+// On client-side, create a silent logger that suppresses console output
 const createClientLogger = (): pino.Logger => {
   const noop = () => {};
-  /* eslint-disable no-console */
   const clientLogger = {
-    debug: console.debug.bind(console),
-    info: console.info.bind(console),
-    warn: console.warn.bind(console),
-    error: console.error.bind(console),
-    fatal: console.error.bind(console),
-    trace: console.trace.bind(console),
+    debug: noop,
+    info: noop,
+    warn: noop,
+    error: noop,
+    fatal: noop,
+    trace: noop,
     child: () => clientLogger,
-    level: "info",
+    level: "silent",
     silent: noop,
     msgPrefix: "",
   };

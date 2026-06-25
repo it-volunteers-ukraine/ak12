@@ -27,7 +27,7 @@ export default async function SidebarPage({ children, params }: SiteLayoutProps)
   return (
     <div className="mx-auto max-w-460 pl-70">
       <Sidebar content={contentHeader?.header ?? null} />
-      <main className="w-full">{children}</main>
+      <div className="w-full">{children}</div>
     </div>
   );
 }

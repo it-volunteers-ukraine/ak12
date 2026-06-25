@@ -44,7 +44,7 @@ export const Footer = ({ contacts, content, menu }: FooterProps) => {
               src={content?.logoImg?.secureUrl || Logo}
               className="h-7 w-6"
             />
-            <h2 className={"text-soft-blush font-ermilov text-[20px]"}>{content?.title}</h2>
+            <p className={"text-soft-blush font-ermilov text-[20px]"}>{content?.title}</p>
           </div>
           <p className={styles.text}>{content?.description}</p>
         </div>
