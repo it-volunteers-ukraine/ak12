@@ -118,7 +118,7 @@ export const FormImg = ({
         accept="image/jpeg,image/jpg,image/png,image/webp"
       />
       <div className="w-full">
-        {label ? <h2 className="mb-4 text-lg font-medium">{label}</h2> : null}
+        {label ? <p className="mb-4 text-lg font-medium">{label}</p> : null}
         {displayImage ? (
           <div
             className={`relative z-0 w-full overflow-hidden rounded-2xl border border-transparent ${imageFrameClassName || ""}`}
@@ -162,7 +162,7 @@ export const FormImg = ({
               <Upload width={44} height={44} />
             </button>
             <div className="flex w-76 flex-col items-center gap-2">
-              <h3 className="start">Технічні параметри:</h3>
+              <p className="start">Технічні параметри:</p>
               <ol className="ml-5 list-decimal">
                 <li className="text-sm">Розмір: від 1920px x 800px</li>
                 <li className="text-sm">Формат: Jpeg, JPG, PNG</li>

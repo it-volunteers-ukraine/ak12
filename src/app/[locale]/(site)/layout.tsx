@@ -29,7 +29,7 @@ export default async function SiteLayout({ children, params }: SiteLayoutProps) 
   return (
     <>
       <Header content={contentHeader?.header ?? null} socialLinks={contentFeedback?.contacts?.socialLinks || null} />
-      {children}
+      <main>{children}</main>
       <Footer
         content={contentHeader?.footer ?? null}
         menu={contentHeader?.header.links || null}

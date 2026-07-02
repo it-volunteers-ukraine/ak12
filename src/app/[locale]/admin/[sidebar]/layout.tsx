@@ -29,7 +29,7 @@ export default async function SectionLayout({
   return (
     <>
       <AdminHeader contentMenu={topMenu} sidebarSegment={sidebar} />
-      <main>{children}</main>
+      <div>{children}</div>
     </>
   );
 }
