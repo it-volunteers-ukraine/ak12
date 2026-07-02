@@ -19,9 +19,9 @@ const createClientLogger = (): pino.Logger => {
   const clientLogger = {
     debug: noop,
     info: noop,
-    warn: noop,
-    error: noop,
-    fatal: noop,
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
+    fatal: console.error.bind(console),
     trace: noop,
     child: () => clientLogger,
     level: "silent",

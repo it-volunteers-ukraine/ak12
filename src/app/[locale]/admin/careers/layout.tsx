@@ -11,7 +11,7 @@ export default function CareersLayout({
   return (
     <>
       <AdminHeader contentMenu={topMenu} sidebarSegment="careers" />
-      <main>{children}</main>
+      <div>{children}</div>
     </>
   );
 }

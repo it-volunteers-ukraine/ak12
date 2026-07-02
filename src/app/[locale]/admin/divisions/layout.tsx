@@ -11,7 +11,7 @@ export default function DivisionsLayout({
   return (
     <>
       <AdminHeader contentMenu={topMenu} sidebarSegment="divisions" />
-      <main>{children}</main>
+      <div>{children}</div>
     </>
   );
 }
