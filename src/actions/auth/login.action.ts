@@ -4,7 +4,7 @@ import { z } from "zod";
 import { redirect } from "next/navigation";
 import type { FieldErrors, State } from "@/types";
 import { loginSchema } from "@/schemas";
-import { createSession, validateAdmin } from "@/lib/auth/session.service";
+import { createSession, validateAdmin, validateTwoFactor } from "@/lib/auth/session.service";
 
 export async function adminLogin(_prevState: State, formData: FormData): Promise<State> {
   const data = {
@@ -39,12 +39,39 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
     };
   }
 
+  return {
+    fieldErrors: {},
+    error: "",
+    needsTwoFactor: true,
+    locale,
+  };
+}
+
+export async function verifyTwoFactor(_prevState: State, formData: FormData): Promise<State> {
+  const code = String(formData.get("code"));
+  const locale = String(formData.get("locale") || "uk");
+
+  if (!/^\d{6}$/.test(code)) {
+    return {
+      fieldErrors: { code: ["Введіть 6-значний код"] },
+      error: "",
+      needsTwoFactor: true,
+      locale,
+    };
+  }
+
+  const isValid = validateTwoFactor(code);
+
+  if (!isValid) {
+    return {
+      fieldErrors: { code: ["Невірний код"] },
+      error: "",
+      needsTwoFactor: true,
+      locale,
+    };
+  }
+
   await createSession();
 
   redirect(`/${locale}/admin`);
-
-  return {
-    error: "",
-    fieldErrors: {},
-  };
 }

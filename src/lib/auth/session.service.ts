@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
+import { generateSync } from "otplib";
 import { SESSION_COOKIE_NAME, SESSION_INACTIVITY_TTL, SESSION_TTL, SESSION_REFRESH_DEBOUNCE_MS } from "@/constants";
 
 type SessionPayload = {
@@ -137,4 +138,20 @@ export async function validateAdmin(email: string, password: string): Promise<bo
   }
 
   return email === expectedEmail && (await bcrypt.compare(password, expectedPasswordHash));
+}
+
+export function validateTwoFactor(token: string): boolean {
+  const secret = process.env.ADMIN_2FA_SECRET;
+
+  if (!secret) {
+    return false;
+  }
+
+  try {
+    const expected = generateSync({ secret });
+
+    return crypto.timingSafeEqual(Buffer.from(token.trim()), Buffer.from(expected));
+  } catch {
+    return false;
+  }
 }

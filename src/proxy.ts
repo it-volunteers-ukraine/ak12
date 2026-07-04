@@ -17,13 +17,14 @@ const intlMiddleware = createMiddleware({
 
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const isPost = request.method === "POST";
   const locale = pathname.split("/")[1] || "uk";
   const isAdminRoute = /^\/(uk|en)\/admin/.test(pathname);
   const isLoginRoute = /^\/(uk|en)\/login/.test(pathname);
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const isValid = verifySession(token);
 
-  if (isAdminRoute && !isValid && !isLoginRoute) {
+  if (isAdminRoute && !isValid && !isLoginRoute && !isPost) {
     const response = NextResponse.redirect(new URL(`/${locale}/login`, request.url));
 
     if (token) {
