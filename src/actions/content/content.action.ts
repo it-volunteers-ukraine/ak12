@@ -51,7 +51,7 @@ export const saveContentAction = async ({ locale, sectionKey, rawContent }: Save
 
   if (result.success) {
     revalidatePath("/");
-    revalidatePath("/admin");
+    revalidatePath("/management-console-12ak");
   }
 
   return result;

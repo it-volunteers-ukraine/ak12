@@ -60,7 +60,7 @@ describe("proxy middleware", () => {
       (getSessionCookieOptions as jest.Mock).mockReturnValue(MOCK_COOKIE_OPTIONS);
 
       const res: any = proxy(
-        createMockRequest("/uk/admin/dashboard", "http://localhost/uk/admin/dashboard", "old-token") as any,
+        createMockRequest("/uk/management-console-12ak/dashboard", "http://localhost/uk/management-console-12ak/dashboard", "old-token") as any,
       );
 
       expect(NextResponse.redirect).toHaveBeenCalled();
@@ -77,7 +77,7 @@ describe("proxy middleware", () => {
       (getSessionCookieOptions as jest.Mock).mockReturnValue(MOCK_COOKIE_OPTIONS);
 
       const res: any = proxy(
-        createMockRequest("/uk/admin/settings", "http://localhost/uk/admin/settings", "token") as any,
+        createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
       );
 
       expect(res.cookies.set).toHaveBeenCalledWith(
@@ -103,7 +103,7 @@ describe("proxy middleware", () => {
     (verifySession as jest.Mock).mockReturnValue(false);
 
     const res: any = proxy(
-      createMockRequest("/uk/admin/dashboard", "http://localhost/uk/admin/dashboard", undefined) as any,
+      createMockRequest("/uk/management-console-12ak/dashboard", "http://localhost/uk/management-console-12ak/dashboard", undefined) as any,
     );
 
     expect(NextResponse.redirect).toHaveBeenCalled();
@@ -118,7 +118,7 @@ describe("proxy middleware", () => {
     (shouldRefreshSession as jest.Mock).mockReturnValue(false);
 
     const res: any = proxy(
-      createMockRequest("/uk/admin/settings", "http://localhost/uk/admin/settings", "token") as any,
+      createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
     );
 
     expect(generateSessionToken).not.toHaveBeenCalled();
@@ -130,7 +130,7 @@ describe("proxy middleware", () => {
     (getSessionPayload as jest.Mock).mockReturnValue(null);
 
     const res: any = proxy(
-      createMockRequest("/uk/admin/settings", "http://localhost/uk/admin/settings", "token") as any,
+      createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
     );
 
     expect(shouldRefreshSession).not.toHaveBeenCalled();

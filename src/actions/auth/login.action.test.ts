@@ -170,7 +170,7 @@ describe("verifyTwoFactor", () => {
 
     expect(validateTwoFactor).toHaveBeenCalledWith("123456");
     expect(createSession).toHaveBeenCalledTimes(1);
-    expect(redirect).toHaveBeenCalledWith("/uk/admin");
+    expect(redirect).toHaveBeenCalledWith("/uk/management-console-12ak");
   });
 
   it("should return validation error for invalid code format", async () => {
@@ -230,7 +230,7 @@ describe("verifyTwoFactor", () => {
 
     await expect(verifyTwoFactor(initialState, formData)).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(redirect).toHaveBeenCalledWith("/en/admin");
+    expect(redirect).toHaveBeenCalledWith("/en/management-console-12ak");
   });
 
   it("should default to uk locale when locale is missing and code is invalid", async () => {

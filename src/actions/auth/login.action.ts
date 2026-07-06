@@ -73,5 +73,5 @@ export async function verifyTwoFactor(_prevState: State, formData: FormData): Pr
 
   await createSession();
 
-  redirect(`/${locale}/admin`);
+  redirect(`/${locale}/management-console-12ak`);
 }
