@@ -10,5 +10,5 @@ export default async function SidebarPage({ params }: { params: Promise<{ sideba
 
   const firstSub = subMenu && subMenu.length > 0 ? subMenu[0].id : "index";
 
-  redirect(`/admin/${section}/${firstSub}`);
+  redirect(`/management-console-12ak/${section}/${firstSub}`);
 }

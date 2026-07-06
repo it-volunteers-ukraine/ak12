@@ -11,5 +11,5 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
 
   const firstSub = sidebarToSubmenuMap[firstSection]?.[0]?.id || "index";
 
-  redirect(`/${locale}/admin/${firstSection}/${firstSub}`);
+  redirect(`/${locale}/management-console-12ak/${firstSection}/${firstSub}`);
 }

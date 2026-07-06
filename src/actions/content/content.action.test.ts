@@ -58,7 +58,7 @@ describe("saveContentAction", () => {
     });
 
     expect(revalidatePath).toHaveBeenCalledWith("/");
-    expect(revalidatePath).toHaveBeenCalledWith("/admin");
+    expect(revalidatePath).toHaveBeenCalledWith("/management-console-12ak");
   });
 
   it("does not revalidate on failure", async () => {
