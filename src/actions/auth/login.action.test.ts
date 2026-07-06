@@ -127,6 +127,34 @@ describe("adminLogin", () => {
     expect(createSession).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
+
+  it("should return empty password errors when only email is invalid", async () => {
+    const formData = makeFormData({
+      email: "invalid-email",
+      password: "Strong-Pass-1234",
+    });
+
+    const result = await adminLogin(initialState, formData);
+
+    expect(result.fieldErrors.email?.length).toBeGreaterThan(0);
+    expect(result.fieldErrors.password).toEqual([]);
+
+    expect(validateAdmin).not.toHaveBeenCalled();
+  });
+
+  it("should return empty email errors when only password is invalid", async () => {
+    const formData = makeFormData({
+      email: "admin@example.com",
+      password: "",
+    });
+
+    const result = await adminLogin(initialState, formData);
+
+    expect(result.fieldErrors.email).toEqual([]);
+    expect(result.fieldErrors.password?.length).toBeGreaterThan(0);
+
+    expect(validateAdmin).not.toHaveBeenCalled();
+  });
 });
 
 describe("verifyTwoFactor", () => {
@@ -203,5 +231,22 @@ describe("verifyTwoFactor", () => {
     await expect(verifyTwoFactor(initialState, formData)).rejects.toThrow("NEXT_REDIRECT");
 
     expect(redirect).toHaveBeenCalledWith("/en/admin");
+  });
+
+  it("should default to uk locale when locale is missing and code is invalid", async () => {
+    const formData = makeFormData({
+      code: "123",
+    });
+
+    const result = await verifyTwoFactor(initialState, formData);
+
+    expect(result).toEqual({
+      fieldErrors: {
+        code: ["Введіть 6-значний код"],
+      },
+      error: "",
+      needsTwoFactor: true,
+      locale: "uk",
+    });
   });
 });
