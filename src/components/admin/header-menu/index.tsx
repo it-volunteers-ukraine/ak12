@@ -28,7 +28,7 @@ const KYIV_TIMEZONE = "Europe/Kyiv";
         <div className="flex overflow-x-auto">
           {contentMenu.map((item: SubmenuItem) => {
             const subId = item.id.toLowerCase();
-            const href = `/${locale}/admin/${sidebarSegment}/${subId}`;
+            const href = `/${locale}/management-console-12ak/${sidebarSegment}/${subId}`;
 
             const isActive = activeSubsection === subId;
 

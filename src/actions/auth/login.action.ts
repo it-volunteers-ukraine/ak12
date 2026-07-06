@@ -41,7 +41,7 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
 
   await createSession();
 
-  redirect(`/${locale}/admin`);
+  redirect(`/${locale}/management-console-12ak`);
 
   return {
     error: "",

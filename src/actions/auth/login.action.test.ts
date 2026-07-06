@@ -43,7 +43,7 @@ describe("adminLogin", () => {
 
     expect(validateAdmin).toHaveBeenCalledWith("admin@example.com", "Strong-Pass-1234");
     expect(createSession).toHaveBeenCalledTimes(1);
-    expect(redirect).toHaveBeenCalledWith("/uk/admin");
+    expect(redirect).toHaveBeenCalledWith("/uk/management-console-12ak");
   });
 
   it("should default to the uk locale when no locale field is provided", async () => {
@@ -56,7 +56,7 @@ describe("adminLogin", () => {
 
     await expect(adminLogin(initialState, formData)).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(redirect).toHaveBeenCalledWith("/uk/admin");
+    expect(redirect).toHaveBeenCalledWith("/uk/management-console-12ak");
   });
 
   it("should honour an explicit en locale on redirect", async () => {
@@ -70,7 +70,7 @@ describe("adminLogin", () => {
 
     await expect(adminLogin(initialState, formData)).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(redirect).toHaveBeenCalledWith("/en/admin");
+    expect(redirect).toHaveBeenCalledWith("/en/management-console-12ak");
   });
 
   it("should return field errors and skip auth when the input fails schema validation", async () => {

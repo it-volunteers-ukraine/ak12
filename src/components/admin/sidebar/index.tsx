@@ -33,11 +33,11 @@ export const Sidebar = ({ content }: IAdminSidebarProps) => {
             const IconComponent = item.icon;
             const slug = item.id.toLowerCase();
             const firstSub = sidebarToSubmenuMap[slug]?.[0] || "index";
-            const href = `/admin/${slug}/${firstSub.id?.toLowerCase()}`;
+            const href = `/management-console-12ak/${slug}/${firstSub.id?.toLowerCase()}`;
 
             const currentPath = pathname.toLowerCase();
 
-            const isActive = currentPath.includes(`/admin/${slug}`);
+            const isActive = currentPath.includes(`/management-console-12ak/${slug}`);
 
             return (
               <div
