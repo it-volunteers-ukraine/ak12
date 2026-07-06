@@ -40,8 +40,9 @@ jest.mock("@/lib/auth/session.service", () => ({
 
 const MOCK_COOKIE_OPTIONS = { path: "/", httpOnly: true };
 
-function createMockRequest(pathname: string, url: string, cookieValue: string | undefined) {
+function createMockRequest(pathname: string, url: string, cookieValue: string | undefined, method = "GET") {
   return {
+    method,
     nextUrl: { pathname },
     url,
     cookies: { get: jest.fn(() => (cookieValue ? { value: cookieValue } : undefined)) },
@@ -164,5 +165,13 @@ describe("proxy middleware", () => {
 
   it("should expose middleware matcher", () => {
     expect(config.matcher).toEqual(["/((?!api|_next|.*\\..*).*)"]);
+  });
+
+  it("should not redirect POST requests with invalid session", () => {
+    (verifySession as jest.Mock).mockReturnValue(false);
+
+    proxy(createMockRequest("/uk/admin/login", "http://localhost/uk/admin/login", undefined, "POST") as any);
+
+    expect(NextResponse.redirect).not.toHaveBeenCalled();
   });
 });

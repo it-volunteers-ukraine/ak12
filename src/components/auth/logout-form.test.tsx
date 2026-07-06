@@ -1,5 +1,4 @@
 import { render, screen } from "@testing-library/react";
-import { LogoutForm } from "./logout-form";
 
 jest.mock("next/navigation", () => ({
   useParams: () => ({
@@ -7,9 +6,15 @@ jest.mock("next/navigation", () => ({
   }),
 }));
 
+jest.mock("@/actions/auth/logout.action", () => ({
+  logout: jest.fn(),
+}));
+
 jest.mock("../../../public/icons", () => ({
   LogoutIcon: () => <div>LogoutIcon</div>,
 }));
+
+const { LogoutForm } = require("./logout-form");
 
 describe("LogoutForm", () => {
   it("should render logout button", () => {

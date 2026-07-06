@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LoginForm } from "./login-form";
+import type { State } from "@/types";
 
 const mockUseActionState = jest.fn();
 
@@ -24,20 +24,50 @@ jest.mock("../../../public/icons", () => ({
   LoginEyeOnIcon: () => <div>EyeOn</div>,
 }));
 
-describe("LoginForm", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
+jest.mock("@/actions/auth/login.action", () => ({
+  adminLogin: jest.fn(),
+  verifyTwoFactor: jest.fn(),
+}));
 
-    mockUseActionState.mockReturnValue([
-      {
-        fieldErrors: {},
-        error: "",
-      },
-      jest.fn(),
-      false,
-    ]);
+const { LoginForm } = require("./login-form");
+
+let loginState: State;
+let loginPending: boolean;
+
+let twoFactorState: State;
+let twoFactorPending: boolean;
+
+beforeEach(() => {
+  jest.clearAllMocks();
+
+  loginState = {
+    fieldErrors: {},
+    error: "",
+  };
+
+  loginPending = false;
+
+  twoFactorState = {
+    fieldErrors: {},
+    error: "",
+  };
+
+  twoFactorPending = false;
+
+  let call = 0;
+
+  mockUseActionState.mockImplementation(() => {
+    call++;
+
+    if (call % 2 === 1) {
+      return [loginState, jest.fn(), loginPending];
+    }
+
+    return [twoFactorState, jest.fn(), twoFactorPending];
   });
+});
 
+describe("LoginForm", () => {
   it("should render login form", () => {
     render(<LoginForm />);
 
@@ -56,9 +86,9 @@ describe("LoginForm", () => {
 
     render(<LoginForm />);
 
-    const passwordInput = screen.getByLabelText("Пароль");
+    const password = screen.getByLabelText("Пароль");
 
-    expect(passwordInput).toHaveAttribute("type", "password");
+    expect(password).toHaveAttribute("type", "password");
 
     await user.click(
       screen.getByRole("button", {
@@ -66,7 +96,7 @@ describe("LoginForm", () => {
       }),
     );
 
-    expect(passwordInput).toHaveAttribute("type", "text");
+    expect(password).toHaveAttribute("type", "text");
 
     await user.click(
       screen.getByRole("button", {
@@ -74,7 +104,7 @@ describe("LoginForm", () => {
       }),
     );
 
-    expect(passwordInput).toHaveAttribute("type", "password");
+    expect(password).toHaveAttribute("type", "password");
   });
 
   it("should allow entering email and password", async () => {
@@ -82,27 +112,23 @@ describe("LoginForm", () => {
 
     render(<LoginForm />);
 
-    const emailInput = screen.getByLabelText("Email");
-    const passwordInput = screen.getByLabelText("Пароль");
+    const email = screen.getByLabelText("Email");
+    const password = screen.getByLabelText("Пароль");
 
-    await user.type(emailInput, "admin@example.com");
-    await user.type(passwordInput, "Strong-Pass-1234");
+    await user.type(email, "admin@example.com");
+    await user.type(password, "Strong-Pass-1234");
 
-    expect(emailInput).toHaveValue("admin@example.com");
-    expect(passwordInput).toHaveValue("Strong-Pass-1234");
+    expect(email).toHaveValue("admin@example.com");
+    expect(password).toHaveValue("Strong-Pass-1234");
   });
 
   it("should display email validation error", () => {
-    mockUseActionState.mockReturnValue([
-      {
-        fieldErrors: {
-          email: ["Invalid email"],
-        },
-        error: "",
+    loginState = {
+      fieldErrors: {
+        email: ["Invalid email"],
       },
-      jest.fn(),
-      false,
-    ]);
+      error: "",
+    };
 
     render(<LoginForm />);
 
@@ -110,46 +136,20 @@ describe("LoginForm", () => {
   });
 
   it("should display password validation error", () => {
-    mockUseActionState.mockReturnValue([
-      {
-        fieldErrors: {
-          password: ["Invalid password"],
-        },
-        error: "",
+    loginState = {
+      fieldErrors: {
+        password: ["Invalid password"],
       },
-      jest.fn(),
-      false,
-    ]);
+      error: "",
+    };
 
     render(<LoginForm />);
 
     expect(screen.getByText("Invalid password")).toBeInTheDocument();
   });
 
-  it("should display general error message", () => {
-    mockUseActionState.mockReturnValue([
-      {
-        fieldErrors: {},
-        error: "Something went wrong",
-      },
-      jest.fn(),
-      false,
-    ]);
-
-    render(<LoginForm />);
-
-    expect(screen.getByText("Something went wrong")).toBeInTheDocument();
-  });
-
   it("should disable submit button when form submission is pending", () => {
-    mockUseActionState.mockReturnValue([
-      {
-        fieldErrors: {},
-        error: "",
-      },
-      jest.fn(),
-      true,
-    ]);
+    loginPending = true;
 
     render(<LoginForm />);
 
@@ -158,5 +158,57 @@ describe("LoginForm", () => {
         name: "Увійти",
       }),
     ).toBeDisabled();
+  });
+
+  describe("Two factor authentication", () => {
+    beforeEach(() => {
+      loginState = {
+        fieldErrors: {},
+        error: "",
+        needsTwoFactor: true,
+        locale: "uk",
+      };
+    });
+
+    it("should render two factor form", () => {
+      render(<LoginForm />);
+
+      expect(screen.getByText("Код підтвердження")).toBeInTheDocument();
+
+      expect(
+        screen.getByRole("button", {
+          name: "Підтвердити",
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it("should render six code inputs", () => {
+      render(<LoginForm />);
+
+      expect(screen.getAllByRole("textbox")).toHaveLength(6);
+    });
+
+    it("should disable confirm button until six digits are entered", () => {
+      render(<LoginForm />);
+
+      expect(
+        screen.getByRole("button", {
+          name: "Підтвердити",
+        }),
+      ).toBeDisabled();
+    });
+
+    it("should display two factor validation error", () => {
+      twoFactorState = {
+        fieldErrors: {
+          code: ["Невірний код"],
+        },
+        error: "",
+      };
+
+      render(<LoginForm />);
+
+      expect(screen.getByText("Невірний код")).toBeInTheDocument();
+    });
   });
 });

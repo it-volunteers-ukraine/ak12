@@ -1,4 +1,4 @@
-import { SESSION_COOKIE_NAME, SESSION_TTL, SESSION_INACTIVITY_TTL } from "@/constants";
+import { SESSION_COOKIE_NAME, SESSION_TTL, SESSION_INACTIVITY_TTL, SESSION_REFRESH_DEBOUNCE_MS } from "@/constants";
 
 const cookieStore = {
   set: jest.fn(),
@@ -13,8 +13,13 @@ jest.mock("next/headers", () => ({
 const bcryptCompare = jest.fn();
 
 jest.mock("bcryptjs", () => ({
-  __esModule: true,
-  default: { compare: (...args: unknown[]) => bcryptCompare(...args) },
+  compare: (...args: unknown[]) => bcryptCompare(...args),
+}));
+
+jest.mock("otplib", () => ({
+  authenticator: {
+    generate: jest.fn(),
+  },
 }));
 
 const TEST_SECRET = "a".repeat(32);
@@ -38,7 +43,6 @@ describe("session.service", () => {
     it("should round-trip a token and recover the admin payload", () => {
       const { generateSessionToken, getSessionPayload } = loadService();
       const token = generateSessionToken();
-
       const payload = getSessionPayload(token);
 
       expect(payload).not.toBeNull();
@@ -50,7 +54,6 @@ describe("session.service", () => {
     it("should produce a token with payload.signature structure", () => {
       const { generateSessionToken } = loadService();
       const token = generateSessionToken();
-
       const dotIndex = token.lastIndexOf(".");
 
       expect(dotIndex).toBeGreaterThan(0);
@@ -83,6 +86,99 @@ describe("session.service", () => {
       const { getSessionPayload: getWithOtherSecret } = loadService();
 
       expect(getWithOtherSecret(token)).toBeNull();
+    });
+
+    it("should return null for invalid base64 payload", () => {
+      const { getSessionPayload } = loadService();
+
+      const invalidPayload = Buffer.from("not-json").toString("base64");
+      const token = `${invalidPayload}.123`;
+
+      expect(getSessionPayload(token)).toBeNull();
+    });
+
+    it("should throw when SESSION_SECRET_KEY is missing", () => {
+      jest.resetModules();
+
+      const original = process.env.SESSION_SECRET_KEY;
+
+      delete process.env.SESSION_SECRET_KEY;
+
+      const { generateSessionToken } = loadService();
+
+      expect(() => generateSessionToken()).toThrow("SESSION_SECRET_KEY environment variable is missing or too short");
+
+      process.env.SESSION_SECRET_KEY = original;
+    });
+
+    it("should return null when signature length differs", () => {
+      const { generateSessionToken, getSessionPayload } = loadService();
+
+      const token = generateSessionToken();
+      const [payload] = token.split(".");
+
+      const expectedLength = generateSessionToken().split(".")[1].length;
+
+      const badSignature = "a".repeat(expectedLength - 1);
+
+      const badToken = `${payload}.${badSignature}`;
+
+      expect(getSessionPayload(badToken)).toBeNull();
+    });
+
+    it("should return null when payload or signature is empty string", () => {
+      const { getSessionPayload } = loadService();
+
+      const token = ".";
+
+      expect(getSessionPayload(token)).toBeNull();
+    });
+
+    it("should return null when user is invalid", () => {
+      const { getSessionPayload } = loadService();
+
+      const badPayload = Buffer.from(JSON.stringify({ user: "hacker", lastActivityAt: Date.now() })).toString("base64");
+
+      const token = `${badPayload}.` + "a".repeat(64);
+
+      expect(getSessionPayload(token)).toBeNull();
+    });
+
+    it("should return null when lastActivityAt is not a number", () => {
+      const { getSessionPayload } = loadService();
+
+      const badPayload = Buffer.from(JSON.stringify({ user: "admin", lastActivityAt: "not-a-number" })).toString(
+        "base64",
+      );
+
+      const token = `${badPayload}.` + "a".repeat(64);
+
+      expect(getSessionPayload(token)).toBeNull();
+    });
+
+    it("should return null when payload is corrupted JSON", () => {
+      const { getSessionPayload } = loadService();
+
+      const invalidJson = Buffer.from("{not-json").toString("base64");
+
+      const token = `${invalidJson}.` + "a".repeat(64);
+
+      expect(getSessionPayload(token)).toBeNull();
+    });
+
+    it("should return null when user is not admin", () => {
+      const { getSessionPayload } = loadService();
+
+      const payload = Buffer.from(
+        JSON.stringify({
+          user: "hacker",
+          lastActivityAt: Date.now(),
+        }),
+      ).toString("base64");
+
+      const token = `${payload}.${"a".repeat(64)}`;
+
+      expect(getSessionPayload(token)).toBeNull();
     });
   });
 
@@ -120,6 +216,14 @@ describe("session.service", () => {
       const { shouldRefreshSession } = loadService();
 
       expect(shouldRefreshSession(Date.now() - ageMs)).toBe(expected);
+    });
+
+    it("should return false exactly on debounce threshold boundary", () => {
+      const { shouldRefreshSession } = loadService();
+
+      const now = Date.now();
+
+      expect(shouldRefreshSession(now - SESSION_REFRESH_DEBOUNCE_MS)).toBe(false);
     });
   });
 
@@ -167,6 +271,26 @@ describe("session.service", () => {
         }),
       );
     });
+
+    it("should throw when creating session fails", async () => {
+      cookieStore.set.mockImplementationOnce(() => {
+        throw new Error("Cookie store write failed");
+      });
+
+      const { createSession } = loadService();
+
+      await expect(createSession()).rejects.toThrow("Cookie store write failed");
+    });
+
+    it("should wrap non-Error thrown values in generic message", async () => {
+      cookieStore.set.mockImplementationOnce(() => {
+        throw "string error";
+      });
+
+      const { createSession } = loadService();
+
+      await expect(createSession()).rejects.toThrow("Failed to create session");
+    });
   });
 
   describe("deleteSession", () => {
@@ -176,6 +300,26 @@ describe("session.service", () => {
       await deleteSession();
 
       expect(cookieStore.delete).toHaveBeenCalledWith(SESSION_COOKIE_NAME);
+    });
+
+    it("should throw when deleting session cookie fails", async () => {
+      cookieStore.delete.mockImplementationOnce(() => {
+        throw new Error("Failed to delete session cookie");
+      });
+
+      const { deleteSession } = loadService();
+
+      await expect(deleteSession()).rejects.toThrow("Failed to delete session cookie");
+    });
+
+    it("should wrap non-Error thrown values in generic message", async () => {
+      cookieStore.delete.mockImplementationOnce(() => {
+        throw "string error";
+      });
+
+      const { deleteSession } = loadService();
+
+      await expect(deleteSession()).rejects.toThrow("Failed to delete session");
     });
   });
 
@@ -220,6 +364,87 @@ describe("session.service", () => {
 
       expect(await validateAdmin("admin@example.com", "pw")).toBe(false);
       expect(bcryptCompare).not.toHaveBeenCalled();
+    });
+
+    it("should return false when ADMIN_PASSWORD_HASH is not configured", async () => {
+      process.env.ADMIN_EMAIL = "admin@example.com";
+      delete process.env.ADMIN_PASSWORD_HASH;
+
+      const { validateAdmin } = loadService();
+
+      expect(await validateAdmin("admin@example.com", "pw")).toBe(false);
+      expect(bcryptCompare).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("validateTwoFactor", () => {
+    const setup = () => {
+      process.env.ADMIN_2FA_SECRET = "secret";
+
+      jest.resetModules();
+
+      const { authenticator } = require("otplib");
+      const { validateTwoFactor } = require("./session.service");
+
+      return { authenticator, validateTwoFactor };
+    };
+
+    it("should return true for a valid code", () => {
+      const { authenticator, validateTwoFactor } = setup();
+
+      authenticator.generate.mockReturnValue("123456");
+
+      expect(validateTwoFactor("123456")).toBe(true);
+    });
+
+    it("should trim user input", () => {
+      const { authenticator, validateTwoFactor } = setup();
+
+      authenticator.generate.mockReturnValue("123456");
+
+      expect(validateTwoFactor(" 123456 ")).toBe(true);
+    });
+
+    it("should return false for invalid code", () => {
+      const { authenticator, validateTwoFactor } = setup();
+
+      authenticator.generate.mockReturnValue("654321");
+
+      expect(validateTwoFactor("123456")).toBe(false);
+    });
+
+    it("should return false when secret is missing", () => {
+      delete process.env.ADMIN_2FA_SECRET;
+
+      const { validateTwoFactor } = loadService();
+
+      expect(validateTwoFactor("123456")).toBe(false);
+    });
+
+    it("should return false when secret is empty string", () => {
+      process.env.ADMIN_2FA_SECRET = "";
+
+      const { validateTwoFactor } = loadService();
+
+      expect(validateTwoFactor("123456")).toBe(false);
+    });
+
+    it("should return false when otplib throws", () => {
+      const { authenticator, validateTwoFactor } = setup();
+
+      authenticator.generate.mockImplementation(() => {
+        throw new Error();
+      });
+
+      expect(validateTwoFactor("123456")).toBe(false);
+    });
+
+    it("should handle whitespace-only input safely", () => {
+      const { authenticator, validateTwoFactor } = setup();
+
+      authenticator.generate.mockReturnValue("123456");
+
+      expect(validateTwoFactor("   123456   ")).toBe(true);
     });
   });
 });

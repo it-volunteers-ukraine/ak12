@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import { generateSync } from "otplib";
+import { authenticator } from "otplib";
 import { SESSION_COOKIE_NAME, SESSION_INACTIVITY_TTL, SESSION_TTL, SESSION_REFRESH_DEBOUNCE_MS } from "@/constants";
 
 type SessionPayload = {
@@ -148,7 +148,7 @@ export function validateTwoFactor(token: string): boolean {
   }
 
   try {
-    const expected = generateSync({ secret });
+    const expected = authenticator.generate(secret);
 
     return crypto.timingSafeEqual(Buffer.from(token.trim()), Buffer.from(expected));
   } catch {
