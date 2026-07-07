@@ -1,4 +1,4 @@
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 import { sectionIds } from "@/constants/section-key";
 
 export const scrollToSection = (id: string) => {
