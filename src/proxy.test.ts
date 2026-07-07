@@ -1,4 +1,4 @@
-import proxy, { config } from "@/proxy";
+import proxy, { buildCsp, config } from "@/proxy";
 import { NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
 import {
@@ -12,7 +12,10 @@ import {
 jest.mock("next-intl/middleware", () => ({
   __esModule: true,
   default: jest.fn(() => {
-    return jest.fn(() => ({ cookies: { set: jest.fn() } }));
+    return jest.fn(() => ({
+      cookies: { set: jest.fn() },
+      headers: { set: jest.fn() },
+    }));
   }),
 }));
 
@@ -21,6 +24,7 @@ jest.mock("next/server", () => ({
   NextResponse: {
     redirect: jest.fn((url: any) => ({
       cookies: { set: jest.fn() },
+      headers: { set: jest.fn() },
       redirectedTo: url.toString ? url.toString() : String(url),
     })),
   },
@@ -48,6 +52,12 @@ function createMockRequest(pathname: string, url: string, cookieValue: string | 
   };
 }
 
+function getHeaderValue(res: any, key: string): string | undefined {
+  const call = res.headers.set.mock.calls.find(([headerKey]: [string]) => headerKey === key);
+  
+  return call ? call[1] : undefined;
+}
+
 describe("proxy middleware", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -59,7 +69,11 @@ describe("proxy middleware", () => {
       (getSessionCookieOptions as jest.Mock).mockReturnValue(MOCK_COOKIE_OPTIONS);
 
       const res: any = proxy(
-        createMockRequest("/uk/management-console-12ak/dashboard", "http://localhost/uk/management-console-12ak/dashboard", "old-token") as any,
+        createMockRequest(
+          "/uk/management-console-12ak/dashboard",
+          "http://localhost/uk/management-console-12ak/dashboard",
+          "old-token",
+        ) as any,
       );
 
       expect(NextResponse.redirect).toHaveBeenCalled();
@@ -76,7 +90,11 @@ describe("proxy middleware", () => {
       (getSessionCookieOptions as jest.Mock).mockReturnValue(MOCK_COOKIE_OPTIONS);
 
       const res: any = proxy(
-        createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
+        createMockRequest(
+          "/uk/management-console-12ak/settings",
+          "http://localhost/uk/management-console-12ak/settings",
+          "token",
+        ) as any,
       );
 
       expect(res.cookies.set).toHaveBeenCalledWith(
@@ -102,7 +120,11 @@ describe("proxy middleware", () => {
     (verifySession as jest.Mock).mockReturnValue(false);
 
     const res: any = proxy(
-      createMockRequest("/uk/management-console-12ak/dashboard", "http://localhost/uk/management-console-12ak/dashboard", undefined) as any,
+      createMockRequest(
+        "/uk/management-console-12ak/dashboard",
+        "http://localhost/uk/management-console-12ak/dashboard",
+        undefined,
+      ) as any,
     );
 
     expect(NextResponse.redirect).toHaveBeenCalled();
@@ -117,7 +139,11 @@ describe("proxy middleware", () => {
     (shouldRefreshSession as jest.Mock).mockReturnValue(false);
 
     const res: any = proxy(
-      createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
+      createMockRequest(
+        "/uk/management-console-12ak/settings",
+        "http://localhost/uk/management-console-12ak/settings",
+        "token",
+      ) as any,
     );
 
     expect(generateSessionToken).not.toHaveBeenCalled();
@@ -129,7 +155,11 @@ describe("proxy middleware", () => {
     (getSessionPayload as jest.Mock).mockReturnValue(null);
 
     const res: any = proxy(
-      createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
+      createMockRequest(
+        "/uk/management-console-12ak/settings",
+        "http://localhost/uk/management-console-12ak/settings",
+        "token",
+      ) as any,
     );
 
     expect(shouldRefreshSession).not.toHaveBeenCalled();
@@ -164,5 +194,106 @@ describe("proxy middleware", () => {
 
   it("should expose middleware matcher", () => {
     expect(config.matcher).toEqual(["/((?!api|_next|.*\\..*).*)"]);
+  });
+
+  describe("Content-Security-Policy", () => {
+    it("sets a CSP header with a nonce on the login redirect response", () => {
+      (verifySession as jest.Mock).mockReturnValue(false);
+
+      const res: any = proxy(
+        createMockRequest(
+          "/uk/management-console-12ak/dashboard",
+          "http://localhost/uk/management-console-12ak/dashboard",
+          undefined,
+        ) as any,
+      );
+
+      const csp = getHeaderValue(res, "Content-Security-Policy");
+
+      expect(csp).toBeDefined();
+      expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    });
+
+    it("sets a CSP header with a nonce on the normal (intl) response", () => {
+      (verifySession as jest.Mock).mockReturnValue(true);
+
+      const res: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
+
+      const csp = getHeaderValue(res, "Content-Security-Policy");
+
+      expect(csp).toBeDefined();
+      expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
+    });
+
+    it("sets the x-nonce header matching the nonce used in the CSP", () => {
+      (verifySession as jest.Mock).mockReturnValue(true);
+
+      const res: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
+
+      const csp = getHeaderValue(res, "Content-Security-Policy");
+      const xNonce = getHeaderValue(res, "x-nonce");
+
+      expect(xNonce).toBeDefined();
+      expect(csp).toContain(`'nonce-${xNonce}'`);
+    });
+
+    it("includes required directives for Supabase, Cloudinary, YouTube and Pinterest", () => {
+      (verifySession as jest.Mock).mockReturnValue(true);
+
+      const res: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
+
+      const csp = getHeaderValue(res, "Content-Security-Policy") ?? "";
+
+      expect(csp).toContain("default-src 'self'");
+      expect(csp).toContain("style-src 'self' 'unsafe-inline'");
+      expect(csp).toContain("https://res.cloudinary.com");
+      expect(csp).toContain("https://img.youtube.com");
+      expect(csp).toContain("https://i.pinimg.com");
+      expect(csp).toContain("https://ptregtvplvjeoszspvgm.supabase.co");
+      expect(csp).toContain("wss://ptregtvplvjeoszspvgm.supabase.co");
+      expect(csp).toContain("frame-src https://www.youtube.com");
+      expect(csp).toContain("object-src 'none'");
+      expect(csp).toContain("frame-ancestors 'none'");
+      expect(csp).toContain("upgrade-insecure-requests");
+    });
+
+    it("generates a different nonce on each request", () => {
+      (verifySession as jest.Mock).mockReturnValue(true);
+
+      const res1: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
+      const res2: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
+
+      const nonce1 = getHeaderValue(res1, "x-nonce");
+      const nonce2 = getHeaderValue(res2, "x-nonce");
+
+      expect(nonce1).not.toEqual(nonce2);
+    });
+  });
+
+  describe("buildCsp", () => {
+    it("includes 'unsafe-eval' in script-src when isDev is true", () => {
+      const csp = buildCsp("test-nonce", true);
+
+      expect(csp).toContain("script-src 'self' 'nonce-test-nonce' 'strict-dynamic' 'unsafe-eval'");
+    });
+
+    it("never includes 'unsafe-eval' in script-src when isDev is false", () => {
+      const csp = buildCsp("test-nonce", false);
+
+      expect(csp).not.toContain("unsafe-eval");
+      expect(csp).toContain("script-src 'self' 'nonce-test-nonce' 'strict-dynamic';");
+    });
+
+    it("does not include upgrade-insecure-requests when isDev is true", () => {
+      const csp = buildCsp("test-nonce", true);
+
+      expect(csp).not.toContain("upgrade-insecure-requests");
+    });
+
+    it("includes upgrade-insecure-requests when isDev is false", () => {
+      const csp = buildCsp("test-nonce", false);
+
+      expect(csp).toContain("upgrade-insecure-requests");
+    });
   });
 });
