@@ -58,7 +58,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export default function proxy(request: NextRequest) {
-  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+const nonce = crypto.randomBytes(16).toString("base64");
 
   const { pathname } = request.nextUrl;
   const locale = pathname.split("/")[1] || "uk";
