@@ -54,7 +54,7 @@ function createMockRequest(pathname: string, url: string, cookieValue: string | 
 
 function getHeaderValue(res: any, key: string): string | undefined {
   const call = res.headers.set.mock.calls.find(([headerKey]: [string]) => headerKey === key);
-  
+
   return call ? call[1] : undefined;
 }
 
