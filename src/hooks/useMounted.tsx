@@ -2,14 +2,14 @@
 import { useEffect, useState } from "react";
 
 interface IMountedProps {
-    isOpened: boolean;
-    duration?: number;
+  isOpened: boolean;
+  duration?: number;
 }
 
 export const useMounted = ({ isOpened, duration = 300 }: IMountedProps) => {
-    const [isUnmounted, setIsUnmounted] = useState<boolean>(false);
+  const [isUnmounted, setIsUnmounted] = useState<boolean>(false);
 
-    useEffect(() => {
+  useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout>;
 
     if (isOpened) {

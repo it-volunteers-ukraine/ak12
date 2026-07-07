@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { uploadImage, deleteImage, validateImageFile } from "./upload-image.service";
+import { uploadImage, deleteImage, validateImageFile } from "@/lib/admin/upload-image.service";
 
 const ORIGINAL_ENV = { ...process.env };
 const fetchMock = jest.fn();
@@ -40,12 +40,9 @@ describe("validateImageFile", () => {
     await expect(validateImageFile(makeFile({ type: "image/png", size: 1024 }))).resolves.toBeUndefined();
   });
 
-  it.each(["image/jpeg", "image/jpg", "image/png", "image/webp"])(
-    "should accept the allowed type %s",
-    async (type) => {
-      await expect(validateImageFile(makeFile({ type, size: 1024 }))).resolves.toBeUndefined();
-    },
-  );
+  it.each(["image/jpeg", "image/jpg", "image/png", "image/webp"])("should accept the allowed type %s", async (type) => {
+    await expect(validateImageFile(makeFile({ type, size: 1024 }))).resolves.toBeUndefined();
+  });
 
   it("should reject a non-image MIME type", async () => {
     await expect(validateImageFile(makeFile({ type: "application/pdf", size: 1024 }))).rejects.toThrow(
@@ -54,9 +51,7 @@ describe("validateImageFile", () => {
   });
 
   it("should reject a file larger than 5 MB", async () => {
-    await expect(
-      validateImageFile(makeFile({ type: "image/png", size: 5 * 1024 * 1024 + 1 })),
-    ).rejects.toThrow(/5 MB/);
+    await expect(validateImageFile(makeFile({ type: "image/png", size: 5 * 1024 * 1024 + 1 }))).rejects.toThrow(/5 MB/);
   });
 });
 

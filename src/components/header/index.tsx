@@ -1,4 +1,7 @@
+import Link from "next/link";
 import Image from "next/image";
+
+import { SocialLink, HeaderContent } from "@/schemas";
 
 import { Nav } from "./nav";
 import { BlobButton } from "../blobButton";
@@ -6,11 +9,10 @@ import { Logo } from "../../../public/images";
 import { HeartIcon } from "../../../public/icons";
 import { SocialLinkList } from "../socialLinkList";
 import LanguageSwitcher from "../language-switcher";
-import { HeaderContent, SocialLink } from "@/schemas";
 
 export type HeaderProps = {
-  socialLinks: SocialLink[] | null;
   content: HeaderContent | null;
+  socialLinks: SocialLink[] | null;
 };
 
 export const Header = ({ content, socialLinks }: HeaderProps) => {
@@ -18,8 +20,8 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
   const button = content?.button;
 
   return (
-    <header className="bg-card-bg tablet:px-10 tablet:py-5 desktop:px-20 fixed z-50 flex h-20 w-full items-center justify-between px-4 py-3">
-      <a href="#" className="desktop:gap-2 desktop-xl:gap-2.5 flex h-12 items-center gap-1">
+    <header className="bg-card-bg tablet:px-10 tablet:py-5 desktop:px-20 fixed z-50 flex w-full items-center justify-between px-4 py-3">
+      <Link href="/" className="desktop:gap-2 desktop-xl:gap-2.5 flex h-12 items-center gap-1">
         <Image
           width={35}
           height={40}
@@ -31,7 +33,7 @@ export const Header = ({ content, socialLinks }: HeaderProps) => {
           <span className="laptop:hidden text-[20px] font-bold">{content?.subLogoText || "Logo"}</span>
           <span className="laptop:block hidden text-[20px] font-bold">{content?.logoText || "Logo"}</span>
         </p>
-      </a>
+      </Link>
 
       <div className="flex items-center">
         <Nav links={links} />

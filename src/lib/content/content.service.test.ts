@@ -2,17 +2,16 @@
  * @jest-environment node
  */
 import z from "zod";
-
-import { contentService } from "./content.service";
-import { supabaseServer } from "@/lib/supabase-server";
-import { languageService } from "@/lib/language/language.service";
 import { SECTION_KEYS } from "@/constants";
+import { contentService } from "@/lib/content/content.service";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { languageService } from "@/lib/language/language.service";
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: { error: jest.fn(), info: jest.fn() },
 }));
 
-jest.mock("@/lib/supabase-server", () => ({
+jest.mock("@/lib/supabase-server/supabase-server", () => ({
   supabaseServer: { from: jest.fn() },
 }));
 

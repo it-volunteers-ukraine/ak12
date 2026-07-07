@@ -1,4 +1,4 @@
-import { mobilizationFormBuilderConfig } from "./mobilization.config";
+import { mobilizationFormBuilderConfig } from "@/lib/admin/configs/mobilization.config";
 
 describe("mobilizationFormBuilderConfig", () => {
   it("should have correct base structure", () => {

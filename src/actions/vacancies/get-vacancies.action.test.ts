@@ -1,7 +1,6 @@
 import { getLocale } from "next-intl/server";
-
-import { getVacancies } from "./get-vacancies.action";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { getVacancies } from "@/actions/vacancies/get-vacancies.action";
 
 jest.mock("next-intl/server", () => ({
   getLocale: jest.fn(),

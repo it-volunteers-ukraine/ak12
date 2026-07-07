@@ -40,7 +40,7 @@
     linear-gradient(90deg, #0d0d0d 0%, rgba(26, 26, 26, 0.7) 50%, rgba(51, 64, 54, 0.6) 100%),
     linear-gradient(#1a1e1d, #1a1e1d);
 
-  /* vacancies */
+  /* VACANCIES */
   --color-secondary-text: #e0e0e0;
   --color-surface-secondary: #1a1a1a;
   --color-vacancy-card-start: var(--color-surface-secondary);
@@ -68,7 +68,6 @@
   --animate-marquee: marquee 30s linear infinite alternate;
 }
 
-/* ✅ keyframes ОБОВʼЯЗКОВО поза @theme */
 @keyframes fade-in {
   from {
     width: 0;

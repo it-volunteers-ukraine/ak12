@@ -33,9 +33,9 @@ export const PolicyButton = ({ text, textLink, privacyPolicyContent }: IPolicyBu
         >
           <CloseIcon className="h-6 w-6" />
         </button>
-        <h3 className="font-ermilov text-accent mb-6 px-12 text-center text-[20px] leading-[140%] font-bold">
+        <h2 className="font-ermilov text-accent mb-6 px-12 text-center text-[20px] leading-[140%] font-bold">
           {privacyPolicyContent?.title}
-        </h3>
+        </h2>
         <div className="bg-accent mb-6 h-px w-full" />
         <div className="min-h-0 flex-1 overflow-y-auto pr-2">
           <p className="text-soft-blush text-sm leading-7 whitespace-pre-line">{privacyPolicyContent?.description}</p>

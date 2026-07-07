@@ -7,11 +7,11 @@ jest.mock("react-hook-form", () => ({
   useFormContext: jest.fn(),
 }));
 
-jest.mock("@/lib/youtube", () => ({
+jest.mock("@/lib/youtube/youtube", () => ({
   getYouTubeEmbedUrl: jest.fn((url: string) => (url.includes("youtu") ? "https://youtube.com/embed/test" : null)),
 }));
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: { warn: jest.fn() },
 }));
 
@@ -208,7 +208,7 @@ describe("LocaleSection", () => {
   it("warns on unknown layout", () => {
     mockForm();
 
-    const logger = require("@/lib/logger").logger;
+    const logger = require("@/lib/logger/logger").logger;
 
     render(
       <LocaleSection

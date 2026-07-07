@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { baseSectionSchema } from "./mobilizationSchema";
+import { baseSectionSchema } from "@/schemas/mobilization.schema";
 
 export type TransferSchema = z.infer<typeof transferSchema>;
 
@@ -9,7 +9,6 @@ export const transferSchema = z.object({
   baseSection: baseSectionSchema,
   title: REQUIRED_STRING,
   subtitle: REQUIRED_STRING,
-
   content: z
     .array(
       z.object({
@@ -18,13 +17,11 @@ export const transferSchema = z.object({
       }),
     )
     .min(1, "Додайте хоча б один елемент контенту"),
-
   transferLink: z.object({
     startText: REQUIRED_STRING,
     link: REQUIRED_STRING,
     endText: REQUIRED_STRING,
   }),
-
   backgroundImage: z
     .object({
       publicId: z.string().optional(),

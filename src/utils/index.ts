@@ -1,2 +1,2 @@
 export { cn } from "./tailwind-merge";
-export { buildLocalPath } from "./buildLocalPath";
+export { buildLocalPath } from "./build-local-path";

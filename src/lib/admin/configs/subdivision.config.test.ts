@@ -1,4 +1,4 @@
-import { subdivisionFormBuilderConfig } from "./subdivision.config";
+import { subdivisionFormBuilderConfig } from "@/lib/admin/configs/subdivision.config";
 
 describe("subdivisionFormBuilderConfig", () => {
   it("should have correct base structure", () => {

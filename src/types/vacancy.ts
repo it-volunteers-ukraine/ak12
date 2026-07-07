@@ -2,7 +2,7 @@ import { Locale } from "@/types/locale";
 
 export const vacancyTypes = ["frontline", "backline"] as const;
 
-export type VacancyType = typeof vacancyTypes[number];
+export type VacancyType = (typeof vacancyTypes)[number];
 
 export interface Vacancy {
   id: string;
@@ -16,7 +16,7 @@ export interface Vacancy {
   sort_order: number;
   language_id: string;
   created_at: string;
-  updated_at: string; 
+  updated_at: string;
 }
 
 export interface VacancyWithLanguage extends Omit<Vacancy, "language_id"> {
@@ -39,5 +39,5 @@ export interface VacancyMapped {
     code: Locale;
   };
   createdAt: string;
-  updatedAt: string; 
+  updatedAt: string;
 }

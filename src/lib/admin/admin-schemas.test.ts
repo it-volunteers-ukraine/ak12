@@ -1,4 +1,4 @@
-import { ADMIN_SCHEMAS } from "./admin-schemas";
+import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 
 describe("ADMIN_SCHEMAS", () => {
   const schemas = Object.values(ADMIN_SCHEMAS);

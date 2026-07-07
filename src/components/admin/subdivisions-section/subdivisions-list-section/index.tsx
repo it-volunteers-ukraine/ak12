@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { Subdivision } from "@/types";
 import { ConfirmModal } from "@/components";
 import { showMessage } from "@/components/toastify";
-import { deleteSubdivision, updateSubdivisionsOrder } from "@/actions/subdivisions";
-import { deleteImageAction } from "@/actions/admin/upload-image.actions";
+import { deleteSubdivision, updateSubdivisionsOrder } from "@/actions/subdivisions/subdivisions.action";
+import { deleteImageAction } from "@/actions/admin/upload-image.action";
 import { DndSortableList } from "@/components/admin/dnd-sortable-list";
 
 import { SubdivisionSection } from "../index";

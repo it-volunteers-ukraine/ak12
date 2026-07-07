@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { logout } from "@/actions/auth/logout";
+import { logout } from "@/actions/auth/logout.action";
 import { LogoutIcon } from "../../../public/icons";
 
 export function LogoutForm() {

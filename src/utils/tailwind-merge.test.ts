@@ -1,4 +1,4 @@
-import { cn } from "./tailwind-merge";
+import { cn } from "@/utils/tailwind-merge";
 
 describe("cn", () => {
   it("should join multiple class names with a space", () => {

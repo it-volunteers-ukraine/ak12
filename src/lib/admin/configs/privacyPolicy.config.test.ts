@@ -1,4 +1,4 @@
-import { privacyPolicyFormBuilderConfig } from "./privacyPolicy.config";
+import { privacyPolicyFormBuilderConfig } from "@/lib/admin/configs/privacyPolicy.config";
 
 describe("privacyPolicyFormBuilderConfig", () => {
   it("should have correct base structure", () => {

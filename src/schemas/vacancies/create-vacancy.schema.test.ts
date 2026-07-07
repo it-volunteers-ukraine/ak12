@@ -1,4 +1,4 @@
-import { createVacancySchema } from "./create-vacancy.schema";
+import { createVacancySchema } from "@/schemas/vacancies/create-vacancy.schema";
 
 const validInput = {
   type: "frontline" as const,

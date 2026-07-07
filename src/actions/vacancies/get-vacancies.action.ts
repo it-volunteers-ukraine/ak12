@@ -1,7 +1,6 @@
 "use server";
 
 import { getLocale } from "next-intl/server";
-
 import { Locale } from "@/types/locale";
 import { VacancyMapped } from "@/types/vacancy";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";

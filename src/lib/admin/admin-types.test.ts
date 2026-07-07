@@ -1,7 +1,7 @@
-import { isAdminSectionKey } from "./admin-types";
-import { ADMIN_SCHEMAS } from "./admin-schemas";
+import { isAdminSectionKey } from "@/lib/admin/admin-types";
+import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 
-jest.mock("./admin-schemas", () => ({
+jest.mock("@/lib/admin/admin-schemas", () => ({
   ADMIN_SCHEMAS: {
     about: {},
     contacts: {},

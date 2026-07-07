@@ -1,13 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import { useRef } from "react";
+
+import Image from "next/image";
 
 import { HeroContent } from "@/schemas";
 import { BlobButton } from "@/components/blobButton";
-import { ArrowDown } from "../../../../public/icons";
 import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 import { scrollToSection } from "@/utils/scrollToSection";
+
+import { ArrowDown } from "../../../../public/icons";
 
 export const HeroSection = ({ content }: { content: HeroContent | null }) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -44,7 +46,7 @@ export const HeroSection = ({ content }: { content: HeroContent | null }) => {
           <h1 className="font-ermilov desktop:text-[116px] mb-4 max-w-121 text-5xl leading-tight font-bold uppercase md:text-7xl lg:max-w-200">
             {content.title}
           </h1>
-          <h3 className="w-67 text-base text-white/90">{content.subtitle}</h3>
+          <p className="w-67 text-base text-white/90">{content.subtitle}</p>
         </div>
         <div className="order-2 mx-auto mb-8 w-full max-w-90 md:order-3 md:mx-0 md:mb-0 md:self-end">
           <ul className="md:divide-accent/50 flex w-full md:justify-between md:gap-4 md:divide-x">

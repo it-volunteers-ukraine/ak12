@@ -1,6 +1,6 @@
 import type { Locale } from "@/types";
-import { ADMIN_SCHEMAS } from "@/lib/admin";
 import type { SectionKey } from "@/constants";
+import { ADMIN_SCHEMAS } from "@/lib/admin";
 import { contentService } from "@/lib/content/content.service";
 import { type SubmenuItem, sidebarToSubmenuMap } from "@/components/admin/header-menu/mok";
 

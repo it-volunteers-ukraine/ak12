@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { baseSectionSchema } from "./mobilizationSchema";
+import { baseSectionSchema } from "@/schemas/mobilization.schema";
 
 const REQUIRED_ERROR = z.string().trim().min(1, "Обов'язкове поле");
 

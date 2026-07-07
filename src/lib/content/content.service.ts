@@ -1,13 +1,10 @@
 import { cache } from "react";
-
 import z from "zod";
-
 import { Locale } from "@/types";
 import { SectionKey } from "@/constants";
-
-import { logger } from "../logger";
-import { supabaseServer } from "../supabase-server";
-import { languageService } from "../language/language.service";
+import { logger } from "@/lib/logger/logger";
+import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { languageService } from "@/lib/language/language.service";
 
 export type ActionResponse<T = void> = { success: true; data?: T } | { success: false; error: string };
 interface GetSafeParams<Schema extends z.ZodTypeAny> {

@@ -1,4 +1,9 @@
-import { SESSION_TTL, SESSION_INACTIVITY_TTL, SESSION_REFRESH_DEBOUNCE_MS, validateSessionConfig } from "./auth";
+import {
+  SESSION_TTL,
+  SESSION_INACTIVITY_TTL,
+  SESSION_REFRESH_DEBOUNCE_MS,
+  validateSessionConfig,
+} from "@/constants/auth";
 
 const makeValidConfig = () => ({
   SESSION_TTL: 1000,

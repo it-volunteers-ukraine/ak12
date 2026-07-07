@@ -11,7 +11,7 @@ import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
 import { mobilizationFormBuilderConfig } from "@/lib/admin/configs/mobilization.config";
-import { updateMobilizationMultiLangAction } from "@/actions/mobilization/mobilizationActions";
+import { updateMobilizationMultiLangAction } from "@/actions/mobilization/mobilization.action";
 
 import { FormWrapper } from "../form";
 

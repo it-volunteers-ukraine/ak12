@@ -1,4 +1,4 @@
-import { vacancyFormBuilderConfig } from "./vacancy.config";
+import { vacancyFormBuilderConfig } from "@/lib/admin/configs/vacancy.config";
 
 describe("vacancyFormBuilderConfig", () => {
   it("should have correct base structure", () => {

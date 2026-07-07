@@ -1,4 +1,4 @@
-import { VACANCY_TYPES, DEFAULT_TYPE } from "./filters";
+import { VACANCY_TYPES, DEFAULT_TYPE } from "@/constants/vacancies/filters";
 
 describe("vacancy constants", () => {
   it("VACANCY_TYPES contains correct values", () => {

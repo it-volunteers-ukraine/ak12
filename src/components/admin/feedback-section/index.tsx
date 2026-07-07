@@ -12,7 +12,7 @@ import { showMessage } from "@/components/toastify";
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { ADMIN_SCHEMAS } from "@/lib/admin/admin-schemas";
 import { ConfirmModal } from "@/components/connfirm-modal";
-import { updateContentMultiLang } from "@/actions/content/content";
+import { updateContentMultiLang } from "@/actions/content/content.action";
 import { feedbackFormBuilderConfig } from "@/lib/admin/configs/feedback.config";
 
 type FormValues = z.infer<typeof adminSchema>;

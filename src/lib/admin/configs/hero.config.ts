@@ -1,4 +1,3 @@
-// 🎓 HERO CONFIG - конфіг для Hero форми (працює з БД)
 import { AdminDataMap } from "@/lib/admin/admin-types";
 import { FormBuilderConfig } from "@/lib/form-builder";
 import { SectionConfig } from "@/lib/form-builder/types";

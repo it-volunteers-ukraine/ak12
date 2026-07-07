@@ -1,4 +1,4 @@
-import { aboutUsSchema } from "./about-us.schema";
+import { aboutUsSchema } from "@/schemas/about-us.schema";
 
 describe("aboutUsSchema", () => {
   it("should accept valid about us content with image item", () => {

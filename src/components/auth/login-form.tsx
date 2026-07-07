@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useActionState, useState, useEffect } from "react";
-import { adminLogin } from "@/actions/auth/login";
+import { adminLogin } from "@/actions/auth/login.action";
 import type { State } from "@/types";
 import { LoginEyeOffIcon, LoginEyeOnIcon } from "../../../public/icons";
 

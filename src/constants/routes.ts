@@ -1,13 +1,15 @@
+const adminBase = "/management-console-12ak";
+
 export const routes = {
   general: {
     home: "/",
   },
   admin: {
-    home: "/admin",
-    contacts: "/admin/contacts",
+    home: adminBase,
+    contacts: `${adminBase}/contacts`,
     contactsMenu: {
-      header: "/admin/contacts/header",
-      footer: "/admin/contacts/footer",
+      header: `${adminBase}/contacts/header`,
+      footer: `${adminBase}/contacts/footer`,
     },
   },
 };

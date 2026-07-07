@@ -1,7 +1,7 @@
-import { logger } from "@/lib/logger";
-import { CreateVacancyDto } from "@/schemas/vacancies/create-vacancy.schema";
-import { ActiveLanguage } from "@/types/enum";
 import { slugify } from "transliteration";
+import { ActiveLanguage } from "@/types/enum";
+import { CreateVacancyDto } from "@/schemas/vacancies/create-vacancy.schema";
+import { logger } from "@/lib/logger/logger";
 
 export function mapCreateVacancy(data: CreateVacancyDto, langMap: Record<ActiveLanguage, string>) {
   const ukLanguageId = langMap.uk;

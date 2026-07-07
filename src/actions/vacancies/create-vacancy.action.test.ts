@@ -1,8 +1,8 @@
-import { createVacancy } from "./create-vacancy.action";
-import { logger } from "@/lib/logger";
+import { logger } from "@/lib/logger/logger";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
+import { createVacancy } from "@/actions/vacancies/create-vacancy.action";
 
-jest.mock("@/lib/logger", () => ({
+jest.mock("@/lib/logger/logger", () => ({
   logger: {
     error: jest.fn(),
   },
