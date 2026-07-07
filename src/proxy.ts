@@ -20,7 +20,9 @@ const intlMiddleware = createMiddleware({
 export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const locale = pathname.split("/")[1] || "uk";
-  const isAdminRoute = new RegExp(`^/(uk|en)${routes.admin.home}`).test(pathname);
+  const path = pathname.toLowerCase();
+  const prefix = routes.admin.home;
+  const isAdminRoute = path.startsWith(`/uk${prefix}`) || path.startsWith(`/en${prefix}`);
   const isLoginRoute = /^\/(uk|en)\/login/.test(pathname);
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const isValid = verifySession(token);
