@@ -18,9 +18,9 @@ const intlMiddleware = createMiddleware({
 export function buildCsp(nonce: string, isDev: boolean): string {
   // React/Next.js Fast Refresh потребує eval() лише в dev-режимі.
   // У проді 'unsafe-eval' НІКОЛИ не додається.
-  const scriptSrc = isDev
-    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval';`
-    : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic';`;
+const scriptSrc = isDev
+  ? `script-src 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval';`
+  : `script-src 'nonce-${nonce}' 'strict-dynamic';`;
 
   // upgrade-insecure-requests примушує браузер підміняти http:// на https://.
   // Локальний dev-сервер працює тільки по HTTP, тому в dev ця директива
