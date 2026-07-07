@@ -45,6 +45,12 @@ export function LoginForm() {
   }, [needsTwoFactor]);
 
   useEffect(() => {
+    if (loginState.fieldErrors.password?.length) {
+      setPassword("");
+    }
+  }, [loginState.fieldErrors.password]);
+
+  useEffect(() => {
     if (twoFaState.fieldErrors.code?.[0]) {
       setDigits(Array(CODE_LENGTH).fill(""));
       digitRefs.current[0]?.focus();
@@ -69,17 +75,23 @@ export function LoginForm() {
     }
   }
 
-  function handleDigitPaste(e: React.ClipboardEvent<HTMLInputElement>) {
+  function handleDigitPaste(index: number, e: React.ClipboardEvent<HTMLInputElement>) {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, CODE_LENGTH);
-    const next = Array(CODE_LENGTH).fill("");
+
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, CODE_LENGTH - index);
+
+    const next = [...digits];
 
     pasted.split("").forEach((char, i) => {
-      next[i] = char;
+      next[index + i] = char;
     });
 
     setDigits(next);
-    const focusIndex = Math.min(pasted.length, CODE_LENGTH - 1);
+
+    const focusIndex = Math.min(index + pasted.length, CODE_LENGTH - 1);
 
     digitRefs.current[focusIndex]?.focus();
   }
@@ -145,6 +157,7 @@ export function LoginForm() {
           >
             Увійти
           </button>
+          <p className="flex items-center text-xs leading-[1.2] text-red-400">{loginState.error || "\u00A0"}</p>
         </form>
       )}
 
@@ -165,7 +178,7 @@ export function LoginForm() {
                   value={digit}
                   onChange={(e) => handleDigitChange(index, e.target.value)}
                   onKeyDown={(e) => handleDigitKeyDown(index, e)}
-                  onPaste={handleDigitPaste}
+                  onPaste={(e) => handleDigitPaste(index, e)}
                   className="text-auth-text border-auth-input-border bg-auth-input-bg h-12 w-full border text-center text-xl leading-[1.4] font-medium"
                   aria-label={`Цифра ${index + 1}`}
                 />
@@ -182,6 +195,7 @@ export function LoginForm() {
           >
             Підтвердити
           </button>
+          <p className="flex items-center text-xs leading-[1.2] text-red-400">{twoFaState.error || "\u00A0"}</p>
           <button
             type="button"
             onClick={() => window.location.reload()}

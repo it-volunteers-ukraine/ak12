@@ -4,7 +4,14 @@ import { z } from "zod";
 import { redirect } from "next/navigation";
 import type { FieldErrors, State } from "@/types";
 import { loginSchema } from "@/schemas";
-import { createSession, validateAdmin, validateTwoFactor } from "@/lib/auth/session.service";
+import {
+  createSession,
+  validateAdmin,
+  validateTwoFactor,
+  createPreAuthSession,
+  verifyPreAuthSession,
+  deletePreAuthSession,
+} from "@/lib/auth/session.service";
 
 export async function adminLogin(_prevState: State, formData: FormData): Promise<State> {
   const data = {
@@ -39,6 +46,8 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
     };
   }
 
+  await createPreAuthSession();
+
   return {
     fieldErrors: {},
     error: "",
@@ -60,6 +69,18 @@ export async function verifyTwoFactor(_prevState: State, formData: FormData): Pr
     };
   }
 
+  const hasPreAuth = await verifyPreAuthSession();
+
+  if (!hasPreAuth) {
+    return {
+      fieldErrors: {
+        code: ["Сесія авторизації закінчилася. Увійдіть знову."],
+      },
+      error: "",
+      locale,
+    };
+  }
+
   const isValid = validateTwoFactor(code);
 
   if (!isValid) {
@@ -71,6 +92,7 @@ export async function verifyTwoFactor(_prevState: State, formData: FormData): Pr
     };
   }
 
+  await deletePreAuthSession();
   await createSession();
 
   redirect(`/${locale}/management-console-12ak`);

@@ -1,9 +1,19 @@
 import { redirect } from "next/navigation";
-import { createSession, validateAdmin, validateTwoFactor } from "@/lib/auth/session.service";
+import {
+  createSession,
+  createPreAuthSession,
+  deletePreAuthSession,
+  verifyPreAuthSession,
+  validateAdmin,
+  validateTwoFactor,
+} from "@/lib/auth/session.service";
 import { adminLogin, verifyTwoFactor } from "@/actions/auth/login.action";
 
 jest.mock("@/lib/auth/session.service", () => ({
   createSession: jest.fn(),
+  createPreAuthSession: jest.fn(),
+  deletePreAuthSession: jest.fn(),
+  verifyPreAuthSession: jest.fn(),
   validateAdmin: jest.fn(),
   validateTwoFactor: jest.fn(),
 }));
@@ -31,6 +41,13 @@ const initialState = {
 
 beforeEach(() => {
   jest.clearAllMocks();
+
+  (createSession as jest.Mock).mockResolvedValue(undefined);
+  (createPreAuthSession as jest.Mock).mockResolvedValue(undefined);
+  (deletePreAuthSession as jest.Mock).mockResolvedValue(undefined);
+  (verifyPreAuthSession as jest.Mock).mockResolvedValue(true);
+  (validateAdmin as jest.Mock).mockResolvedValue(false);
+  (validateTwoFactor as jest.Mock).mockReturnValue(false);
 });
 
 describe("adminLogin", () => {
@@ -54,6 +71,7 @@ describe("adminLogin", () => {
       locale: "uk",
     });
 
+    expect(createPreAuthSession).toHaveBeenCalledTimes(1);
     expect(createSession).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
@@ -71,6 +89,7 @@ describe("adminLogin", () => {
     expect(result.locale).toBe("uk");
     expect(result.needsTwoFactor).toBe(true);
 
+    expect(createPreAuthSession).toHaveBeenCalledTimes(1);
     expect(createSession).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
@@ -89,6 +108,7 @@ describe("adminLogin", () => {
     expect(result.locale).toBe("en");
     expect(result.needsTwoFactor).toBe(true);
 
+    expect(createPreAuthSession).toHaveBeenCalledTimes(1);
     expect(createSession).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
@@ -124,6 +144,7 @@ describe("adminLogin", () => {
 
     expect(result.fieldErrors.password).toEqual(["Невірний email або пароль"]);
 
+    expect(createPreAuthSession).not.toHaveBeenCalled();
     expect(createSession).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });
@@ -155,10 +176,24 @@ describe("adminLogin", () => {
 
     expect(validateAdmin).not.toHaveBeenCalled();
   });
+
+  it("should throw when creating pre-auth session fails", async () => {
+    (validateAdmin as jest.Mock).mockResolvedValue(true);
+
+    (createPreAuthSession as jest.Mock).mockRejectedValue(new Error("Pre auth failed"));
+
+    const formData = makeFormData({
+      email: "admin@example.com",
+      password: "Strong-Pass-1234",
+    });
+
+    await expect(adminLogin(initialState, formData)).rejects.toThrow("Pre auth failed");
+  });
 });
 
 describe("verifyTwoFactor", () => {
-  it("should create session and redirect on valid code", async () => {
+  it("should delete pre-auth session, create session and redirect on valid code", async () => {
+    (verifyPreAuthSession as jest.Mock).mockResolvedValue(true);
     (validateTwoFactor as jest.Mock).mockReturnValue(true);
 
     const formData = makeFormData({
@@ -168,9 +203,69 @@ describe("verifyTwoFactor", () => {
 
     await expect(verifyTwoFactor(initialState, formData)).rejects.toThrow("NEXT_REDIRECT");
 
+    expect(verifyPreAuthSession).toHaveBeenCalledTimes(1);
     expect(validateTwoFactor).toHaveBeenCalledWith("123456");
+
+    expect(deletePreAuthSession).toHaveBeenCalledTimes(1);
     expect(createSession).toHaveBeenCalledTimes(1);
+
     expect(redirect).toHaveBeenCalledWith("/uk/management-console-12ak");
+  });
+
+  it("should throw when deleting pre-auth session fails", async () => {
+    (validateTwoFactor as jest.Mock).mockReturnValue(true);
+    (deletePreAuthSession as jest.Mock).mockRejectedValue(new Error("Delete failed"));
+
+    const formData = makeFormData({
+      code: "123456",
+      locale: "uk",
+    });
+
+    await expect(verifyTwoFactor(initialState, formData)).rejects.toThrow("Delete failed");
+
+    expect(deletePreAuthSession).toHaveBeenCalledTimes(1);
+    expect(createSession).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it("should throw when creating session fails", async () => {
+    (validateTwoFactor as jest.Mock).mockReturnValue(true);
+    (createSession as jest.Mock).mockRejectedValue(new Error("Create failed"));
+
+    const formData = makeFormData({
+      code: "123456",
+      locale: "uk",
+    });
+
+    await expect(verifyTwoFactor(initialState, formData)).rejects.toThrow("Create failed");
+
+    expect(deletePreAuthSession).toHaveBeenCalledTimes(1);
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(redirect).not.toHaveBeenCalled();
+  });
+
+  it("should return error when pre-auth session is missing", async () => {
+    (verifyPreAuthSession as jest.Mock).mockResolvedValue(false);
+
+    const formData = makeFormData({
+      code: "123456",
+      locale: "uk",
+    });
+
+    const result = await verifyTwoFactor(initialState, formData);
+
+    expect(result).toEqual({
+      fieldErrors: {
+        code: ["Сесія авторизації закінчилася. Увійдіть знову."],
+      },
+      error: "",
+      locale: "uk",
+    });
+
+    expect(validateTwoFactor).not.toHaveBeenCalled();
+    expect(createSession).not.toHaveBeenCalled();
+    expect(deletePreAuthSession).not.toHaveBeenCalled();
+    expect(redirect).not.toHaveBeenCalled();
   });
 
   it("should return validation error for invalid code format", async () => {
@@ -205,6 +300,7 @@ describe("verifyTwoFactor", () => {
 
     const result = await verifyTwoFactor(initialState, formData);
 
+    expect(verifyPreAuthSession).toHaveBeenCalledTimes(1);
     expect(validateTwoFactor).toHaveBeenCalledWith("123456");
 
     expect(result).toEqual({
@@ -216,6 +312,7 @@ describe("verifyTwoFactor", () => {
       locale: "uk",
     });
 
+    expect(deletePreAuthSession).not.toHaveBeenCalled();
     expect(createSession).not.toHaveBeenCalled();
     expect(redirect).not.toHaveBeenCalled();
   });

@@ -1,4 +1,11 @@
-import { SESSION_COOKIE_NAME, SESSION_TTL, SESSION_INACTIVITY_TTL, SESSION_REFRESH_DEBOUNCE_MS } from "@/constants";
+import {
+  SESSION_COOKIE_NAME,
+  SESSION_TTL,
+  SESSION_INACTIVITY_TTL,
+  SESSION_REFRESH_DEBOUNCE_MS,
+  PRE_AUTH_COOKIE_NAME,
+  PRE_AUTH_TTL,
+} from "@/constants";
 
 const cookieStore = {
   set: jest.fn(),
@@ -18,7 +25,8 @@ jest.mock("bcryptjs", () => ({
 
 jest.mock("otplib", () => ({
   authenticator: {
-    generate: jest.fn(),
+    verify: jest.fn(),
+    options: {},
   },
 }));
 
@@ -42,18 +50,28 @@ describe("session.service", () => {
   describe("generateSessionToken + getSessionPayload", () => {
     it("should round-trip a token and recover the admin payload", () => {
       const { generateSessionToken, getSessionPayload } = loadService();
-      const token = generateSessionToken();
+      const token = generateSessionToken("session");
       const payload = getSessionPayload(token);
 
       expect(payload).not.toBeNull();
       expect(payload!.user).toBe("admin");
+      expect(payload!.type).toBe("session");
       expect(typeof payload!.lastActivityAt).toBe("number");
       expect(payload!.lastActivityAt).toBeLessThanOrEqual(Date.now());
     });
 
+    it("should create a pre-auth payload", () => {
+      const { generateSessionToken, getSessionPayload } = loadService();
+      const token = generateSessionToken("pre-auth");
+      const payload = getSessionPayload(token);
+
+      expect(payload).not.toBeNull();
+      expect(payload!.type).toBe("pre-auth");
+    });
+
     it("should produce a token with payload.signature structure", () => {
       const { generateSessionToken } = loadService();
-      const token = generateSessionToken();
+      const token = generateSessionToken("session");
       const dotIndex = token.lastIndexOf(".");
 
       expect(dotIndex).toBeGreaterThan(0);
@@ -71,7 +89,7 @@ describe("session.service", () => {
 
     it("should return null when the signature is tampered with", () => {
       const { generateSessionToken, getSessionPayload } = loadService();
-      const token = generateSessionToken();
+      const token = generateSessionToken("session");
       const tampered = `${token.slice(0, -1)}${token.slice(-1) === "a" ? "b" : "a"}`;
 
       expect(getSessionPayload(tampered)).toBeNull();
@@ -79,7 +97,7 @@ describe("session.service", () => {
 
     it("should return null when the secret used to verify differs from the secret used to sign", () => {
       const { generateSessionToken } = loadService();
-      const token = generateSessionToken();
+      const token = generateSessionToken("session");
 
       jest.resetModules();
       process.env.SESSION_SECRET_KEY = "b".repeat(32);
@@ -106,7 +124,9 @@ describe("session.service", () => {
 
       const { generateSessionToken } = loadService();
 
-      expect(() => generateSessionToken()).toThrow("SESSION_SECRET_KEY environment variable is missing or too short");
+      expect(() => generateSessionToken("session")).toThrow(
+        "SESSION_SECRET_KEY environment variable is missing or too short",
+      );
 
       process.env.SESSION_SECRET_KEY = original;
     });
@@ -114,10 +134,10 @@ describe("session.service", () => {
     it("should return null when signature length differs", () => {
       const { generateSessionToken, getSessionPayload } = loadService();
 
-      const token = generateSessionToken();
+      const token = generateSessionToken("session");
       const [payload] = token.split(".");
 
-      const expectedLength = generateSessionToken().split(".")[1].length;
+      const expectedLength = generateSessionToken("session").split(".")[1].length;
 
       const badSignature = "a".repeat(expectedLength - 1);
 
@@ -165,28 +185,88 @@ describe("session.service", () => {
 
       expect(getSessionPayload(token)).toBeNull();
     });
+  });
 
-    it("should return null when user is not admin", () => {
-      const { getSessionPayload } = loadService();
+  describe("verifyPreAuthSession", () => {
+    it("should return true for valid pre-auth cookie", async () => {
+      const { generateSessionToken, verifyPreAuthSession } = loadService();
 
-      const payload = Buffer.from(
-        JSON.stringify({
-          user: "hacker",
-          lastActivityAt: Date.now(),
-        }),
-      ).toString("base64");
+      cookieStore.get.mockReturnValue({
+        value: generateSessionToken("pre-auth"),
+      });
 
-      const token = `${payload}.${"a".repeat(64)}`;
+      expect(await verifyPreAuthSession()).toBe(true);
+    });
 
-      expect(getSessionPayload(token)).toBeNull();
+    it("should return false when cookie is missing", async () => {
+      const { verifyPreAuthSession } = loadService();
+
+      cookieStore.get.mockReturnValue(undefined);
+
+      expect(await verifyPreAuthSession()).toBe(false);
+    });
+
+    it("should return false for normal session cookie", async () => {
+      const { generateSessionToken, verifyPreAuthSession } = loadService();
+
+      cookieStore.get.mockReturnValue({
+        value: generateSessionToken("session"),
+      });
+
+      expect(await verifyPreAuthSession()).toBe(false);
+    });
+
+    it("should return false when pre-auth session expired", async () => {
+      const { generateSessionToken, verifyPreAuthSession } = loadService();
+
+      const realNow = Date.now;
+      const now = realNow();
+
+      Date.now = () => now - (PRE_AUTH_TTL + 60) * 1000;
+
+      cookieStore.get.mockReturnValue({
+        value: generateSessionToken("pre-auth"),
+      });
+
+      Date.now = () => now;
+
+      expect(await verifyPreAuthSession()).toBe(false);
+
+      Date.now = realNow;
+    });
+
+    it("should throw when verifying pre-auth session fails", async () => {
+      const { cookies } = require("next/headers");
+
+      cookies.mockRejectedValueOnce(new Error("Cookie read failed"));
+
+      const { verifyPreAuthSession } = loadService();
+
+      await expect(verifyPreAuthSession()).rejects.toThrow("Cookie read failed");
+    });
+
+    it("should wrap non Error values when verifying pre-auth session fails", async () => {
+      const { cookies } = require("next/headers");
+
+      cookies.mockRejectedValueOnce("error");
+
+      const { verifyPreAuthSession } = loadService();
+
+      await expect(verifyPreAuthSession()).rejects.toThrow("Failed to verify pre-auth session");
     });
   });
 
   describe("verifySession", () => {
+    it("should return false for a pre-auth token", () => {
+      const { generateSessionToken, verifySession } = loadService();
+
+      expect(verifySession(generateSessionToken("pre-auth"))).toBe(false);
+    });
+
     it("should return true for a freshly generated token", () => {
       const { generateSessionToken, verifySession } = loadService();
 
-      expect(verifySession(generateSessionToken())).toBe(true);
+      expect(verifySession(generateSessionToken("session"))).toBe(true);
     });
 
     it("should return false when the token is missing", () => {
@@ -195,16 +275,21 @@ describe("session.service", () => {
       expect(verifySession(undefined)).toBe(false);
     });
 
-    it("should return false when lastActivityAt is older than the inactivity window", () => {
+    it("should return false when lastActivityAt is older than inactivity window", () => {
       const { generateSessionToken, verifySession } = loadService();
 
       const realNow = Date.now;
+      const now = realNow();
 
-      Date.now = () => realNow.call(Date) - (SESSION_INACTIVITY_TTL + 60) * 1000;
-      const oldToken = generateSessionToken();
+      Date.now = () => now - (SESSION_INACTIVITY_TTL + 60) * 1000;
+
+      const oldToken = generateSessionToken("session");
+
+      Date.now = () => now;
+
+      expect(verifySession(oldToken)).toBe(false);
 
       Date.now = realNow;
-      expect(verifySession(oldToken)).toBe(false);
     });
   });
 
@@ -293,6 +378,53 @@ describe("session.service", () => {
     });
   });
 
+  describe("createPreAuthSession", () => {
+    it("should create pre-auth cookie", async () => {
+      const { createPreAuthSession } = loadService();
+
+      await createPreAuthSession();
+
+      expect(cookieStore.set).toHaveBeenCalledWith(
+        PRE_AUTH_COOKIE_NAME,
+        expect.any(String),
+        expect.objectContaining({
+          maxAge: PRE_AUTH_TTL,
+          httpOnly: true,
+        }),
+      );
+    });
+
+    it("should throw when creating pre-auth session fails", async () => {
+      cookieStore.set.mockImplementationOnce(() => {
+        throw new Error("Cookie error");
+      });
+
+      const { createPreAuthSession } = loadService();
+
+      await expect(createPreAuthSession()).rejects.toThrow("Cookie error");
+    });
+
+    it("should wrap pre-auth creation errors", async () => {
+      cookieStore.set.mockImplementationOnce(() => {
+        throw new Error("Cookie write failed");
+      });
+
+      const { createPreAuthSession } = loadService();
+
+      await expect(createPreAuthSession()).rejects.toThrow("Cookie write failed");
+    });
+
+    it("should wrap non Error values when creating pre-auth session fails", async () => {
+      cookieStore.set.mockImplementationOnce(() => {
+        throw "error";
+      });
+
+      const { createPreAuthSession } = loadService();
+
+      await expect(createPreAuthSession()).rejects.toThrow("Failed to create pre-auth session");
+    });
+  });
+
   describe("deleteSession", () => {
     it("should delete the session cookie", async () => {
       const { deleteSession } = loadService();
@@ -320,6 +452,46 @@ describe("session.service", () => {
       const { deleteSession } = loadService();
 
       await expect(deleteSession()).rejects.toThrow("Failed to delete session");
+    });
+  });
+
+  describe("deletePreAuthSession", () => {
+    it("should delete pre-auth cookie", async () => {
+      const { deletePreAuthSession } = loadService();
+
+      await deletePreAuthSession();
+
+      expect(cookieStore.delete).toHaveBeenCalledWith(PRE_AUTH_COOKIE_NAME);
+    });
+
+    it("should throw when deleting pre-auth cookie fails", async () => {
+      cookieStore.delete.mockImplementationOnce(() => {
+        throw new Error("Failed to delete pre auth");
+      });
+
+      const { deletePreAuthSession } = loadService();
+
+      await expect(deletePreAuthSession()).rejects.toThrow("Failed to delete pre auth");
+    });
+
+    it("should throw when deleting pre-auth session fails", async () => {
+      cookieStore.delete.mockImplementationOnce(() => {
+        throw new Error("Delete failed");
+      });
+
+      const { deletePreAuthSession } = loadService();
+
+      await expect(deletePreAuthSession()).rejects.toThrow("Delete failed");
+    });
+
+    it("should wrap non Error values when deleting pre-auth session fails", async () => {
+      cookieStore.delete.mockImplementationOnce(() => {
+        throw "error";
+      });
+
+      const { deletePreAuthSession } = loadService();
+
+      await expect(deletePreAuthSession()).rejects.toThrow("Failed to delete pre-auth session");
     });
   });
 
@@ -392,7 +564,7 @@ describe("session.service", () => {
     it("should return true for a valid code", () => {
       const { authenticator, validateTwoFactor } = setup();
 
-      authenticator.generate.mockReturnValue("123456");
+      authenticator.verify.mockReturnValue(true);
 
       expect(validateTwoFactor("123456")).toBe(true);
     });
@@ -400,7 +572,7 @@ describe("session.service", () => {
     it("should trim user input", () => {
       const { authenticator, validateTwoFactor } = setup();
 
-      authenticator.generate.mockReturnValue("123456");
+      authenticator.verify.mockReturnValue(true);
 
       expect(validateTwoFactor(" 123456 ")).toBe(true);
     });
@@ -408,7 +580,7 @@ describe("session.service", () => {
     it("should return false for invalid code", () => {
       const { authenticator, validateTwoFactor } = setup();
 
-      authenticator.generate.mockReturnValue("654321");
+      authenticator.verify.mockReturnValue(false);
 
       expect(validateTwoFactor("123456")).toBe(false);
     });
@@ -432,7 +604,7 @@ describe("session.service", () => {
     it("should return false when otplib throws", () => {
       const { authenticator, validateTwoFactor } = setup();
 
-      authenticator.generate.mockImplementation(() => {
+      authenticator.verify.mockImplementation(() => {
         throw new Error();
       });
 
@@ -442,7 +614,7 @@ describe("session.service", () => {
     it("should handle whitespace-only input safely", () => {
       const { authenticator, validateTwoFactor } = setup();
 
-      authenticator.generate.mockReturnValue("123456");
+      authenticator.verify.mockReturnValue(true);
 
       expect(validateTwoFactor("   123456   ")).toBe(true);
     });
