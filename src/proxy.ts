@@ -50,7 +50,9 @@ function applyCsp(response: NextResponse, nonce: string): NextResponse {
 
   response.headers.set("Content-Security-Policy", buildCsp(nonce, isDev));
 
+if (process.env.NODE_ENV === "development") {
   response.headers.set("x-nonce", nonce);
+}
   
   return response;
 }
