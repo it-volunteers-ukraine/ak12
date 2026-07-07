@@ -28,7 +28,6 @@ jest.mock("next/server", () => ({
       headers: { set: jest.fn() },
       redirectedTo: url.toString ? url.toString() : String(url),
     })),
-    // NEW: proxy.ts now calls NextResponse.next(...) to forward the nonce
     next: jest.fn((init?: any) => ({
       cookies: { set: jest.fn() },
       headers: { set: jest.fn() },
@@ -55,6 +54,7 @@ function createMockRequest(pathname: string, url: string, cookieValue: string | 
   return {
     nextUrl: { pathname },
     url,
+    headers: new Headers(),
     cookies: { get: jest.fn(() => (cookieValue ? { value: cookieValue } : undefined)) },
   };
 }
@@ -258,7 +258,7 @@ describe("proxy middleware", () => {
 
       const forwardedRequest = intlMiddlewareMock.mock.calls.at(-1)?.[0];
 
-      expect(forwardedRequest?.request?.headers?.get("x-nonce")).toBe(nonce);
+      expect(forwardedRequest?.headers?.get("x-nonce")).toBe(nonce);
     });
 
     it("includes required directives for Supabase, Cloudinary, YouTube and Pinterest", () => {

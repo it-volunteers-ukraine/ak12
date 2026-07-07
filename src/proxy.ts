@@ -66,13 +66,9 @@ export default function proxy(request: NextRequest) {
     return applyCsp(response, nonce);
   }
 
-  const requestHeaders = new Headers(request.headers);
+  request.headers.set("x-nonce", nonce);
 
-  requestHeaders.set("x-nonce", nonce);
-
-  const response = intlMiddleware(
-    NextResponse.next({ request: { headers: requestHeaders } }) as unknown as NextRequest,
-  );
+  const response = intlMiddleware(request);
 
   if (isAdminRoute && isValid && token) {
     const sessionPayload = getSessionPayload(token);
