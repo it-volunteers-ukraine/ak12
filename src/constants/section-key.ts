@@ -10,3 +10,5 @@ export const SECTION_KEYS = {
   CONTRACT_18_24: "contract-18-24",
   PRIVACY_POLICY: "privacy-policy",
 } as const;
+
+export const sectionIds = ["hero", "about", "life-of-the-corps", "subdivisions", "vacancy", "join", "contacts"];

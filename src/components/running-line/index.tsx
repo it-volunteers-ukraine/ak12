@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/utils";
 import { MarqueeItem } from "../marquee-item";
+import { scrollToSection } from "@/utils/scrollToSection";
 
 const WIDTH_MULTIPLIER = 1.5;
 
@@ -12,7 +13,7 @@ interface Props {
 }
 
 export const MarqueeLine = ({ itemList }: Props) => {
-  const containerRef = useRef<HTMLAnchorElement>(null);
+  const containerRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const [copies, setCopies] = useState(1);
@@ -68,7 +69,13 @@ export const MarqueeLine = ({ itemList }: Props) => {
           <MarqueeItem key={`measure-${index}`} item={item} index={index} />
         ))}
       </div>
-      <a href="#vacancy" ref={containerRef} className="bg-accent flex h-16 w-full items-center">
+      <button
+        onClick={() => {
+          scrollToSection("vacancy");
+        }}
+        ref={containerRef}
+        className="bg-accent flex h-16 w-full items-center"
+      >
         <div
           className={cn(
             "flex items-center whitespace-nowrap",
@@ -79,7 +86,7 @@ export const MarqueeLine = ({ itemList }: Props) => {
             <MarqueeItem key={`item-${index}`} item={item} index={index} />
           ))}
         </div>
-      </a>
+      </button>
     </div>
   );
 };

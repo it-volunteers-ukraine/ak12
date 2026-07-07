@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 import { cn } from "@/utils";
@@ -5,6 +7,7 @@ import { cn } from "@/utils";
 type BlobButtonProps = {
   href: string;
   className?: string;
+  onClick?: () => void;
   openInNewTab?: boolean;
   children: React.ReactNode;
   typeStyles?: "primary" | "sub";
@@ -12,16 +15,25 @@ type BlobButtonProps = {
 
 export const BlobButton = ({
   href,
+  onClick,
   children,
   className,
   openInNewTab = true,
   typeStyles = "primary",
 }: BlobButtonProps) => {
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (onClick) {
+      event.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <a
       href={href}
       target={openInNewTab ? "_blank" : undefined}
       rel={openInNewTab ? "noopener noreferrer" : undefined}
+      onClick={handleClick}
       className={cn(
         "group relative flex h-10 w-50 scale-100 items-center justify-center focus:outline-none",
         className,

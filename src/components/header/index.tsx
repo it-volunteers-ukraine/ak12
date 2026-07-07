@@ -1,17 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import { SocialLink, HeaderContent } from "@/schemas";
+
 import { Nav } from "./nav";
 import { BlobButton } from "../blobButton";
 import { Logo } from "../../../public/images";
 import { HeartIcon } from "../../../public/icons";
 import { SocialLinkList } from "../socialLinkList";
 import LanguageSwitcher from "../language-switcher";
-import { HeaderContent, SocialLink } from "@/schemas";
 
 export type HeaderProps = {
-  socialLinks: SocialLink[] | null;
   content: HeaderContent | null;
+  socialLinks: SocialLink[] | null;
 };
 
 export const Header = ({ content, socialLinks }: HeaderProps) => {
