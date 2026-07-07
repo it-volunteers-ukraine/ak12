@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
-import { createSession, validateAdmin } from "@/lib/auth/session.service";
+
+import { routes } from "@/constants/routes";
 import { adminLogin } from "@/actions/auth/login.action";
+import { createSession, validateAdmin } from "@/lib/auth/session.service";
 
 jest.mock("@/lib/auth/session.service", () => ({
   createSession: jest.fn(),
@@ -43,7 +45,7 @@ describe("adminLogin", () => {
 
     expect(validateAdmin).toHaveBeenCalledWith("admin@example.com", "Strong-Pass-1234");
     expect(createSession).toHaveBeenCalledTimes(1);
-    expect(redirect).toHaveBeenCalledWith("/uk/management-console-12ak");
+    expect(redirect).toHaveBeenCalledWith(`/uk${routes.admin.home}`);
   });
 
   it("should default to the uk locale when no locale field is provided", async () => {
@@ -56,7 +58,7 @@ describe("adminLogin", () => {
 
     await expect(adminLogin(initialState, formData)).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(redirect).toHaveBeenCalledWith("/uk/management-console-12ak");
+    expect(redirect).toHaveBeenCalledWith(`/uk${routes.admin.home}`);
   });
 
   it("should honour an explicit en locale on redirect", async () => {
@@ -70,7 +72,7 @@ describe("adminLogin", () => {
 
     await expect(adminLogin(initialState, formData)).rejects.toThrow("NEXT_REDIRECT");
 
-    expect(redirect).toHaveBeenCalledWith("/en/management-console-12ak");
+    expect(redirect).toHaveBeenCalledWith(`/en${routes.admin.home}`);
   });
 
   it("should return field errors and skip auth when the input fails schema validation", async () => {

@@ -1,10 +1,11 @@
 "use client";
 
+import { useRef } from "react";
+
 import { AboutUsContent } from "@/schemas";
+import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
 import { LifeOfTheCorpsGalleryClient } from "./gallery/gallery-client";
-import { useRef } from "react";
-import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusContent";
 
 export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | null }) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -84,7 +85,7 @@ export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | n
     <section
       id="life-of-the-corps"
       ref={sectionRef}
-      className="container-app sticky w-full overflow-hidden bg-black/95"
+      className="container-app bg-surface-main sticky w-full overflow-hidden"
       style={{
         top,
       }}

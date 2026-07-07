@@ -2,8 +2,10 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import type { FieldErrors, State } from "@/types";
+
 import { loginSchema } from "@/schemas";
+import { routes } from "@/constants/routes";
+import type { State, FieldErrors } from "@/types";
 import { createSession, validateAdmin } from "@/lib/auth/session.service";
 
 export async function adminLogin(_prevState: State, formData: FormData): Promise<State> {
@@ -41,7 +43,7 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
 
   await createSession();
 
-  redirect(`/${locale}/management-console-12ak`);
+  redirect(`/${locale}${routes.admin.home}`);
 
   return {
     error: "",

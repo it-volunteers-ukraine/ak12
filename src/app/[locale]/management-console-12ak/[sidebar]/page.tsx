@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { routes } from "@/constants/routes";
 import { sidebarToSubmenuMap } from "@/components/admin/header-menu/mok";
 
 export default async function SidebarPage({ params }: { params: Promise<{ sidebar: string }> }) {
@@ -10,5 +11,5 @@ export default async function SidebarPage({ params }: { params: Promise<{ sideba
 
   const firstSub = subMenu && subMenu.length > 0 ? subMenu[0].id : "index";
 
-  redirect(`/management-console-12ak/${section}/${firstSub}`);
+  redirect(`${routes.admin.home}/${section}/${firstSub}`);
 }

@@ -1,10 +1,12 @@
-import proxy, { config } from "@/proxy";
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
+
+import proxy, { config } from "@/proxy";
+import { routes } from "@/constants/routes";
+import { SESSION_TTL, SESSION_COOKIE_NAME } from "@/constants";
 import {
   verifySession,
-  generateSessionToken,
   getSessionPayload,
+  generateSessionToken,
   shouldRefreshSession,
   getSessionCookieOptions,
 } from "@/lib/auth/session.service";
@@ -59,7 +61,11 @@ describe("proxy middleware", () => {
       (getSessionCookieOptions as jest.Mock).mockReturnValue(MOCK_COOKIE_OPTIONS);
 
       const res: any = proxy(
-        createMockRequest("/uk/management-console-12ak/dashboard", "http://localhost/uk/management-console-12ak/dashboard", "old-token") as any,
+        createMockRequest(
+          `/uk${routes.admin.home}/dashboard`,
+          `http://localhost/uk${routes.admin.home}/dashboard`,
+          "old-token",
+        ) as any,
       );
 
       expect(NextResponse.redirect).toHaveBeenCalled();
@@ -76,7 +82,11 @@ describe("proxy middleware", () => {
       (getSessionCookieOptions as jest.Mock).mockReturnValue(MOCK_COOKIE_OPTIONS);
 
       const res: any = proxy(
-        createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
+        createMockRequest(
+          `/uk${routes.admin.home}/settings`,
+          `http://localhost/uk${routes.admin.home}/settings`,
+          "token",
+        ) as any,
       );
 
       expect(res.cookies.set).toHaveBeenCalledWith(
@@ -102,7 +112,11 @@ describe("proxy middleware", () => {
     (verifySession as jest.Mock).mockReturnValue(false);
 
     const res: any = proxy(
-      createMockRequest("/uk/management-console-12ak/dashboard", "http://localhost/uk/management-console-12ak/dashboard", undefined) as any,
+      createMockRequest(
+        `/uk${routes.admin.home}/dashboard`,
+        `http://localhost/uk${routes.admin.home}/dashboard`,
+        undefined,
+      ) as any,
     );
 
     expect(NextResponse.redirect).toHaveBeenCalled();
@@ -117,7 +131,11 @@ describe("proxy middleware", () => {
     (shouldRefreshSession as jest.Mock).mockReturnValue(false);
 
     const res: any = proxy(
-      createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
+      createMockRequest(
+        `/uk${routes.admin.home}/settings`,
+        `http://localhost/uk${routes.admin.home}/settings`,
+        "token",
+      ) as any,
     );
 
     expect(generateSessionToken).not.toHaveBeenCalled();
@@ -129,7 +147,11 @@ describe("proxy middleware", () => {
     (getSessionPayload as jest.Mock).mockReturnValue(null);
 
     const res: any = proxy(
-      createMockRequest("/uk/management-console-12ak/settings", "http://localhost/uk/management-console-12ak/settings", "token") as any,
+      createMockRequest(
+        `/uk${routes.admin.home}/settings`,
+        `http://localhost/uk${routes.admin.home}/settings`,
+        "token",
+      ) as any,
     );
 
     expect(shouldRefreshSession).not.toHaveBeenCalled();
