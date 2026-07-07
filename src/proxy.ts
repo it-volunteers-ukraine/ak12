@@ -16,17 +16,11 @@ const intlMiddleware = createMiddleware({
 });
 
 export function buildCsp(nonce: string, isDev: boolean): string {
-  // React/Next.js Fast Refresh потребує eval() лише в dev-режимі.
-  // У проді 'unsafe-eval' НІКОЛИ не додається.
   const scriptSrc = isDev
     ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval';`
     : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic';`;
-
-  // upgrade-insecure-requests примушує браузер підміняти http:// на https://.
-  // Локальний dev-сервер працює тільки по HTTP, тому в dev ця директива
-  // ламає внутрішні запити (RSC payload, server actions) з ERR_SSL_PROTOCOL_ERROR.
   const upgradeInsecureRequests = isDev ? "" : "upgrade-insecure-requests;";
-
+  
   return `
     default-src 'self';
     ${scriptSrc}
@@ -47,17 +41,14 @@ export function buildCsp(nonce: string, isDev: boolean): string {
 
 function applyCsp(response: NextResponse, nonce: string): NextResponse {
   const isDev = process.env.NODE_ENV === "development";
-  
-  response.headers.set("Content-Security-Policy", buildCsp(nonce, isDev));
 
-  response.headers.set("x-nonce", nonce);
+  response.headers.set("Content-Security-Policy", buildCsp(nonce, isDev));
 
   return response;
 }
 
 export default function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-
   const { pathname } = request.nextUrl;
   const locale = pathname.split("/")[1] || "uk";
   const isAdminRoute = /^\/(uk|en)\/management-console-12ak/.test(pathname);
@@ -75,7 +66,13 @@ export default function proxy(request: NextRequest) {
     return applyCsp(response, nonce);
   }
 
-  const response = intlMiddleware(request);
+  const requestHeaders = new Headers(request.headers);
+
+  requestHeaders.set("x-nonce", nonce);
+
+  const response = intlMiddleware(
+    NextResponse.next({ request: { headers: requestHeaders } }) as unknown as NextRequest,
+  );
 
   if (isAdminRoute && isValid && token) {
     const sessionPayload = getSessionPayload(token);

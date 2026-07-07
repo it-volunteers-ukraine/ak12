@@ -1,3 +1,4 @@
+import createMiddleware from "next-intl/middleware";
 import proxy, { buildCsp, config } from "@/proxy";
 import { NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
@@ -26,6 +27,12 @@ jest.mock("next/server", () => ({
       cookies: { set: jest.fn() },
       headers: { set: jest.fn() },
       redirectedTo: url.toString ? url.toString() : String(url),
+    })),
+    // NEW: proxy.ts now calls NextResponse.next(...) to forward the nonce
+    next: jest.fn((init?: any) => ({
+      cookies: { set: jest.fn() },
+      headers: { set: jest.fn() },
+      ...init,
     })),
   },
 }));
@@ -58,7 +65,20 @@ function getHeaderValue(res: any, key: string): string | undefined {
   return call ? call[1] : undefined;
 }
 
+function getNonceFromCsp(res: any): string | undefined {
+  const csp = getHeaderValue(res, "Content-Security-Policy") ?? "";
+  
+  return csp.match(/'nonce-([^']+)'/)?.[1];
+}
+
 describe("proxy middleware", () => {
+  // NEW: capture the inner next-intl middleware mock before it gets cleared by clearAllMocks
+  let intlMiddlewareMock: jest.Mock;
+
+  beforeAll(() => {
+    intlMiddlewareMock = (createMiddleware as jest.Mock).mock.results[0].value as jest.Mock;
+  });
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -225,16 +245,20 @@ describe("proxy middleware", () => {
       expect(csp).toMatch(/script-src 'self' 'nonce-[A-Za-z0-9+/=]+' 'strict-dynamic'/);
     });
 
-    it("sets the x-nonce header matching the nonce used in the CSP", () => {
+    it("does not set x-nonce as a response header, but forwards it to next-intl middleware via request headers", () => {
       (verifySession as jest.Mock).mockReturnValue(true);
 
       const res: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
 
-      const csp = getHeaderValue(res, "Content-Security-Policy");
-      const xNonce = getHeaderValue(res, "x-nonce");
+      expect(getHeaderValue(res, "x-nonce")).toBeUndefined();
 
-      expect(xNonce).toBeDefined();
-      expect(csp).toContain(`'nonce-${xNonce}'`);
+      const nonce = getNonceFromCsp(res);
+
+      expect(nonce).toBeDefined();
+
+      const forwardedRequest = intlMiddlewareMock.mock.calls.at(-1)?.[0];
+
+      expect(forwardedRequest?.request?.headers?.get("x-nonce")).toBe(nonce);
     });
 
     it("includes required directives for Supabase, Cloudinary, YouTube and Pinterest", () => {
@@ -263,9 +287,10 @@ describe("proxy middleware", () => {
       const res1: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
       const res2: any = proxy(createMockRequest("/uk/home", "http://localhost/uk/home", "token") as any);
 
-      const nonce1 = getHeaderValue(res1, "x-nonce");
-      const nonce2 = getHeaderValue(res2, "x-nonce");
+      const nonce1 = getNonceFromCsp(res1);
+      const nonce2 = getNonceFromCsp(res2);
 
+      expect(nonce1).toBeDefined();
       expect(nonce1).not.toEqual(nonce2);
     });
   });
