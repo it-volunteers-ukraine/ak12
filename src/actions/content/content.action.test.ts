@@ -1,7 +1,9 @@
 import { revalidatePath } from "next/cache";
+
 import { SECTION_KEYS } from "@/constants";
-import { contentService } from "@/lib/content/content.service";
+import { routes } from "@/constants/routes";
 import { logger } from "@/lib/logger/logger";
+import { contentService } from "@/lib/content/content.service";
 import { saveContentAction, updateContentMultiLang } from "@/actions/content/content.action";
 
 jest.mock("next/cache", () => ({
@@ -58,7 +60,7 @@ describe("saveContentAction", () => {
     });
 
     expect(revalidatePath).toHaveBeenCalledWith("/");
-    expect(revalidatePath).toHaveBeenCalledWith("/management-console-12ak");
+    expect(revalidatePath).toHaveBeenCalledWith(routes.admin.home);
   });
 
   it("does not revalidate on failure", async () => {

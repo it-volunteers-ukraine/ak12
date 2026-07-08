@@ -1,11 +1,13 @@
-import createMiddleware from "next-intl/middleware";
-import proxy, { buildCsp, config } from "@/proxy";
 import { NextResponse } from "next/server";
-import { SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
+import createMiddleware from "next-intl/middleware";
+
+import { routes } from "@/constants/routes";
+import proxy, { config, buildCsp } from "@/proxy";
+import { SESSION_TTL, SESSION_COOKIE_NAME } from "@/constants";
 import {
   verifySession,
-  generateSessionToken,
   getSessionPayload,
+  generateSessionToken,
   shouldRefreshSession,
   getSessionCookieOptions,
 } from "@/lib/auth/session.service";
@@ -90,8 +92,8 @@ describe("proxy middleware", () => {
 
       const res: any = proxy(
         createMockRequest(
-          "/uk/management-console-12ak/dashboard",
-          "http://localhost/uk/management-console-12ak/dashboard",
+          `/uk${routes.admin.home}/dashboard`,
+          `http://localhost/uk${routes.admin.home}/dashboard`,
           "old-token",
         ) as any,
       );
@@ -111,8 +113,8 @@ describe("proxy middleware", () => {
 
       const res: any = proxy(
         createMockRequest(
-          "/uk/management-console-12ak/settings",
-          "http://localhost/uk/management-console-12ak/settings",
+          `/uk${routes.admin.home}/settings`,
+          `http://localhost/uk${routes.admin.home}/settings`,
           "token",
         ) as any,
       );
@@ -141,8 +143,8 @@ describe("proxy middleware", () => {
 
     const res: any = proxy(
       createMockRequest(
-        "/uk/management-console-12ak/dashboard",
-        "http://localhost/uk/management-console-12ak/dashboard",
+        `/uk${routes.admin.home}/dashboard`,
+        `http://localhost/uk${routes.admin.home}/dashboard`,
         undefined,
       ) as any,
     );
@@ -160,8 +162,8 @@ describe("proxy middleware", () => {
 
     const res: any = proxy(
       createMockRequest(
-        "/uk/management-console-12ak/settings",
-        "http://localhost/uk/management-console-12ak/settings",
+        `/uk${routes.admin.home}/settings`,
+        `http://localhost/uk${routes.admin.home}/settings`,
         "token",
       ) as any,
     );
@@ -176,8 +178,8 @@ describe("proxy middleware", () => {
 
     const res: any = proxy(
       createMockRequest(
-        "/uk/management-console-12ak/settings",
-        "http://localhost/uk/management-console-12ak/settings",
+        `/uk${routes.admin.home}/settings`,
+        `http://localhost/uk${routes.admin.home}/settings`,
         "token",
       ) as any,
     );
@@ -222,8 +224,8 @@ describe("proxy middleware", () => {
 
       const res: any = proxy(
         createMockRequest(
-          "/uk/management-console-12ak/dashboard",
-          "http://localhost/uk/management-console-12ak/dashboard",
+          `/uk${routes.admin.home}/dashboard`,
+          `http://localhost/uk${routes.admin.home}/dashboard`,
           undefined,
         ) as any,
       );

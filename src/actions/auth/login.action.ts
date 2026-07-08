@@ -2,7 +2,8 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-import type { FieldErrors, State } from "@/types";
+import { routes } from "@/constants/routes";
+import type { State, FieldErrors } from "@/types";
 import { loginSchema } from "@/schemas";
 import {
   createSession,
@@ -95,5 +96,5 @@ export async function verifyTwoFactor(_prevState: State, formData: FormData): Pr
   await deletePreAuthSession();
   await createSession();
 
-  redirect(`/${locale}/management-console-12ak`);
+  redirect(`/${locale}${routes.admin.home}`);
 }
