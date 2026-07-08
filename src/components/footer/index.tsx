@@ -1,13 +1,13 @@
 "use client";
 
 import { getStyles } from "./styles";
-import { ContactsSchema, FooterContent, HeaderLink, HeaderLinks } from "@/schemas";
+import { ContactsSchema, FooterContent, HeaderLink } from "@/schemas";
 import Image from "next/image";
 import { Logo } from "../../../public/images";
 import { SocialLinkList } from "../socialLinkList";
 import { ContactsType } from "@/constants";
-import { calculateSectionsPositions } from "../header/calculateSectionsPositions";
 import { useTranslations } from "next-intl";
+import { scrollToSection } from "@/utils/scrollToSection";
 
 type FooterProps = {
   menu: HeaderLink[] | null;
@@ -21,15 +21,10 @@ export const Footer = ({ contacts, content, menu }: FooterProps) => {
 
   const styles = getStyles();
 
-  const handleClick = (section: HeaderLinks[number]) => {
-    const positionsSections = calculateSectionsPositions(menu ?? []);
-
-    const scrollTo = positionsSections.find((s) => s.idSection === section.idSection)?.position ?? 0;
-
-    window.scrollTo({
-      top: scrollTo,
-      behavior: "smooth",
-    });
+  const handleClickMenu = (idSection: string | undefined) => {
+    if (idSection) {
+      scrollToSection(idSection);
+    }
   };
 
   return (
@@ -58,7 +53,7 @@ export const Footer = ({ contacts, content, menu }: FooterProps) => {
                 {menu.map((item, index) => {
                   return (
                     <li key={item.idSection || index} className="flex h-5 items-center">
-                      <button onClick={() => handleClick(item)} className={styles.link}>
+                      <button onClick={() => handleClickMenu(item.idSection)} className={styles.link}>
                         {item.label}
                       </button>
                     </li>
