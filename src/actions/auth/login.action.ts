@@ -2,11 +2,17 @@
 
 import { z } from "zod";
 import { redirect } from "next/navigation";
-
-import { loginSchema } from "@/schemas";
 import { routes } from "@/constants/routes";
 import type { State, FieldErrors } from "@/types";
-import { createSession, validateAdmin } from "@/lib/auth/session.service";
+import { loginSchema } from "@/schemas";
+import {
+  createSession,
+  validateAdmin,
+  validateTwoFactor,
+  createPreAuthSession,
+  verifyPreAuthSession,
+  deletePreAuthSession,
+} from "@/lib/auth/session.service";
 
 export async function adminLogin(_prevState: State, formData: FormData): Promise<State> {
   const data = {
@@ -41,12 +47,54 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
     };
   }
 
+  await createPreAuthSession();
+
+  return {
+    fieldErrors: {},
+    error: "",
+    needsTwoFactor: true,
+    locale,
+  };
+}
+
+export async function verifyTwoFactor(_prevState: State, formData: FormData): Promise<State> {
+  const code = String(formData.get("code"));
+  const locale = String(formData.get("locale") || "uk");
+
+  if (!/^\d{6}$/.test(code)) {
+    return {
+      fieldErrors: { code: ["Введіть 6-значний код"] },
+      error: "",
+      needsTwoFactor: true,
+      locale,
+    };
+  }
+
+  const hasPreAuth = await verifyPreAuthSession();
+
+  if (!hasPreAuth) {
+    return {
+      fieldErrors: {
+        code: ["Сесія авторизації закінчилася. Увійдіть знову."],
+      },
+      error: "",
+      locale,
+    };
+  }
+
+  const isValid = validateTwoFactor(code);
+
+  if (!isValid) {
+    return {
+      fieldErrors: { code: ["Невірний код"] },
+      error: "",
+      needsTwoFactor: true,
+      locale,
+    };
+  }
+
+  await deletePreAuthSession();
   await createSession();
 
   redirect(`/${locale}${routes.admin.home}`);
-
-  return {
-    error: "",
-    fieldErrors: {},
-  };
 }

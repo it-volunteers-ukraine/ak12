@@ -52,8 +52,9 @@ jest.mock("@/lib/auth/session.service", () => ({
 
 const MOCK_COOKIE_OPTIONS = { path: "/", httpOnly: true };
 
-function createMockRequest(pathname: string, url: string, cookieValue: string | undefined) {
+function createMockRequest(pathname: string, url: string, cookieValue: string | undefined, method = "GET") {
   return {
+    method,
     nextUrl: { pathname },
     url,
     headers: new Headers(),
@@ -74,7 +75,6 @@ function getNonceFromCsp(res: any): string | undefined {
 }
 
 describe("proxy middleware", () => {
-  // NEW: capture the inner next-intl middleware mock before it gets cleared by clearAllMocks
   let intlMiddlewareMock: jest.Mock;
 
   beforeAll(() => {

@@ -9,6 +9,12 @@ export const SESSION_INACTIVITY_TTL = 60 * 10; // 10 minutes
 // Session refresh debounce (how often session can be extended)
 export const SESSION_REFRESH_DEBOUNCE_MS = 60 * 1000; // 1 minute
 
+// Cookie used to store the temporary pre-authentication session
+export const PRE_AUTH_COOKIE_NAME = "admin_pre_auth";
+
+// Lifetime of the pre-authentication session (between password and 2FA verification)
+export const PRE_AUTH_TTL = 60 * 5; // 5 minutes
+
 // Internal config validation (fail fast on invalid setup)
 export function validateSessionConfig(config?: {
   SESSION_TTL: number;

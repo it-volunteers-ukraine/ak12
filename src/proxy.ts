@@ -22,7 +22,7 @@ export function buildCsp(nonce: string, isDev: boolean): string {
     ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval';`
     : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic';`;
   const upgradeInsecureRequests = isDev ? "" : "upgrade-insecure-requests;";
-  
+
   return `
     default-src 'self';
     ${scriptSrc}
@@ -57,10 +57,11 @@ export default function proxy(request: NextRequest) {
   const prefix = routes.admin.home;
   const isAdminRoute = path.startsWith(`/uk${prefix}`) || path.startsWith(`/en${prefix}`);
   const isLoginRoute = /^\/(uk|en)\/login/.test(pathname);
+  const isServerAction = Boolean(request.headers.get("next-action"));
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const isValid = verifySession(token);
 
-  if (isAdminRoute && !isValid && !isLoginRoute) {
+  if (isAdminRoute && !isValid && !isLoginRoute && !isServerAction) {
     const response = NextResponse.redirect(new URL(`/${locale}/login`, request.url));
 
     if (token) {
@@ -78,13 +79,13 @@ export default function proxy(request: NextRequest) {
     const sessionPayload = getSessionPayload(token);
 
     if (sessionPayload && shouldRefreshSession(sessionPayload.lastActivityAt)) {
-      const refreshedToken = generateSessionToken();
+      const refreshedToken = generateSessionToken("session");
 
       response.cookies.set(SESSION_COOKIE_NAME, refreshedToken, getSessionCookieOptions(SESSION_TTL));
     }
   }
 
-  if (token && !isValid) {
+  if (token && !isValid && !isServerAction) {
     response.cookies.set(SESSION_COOKIE_NAME, "", getSessionCookieOptions(0));
   }
 
