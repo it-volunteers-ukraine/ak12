@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { routes } from "@/constants/routes";
 import { LogoutForm } from "@/components/auth/logout-form";
 
 import { SidebarLogo } from "./sidebar-logo";
@@ -26,18 +27,18 @@ export const Sidebar = ({ content }: IAdminSidebarProps) => {
 
   return (
     <aside className="fixed top-0 left-0 flex h-screen w-64 flex-col gap-16 border-r border-gray-200 bg-white px-4 py-6">
-     <SidebarLogo content={logoContent} />
+      <SidebarLogo content={logoContent} />
       <div className="flex h-full flex-1 flex-col justify-between">
         <nav className="space-y-1">
           {mainAdminNavigation?.map((item) => {
             const IconComponent = item.icon;
             const slug = item.id.toLowerCase();
             const firstSub = sidebarToSubmenuMap[slug]?.[0] || "index";
-            const href = `/management-console-12ak/${slug}/${firstSub.id?.toLowerCase()}`;
+            const href = `${routes.admin.home}/${slug}/${firstSub.id?.toLowerCase()}`;
 
             const currentPath = pathname.toLowerCase();
 
-            const isActive = currentPath.includes(`/management-console-12ak/${slug}`);
+            const isActive = currentPath.includes(`${routes.admin.home}/${slug}`);
 
             return (
               <div

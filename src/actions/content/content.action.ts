@@ -2,21 +2,23 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { SectionKey, SECTION_KEYS } from "@/constants";
+
 import { Locale } from "@/types";
+import { routes } from "@/constants/routes";
+import { logger } from "@/lib/logger/logger";
+import { SectionKey, SECTION_KEYS } from "@/constants";
 import { aboutUsSchema } from "@/schemas/about-us.schema";
+import { AdminDataMap, AdminSectionKey } from "@/lib/admin";
+import { contentService } from "@/lib/content/content.service";
+import { mobilizationSchema } from "@/schemas/mobilization.schema";
 import {
   transferSchema,
   heroContentSchema,
   contract1824Schema,
+  privacyPolicySchema,
   feedbackContentSchema,
   headerAndFooterContentSchema,
-  privacyPolicySchema,
 } from "@/schemas";
-import { mobilizationSchema } from "@/schemas/mobilization.schema";
-import { logger } from "@/lib/logger/logger";
-import { AdminDataMap, AdminSectionKey } from "@/lib/admin";
-import { contentService } from "@/lib/content/content.service";
 
 type SaveContentAction = {
   locale: Locale;
@@ -51,7 +53,7 @@ export const saveContentAction = async ({ locale, sectionKey, rawContent }: Save
 
   if (result.success) {
     revalidatePath("/");
-    revalidatePath("/management-console-12ak");
+    revalidatePath(routes.admin.home);
   }
 
   return result;

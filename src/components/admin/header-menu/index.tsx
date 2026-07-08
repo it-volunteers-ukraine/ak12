@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
+import { routes } from "@/constants/routes";
 import { AdminViewSiteButton } from "@/components/admin";
 
 import { SubmenuItem } from "./mok";
@@ -20,7 +21,7 @@ export const AdminHeader = ({ contentMenu, sidebarSegment }: IAdminHeaderProps) 
   const activeSubsection = params.subsidebar as string;
   const locale = params.locale as string;
 
-const KYIV_TIMEZONE = "Europe/Kyiv";
+  const KYIV_TIMEZONE = "Europe/Kyiv";
 
   return (
     <header className="sticky top-0 z-50 flex justify-between gap-6 border-b-3 bg-white">
@@ -28,7 +29,7 @@ const KYIV_TIMEZONE = "Europe/Kyiv";
         <div className="flex overflow-x-auto">
           {contentMenu.map((item: SubmenuItem) => {
             const subId = item.id.toLowerCase();
-            const href = `/${locale}/management-console-12ak/${sidebarSegment}/${subId}`;
+            const href = `/${locale}${routes.admin.home}/${sidebarSegment}/${subId}`;
 
             const isActive = activeSubsection === subId;
 

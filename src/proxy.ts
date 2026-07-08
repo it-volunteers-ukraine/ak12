@@ -1,10 +1,12 @@
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import { locales, SESSION_COOKIE_NAME, SESSION_TTL } from "@/constants";
+
+import { routes } from "@/constants/routes";
+import { locales, SESSION_TTL, SESSION_COOKIE_NAME } from "@/constants";
 import {
   verifySession,
-  generateSessionToken,
   getSessionPayload,
+  generateSessionToken,
   shouldRefreshSession,
   getSessionCookieOptions,
 } from "@/lib/auth/session.service";
@@ -51,7 +53,9 @@ export default function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const { pathname } = request.nextUrl;
   const locale = pathname.split("/")[1] || "uk";
-  const isAdminRoute = /^\/(uk|en)\/management-console-12ak/.test(pathname);
+  const path = pathname.toLowerCase();
+  const prefix = routes.admin.home;
+  const isAdminRoute = path.startsWith(`/uk${prefix}`) || path.startsWith(`/en${prefix}`);
   const isLoginRoute = /^\/(uk|en)\/login/.test(pathname);
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const isValid = verifySession(token);
