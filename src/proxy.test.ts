@@ -69,7 +69,7 @@ function getHeaderValue(res: any, key: string): string | undefined {
 
 function getNonceFromCsp(res: any): string | undefined {
   const csp = getHeaderValue(res, "Content-Security-Policy") ?? "";
-  
+
   return csp.match(/'nonce-([^']+)'/)?.[1];
 }
 
@@ -224,8 +224,8 @@ describe("proxy middleware", () => {
 
       const res: any = proxy(
         createMockRequest(
-          "/uk/management-console-12ak/dashboard",
-          "http://localhost/uk/management-console-12ak/dashboard",
+          `/uk${routes.admin.home}/dashboard`,
+          `http://localhost/uk${routes.admin.home}/dashboard`,
           undefined,
         ) as any,
       );
