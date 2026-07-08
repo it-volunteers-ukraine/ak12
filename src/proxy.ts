@@ -17,7 +17,40 @@ const intlMiddleware = createMiddleware({
   localePrefix: "always",
 });
 
+export function buildCsp(nonce: string, isDev: boolean): string {
+  const scriptSrc = isDev
+    ? `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'unsafe-eval';`
+    : `script-src 'self' 'nonce-${nonce}' 'strict-dynamic';`;
+  const upgradeInsecureRequests = isDev ? "" : "upgrade-insecure-requests;";
+  
+  return `
+    default-src 'self';
+    ${scriptSrc}
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: blob: https://res.cloudinary.com https://img.youtube.com https://i.pinimg.com https://ptregtvplvjeoszspvgm.supabase.co;
+    font-src 'self';
+    connect-src 'self' https://ptregtvplvjeoszspvgm.supabase.co wss://ptregtvplvjeoszspvgm.supabase.co;
+    frame-src https://www.youtube.com;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    ${upgradeInsecureRequests}
+  `
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function applyCsp(response: NextResponse, nonce: string): NextResponse {
+  const isDev = process.env.NODE_ENV === "development";
+
+  response.headers.set("Content-Security-Policy", buildCsp(nonce, isDev));
+
+  return response;
+}
+
 export default function proxy(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const { pathname } = request.nextUrl;
   const locale = pathname.split("/")[1] || "uk";
   const path = pathname.toLowerCase();
@@ -34,8 +67,10 @@ export default function proxy(request: NextRequest) {
       response.cookies.set(SESSION_COOKIE_NAME, "", getSessionCookieOptions(0));
     }
 
-    return response;
+    return applyCsp(response, nonce);
   }
+
+  request.headers.set("x-nonce", nonce);
 
   const response = intlMiddleware(request);
 
@@ -53,7 +88,7 @@ export default function proxy(request: NextRequest) {
     response.cookies.set(SESSION_COOKIE_NAME, "", getSessionCookieOptions(0));
   }
 
-  return response;
+  return applyCsp(response, nonce);
 }
 
 export const config = {
