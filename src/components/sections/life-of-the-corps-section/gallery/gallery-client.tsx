@@ -12,7 +12,6 @@ import { getYouTubeEmbedUrl } from "@/lib/youtube/youtube";
 
 import { RenderCard } from "../card";
 import { CloseIcon } from "../../../../../public/icons";
-import { Background } from "../../../../../public/images";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -47,6 +46,8 @@ const MOBILE_ORDER_OVERRIDES: Record<number, number> = {
 };
 
 const MOBILE_HIDDEN_INDEXES = new Set([0, 15]);
+
+const BACKGROUND_IMAGE = "https://res.cloudinary.com/korneiko/image/upload/v1784043457/ak12/Background.png";
 
 export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGalleryClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,7 +104,7 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
         fill
         priority
         sizes="100vw"
-        src={Background}
+        src={BACKGROUND_IMAGE}
         alt="Background"
         className="absolute inset-0 z-0 object-cover"
       />
