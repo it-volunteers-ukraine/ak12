@@ -1,10 +1,10 @@
 import { Locale } from "@/types";
 import { languageService } from "@/lib/language/language.service";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import { logger } from "@/lib/logger/logger";
 
-jest.mock("@/lib/supabase-server/supabase-server", () => ({
-  supabaseServer: {
+jest.mock("@/lib/database/database-client", () => ({
+  databaseClient: {
     from: jest.fn(),
   },
 }));
@@ -16,7 +16,7 @@ jest.mock("@/lib/logger/logger", () => ({
   },
 }));
 
-const mockedSupabase = jest.mocked(supabaseServer);
+const mockedSupabase = jest.mocked(databaseClient);
 const mockedLogger = jest.mocked(logger);
 
 describe("languageService", () => {

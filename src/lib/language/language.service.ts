@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { Locale } from "@/types";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import { logger } from "@/lib/logger/logger";
 
 type LanguageRow = {
@@ -8,7 +8,7 @@ type LanguageRow = {
 };
 
 const _ensureLanguageCached = cache(async (locale: Locale): Promise<LanguageRow> => {
-  const { data: existingLanguage, error: selectError } = await supabaseServer
+  const { data: existingLanguage, error: selectError } = await databaseClient
     .from("language")
     .select("id")
     .eq("code", locale)
@@ -20,12 +20,12 @@ const _ensureLanguageCached = cache(async (locale: Locale): Promise<LanguageRow>
   }
 
   if (existingLanguage?.id) {
-    return existingLanguage;
+    return existingLanguage as LanguageRow;
   }
 
   logger.info({ locale }, "Language not found, creating new one...");
 
-  const { data: insertedLanguage, error: insertError } = await supabaseServer
+  const { data: insertedLanguage, error: insertError } = await databaseClient
     .from("language")
     .insert({ code: locale })
     .select("id")
@@ -36,7 +36,7 @@ const _ensureLanguageCached = cache(async (locale: Locale): Promise<LanguageRow>
     throw new Error(`Failed to create language ${locale}`);
   }
 
-  return insertedLanguage;
+  return insertedLanguage as LanguageRow;
 });
 
 export const languageService = {

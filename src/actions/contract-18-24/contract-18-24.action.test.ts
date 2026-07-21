@@ -44,7 +44,7 @@ const mockContract = {
     subtitle: "72 ОМБр ім. Чорних Запорожців",
     backgroundImage: {
       publicId: "ak12/contract-18-24-background",
-      secureUrl: "https://res.cloudinary.com/korneiko/image/upload/v1779788292/ak12/contract-18-24-background.jpg",
+      secureUrl: "https://res.cloudinary.com/<cloud-name>/image/upload/v1779788292/ak12/contract-18-24-background.jpg",
     },
   },
 };

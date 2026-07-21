@@ -47,7 +47,7 @@ const MOBILE_ORDER_OVERRIDES: Record<number, number> = {
 
 const MOBILE_HIDDEN_INDEXES = new Set([0, 15]);
 
-const BACKGROUND_IMAGE = "https://res.cloudinary.com/korneiko/image/upload/v1784043457/ak12/Background.png";
+const BACKGROUND_IMAGE = "https://res.cloudinary.com/<cloud-name>/image/upload/v1784043457/ak12/Background.png";
 
 export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGalleryClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
