@@ -1,322 +1,384 @@
 INSERT INTO language (code)
-VALUES ('uk'), ('en')
+VALUES ('uk'),
+       ('en')
 ON CONFLICT (code) DO NOTHING;
 
 INSERT INTO site_content (section_key, content, is_active, language_id)
-VALUES
-    (
-        'hero',
+VALUES ('hero',
         '{
           "title": "Стань частиною сили, що захищає Україну",
           "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
           "buttonTitle": "btn uk",
-          "hiringChance": {
-          "title": "Гарантія посади",
-          "value": "100%",
-          },
-          "majors": {
-          "title": "Cпеціальностей" ,
-          "value": "30+"
-          },
-          "support":{
-          "title": "Підтримка",
-          "value":"24/7",
-          },
+          "features": [
+            {
+              "type": "hiringChance",
+              "label": "Гарантія посади",
+              "value": "100%"
+            },
+            {
+              "type": "majors",
+              "label": "Cпеціальностей",
+              "value": "30+"
+            },
+            {
+              "type": "support",
+              "label": "Підтримка",
+              "value": "24/7"
+            }
+          ],
           "backgroundImage": {
             "publicId": "hero-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
           }
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'hero',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('hero',
         '{
           "title": "Become part of the force defending Ukraine",
           "subtitle": "Choose a subdivision and vacancy that match your experience, skills and motivation.",
           "buttonTitle": "btn en",
-          "hiringChance": {
-          "title": "Job security",
-          "value": "100%",
-          },
-          "majors": {
-          "title": "Specialisms" ,
-          "value": "30+"
-          },
-          "support":{
-          "title": "Support",
-          "value":"24/7",
-          },
+          "features": [
+            {
+              "type": "hiringChance",
+              "label": "Job security",
+              "value": "100%"
+            },
+            {
+              "type": "majors",
+              "label": "Specialisms",
+              "value": "30+"
+            },
+            {
+              "type": "support",
+              "label": "Support",
+              "value": "24/7"
+            }
+          ],
           "backgroundImage": {
             "publicId": "hero-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
           }
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-      (
-        'transfer',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('transfer',
         '{
+          "baseSection": {
+            "sectionTitle": "ПЕРЕВЕДЕННЯ",
+            "sectionSubtitle": "Інформація про переведення",
+            "menuButton": "Переведення",
+            "buttonJoinUs": "Подати заявку",
+            "message": "Ця форма відправлена з блоку Переведення"
+          },
           "title": "Хочеш змінити підрозділ?",
           "subtitle": "Ми допоможемо тобі у цьому надавши вибір військових частин, що приймуть тебе на бажану вакантну посаду",
           "buttonTitle": "Подати заявку",
-          "content":[
+          "content": [
             {
               "title": "Підтримка",
-              "subtitle": "Повний супровід просесу",
+              "subtitle": "Повний супровід просесу"
             },
             {
-              "title": "Вибір" ,
-              "subtitle": "Підбір позиції",
+              "title": "Вибір",
+              "subtitle": "Підбір позиції"
             },
             {
               "title": "Оперативність",
-              "subtitle":"Ми цінуємо твій час",
+              "subtitle": "Ми цінуємо твій час"
             }
           ],
           "transferLink": {
-          "startText": "Ми допоможемо тобі у цьому надавши вибір військових частин, що приймуть тебе на бажану вакантну посаду",
-          "link": "«Переведення»",
-          "endText": "та очікуй дзвінок від рекрутера для співбесіди.",
+            "startText": "Ми допоможемо тобі у цьому надавши вибір військових частин, що приймуть тебе на бажану вакантну посаду",
+            "link": "«Переведення»",
+            "endText": "та очікуй дзвінок від рекрутера для співбесіди."
           },
           "backgroundImage": {
             "publicId": "transfer-background",
             "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/transfer-background"
-            }
           }
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-      ),
-      (
-        'transfer',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('transfer',
         '{
+          "baseSection": {
+            "sectionTitle": "TRANSFER",
+            "sectionSubtitle": "Transfer Information",
+            "menuButton": "Transfer",
+            "buttonJoinUs": "Submit Application",
+            "message": "This form was sent from Transfer block"
+          },
           "title": "Would you like to change departments?",
           "subtitle": "We will help you with this by providing a choice of military units that will accept you for the desired vacant position",
           "buttonTitle": "Submit Application",
-          "content":[
+          "content": [
             {
               "title": "Support",
-              "subtitle": "Full support during the process",
+              "subtitle": "Full support during the process"
             },
             {
-              "title": "Choice" ,
-              "subtitle": "Position matching",
+              "title": "Choice",
+              "subtitle": "Position matching"
             },
             {
               "title": "Speed",
-              "subtitle":"We value your time",
+              "subtitle": "We value your time"
             }
           ],
           "transferLink": {
-          "startText": "We will help you with this by providing a choice of military units that will accept you for the desired vacant position",
-          "link": "«Transfer»",
-          "endText": "and wait for a call from a recruiter to schedule an interview.",
+            "startText": "We will help you with this by providing a choice of military units that will accept you for the desired vacant position",
+            "link": "«Transfer»",
+            "endText": "and wait for a call from a recruiter to schedule an interview."
           },
           "backgroundImage": {
             "publicId": "transfer-background",
             "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/transfer-background"
-            }
           }
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'contract-18-24',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('contract-18-24',
         '{
+          "baseSection": {
+            "sectionTitle": "КОНТРАКТ 18-24",
+            "sectionSubtitle": "Інформація про контракт",
+            "menuButton": "Контракт",
+            "buttonJoinUs": "Приєднатися",
+            "message": "Ця форма відправлена з блоку Контракт 18-24"
+          },
           "title": "Стань частиною сили, що захищає Україну",
           "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
           "buttonTitle": "btn uk",
-          "content":[
+          "content": [
             {
               "title": "Гарантія посади",
-              "subtitle": "100%",
+              "subtitle": "100%"
             },
             {
-              "title": "Cпеціальностей" ,
-              "subtitle": "30+",
+              "title": "Cпеціальностей",
+              "subtitle": "30+"
             },
             {
               "title": "Підтримка",
-              "subtitle":"24/7",
+              "subtitle": "24/7"
             }
           ],
           "contact": {
-          "startText": "Телефонуй",
-          "number": "+38 (000) 000-00-00",
-          "endText": "або заповнюй анкету",
+            "startText": "Телефонуй",
+            "number": "+38 (000) 000-00-00",
+            "endText": "або заповнюй анкету"
           },
-          "imgContent":{ 
-          "title": "Гарантія посади",
-          "subtitle": "100%",
-          "backgroundImage": {
-            "publicId": "hero-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+          "imgContent": {
+            "title": "Гарантія посади",
+            "subtitle": "100%",
+            "backgroundImage": {
+              "publicId": "hero-background",
+              "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
             }
           }
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'contract-18-24',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('contract-18-24',
         '{
+          "baseSection": {
+            "sectionTitle": "CONTRACT 18-24",
+            "sectionSubtitle": "Contract Information",
+            "menuButton": "Contract",
+            "buttonJoinUs": "Join Now",
+            "message": "This form was sent from Contract 18-24 block"
+          },
           "title": "Стань частиною сили, що захищає Україну",
           "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
           "buttonTitle": "btn uk",
-          "content":[
+          "content": [
             {
               "title": "Гарантія посади",
-              "subtitle": "100%",
+              "subtitle": "100%"
             },
             {
-              "title": "Cпеціальностей" ,
-              "subtitle": "30+",
+              "title": "Cпеціальностей",
+              "subtitle": "30+"
             },
             {
               "title": "Підтримка",
-              "subtitle":"24/7",
+              "subtitle": "24/7"
             }
           ],
           "contact": {
-          "startText": "Телефонуй",
-          "number": "+38 (000) 000-00-00",
-          "endText": "або заповнюй анкету",
+            "startText": "Телефонуй",
+            "number": "+38 (000) 000-00-00",
+            "endText": "або заповнюй анкету"
           },
-          "imgContent":{ 
-          "title": "Гарантія посади",
-          "subtitle": "100%",
-          
-          "backgroundImage": {
-            "publicId": "hero-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/hero-background"
+          "imgContent": {
+            "title": "Гарантія посади",
+            "subtitle": "100%",
+            "backgroundImage": {
+              "publicId": "hero-background",
+              "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
             }
           }
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-      'mobilization',
-      '{
-        "title": "Стань частиною сили, що захищає Україну",
-        "subtitle": "Обирай підрозділ та вакансію відповідно до свого досвіду, навичок і мотивації.",
-        "content": "Ми допомагаємо кандидатам знайти напрям служби, у якому їхні вміння принесуть найбільшу користь. На платформі можна ознайомитися з підрозділами, вакансіями та залишити заявку для подальшого контакту.",
-        "buttonTitle": "Обрати вакансію"
-      }'::jsonb,
-      true,
-      (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-      'mobilization',
-      '{
-        "title": "Become part of the force defending Ukraine",
-        "subtitle": "Choose a subdivision and vacancy that match your experience, skills and motivation.",
-        "content": "We help candidates find the service direction where their abilities bring the most value. The platform allows users to explore subdivisions, vacancies and submit an application for further contact.",
-        "buttonTitle": "Choose vacancy"
-      }'::jsonb,
-      true,
-      (SELECT id FROM language WHERE code = 'en')
-    ),
-     (
-      'about',
-      '{
-        "mainTitle": "12-й Армійський корпус",
-        "description": "Ми засновані у жовтні 2024 року як відповідь на виклики сучасної війни. Наша структура об’єднує штурмовий драйв, високотехнологічні безпілотні системи, надійний зв’язок та залізне ППО. Ми будуємо армію майбутнього, де досвід зустрічається з інноваціями.",
-        "content": {
-          "gallery": [
-      {
-        "text": "Життя корпусу",
-        "publicId": "ak12/Motivation",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Мотивація",
-        "publicId": "ak12/Motivation",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Відвага",
-        "publicId": "ak12/Courage",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Навчання",
-        "publicId": "ak12/Education",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Людяність",
-        "publicId": "ak12/Humanity",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "ЧЕСТЬ",
-        "publicId": "ak12/Honor",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Побут",
-        "publicId": "ak12/Daily-Life",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      }
-    ]
-        }        
-      }'::jsonb,
-      true,
-      (SELECT id FROM language WHERE code = 'uk')
-    ),
-     (
-      'about',
-      '{
-        "mainTitle": "12th Army Corps",
-        "description": "We were founded in October 2024 in response to the challenges of modern warfare. Our organization combines an aggressive offensive mindset, high-tech unmanned systems, reliable communications, and robust air defense. We are building the army of the future, where experience meets innovation.",
-        "content": {
-          "gallery": [
-      {
-        "text": "The Life of the Corps",
-        "publicId": "ak12/Motivation",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Motivation",
-        "publicId": "ak12/Motivation",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Courage",
-        "publicId": "ak12/Courage",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Education",
-        "publicId": "ak12/Education",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Humanity",
-        "publicId": "ak12/Humanity",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Honor",
-        "publicId": "ak12/Honor",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      },
-      {
-        "text": "Daily Life",
-        "publicId": "ak12/Daily-Life",
-        "secureUrl": "https://res.cloudinary.com/korneiko/image/upload/v1777741759/ak12/contract-18-24-background.png"
-      }
-    ]
-        }        
-      }'::jsonb,
-      true,
-      (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'advantages',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('mobilization',
+        '{
+          "baseSection": {
+            "sectionTitle": "МОБІЛІЗАЦІЯ",
+            "sectionSubtitle": "Як долучитися до війська?",
+            "menuButton": "Мобілізація",
+            "buttonJoinUs": "Обрати вакансію",
+            "message": "Ця форма відправлена з блоку Мобілізація"
+          },
+          "cards": [
+            {
+              "title": "01",
+              "subtitle": "Обери вакансію",
+              "primaryDescription": "Обери вакансію на сайті відповідно до своєї спеціальності чи досвіду."
+            },
+            {
+              "title": "02",
+              "subtitle": "Співбесіда",
+              "primaryDescription": "Пройди співбесіду з представником підрозділу та отримай згоду."
+            },
+            {
+              "title": "03",
+              "subtitle": "Оформлення",
+              "primaryDescription": "Оформи документи та приєднуйся до підрозділу захищати державу."
+            }
+          ],
+          "primaryDescription": "Ми допомагаємо кандидатам знайти напрям служби, у якому їхні вміння принесуть найбільшу користь.",
+          "accentedDescription": "На платформі можна ознайомитися з підрозділами, вакансіями та залишити заявку.",
+          "secondaryDescription": "Долучайся до професійних підрозділів!"
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('mobilization',
+        '{
+          "baseSection": {
+            "sectionTitle": "MOBILIZATION",
+            "sectionSubtitle": "How to join the military?",
+            "menuButton": "Mobilization",
+            "buttonJoinUs": "Choose vacancy",
+            "message": "This form was sent from Mobilization block"
+          },
+          "cards": [
+            {
+              "title": "01",
+              "subtitle": "Choose vacancy",
+              "primaryDescription": "Choose a vacancy on the website that matches your specialty or experience."
+            },
+            {
+              "title": "02",
+              "subtitle": "Interview",
+              "primaryDescription": "Pass an interview with a unit representative and receive approval."
+            },
+            {
+              "title": "03",
+              "subtitle": "Onboarding",
+              "primaryDescription": "Complete the onboarding documents and join the unit to defend the country."
+            }
+          ],
+          "primaryDescription": "We help candidates find the service direction where their abilities bring the most value.",
+          "accentedDescription": "The platform allows users to explore subdivisions, vacancies and submit an application.",
+          "secondaryDescription": "Join professional units today!"
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('about',
+        '{
+          "mainTitle": "12-й Армійський корпус",
+          "description": "Ми засновані у жовтні 2024 року як відповідь на виклики сучасної війни. Наша структура об’єднує штурмовий драйв, високотехнологічні безпілотні системи, надійний зв’язок та залізне ППО. Ми будуємо армію майбутнього, де досвід зустрічається з інноваціями.",
+          "content": {
+            "gallery": [
+              {
+                "text": "Життя корпусу",
+                "publicId": "ak12/Motivation",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Мотивація",
+                "publicId": "ak12/Motivation",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Відвага",
+                "publicId": "ak12/Courage",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Навчання",
+                "publicId": "ak12/Education",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Людяність",
+                "publicId": "ak12/Humanity",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "ЧЕСТЬ",
+                "publicId": "ak12/Honor",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Побут",
+                "publicId": "ak12/Daily-Life",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              }
+            ]
+          }
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('about',
+        '{
+          "mainTitle": "12th Army Corps",
+          "description": "We were founded in October 2024 in response to the challenges of modern warfare. Our organization combines an aggressive offensive mindset, high-tech unmanned systems, reliable communications, and robust air defense. We are building the army of the future, where experience meets innovation.",
+          "content": {
+            "gallery": [
+              {
+                "text": "The Life of the Corps",
+                "publicId": "ak12/Motivation",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Motivation",
+                "publicId": "ak12/Motivation",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Courage",
+                "publicId": "ak12/Courage",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Education",
+                "publicId": "ak12/Education",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Humanity",
+                "publicId": "ak12/Humanity",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Honor",
+                "publicId": "ak12/Honor",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              },
+              {
+                "text": "Daily Life",
+                "publicId": "ak12/Daily-Life",
+                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+              }
+            ]
+          }
+        }'::jsonb,
+        true,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('advantages',
         '{
           "title": "Чому варто долучитися",
           "items": [
@@ -339,14 +401,12 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'advantages',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('advantages',
         '{
           "title": "Why join",
           "items": [
-            {     
+            {
               "title": "Clear roles",
               "description": "Each vacancy has a clear description of tasks and expectations."
             },
@@ -365,10 +425,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'stats',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('stats',
         '{
           "title": "У цифрах",
           "items": [
@@ -391,10 +449,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'stats',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('stats',
         '{
           "title": "In numbers",
           "items": [
@@ -417,10 +473,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'join_steps',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('join_steps',
         '{
           "title": "Як долучитися",
           "items": [
@@ -442,10 +496,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'join_steps',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('join_steps',
         '{
           "title": "How to join",
           "items": [
@@ -467,10 +519,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'faq',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('faq',
         '{
           "title": "Поширені запитання",
           "items": [
@@ -489,10 +539,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'faq',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('faq',
         '{
           "title": "Frequently asked questions",
           "items": [
@@ -511,10 +559,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'application_cta',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('application_cta',
         '{
           "title": "Готовий зробити крок?",
           "description": "Оберіть вакансію або підрозділ і залиште заявку для подальшого контакту.",
@@ -525,10 +571,8 @@ VALUES
           "image": "/images/cta/apply.jpg"
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'application_cta',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('application_cta',
         '{
           "title": "Ready to take the step?",
           "description": "Choose a vacancy or subdivision and submit your application for further contact.",
@@ -539,10 +583,8 @@ VALUES
           "image": "/images/cta/apply.jpg"
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'contacts',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('contacts',
         '{
           "title": "Контакти",
           "description": "Залишайте заявку або звертайтеся через офіційні канали зв’язку.",
@@ -551,10 +593,8 @@ VALUES
           "telegram": "@ak12_recruiting"
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'contacts',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('contacts',
         '{
           "title": "Contacts",
           "description": "Submit an application or reach out through official communication channels.",
@@ -563,10 +603,8 @@ VALUES
           "telegram": "@ak12_recruiting"
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'footer',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('footer',
         '{
           "copyright": "© 12 АК",
           "links": [
@@ -585,10 +623,8 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'footer',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('footer',
         '{
           "copyright": "© 12 AC",
           "links": [
@@ -607,33 +643,26 @@ VALUES
           ]
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
-    (
-        'privacy-policy',
+        (SELECT id FROM language WHERE code = 'en')),
+       ('privacy-policy',
         '{
           "title": "Політика конфіденційності",
           "description": "Текст політики конфіденційності"
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'uk')
-      ),
-      (
-        'privacy-policy',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('privacy-policy',
         '{
           "title": "Privacy Policy",
           "description": "Privacy policy text"
         }'::jsonb,
         true,
-        (SELECT id FROM language WHERE code = 'en')
-      )
+        (SELECT id FROM language WHERE code = 'en'))
 ON CONFLICT (section_key, language_id) DO NOTHING;
 
 
 INSERT INTO vacancy (position, slug, description, type, salary_min, salary_max, is_active, sort_order, language_id)
-VALUES
-    (
-        'Кухар',
+VALUES ('Кухар',
         'kukhar',
         'Шукаємо відповідальну людину з досвідом роботи кухарем або профільна освіта.',
         'frontline',
@@ -641,10 +670,8 @@ VALUES
         100000,
         true,
         10,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Cook',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Cook',
         'kukhar',
         'We are looking for a responsible person with cooking experience or relevant education.',
         'frontline',
@@ -652,11 +679,9 @@ VALUES
         100000,
         true,
         10,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Водій-механік',
+       ('Водій-механік',
         'vodii-mekhanik',
         'Перевезення особового складу, спеціальних вантажів та техніки.',
         'frontline',
@@ -664,10 +689,8 @@ VALUES
         170000,
         true,
         20,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Driver-Mechanic',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Driver-Mechanic',
         'vodii-mekhanik',
         'Transportation of personnel, special cargo and equipment.',
         'frontline',
@@ -675,11 +698,9 @@ VALUES
         170000,
         true,
         20,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Водій-санітар',
+       ('Водій-санітар',
         'vodii-sanitar',
         'Перевезення особового складу, майна, паливно-мастильних матеріалів, забезпечення життєдіяльності підрозділів.',
         'frontline',
@@ -687,10 +708,8 @@ VALUES
         NULL,
         true,
         30,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Medical Driver',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Medical Driver',
         'vodii-sanitar',
         'Transportation of personnel, property and fuel, ensuring the vital activities of units.',
         'frontline',
@@ -698,11 +717,9 @@ VALUES
         NULL,
         true,
         30,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Водій-електрик',
+       ('Водій-електрик',
         'vodii-elektryk',
         'Перевезення особового складу, спеціальних вантажів та техніки. Діагностика та ремонт електрообладнання.',
         'frontline',
@@ -710,10 +727,8 @@ VALUES
         170000,
         true,
         40,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Driver-Electrician',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Driver-Electrician',
         'vodii-elektryk',
         'Transportation of personnel, special cargo and equipment. Diagnostics and repair of electrical equipment.',
         'frontline',
@@ -721,11 +736,9 @@ VALUES
         170000,
         true,
         40,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Гранатометник',
+       ('Гранатометник',
         'hranatometnnyk',
         'Військовослужбовець, який використовує гранатомети для ураження ворожої техніки, укріплень та живої сили.',
         'frontline',
@@ -733,10 +746,8 @@ VALUES
         170000,
         true,
         50,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Grenadier',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Grenadier',
         'hranatometnnyk',
         'A serviceman who uses grenade launchers to destroy enemy equipment, fortifications and personnel.',
         'frontline',
@@ -744,11 +755,9 @@ VALUES
         170000,
         true,
         50,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Навідник',
+       ('Навідник',
         'navidnyk',
         'Обов''язки пов''язані з прицілюванням та веденням вогню з різного озброєння, координація роботи з екіпажем, пошук та знищення цілей, контроль технічного стану озброєння.',
         'frontline',
@@ -756,10 +765,8 @@ VALUES
         170000,
         true,
         60,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Gunner',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Gunner',
         'navidnyk',
         'Responsibilities include aiming and firing various weapons, crew coordination, target acquisition and destruction, and weapons maintenance.',
         'frontline',
@@ -767,11 +774,9 @@ VALUES
         170000,
         true,
         60,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Стрілець',
+       ('Стрілець',
         'strilets',
         'Основна силова одиниця, яка забезпечує підтримку та ефективність бойових дій, бере участь у оборонних, наступальних операціях та укріпленні позицій.',
         'frontline',
@@ -779,10 +784,8 @@ VALUES
         170000,
         true,
         70,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Rifleman',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Rifleman',
         'strilets',
         'The main combat unit providing support and effectiveness in battle, participating in defensive and offensive operations and position fortification.',
         'frontline',
@@ -790,11 +793,9 @@ VALUES
         170000,
         true,
         70,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Снайпер',
+       ('Снайпер',
         'snaiper',
         'Безпосередня робота із закріпленою зброєю, виконання бойових завдань у складі підрозділів, знищення живої сили противника, своєчасне обслуговування власної зброї.',
         'frontline',
@@ -802,10 +803,8 @@ VALUES
         170000,
         true,
         80,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Sniper',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Sniper',
         'snaiper',
         'Direct work with assigned weapons, execution of combat missions within units, elimination of enemy personnel, timely maintenance of own weapons.',
         'frontline',
@@ -813,11 +812,9 @@ VALUES
         170000,
         true,
         80,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Санітарний інструктор',
+       ('Санітарний інструктор',
         'sanitarnyi-instruktor',
         'Контроль за станом здоров''я особового складу, дотримання військової дисципліни, надання першої медичної допомоги, супровід хворих до лікувальних закладів, ведення медичної документації.',
         'frontline',
@@ -825,10 +822,8 @@ VALUES
         170000,
         true,
         90,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Medical Instructor',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Medical Instructor',
         'sanitarnyi-instruktor',
         'Monitoring personnel health, maintaining military discipline, providing first aid, escorting patients to medical facilities, maintaining medical documentation.',
         'frontline',
@@ -836,11 +831,9 @@ VALUES
         170000,
         true,
         90,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Оператор БПЛА',
+       ('Оператор БПЛА',
         'operator-bpla',
         'Керування безпілотними літальними апаратами (БПЛА) відповідно до вимог та інструкцій.',
         'frontline',
@@ -848,10 +841,8 @@ VALUES
         170000,
         true,
         100,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'UAV Operator',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('UAV Operator',
         'operator-bpla',
         'Operation of unmanned aerial vehicles (UAVs) in accordance with requirements and instructions.',
         'frontline',
@@ -859,11 +850,9 @@ VALUES
         170000,
         true,
         100,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Майстер БПЛА',
+       ('Майстер БПЛА',
         'maister-bpla',
         'Ремонт, діагностика, налаштування та відновлення безпілотних літальних апаратів (БПЛА) відповідно до вимог та інструкцій.',
         'frontline',
@@ -871,10 +860,8 @@ VALUES
         170000,
         true,
         110,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'UAV Technician',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('UAV Technician',
         'maister-bpla',
         'Repair, diagnostics, configuration and restoration of unmanned aerial vehicles (UAVs) in accordance with requirements and instructions.',
         'frontline',
@@ -882,11 +869,9 @@ VALUES
         170000,
         true,
         110,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Зовнішній пілот БПЛА',
+       ('Зовнішній пілот БПЛА',
         'zovnishnii-pilot-bpla',
         'Керування безпілотними літальними апаратами (БПЛА) відповідно до вимог та інструкцій.',
         'frontline',
@@ -894,10 +879,8 @@ VALUES
         170000,
         true,
         120,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'External UAV Pilot',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('External UAV Pilot',
         'zovnishnii-pilot-bpla',
         'Piloting unmanned aerial vehicles (UAVs) in accordance with requirements and instructions.',
         'frontline',
@@ -905,11 +888,9 @@ VALUES
         170000,
         true,
         120,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Сапер',
+       ('Сапер',
         'saper',
         'Визначення місця розташування та знешкодження вибухових пристроїв.',
         'frontline',
@@ -917,10 +898,8 @@ VALUES
         170000,
         true,
         130,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Combat Engineer (Sapper)',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Combat Engineer (Sapper)',
         'saper',
         'Detection and neutralization of explosive devices.',
         'frontline',
@@ -928,11 +907,9 @@ VALUES
         170000,
         true,
         130,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Номер обслуги',
+       ('Номер обслуги',
         'nomer-obsluhy',
         'Технічне обслуговування, експлуатація та підтримка озброєння та техніки у складі підрозділу, допомога навідникам у виконанні завдань.',
         'frontline',
@@ -940,10 +917,8 @@ VALUES
         170000,
         true,
         140,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Crew Member',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Crew Member',
         'nomer-obsluhy',
         'Technical maintenance, operation and support of weapons and equipment within the unit, assisting gunners in task execution.',
         'frontline',
@@ -951,11 +926,9 @@ VALUES
         170000,
         true,
         140,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Бухгалтер',
+       ('Бухгалтер',
         'bukhhalter',
         'Організація бухгалтерського обліку, ведення фінансової документації підрозділу, забезпечення своєчасної підготовки звітності та дотримання фінансової дисципліни.',
         'backline',
@@ -963,10 +936,8 @@ VALUES
         170000,
         true,
         150,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Accountant',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Accountant',
         'bukhhalter',
         'Organization of accounting, maintenance of financial documentation, ensuring timely reporting and financial discipline.',
         'backline',
@@ -974,11 +945,9 @@ VALUES
         170000,
         true,
         150,
-        (SELECT id FROM language WHERE code = 'en')
-    ),
+        (SELECT id FROM language WHERE code = 'en')),
 
-    (
-        'Бойовий медик взводу',
+       ('Бойовий медик взводу',
         'boyovyi-medyk-vzvodu',
         'Контроль за станом здоров''я особового складу взводу, надання першої медичної допомоги, евакуація особового складу, ведення медичної документації підрозділу.',
         'backline',
@@ -986,10 +955,8 @@ VALUES
         170000,
         true,
         160,
-        (SELECT id FROM language WHERE code = 'uk')
-    ),
-    (
-        'Platoon Combat Medic',
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('Platoon Combat Medic',
         'boyovyi-medyk-vzvodu',
         'Monitoring platoon personnel health, providing first aid, personnel evacuation, maintaining unit medical documentation.',
         'backline',
@@ -997,286 +964,235 @@ VALUES
         170000,
         true,
         160,
-        (SELECT id FROM language WHERE code = 'en')
-    );
+        (SELECT id FROM language WHERE code = 'en'));
 
-INSERT INTO subdivision (
-  name, slug, description,
-  hover_name, hover_description,
-  site_url, image_url, hover_image_url,
-  is_active, sort_order, language_id
-)
-VALUES
-  (
-    '157 БРИГАДА',
-    '157-omvr',
-    '157-ма окрема механізована бригада. Бригада сформована у 2024 році.',
-    '157 окрема механізована бригада',
-    '157-ма окрема механізована бригада (157 ОМБр) — формування Сухопутних військ України. Бригада сформована у 2024 році. На кінець 2024 року воювала під Кураховим і під Покровськом. Відповідно до спільної директиви Міністра оборони України та Головнокомандувача Збройних Сил України від 2 лютого 2024 року була створена 157-ма окрема піхотна бригада в селищі Черкаське Самарського району Дніпропетровської області.',
-    'https://157ombr.army/',
-    NULL, NULL,
-    true,
-    10,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '5 БРИГАДА',
-    '5-oshbr',
-    '5-та окрема штурмова бригада. Окремий полк спеціального призначення «Азов».',
-    '5 окрема штурмова бригада',
-    'У березні 2022 року, на початку повномасштабного російського вторгнення під час ключової битви за Київ, у столиці сформовано Окремий полк спеціального призначення «Азов», який згодом переформовано на 5-ий окремий штурмовий полк (м. Київ).',
-    'https://5brigade.army/',
-    NULL, NULL,
-    true,
-    20,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '65 БРИГАДА',
-    '65-ombr',
-    '65-та окрема механізована бригада. Бригада сформована у квітні 2022 року.',
-    '65 окрема механізована бригада',
-    '65 окрема механізована бригада була сформована у квітні 2022 року і входить до складу Сухопутних військ Збройних Сил України. Відносно «молода», наша бригада невтомно боронить українські землі від окупантів ще з червня 2022 року. Вона приймала участь у звільненні села Роботине під час літнього контрнаступу у 2023 році та подальшим героїчним утриманням Роботинського виступу.',
-    NULL,
-    NULL, NULL,
-    true,
-    30,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '72 БРИГАДА',
-    '72-ombr',
-    '72-га окрема механізована бригада. Історія бригади бере початок у 1992 році.',
-    '72 окрема механізована бригада',
-    'Історія бригади бере початок у 1992 році, коли 72 гвардійська мотострілецька дивізія перейшла під юрисдикцію України та увійшла до складу Збройних Сил України. З''єднання отримало назву — 72 механізована дивізія. На той момент підрозділи дивізії розташовувались у трьох постійних місцях дислокації на території різних областей: Київської (місто Біла Церква), Чернігівської (смт Гончарівське) та Черкаської (місто Сміла).',
-    'https://www.72ombr.army/',
-    NULL, NULL,
-    true,
-    40,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '67 БРИГАДА',
-    '67-ombr',
-    '67-ма окрема механізована бригада. Створена у 2022 році на базі добровольчих формувань.',
-    '67 окрема механізована бригада',
-    'Бригада створена у 2022 році на базі добровольчих формувань. З 2023 року командиром бригади є полковник Роман Коренюк, а з 2025 – Олександр Шаптала. Для бригади людське життя — це найвища цінність. Тому перед бойовими завданнями відбувається відповідальна підготовка особового складу, адже гарно навчений та забезпечений воїн — це ефективний воїн.',
-    NULL,
-    NULL, NULL,
-    true,
-    50,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '209 БАТАЛЬЙОН',
-    '209-optb',
-    '209-тий окремий протитанковий батальйон. Підрозділ був сформований у 2019 році.',
-    '209 окремий протитанковий батальйон',
-    '209-й протитанковий батальйон є спеціалізованим підрозділом Сухопутних військ. Спочатку підрозділ був сформований у 2019 році як окремий підрозділ під командуванням 43-ї артилерійської бригади, але згодом був демобілізований і залишився лише на папері. Знову батальйон був сформований у 2022 році, після повномасштабного вторгнення Росії в Україну, цього разу безпосередньо під командуванням Сухопутних військ.',
-    NULL,
-    NULL, NULL,
-    true,
-    60,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '428 БАТАЛЬЙОН «ТІНЬ»',
-    '428-obps',
-    '428-ми окремий батальйон безпілотних систем «Тінь». Сформований батальйон нещодавно.',
-    '428 окремий батальйон безпілотних систем «Тінь»',
-    '428 батальйон безпілотних систем, який сформований не так давно, вже наразі показує високу результативність, перебуваючи, фактично, в стані формування. Запорука цьому, в першу чергу, кваліфіковані та мотивовані військові, які стали на захист України ще з 2022 року, від початку повномасштабного вторгнення. Ці люди пройшли шлях від солдатів в окопах, набули бойовий досвід і наразі, на керівних посадах, вчать наступне покоління профейсійних військових. Головна наша цінність, саме в людях, кожен з яких, на своєму місці, робить все, щоб пришвидшити нашу перемогу.',
-    'https://428.org.ua/',
-    NULL, NULL,
-    true,
-    70,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '1027 ПОЛК',
-    '1027-zrap',
-    '1027-ий зенітний ракетно-артилерійський полк. Полк сформовано 15 березня 2023 року.',
-    '1027 зенітний ракетно-артилерійський полк',
-    '1027-й зенітний ракетно-артилерійський полк — військова частина Сухопутних військ, наразі підпорядковується 12-му армійському корпусу. Підрозділ базується в Києві.',
-    NULL,
-    NULL, NULL,
-    true,
-    80,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '2 БАТАЛЬЙОН «ЕКСТРЕМІС»',
-    '2-omb-extremis',
-    '2-гй окремий медичний батальйон «Екстреміс». Батальйон активно комплектується, базується в Києві.',
-    '2 окремий медичний батальйон «Екстреміс»',
-    '2-й окремий медичний батальйон «Екстреміс» — підрозділ Збройних Сил України. Батальйон активно комплектується та базується в Києві. Забезпечує медичну підтримку бойових підрозділів та евакуацію поранених із зони бойових дій.',
-    NULL,
-    NULL, NULL,
-    true,
-    90,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '95 БАТАЛЬЙОН',
-    '95-obp',
-    '95-тий окремий батальйон підтримки. Основним завданням є інженерне забезпечення.',
-    '95 окремий батальйон підтримки',
-    '95-й окремий батальйон підтримки – підрозділ Сухопутних Військ Збройних Сил України. Основним завданням батальйону підтримки є інженерне забезпечення бойових підрозділів: створення загороджень, зведення польових фортифікаційних споруд, обладнання та утримання пунктів водопостачання, ведення інженерної розвідки із застосуванням спеціалізованої інженерної техніки та засобів.',
-    NULL,
-    NULL, NULL,
-    true,
-    100,
-    (SELECT id FROM language WHERE code = 'uk')
-  ),
-  (
-    '524 БАТАЛЬЙОН',
-    '524-oboo',
-    '524-та окремий батальйон охорони і обслуги. Наша місія — забезпечення функціонування військових комунікацій.',
-    '524 окремий батальйон охорони і обслуги',
-    'Основними завданнями батальйону є: охорона та обслуговування сухопутних військ ЗСУ та ведення адміністративної функції. Наша місія — забезпечення функціонування військових комунікацій та збереження територіальної цілісності й суверенітету України.',
-    NULL,
-    NULL, NULL,
-    true,
-    110,
-    (SELECT id FROM language WHERE code = 'uk')
-  );
+INSERT INTO subdivision (name, slug, description,
+                         hover_name, hover_description,
+                         site_url, image_url, hover_image_url,
+                         is_active, sort_order, language_id)
+VALUES ('157 БРИГАДА',
+        '157-omvr',
+        '157-ма окрема механізована бригада. Бригада сформована у 2024 році.',
+        '157 окрема механізована бригада',
+        '157-ма окрема механізована бригада (157 ОМБр) — формування Сухопутних військ України. Бригада сформована у 2024 році. На кінець 2024 року воювала під Кураховим і під Покровськом. Відповідно до спільної директиви Міністра оборони України та Головнокомандувача Збройних Сил України від 2 лютого 2024 року була створена 157-ма окрема піхотна бригада в селищі Черкаське Самарського району Дніпропетровської області.',
+        'https://157ombr.army/',
+        NULL, NULL,
+        true,
+        10,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('5 БРИГАДА',
+        '5-oshbr',
+        '5-та окрема штурмова бригада. Окремий полк спеціального призначення «Азов».',
+        '5 окрема штурмова бригада',
+        'У березні 2022 року, на початку повномасштабного російського вторгнення під час ключової битви за Київ, у столиці сформовано Окремий полк спеціального призначення «Азов», який згодом переформовано на 5-ий окремий штурмовий полк (м. Київ).',
+        'https://5brigade.army/',
+        NULL, NULL,
+        true,
+        20,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('65 БРИГАДА',
+        '65-ombr',
+        '65-та окрема механізована бригада. Бригада сформована у квітні 2022 року.',
+        '65 окрема механізована бригада',
+        '65 окрема механізована бригада була сформована у квітні 2022 року і входить до складу Сухопутних військ Збройних Сил України. Відносно «молода», наша бригада невтомно боронить українські землі від окупантів ще з червня 2022 року. Вона приймала участь у звільненні села Роботине під час літнього контрнаступу у 2023 році та подальшим героїчним утриманням Роботинського виступу.',
+        NULL,
+        NULL, NULL,
+        true,
+        30,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('72 БРИГАДА',
+        '72-ombr',
+        '72-га окрема механізована бригада. Історія бригади бере початок у 1992 році.',
+        '72 окрема механізована бригада',
+        'Історія бригади бере початок у 1992 році, коли 72 гвардійська мотострілецька дивізія перейшла під юрисдикцію України та увійшла до складу Збройних Сил України. З''єднання отримало назву — 72 механізована дивізія. На той момент підрозділи дивізії розташовувались у трьох постійних місцях дислокації на території різних областей: Київської (місто Біла Церква), Чернігівської (смт Гончарівське) та Черкаської (місто Сміла).',
+        'https://www.72ombr.army/',
+        NULL, NULL,
+        true,
+        40,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('67 БРИГАДА',
+        '67-ombr',
+        '67-ма окрема механізована бригада. Створена у 2022 році на базі добровольчих формувань.',
+        '67 окрема механізована бригада',
+        'Бригада створена у 2022 році на базі добровольчих формувань. З 2023 року командиром бригади є полковник Роман Коренюк, а з 2025 – Олександр Шаптала. Для бригади людське життя — це найвища цінність. Тому перед бойовими завданнями відбувається відповідальна підготовка особового складу, адже гарно навчений та забезпечений воїн — це ефективний воїн.',
+        NULL,
+        NULL, NULL,
+        true,
+        50,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('209 БАТАЛЬЙОН',
+        '209-optb',
+        '209-тий окремий протитанковий батальйон. Підрозділ був сформований у 2019 році.',
+        '209 окремий протитанковий батальйон',
+        '209-й протитанковий батальйон є спеціалізованим підрозділом Сухопутних військ. Спочатку підрозділ був сформований у 2019 році як окремий підрозділ під командуванням 43-ї артилерійської бригади, але згодом був демобілізований і залишився лише на папері. Знову батальйон був сформований у 2022 році, після повномасштабного вторгнення Росії в Україну, цього разу безпосередньо під командуванням Сухопутних військ.',
+        NULL,
+        NULL, NULL,
+        true,
+        60,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('428 БАТАЛЬЙОН «ТІНЬ»',
+        '428-obps',
+        '428-ми окремий батальйон безпілотних систем «Тінь». Сформований батальйон нещодавно.',
+        '428 окремий батальйон безпілотних систем «Тінь»',
+        '428 батальйон безпілотних систем, який сформований не так давно, вже наразі показує високу результативність, перебуваючи, фактично, в стані формування. Запорука цьому, в першу чергу, кваліфіковані та мотивовані військові, які стали на захист України ще з 2022 року, від початку повномасштабного вторгнення. Ці люди пройшли шлях від солдатів в окопах, набули бойовий досвід і наразі, на керівних посадах, вчать наступне покоління профейсійних військових. Головна наша цінність, саме в людях, кожен з яких, на своєму місці, робить все, щоб пришвидшити нашу перемогу.',
+        'https://428.org.ua/',
+        NULL, NULL,
+        true,
+        70,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('1027 ПОЛК',
+        '1027-zrap',
+        '1027-ий зенітний ракетно-артилерійський полк. Полк сформовано 15 березня 2023 року.',
+        '1027 зенітний ракетно-артилерійський полк',
+        '1027-й зенітний ракетно-артилерійський полк — військова частина Сухопутних військ, наразі підпорядковується 12-му армійському корпусу. Підрозділ базується в Києві.',
+        NULL,
+        NULL, NULL,
+        true,
+        80,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('2 БАТАЛЬЙОН «ЕКСТРЕМІС»',
+        '2-omb-extremis',
+        '2-гй окремий медичний батальйон «Екстреміс». Батальйон активно комплектується, базується в Києві.',
+        '2 окремий медичний батальйон «Екстреміс»',
+        '2-й окремий медичний батальйон «Екстреміс» — підрозділ Збройних Сил України. Батальйон активно комплектується та базується в Києві. Забезпечує медичну підтримку бойових підрозділів та евакуацію поранених із зони бойових дій.',
+        NULL,
+        NULL, NULL,
+        true,
+        90,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('95 БАТАЛЬЙОН',
+        '95-obp',
+        '95-тий окремий батальйон підтримки. Основним завданням є інженерне забезпечення.',
+        '95 окремий батальйон підтримки',
+        '95-й окремий батальйон підтримки – підрозділ Сухопутних Військ Збройних Сил України. Основним завданням батальйону підтримки є інженерне забезпечення бойових підрозділів: створення загороджень, зведення польових фортифікаційних споруд, обладнання та утримання пунктів водопостачання, ведення інженерної розвідки із застосуванням спеціалізованої інженерної техніки та засобів.',
+        NULL,
+        NULL, NULL,
+        true,
+        100,
+        (SELECT id FROM language WHERE code = 'uk')),
+       ('524 БАТАЛЬЙОН',
+        '524-oboo',
+        '524-та окремий батальйон охорони і обслуги. Наша місія — забезпечення функціонування військових комунікацій.',
+        '524 окремий батальйон охорони і обслуги',
+        'Основними завданнями батальйону є: охорона та обслуговування сухопутних військ ЗСУ та ведення адміністративної функції. Наша місія — забезпечення функціонування військових комунікацій та збереження територіальної цілісності й суверенітету України.',
+        NULL,
+        NULL, NULL,
+        true,
+        110,
+        (SELECT id FROM language WHERE code = 'uk'));
 
 
-INSERT INTO subdivision (
-  name, slug, description,
-  hover_name, hover_description,
-  site_url, image_url, hover_image_url,
-  is_active, sort_order, language_id
-)
-VALUES
-  (
-    '157 BRIGADE',
-    '157-omvr',
-    '157th Separate Mechanized Brigade. The brigade was formed in 2024.',
-    '157th Separate Mechanized Brigade',
-    'The 157th Separate Mechanized Brigade (157 OMBr) is a formation of the Ground Forces of Ukraine. The brigade was formed in 2024. By the end of 2024, it was fighting near Kurakhove and Pokrovsk. In accordance with a joint directive of the Minister of Defense of Ukraine and the Commander-in-Chief of the Armed Forces of Ukraine dated February 2, 2024, the 157th Separate Infantry Brigade was established in the village of Cherkаske, Samara district, Dnipropetrovsk region.',
-    'https://157ombr.army/',
-     NULL, NULL,
-    true,
-    10,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '5 BRIGADE',
-    '5-oshbr',
-    '5th Separate Assault Brigade. Special Purpose Regiment «Azov».',
-    '5th Separate Assault Brigade',
-    'In March 2022, at the beginning of the full-scale Russian invasion during the key Battle of Kyiv, the Special Purpose Regiment «Azov» was formed in the capital, which was later reorganized into the 5th Separate Assault Regiment (Kyiv).',
-    'https://5brigade.army/',
-     NULL, NULL,
-    true,
-    20,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '65 BRIGADE',
-    '65-ombr',
-    '65th Separate Mechanized Brigade. The brigade was formed in April 2022.',
-    '65th Separate Mechanized Brigade',
-    'The 65th Separate Mechanized Brigade was formed in April 2022 and is part of the Ground Forces of the Armed Forces of Ukraine. Relatively «young», our brigade has been tirelessly defending Ukrainian lands from occupiers since June 2022. It participated in the liberation of the village of Robotyne during the summer counteroffensive in 2023 and the subsequent heroic defense of the Robotyne salient.',
-    NULL,
-    NULL, NULL,
-    true,
-    30,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '72 BRIGADE',
-    '72-ombr',
-    '72nd Separate Mechanized Brigade. The brigade history dates back to 1992.',
-    '72nd Separate Mechanized Brigade',
-    'The brigade history dates back to 1992, when the 72nd Guards Motor Rifle Division came under the jurisdiction of Ukraine and joined the Armed Forces of Ukraine. The formation was renamed the 72nd Mechanized Division. At that time, the division units were stationed in three permanent locations in different regions: Kyiv (Bila Tserkva), Chernihiv (Honcharivske) and Cherkasy (Smila).',
-    'https://www.72ombr.army/',
-    NULL, NULL,
-    true,
-    40,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '67 BRIGADE',
-    '67-ombr',
-    '67th Separate Mechanized Brigade. Created in 2022 on the basis of volunteer formations.',
-    '67th Separate Mechanized Brigade',
-    'The brigade was created in 2022 on the basis of volunteer formations. Since 2023, the brigade commander is Colonel Roman Koreniuk, and since 2025 – Oleksandr Shaptala. For the brigade, human life is the highest value. Therefore, before combat missions, responsible training of personnel takes place, because a well-trained and equipped warrior is an effective warrior.',
-    NULL,
-    NULL, NULL,
-    true,
-    50,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '209 BATTALION',
-    '209-optb',
-    '209th Separate Anti-Tank Battalion. The unit was formed in 2019.',
-    '209th Separate Anti-Tank Battalion',
-    'The 209th Anti-Tank Battalion is a specialized unit of the Ground Forces. Initially the unit was formed in 2019 as a separate unit under the command of the 43rd Artillery Brigade, but was later demobilized and remained only on paper. The battalion was reformed in 2022, after Russia''s full-scale invasion of Ukraine, this time directly under the command of the Ground Forces.',
-    NULL,
-    NULL, NULL,
-    true,
-    60,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '428 BATTALION «TIN»',
-    '428-obps',
-    '428th Separate Unmanned Systems Battalion «Tin». The battalion was recently formed.',
-    '428th Separate Unmanned Systems Battalion «Tin»',
-    'The 428 Unmanned Systems Battalion, which was formed not long ago, is already showing high efficiency while actually still in the process of formation. The key to this is, first of all, qualified and motivated military personnel who stood up to defend Ukraine since 2022, from the beginning of the full-scale invasion. These people have traveled the path from soldiers in trenches, gained combat experience and are now, in leadership positions, teaching the next generation of professional military.',
-    'https://428.org.ua/',
-     NULL, NULL,
-    true,
-    70,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '1027 REGIMENT',
-    '1027-zrap',
-    '1027th Anti-Aircraft Missile and Artillery Regiment. Regiment formed on March 15, 2023.',
-    '1027th Anti-Aircraft Missile and Artillery Regiment',
-    'The 1027th Anti-Aircraft Missile and Artillery Regiment is a military unit of the Ground Forces, currently subordinated to the 12th Army Corps. The unit is based in Kyiv.',
-    NULL,
-    NULL, NULL,
-    true,
-    80,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '2 BATTALION «EXTREMIS»',
-    '2-omb-extremis',
-    '2nd Separate Medical Battalion «Extremis». Actively recruiting, based in Kyiv.',
-    '2nd Separate Medical Battalion «Extremis»',
-    'The 2nd Separate Medical Battalion «Extremis» is a unit of the Armed Forces of Ukraine. The battalion is actively recruiting and is based in Kyiv. It provides medical support to combat units and evacuation of the wounded from the combat zone.',
-    NULL,
-    NULL, NULL,
-    true,
-    90,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '95 BATTALION',
-    '95-obp',
-    '95th Separate Support Battalion. The main task is engineering support.',
-    '95th Separate Support Battalion',
-    'The 95th Separate Support Battalion is a unit of the Ground Forces of the Armed Forces of Ukraine. The main task of the support battalion is engineering support for combat units: creating obstacles, building field fortifications, equipping and maintaining water supply points, conducting engineering reconnaissance using specialized engineering equipment and tools.',
-    NULL,
-    NULL, NULL,
-    true,
-    100,
-    (SELECT id FROM language WHERE code = 'en')
-  ),
-  (
-    '524 BATTALION',
-    '524-oboo',
-    '524th Separate Security and Service Battalion. Our mission is to ensure military communications.',
-    '524th Separate Security and Service Battalion',
-    'The main tasks of the battalion are: security and maintenance of the ground forces of the Armed Forces of Ukraine and performing administrative functions. Our mission is to ensure the functioning of military communications and preserve the territorial integrity and sovereignty of Ukraine.',
-    NULL,
-    NULL, NULL,
-    true,
-    110,
-    (SELECT id FROM language WHERE code = 'en')
-  );
+INSERT INTO subdivision (name, slug, description,
+                         hover_name, hover_description,
+                         site_url, image_url, hover_image_url,
+                         is_active, sort_order, language_id)
+VALUES ('157 BRIGADE',
+        '157-omvr',
+        '157th Separate Mechanized Brigade. The brigade was formed in 2024.',
+        '157th Separate Mechanized Brigade',
+        'The 157th Separate Mechanized Brigade (157 OMBr) is a formation of the Ground Forces of Ukraine. The brigade was formed in 2024. By the end of 2024, it was fighting near Kurakhove and Pokrovsk. In accordance with a joint directive of the Minister of Defense of Ukraine and the Commander-in-Chief of the Armed Forces of Ukraine dated February 2, 2024, the 157th Separate Infantry Brigade was established in the village of Cherkаske, Samara district, Dnipropetrovsk region.',
+        'https://157ombr.army/',
+        NULL, NULL,
+        true,
+        10,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('5 BRIGADE',
+        '5-oshbr',
+        '5th Separate Assault Brigade. Special Purpose Regiment «Azov».',
+        '5th Separate Assault Brigade',
+        'In March 2022, at the beginning of the full-scale Russian invasion during the key Battle of Kyiv, the Special Purpose Regiment «Azov» was formed in the capital, which was later reorganized into the 5th Separate Assault Regiment (Kyiv).',
+        'https://5brigade.army/',
+        NULL, NULL,
+        true,
+        20,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('65 BRIGADE',
+        '65-ombr',
+        '65th Separate Mechanized Brigade. The brigade was formed in April 2022.',
+        '65th Separate Mechanized Brigade',
+        'The 65th Separate Mechanized Brigade was formed in April 2022 and is part of the Ground Forces of the Armed Forces of Ukraine. Relatively «young», our brigade has been tirelessly defending Ukrainian lands from occupiers since June 2022. It participated in the liberation of the village of Robotyne during the summer counteroffensive in 2023 and the subsequent heroic defense of the Robotyne salient.',
+        NULL,
+        NULL, NULL,
+        true,
+        30,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('72 BRIGADE',
+        '72-ombr',
+        '72nd Separate Mechanized Brigade. The brigade history dates back to 1992.',
+        '72nd Separate Mechanized Brigade',
+        'The brigade history dates back to 1992, when the 72nd Guards Motor Rifle Division came under the jurisdiction of Ukraine and joined the Armed Forces of Ukraine. The formation was renamed the 72nd Mechanized Division. At that time, the division units were stationed in three permanent locations in different regions: Kyiv (Bila Tserkva), Chernihiv (Honcharivske) and Cherkasy (Smila).',
+        'https://www.72ombr.army/',
+        NULL, NULL,
+        true,
+        40,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('67 BRIGADE',
+        '67-ombr',
+        '67th Separate Mechanized Brigade. Created in 2022 on the basis of volunteer formations.',
+        '67th Separate Mechanized Brigade',
+        'The brigade was created in 2022 on the basis of volunteer formations. Since 2023, the brigade commander is Colonel Roman Koreniuk, and since 2025 – Oleksandr Shaptala. For the brigade, human life is the highest value. Therefore, before combat missions, responsible training of personnel takes place, because a well-trained and equipped warrior — is an effective warrior.',
+        NULL,
+        NULL, NULL,
+        true,
+        50,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('209 BATTALION',
+        '209-optb',
+        '209th Separate Anti-Tank Battalion. The unit was formed in 2019.',
+        '209th Separate Anti-Tank Battalion',
+        'The 209th Anti-Tank Battalion is a specialized unit of the Ground Forces. Initially the unit was formed in 2019 as a separate unit under the command of the 43rd Artillery Brigade, but was later demobilized and remained only on paper. The battalion was reformed in 2022, after Russia''s full-scale invasion of Ukraine, this time directly under the command of the Ground Forces.',
+        NULL,
+        NULL, NULL,
+        true,
+        60,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('428 BATTALION «TIN»',
+        '428-obps',
+        '428-ми окремий батальйон безпілотних систем «Тінь». Сформований батальйон нещодавно.',
+        '428th Separate Unmanned Systems Battalion «Tin»',
+        'The 428 Unmanned Systems Battalion, which was formed not long ago, is already showing high efficiency while actually still in the process of formation. The key to this is, first of all, qualified and motivated military personnel who stood up to defend Ukraine since 2022, from the beginning of the full-scale invasion. These people have traveled the path from soldiers in trenches, gained combat experience and are now, in leadership positions, teaching the next generation of professional military.',
+        'https://428.org.ua/',
+        NULL, NULL,
+        true,
+        70,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('1027 REGIMENT',
+        '1027-zrap',
+        '1027-ий зенітний ракетно-артилерійський полк. Полк сформовано 15 березня 2023 року.',
+        '1027th Anti-Aircraft Missile and Artillery Regiment',
+        'The 1027th Anti-Aircraft Missile and Artillery Regiment is a military unit of the Ground Forces, currently subordinated to the 12th Army Corps. The unit is based in Kyiv.',
+        NULL,
+        NULL, NULL,
+        true,
+        80,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('2 BATTALION «EXTREMIS»',
+        '2-omb-extremis',
+        '2-гй окремий медичний батальйон «Екстреміс». Батальйон активно комплектується, базується в Києві.',
+        '2 окремий медичний батальйон «Екстреміс»',
+        '2-й окремий медичний батальйон «Екстреміс» — підрозділ Збройних Сил України. Батальйон активно комплектується та базується в Києві. Забезпечує медичну підтримку бойових підрозділів та евакуацію поранених із зони бойових дій.',
+        NULL,
+        NULL, NULL,
+        true,
+        90,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('95 БАТАЛЬЙОН',
+        '95-obp',
+        '95-тий окремий батальйон підтримки. Основним завданням є інженерне забезпечення.',
+        '95 окремий батальйон підтримки',
+        '95-й окремий батальйон підтримки – підрозділ Сухопутних Військ Збройних Сил України. Основним завданням батальйону підтримки є інженерне забезпечення бойових підрозділів: створення загороджень, зведення польових фортифікаційних споруд, обладнання та утримання пунктів водопостачання, ведення інженерної розвідки із застосуванням спеціалізованої інженерної техніки та засобів.',
+        NULL,
+        NULL, NULL,
+        true,
+        100,
+        (SELECT id FROM language WHERE code = 'en')),
+       ('524 БАТАЛЬЙОН',
+        '524-oboo',
+        '524-та окремий батальйон охорони і обслуги. Наша місія — забезпечення функціонування військових комунікацій.',
+        '524 окремий батальйон охорони і обслуги',
+        'Основними завданнями батальйону є: охорона та обслуговування сухопутних військ ЗСУ та ведення адміністративної функції. Наша місія — забезпечення функціонування військових комунікацій та збереження територіальної цілісності й суверенітету України.',
+        NULL,
+        NULL, NULL,
+        true,
+        110,
+        (SELECT id FROM language WHERE code = 'en'));
