@@ -10,6 +10,9 @@ const config: Config = {
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
+    // The real `server-only` package throws when imported outside a Server Component;
+    // stub it so modules guarded by `import "server-only"` are testable under jsdom.
+    "^server-only$": "<rootDir>/__mocks__/server-only.ts",
   },
   collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts", "!src/**/*.test.{ts,tsx}", "!src/**/index.{ts,tsx}"],
   coverageDirectory: "coverage",

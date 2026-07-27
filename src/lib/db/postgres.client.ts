@@ -1,23 +1,24 @@
 import { Pool } from "pg";
+import { serverEnv } from "@/lib/env/server";
 import { DatabaseClient, DeleteQuery, InsertQuery, QueryBuilder, SelectQuery, UpdateQuery, RowData, QueryError, QueryValue } from "./types";
 
 let pool: Pool;
 
 function getPool(): Pool {
   if (!pool) {
-    const user = process.env.POSTGRES_USER;
-    const password = process.env.POSTGRES_PASSWORD;
+    const user = serverEnv.postgres.user;
+    const password = serverEnv.postgres.password;
 
     if (!user || !password) {
       throw new Error("POSTGRES_USER and POSTGRES_PASSWORD must be set in production");
     }
 
     pool = new Pool({
-      host: process.env.POSTGRES_HOST || "localhost",
-      port: Number.parseInt(process.env.POSTGRES_PORT || "5432"),
+      host: serverEnv.postgres.host || "localhost",
+      port: Number.parseInt(serverEnv.postgres.port || "5432"),
       user,
       password,
-      database: process.env.POSTGRES_DB || "ak12",
+      database: serverEnv.postgres.database || "ak12",
     });
   }
 

@@ -2,6 +2,7 @@ import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { authenticator } from "otplib";
+import { serverEnv } from "@/lib/env/server";
 import {
   SESSION_COOKIE_NAME,
   SESSION_INACTIVITY_TTL,
@@ -22,7 +23,7 @@ authenticator.options = {
 };
 
 function sign(value: string) {
-  const secret = process.env.SESSION_SECRET_KEY;
+  const secret = serverEnv.auth.sessionSecretKey;
 
   if (!secret || secret.length < 32) {
     throw new Error(
@@ -186,8 +187,8 @@ export function shouldRefreshSession(lastActivityAt: number) {
 }
 
 export async function validateAdmin(email: string, password: string): Promise<boolean> {
-  const expectedEmail = process.env.ADMIN_EMAIL;
-  const expectedPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+  const expectedEmail = serverEnv.auth.adminEmail;
+  const expectedPasswordHash = serverEnv.auth.adminPasswordHash;
 
   if (!expectedEmail || !expectedPasswordHash) {
     return false;
@@ -197,7 +198,7 @@ export async function validateAdmin(email: string, password: string): Promise<bo
 }
 
 export function validateTwoFactor(token: string): boolean {
-  const secret = process.env.ADMIN_2FA_SECRET;
+  const secret = serverEnv.auth.admin2faSecret;
 
   if (!secret) {
     return false;

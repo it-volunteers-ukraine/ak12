@@ -1,4 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
+import { serverEnv } from "@/lib/env/server";
+import { publicEnv } from "@/lib/env/public";
 import { DatabaseClient, QueryBuilder } from "./types";
 
 /**
@@ -9,8 +11,8 @@ import { DatabaseClient, QueryBuilder } from "./types";
  * Supabase env vars are absent. Call this only when Supabase is the chosen client.
  */
 export function createSupabaseClient(): DatabaseClient {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY;
+  const supabaseUrl = publicEnv.supabaseUrl;
+  const serviceRoleKey = serverEnv.supabase.serviceRoleKey ?? serverEnv.supabase.serviceKey;
 
   if (!supabaseUrl) {
     throw new Error("NEXT_PUBLIC_SUPABASE_URL is not set");
@@ -19,10 +21,10 @@ export function createSupabaseClient(): DatabaseClient {
   if (!serviceRoleKey) {
     const missingKeys = [];
 
-    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    if (!serverEnv.supabase.serviceRoleKey) {
       missingKeys.push("SUPABASE_SERVICE_ROLE_KEY");
     }
-    if (!process.env.SUPABASE_SERVICE_KEY) {
+    if (!serverEnv.supabase.serviceKey) {
       missingKeys.push("SUPABASE_SERVICE_KEY");
     }
     throw new Error(

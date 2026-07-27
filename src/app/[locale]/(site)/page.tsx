@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { Locale } from "@/types";
+import { serverEnv } from "@/lib/env/server";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
 import { AboutSection } from "@/components/about";
@@ -109,7 +110,7 @@ export default async function Home({
   const vacancies = allVacancies.filter((v) => v.isActive);
   const vacanciesTitleList = vacancies.map((item) => item.position);
 
-  const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const cloudinaryCloudName = serverEnv.cloudinary.cloudName;
   // Storage backend is chosen server-side (Cloudinary in dev, MinIO in prod), so
   // the full URL is built here and the section stays storage-agnostic. When the
   // env var is absent, no URL is passed and the background is simply not rendered.
