@@ -1,6 +1,13 @@
 import type { Config } from "jest";
 import nextJest from "next/jest.js";
 
+// Jest only defaults NODE_ENV to "test" when it is UNSET. Some environments (CI
+// containers, this dev box) export NODE_ENV=production globally, which then leaks into
+// the test run: React loads its production build (which omits `React.act`, breaking
+// @testing-library/react) and NODE_ENV-dependent app code takes its production branch.
+// Force "test" before next/jest and the workers read it.
+(process.env as { NODE_ENV?: string }).NODE_ENV = "test";
+
 const createJestConfig = nextJest({
   dir: "./",
 });
