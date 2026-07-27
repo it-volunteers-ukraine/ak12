@@ -21,13 +21,24 @@ describe("supabaseClient initialization", () => {
     process.env = originalEnv;
   });
 
+  it("should not construct the client (or throw) merely on import", () => {
+    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
+    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+    delete process.env.SUPABASE_SERVICE_KEY;
+
+    expect(() => {
+      require("./supabase.client");
+    }).not.toThrow();
+    expect(mockCreateClient).not.toHaveBeenCalled();
+  });
+
   it("should throw an error if NEXT_PUBLIC_SUPABASE_URL is missing", () => {
     delete process.env.NEXT_PUBLIC_SUPABASE_URL;
     process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
 
-    expect(() => {
-      require("./supabase.client");
-    }).toThrow("NEXT_PUBLIC_SUPABASE_URL is not set");
+    const { createSupabaseClient } = require("./supabase.client");
+
+    expect(() => createSupabaseClient()).toThrow("NEXT_PUBLIC_SUPABASE_URL is not set");
   });
 
   it("should throw an error indicating both keys are missing when both service keys are missing", () => {
@@ -35,9 +46,9 @@ describe("supabaseClient initialization", () => {
     delete process.env.SUPABASE_SERVICE_ROLE_KEY;
     delete process.env.SUPABASE_SERVICE_KEY;
 
-    expect(() => {
-      require("./supabase.client");
-    }).toThrow("Missing: SUPABASE_SERVICE_ROLE_KEY, SUPABASE_SERVICE_KEY");
+    const { createSupabaseClient } = require("./supabase.client");
+
+    expect(() => createSupabaseClient()).toThrow("Missing: SUPABASE_SERVICE_ROLE_KEY, SUPABASE_SERVICE_KEY");
   });
 
   it("should initialize client successfully when URL and SUPABASE_SERVICE_ROLE_KEY are set", () => {
@@ -45,7 +56,8 @@ describe("supabaseClient initialization", () => {
     process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
     delete process.env.SUPABASE_SERVICE_KEY;
 
-    const { supabaseClient } = require("./supabase.client");
+    const { createSupabaseClient } = require("./supabase.client");
+    const supabaseClient = createSupabaseClient();
 
     expect(supabaseClient).toBeDefined();
     expect(mockCreateClient).toHaveBeenCalledWith(
@@ -65,7 +77,8 @@ describe("supabaseClient initialization", () => {
     delete process.env.SUPABASE_SERVICE_ROLE_KEY;
     process.env.SUPABASE_SERVICE_KEY = "service-key";
 
-    const { supabaseClient } = require("./supabase.client");
+    const { createSupabaseClient } = require("./supabase.client");
+    const supabaseClient = createSupabaseClient();
 
     expect(supabaseClient).toBeDefined();
     expect(mockCreateClient).toHaveBeenCalledWith(
@@ -78,5 +91,17 @@ describe("supabaseClient initialization", () => {
         },
       }
     );
+  });
+
+  it("should memoize the client across getSupabaseClient calls", () => {
+    process.env.NEXT_PUBLIC_SUPABASE_URL = "https://example.supabase.co";
+    process.env.SUPABASE_SERVICE_ROLE_KEY = "service-role-key";
+
+    const { getSupabaseClient } = require("./supabase.client");
+    const first = getSupabaseClient();
+    const second = getSupabaseClient();
+
+    expect(first).toBe(second);
+    expect(mockCreateClient).toHaveBeenCalledTimes(1);
   });
 });
