@@ -7,7 +7,12 @@ import { useTopFromViewportMinusContent } from "@/hooks/useTopFromViewportMinusC
 
 import { LifeOfTheCorpsGalleryClient } from "./gallery/gallery-client";
 
-export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | null }) => {
+interface ILifeOfTheCorpsSectionProps {
+  content: AboutUsContent | null;
+  backgroundImageUrl?: string;
+}
+
+export const LifeOfTheCorpsSection = ({ content, backgroundImageUrl }: ILifeOfTheCorpsSectionProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const top = useTopFromViewportMinusContent(sectionRef);
 
@@ -90,7 +95,7 @@ export const LifeOfTheCorpsSection = ({ content }: { content: AboutUsContent | n
         top,
       }}
     >
-      <LifeOfTheCorpsGalleryClient cells={cells} images={images} />
+      <LifeOfTheCorpsGalleryClient cells={cells} images={images} backgroundImageUrl={backgroundImageUrl} />
     </section>
   );
 };
