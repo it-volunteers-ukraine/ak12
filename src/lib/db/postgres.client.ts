@@ -1,15 +1,22 @@
-﻿import { Pool } from "pg";
+import { Pool } from "pg";
 import { DatabaseClient, DeleteQuery, InsertQuery, QueryBuilder, SelectQuery, UpdateQuery, RowData, QueryError, QueryValue } from "./types";
 
 let pool: Pool;
 
 function getPool(): Pool {
   if (!pool) {
+    const user = process.env.POSTGRES_USER;
+    const password = process.env.POSTGRES_PASSWORD;
+
+    if (!user || !password) {
+      throw new Error("POSTGRES_USER and POSTGRES_PASSWORD must be set in production");
+    }
+
     pool = new Pool({
       host: process.env.POSTGRES_HOST || "localhost",
       port: Number.parseInt(process.env.POSTGRES_PORT || "5432"),
-      user: process.env.POSTGRES_USER || "admin",
-      password: process.env.POSTGRES_PASSWORD || "password",
+      user,
+      password,
       database: process.env.POSTGRES_DB || "ak12",
     });
   }
@@ -50,8 +57,8 @@ function splitColumnsString(str: string): string[] {
   let currentPart = "";
   let parenDepth = 0;
 
-  for (let i = 0; i < str.length; i++) {
-    const char = str[i];
+  for (const element of str) {
+    const char = element;
 
     if (char === "(") {
       parenDepth++;
@@ -126,6 +133,73 @@ function parseSelectPart(part: string): JoinConfig | null {
   };
 }
 
+/**
+ * Parses a Supabase-style select columns string into standard columns and relation joins.
+ *
+ * @param columns The raw select columns string. Defaults to "*" when omitted.
+ * @returns The parsed standard columns and join configurations.
+ */
+function parseColumns(columns?: string): { standardColumns: string[]; joins: JoinConfig[] } {
+  if (!columns || columns === "*") {
+    return { standardColumns: ["*"], joins: [] };
+  }
+
+  const standardColumns: string[] = [];
+  const joins: JoinConfig[] = [];
+
+  for (const part of splitColumnsString(columns)) {
+    const joinConfig = parseSelectPart(part);
+
+    if (joinConfig) {
+      joins.push(joinConfig);
+    } else {
+      standardColumns.push(part);
+    }
+  }
+
+  return { standardColumns, joins };
+}
+
+/**
+ * Builds the SELECT projection list for a given source (table name or CTE alias),
+ * qualifying columns and expanding relation joins into jsonb_build_object expressions.
+ */
+function buildSelectList(source: string, standardColumns: string[], joins: JoinConfig[]): string {
+  const hasJoins = joins.length > 0;
+  const selectParts: string[] = [];
+
+  for (const col of standardColumns) {
+    if (col === "*") {
+      selectParts.push(hasJoins ? `${source}.*` : "*");
+    } else {
+      selectParts.push(hasJoins ? `${source}.${col}` : col);
+    }
+  }
+
+  for (const join of joins) {
+    const colObjectParts = join.columns.map((col) => `'${col}', ${join.tableName}.${col}`).join(", ");
+
+    selectParts.push(`jsonb_build_object(${colObjectParts}) as ${join.alias}`);
+  }
+
+  return selectParts.join(", ");
+}
+
+/**
+ * Builds the JOIN clause(s) for a given source (table name or CTE alias).
+ */
+function buildJoinClause(source: string, joins: JoinConfig[]): string {
+  let sql = "";
+
+  for (const join of joins) {
+    const joinType = join.isInner ? "INNER JOIN" : "LEFT JOIN";
+
+    sql += ` ${joinType} ${join.tableName} ON ${source}.${join.foreignKey} = ${join.tableName}.id`;
+  }
+
+  return sql;
+}
+
 abstract class BaseConditionQuery<T extends BaseConditionQuery<T>> {
   protected readonly conditions: Condition[] = [];
 
@@ -152,8 +226,8 @@ abstract class BaseConditionQuery<T extends BaseConditionQuery<T>> {
 }
 
 class PostgresSelectQuery<T = RowData> implements SelectQuery<T> {
-  private readonly standardColumns: string[] = ["*"];
-  private readonly joins: JoinConfig[] = [];
+  private readonly standardColumns: string[];
+  private readonly joins: JoinConfig[];
   private readonly conditions: Array<{ column: string; operator: string; values: QueryValue | QueryValue[] }> = [];
   private orderBy?: { column: string; ascending: boolean };
   private limitCount?: number;
@@ -162,21 +236,10 @@ class PostgresSelectQuery<T = RowData> implements SelectQuery<T> {
     private readonly table: string,
     columns?: string,
   ) {
-    if (columns && columns !== "*") {
-      this.standardColumns = [];
+    const { standardColumns, joins } = parseColumns(columns);
 
-      const parts = splitColumnsString(columns);
-
-      for (const part of parts) {
-        const joinConfig = parseSelectPart(part);
-
-        if (joinConfig) {
-          this.joins.push(joinConfig);
-        } else {
-          this.standardColumns.push(part);
-        }
-      }
-    }
+    this.standardColumns = standardColumns;
+    this.joins = joins;
   }
 
   eq(column: string, value: QueryValue): SelectQuery<T> {
@@ -207,38 +270,6 @@ class PostgresSelectQuery<T = RowData> implements SelectQuery<T> {
     this.limitCount = count;
 
     return this;
-  }
-
-  private buildSelectClause(hasJoins: boolean): string {
-    const selectParts: string[] = [];
-
-    for (const col of this.standardColumns) {
-      if (col === "*") {
-        selectParts.push(hasJoins ? `${this.table}.*` : "*");
-      } else {
-        selectParts.push(hasJoins ? `${this.table}.${col}` : col);
-      }
-    }
-
-    for (const join of this.joins) {
-      const colObjectParts = join.columns.map((col) => `'${col}', ${join.tableName}.${col}`).join(", ");
-
-      selectParts.push(`jsonb_build_object(${colObjectParts}) as ${join.alias}`);
-    }
-
-    return selectParts.join(", ");
-  }
-
-  private buildFromAndJoinClause(): string {
-    let sql = ` FROM ${this.table}`;
-
-    for (const join of this.joins) {
-      const joinType = join.isInner ? "INNER JOIN" : "LEFT JOIN";
-
-      sql += ` ${joinType} ${join.tableName} ON ${this.table}.${join.foreignKey} = ${join.tableName}.id`;
-    }
-
-    return sql;
   }
 
   private buildWhereClauseForSelect(hasJoins: boolean): { sql: string; params: QueryValue[] } {
@@ -274,11 +305,11 @@ class PostgresSelectQuery<T = RowData> implements SelectQuery<T> {
 
   private buildSql(): { sql: string; params: QueryValue[] } {
     const hasJoins = this.joins.length > 0;
-    const selectClause = this.buildSelectClause(hasJoins);
-    const fromAndJoinClause = this.buildFromAndJoinClause();
+    const selectList = buildSelectList(this.table, this.standardColumns, this.joins);
+    const joinClause = buildJoinClause(this.table, this.joins);
     const { sql: whereClause, params } = this.buildWhereClauseForSelect(hasJoins);
 
-    let sql = `SELECT ${selectClause}${fromAndJoinClause}${whereClause}`;
+    let sql = `SELECT ${selectList} FROM ${this.table}${joinClause}${whereClause}`;
 
     if (this.orderBy) {
       const qualifiedOrderColumn = hasJoins && !this.orderBy.column.includes(".")
@@ -313,12 +344,116 @@ class PostgresSelectQuery<T = RowData> implements SelectQuery<T> {
       const result = await getPool().query(sql, params);
 
       if (result.rows.length === 0) {
-        return { data: {} as T, error: new Error("No rows found") };
+        return { data: null as unknown as T, error: new Error("No rows found") };
       }
 
       return { data: result.rows[0] as T, error: null };
     } catch (error) {
-      return { data: {} as T, error: error as Error };
+      return { data: null as unknown as T, error: error as Error };
+    }
+  }
+
+  async execute(): Promise<{ data: T[]; error: QueryError }> {
+    try {
+      const { sql, params } = this.buildSql();
+      const result = await getPool().query(sql, params);
+
+      return { data: result.rows as T[], error: null };
+    } catch (error) {
+      return { data: [], error: error as Error };
+    }
+  }
+
+  then<TResult1 = { data: T[]; error: QueryError }, TResult2 = never>(
+    onfulfilled?: ((value: { data: T[]; error: QueryError }) => TResult1 | PromiseLike<TResult1>) | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
+  ): Promise<TResult1 | TResult2> {
+    return this.execute().then(onfulfilled, onrejected);
+  }
+}
+
+/**
+ * Represents an INSERT/UPDATE followed by a Supabase-style `.select()`, i.e. a mutation
+ * that returns the affected rows. Without relation joins this maps to `... RETURNING <cols>`;
+ * with joins the mutation is wrapped in a CTE so the returned rows can be joined.
+ */
+class PostgresReturningQuery<T = RowData> implements SelectQuery<T> {
+  private readonly standardColumns: string[];
+  private readonly joins: JoinConfig[];
+
+  constructor(
+    private readonly buildBaseSql: () => { sql: string; params: QueryValue[] },
+    columns?: string,
+  ) {
+    const { standardColumns, joins } = parseColumns(columns);
+
+    this.standardColumns = standardColumns;
+    this.joins = joins;
+  }
+
+  // Filtering/ordering is applied on the insert()/update() builder before select();
+  // once a mutation returns rows there is nothing further to filter (matches Supabase).
+  eq(): SelectQuery<T> {
+    return this;
+  }
+
+  neq(): SelectQuery<T> {
+    return this;
+  }
+
+  in(): SelectQuery<T> {
+    return this;
+  }
+
+  order(): SelectQuery<T> {
+    return this;
+  }
+
+  limit(): SelectQuery<T> {
+    return this;
+  }
+
+  private buildSql(): { sql: string; params: QueryValue[] } {
+    const { sql: baseSql, params } = this.buildBaseSql();
+
+    if (this.joins.length === 0) {
+      return { sql: `${baseSql} RETURNING ${this.standardColumns.join(", ")}`, params };
+    }
+
+    const cte = "_mutation";
+    const selectList = buildSelectList(cte, this.standardColumns, this.joins);
+    const joinClause = buildJoinClause(cte, this.joins);
+
+    return {
+      sql: `WITH ${cte} AS (${baseSql} RETURNING *) SELECT ${selectList} FROM ${cte}${joinClause}`,
+      params,
+    };
+  }
+
+  async maybeSingle(): Promise<{ data: T | null; error: QueryError }> {
+    try {
+      const { sql, params } = this.buildSql();
+      const result = await getPool().query(sql, params);
+      const data = result.rows.length > 0 ? (result.rows[0] as T) : null;
+
+      return { data, error: null };
+    } catch (error) {
+      return { data: null as unknown as T, error: error as Error };
+    }
+  }
+
+  async single(): Promise<{ data: T; error: QueryError }> {
+    try {
+      const { sql, params } = this.buildSql();
+      const result = await getPool().query(sql, params);
+
+      if (result.rows.length === 0) {
+        return { data: null as unknown as T, error: new Error("No rows found") };
+      }
+
+      return { data: result.rows[0] as T, error: null };
+    } catch (error) {
+      return { data: null as unknown as T, error: error as Error };
     }
   }
 
@@ -347,33 +482,38 @@ class PostgresInsertQuery<T = RowData> implements InsertQuery<T> {
     private readonly data: Record<string, QueryValue> | Record<string, QueryValue>[],
   ) {}
 
+  private buildBaseSql(): { sql: string; params: QueryValue[] } {
+    const dataArray = Array.isArray(this.data) ? this.data : [this.data];
+
+    if (dataArray.length === 0) {
+      throw new Error("No data to insert");
+    }
+
+    const firstRow = dataArray[0];
+    const columns = Object.keys(firstRow);
+    const placeholders = dataArray
+      .map((_, i) => {
+        const startIdx = i * columns.length + 1;
+        const placeholderList = Array.from({ length: columns.length }, (_, j) => `$${startIdx + j}`);
+
+        return `(${placeholderList.join(", ")})`;
+      })
+      .join(", ");
+
+    const params = dataArray.flatMap((row) => columns.map((col) => row[col]));
+    const sql = `INSERT INTO ${this.table} (${columns.join(", ")}) VALUES ${placeholders}`;
+
+    return { sql, params };
+  }
+
   select(columns?: string): SelectQuery<T> {
-    return new PostgresSelectQuery<T>(this.table, columns);
+    return new PostgresReturningQuery<T>(() => this.buildBaseSql(), columns);
   }
 
   async execute(): Promise<{ data: T[]; error: QueryError }> {
     try {
-      const dataArray = Array.isArray(this.data) ? this.data : [this.data];
-
-      if (dataArray.length === 0) {
-        return { data: [], error: new Error("No data to insert") };
-      }
-
-      const firstRow = dataArray[0];
-      const columns = Object.keys(firstRow);
-      const placeholders = dataArray
-        .map((_, i) => {
-          const startIdx = i * columns.length + 1;
-          const placeholderList = Array.from({ length: columns.length }, (_, j) => `$${startIdx + j}`);
-
-          return `(${placeholderList.join(", ")})`;
-        })
-        .join(", ");
-
-      const values = dataArray.flatMap((row) => columns.map((col) => row[col]));
-
-      const sql = `INSERT INTO ${this.table} (${columns.join(", ")}) VALUES ${placeholders} RETURNING *`;
-      const result = await getPool().query(sql, values);
+      const { sql, params } = this.buildBaseSql();
+      const result = await getPool().query(`${sql} RETURNING *`, params);
 
       return { data: result.rows as T[], error: null };
     } catch (error) {
@@ -401,26 +541,32 @@ class PostgresUpdateQuery<T = RowData> extends BaseConditionQuery<PostgresUpdate
     return this.addCondition(column, value);
   }
 
+  private buildBaseSql(): { sql: string; params: QueryValue[] } {
+    if (this.conditions.length === 0) {
+      throw new Error("Update requires at least one condition");
+    }
+
+    const dataColumns = Object.keys(this.data);
+    const updateSet = dataColumns.map((col, i) => `${col} = $${i + 1}`).join(", ");
+
+    const params: QueryValue[] = [...dataColumns.map((col) => this.data[col])];
+    const { sql: whereClause, params: whereParams } = this.buildWhereClause(dataColumns.length + 1);
+
+    params.push(...whereParams);
+
+    const sql = `UPDATE ${this.table} SET ${updateSet} WHERE ${whereClause}`;
+
+    return { sql, params };
+  }
+
   select(columns?: string): SelectQuery<T> {
-    return new PostgresSelectQuery<T>(this.table, columns);
+    return new PostgresReturningQuery<T>(() => this.buildBaseSql(), columns);
   }
 
   async execute(): Promise<{ data: T[]; error: QueryError }> {
     try {
-      if (this.conditions.length === 0) {
-        return { data: [], error: new Error("Update requires at least one condition") };
-      }
-
-      const dataColumns = Object.keys(this.data);
-      const updateSet = dataColumns.map((col, i) => `${col} = $${i + 1}`).join(", ");
-
-      const params: QueryValue[] = [...dataColumns.map((col) => this.data[col])];
-      const { sql: whereClause, params: whereParams } = this.buildWhereClause(dataColumns.length + 1);
-
-      params.push(...whereParams);
-
-      const sql = `UPDATE ${this.table} SET ${updateSet} WHERE ${whereClause} RETURNING *`;
-      const result = await getPool().query(sql, params);
+      const { sql, params } = this.buildBaseSql();
+      const result = await getPool().query(`${sql} RETURNING *`, params);
 
       return { data: result.rows as T[], error: null };
     } catch (error) {
@@ -496,16 +642,23 @@ class PostgresClient implements DatabaseClient {
   }
 
   async rpc<T = any>(functionName: string, args?: Record<string, any>): Promise<{ data: T; error: QueryError }> {
-    try {
-      const argNames = args ? Object.keys(args) : [];
-      const argValues = args ? argNames.map((name) => args[name]) : [];
-      const argPlaceholders = argNames.map((_, i) => `$${i + 1}`).join(", ");
+    const argNames = args ? Object.keys(args) : [];
+    const argValues = args ? argNames.map((name) => args[name]) : [];
+    const argPlaceholders = argNames.map((_, i) => `$${i + 1}`).join(", ");
 
+    try {
       const sql = `SELECT * FROM ${functionName}(${argPlaceholders})`;
       const result = await getPool().query(sql, argValues);
 
       return { data: result.rows as unknown as T, error: null };
-    } catch (error) {
+    } catch (error: any) {
+      // Fallback for void functions: cannot be used in SELECT
+      if (error?.code === '42601' && error?.message?.includes('query has no destination for result data')) {
+        await getPool().query(`${functionName}(${argPlaceholders})`, argValues);
+
+        return { data: null as unknown as T, error: null };
+      }
+
       return { data: null as unknown as T, error: error as Error };
     }
   }
