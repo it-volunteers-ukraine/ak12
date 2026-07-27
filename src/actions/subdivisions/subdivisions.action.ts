@@ -133,8 +133,8 @@ export async function createSubdivision(data: Omit<Subdivision, "id">): Promise<
       slug: data.slug,
       description: data.description,
       site_url: data.siteUrl,
-      image_url: data.imageUrl ? JSON.stringify(data.imageUrl) : null,
-      hover_image_url: data.hoverImageUrl ? JSON.stringify(data.hoverImageUrl) : null,
+      image_url: data.imageUrl,
+      hover_image_url: data.hoverImageUrl,
       hover_name: data.hoverName,
       hover_description: data.hoverDescription,
       is_active: data.isActive,
@@ -154,7 +154,7 @@ export async function createSubdivision(data: Omit<Subdivision, "id">): Promise<
 }
 
 const mapSubdivisionToDbPayload = (data: Partial<Omit<Subdivision, "id" | "languageCode" | "languageId">>) => {
-  const payload: Record<string, string | number | boolean | null | undefined> = {};
+  const payload: Record<string, string | number | boolean | object | null | undefined> = {};
 
   if (data.name !== undefined) {
     payload.name = data.name;
@@ -184,10 +184,10 @@ const mapSubdivisionToDbPayload = (data: Partial<Omit<Subdivision, "id" | "langu
     payload.updated_at = data.updatedAt;
   }
   if (data.imageUrl !== undefined) {
-    payload.image_url = data.imageUrl ? JSON.stringify(data.imageUrl) : null;
+    payload.image_url = data.imageUrl;
   }
   if (data.hoverImageUrl !== undefined) {
-    payload.hover_image_url = data.hoverImageUrl ? JSON.stringify(data.hoverImageUrl) : null;
+    payload.hover_image_url = data.hoverImageUrl;
   }
 
   return payload;

@@ -1,4 +1,4 @@
-export type QueryValue = string | number | boolean | null | undefined;
+export type QueryValue = string | number | boolean | object | null | undefined;
 export type QueryError = Error | null;
 export type RowData = Record<string, QueryValue>;
 
