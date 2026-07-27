@@ -28,7 +28,7 @@ VALUES ('hero',
           ],
           "backgroundImage": {
             "publicId": "hero-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
+            "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777475167/ak12/hero-background.png"
           }
         }'::jsonb,
         true,
@@ -57,7 +57,7 @@ VALUES ('hero',
           ],
           "backgroundImage": {
             "publicId": "hero-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
+            "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777475167/ak12/hero-background.png"
           }
         }'::jsonb,
         true,
@@ -95,7 +95,7 @@ VALUES ('hero',
           },
           "backgroundImage": {
             "publicId": "transfer-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/transfer-background"
+            "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1/transfer-background"
           }
         }'::jsonb,
         true,
@@ -133,7 +133,7 @@ VALUES ('hero',
           },
           "backgroundImage": {
             "publicId": "transfer-background",
-            "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1/transfer-background"
+            "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1/transfer-background"
           }
         }'::jsonb,
         true,
@@ -174,7 +174,7 @@ VALUES ('hero',
             "subtitle": "100%",
             "backgroundImage": {
               "publicId": "hero-background",
-              "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
+              "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777475167/ak12/hero-background.png"
             }
           }
         }'::jsonb,
@@ -216,7 +216,7 @@ VALUES ('hero',
             "subtitle": "100%",
             "backgroundImage": {
               "publicId": "hero-background",
-              "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png"
+              "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777475167/ak12/hero-background.png"
             }
           }
         }'::jsonb,
@@ -295,37 +295,37 @@ VALUES ('hero',
               {
                 "text": "Життя корпусу",
                 "publicId": "ak12/Motivation",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Мотивація",
                 "publicId": "ak12/Motivation",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Відвага",
                 "publicId": "ak12/Courage",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Навчання",
                 "publicId": "ak12/Education",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Людяність",
                 "publicId": "ak12/Humanity",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "ЧЕСТЬ",
                 "publicId": "ak12/Honor",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Побут",
                 "publicId": "ak12/Daily-Life",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               }
             ]
           }
@@ -341,37 +341,37 @@ VALUES ('hero',
               {
                 "text": "The Life of the Corps",
                 "publicId": "ak12/Motivation",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Motivation",
                 "publicId": "ak12/Motivation",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Courage",
                 "publicId": "ak12/Courage",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Education",
                 "publicId": "ak12/Education",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Humanity",
                 "publicId": "ak12/Humanity",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Honor",
                 "publicId": "ak12/Honor",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               },
               {
                 "text": "Daily Life",
                 "publicId": "ak12/Daily-Life",
-                "secureUrl": "https://res.cloudinary.com/<cloud-name>/image/upload/v1777741759/ak12/contract-18-24-background.png"
+                "secureUrl": "https://res.cloudinary.com/__CLOUDINARY_CLOUD_NAME__/image/upload/v1777741759/ak12/contract-18-24-background.png"
               }
             ]
           }
