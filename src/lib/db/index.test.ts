@@ -41,6 +41,28 @@ describe("getDbClient", () => {
     expect(mockGetSupabaseClient).toHaveBeenCalledTimes(1);
   });
 
+  it("should honor DB_CLIENT=postgres even when NODE_ENV is development", () => {
+    (process.env as Record<string, string>).NODE_ENV = "development";
+    (process.env as Record<string, string>).DB_CLIENT = "postgres";
+
+    const { getDbClient } = require("./index");
+    const client = getDbClient();
+
+    expect(client).toEqual({ __client: "postgres" });
+    expect(mockGetSupabaseClient).not.toHaveBeenCalled();
+  });
+
+  it("should honor DB_CLIENT=supabase even when NODE_ENV is production", () => {
+    (process.env as Record<string, string>).NODE_ENV = "production";
+    (process.env as Record<string, string>).DB_CLIENT = "supabase";
+
+    const { getDbClient } = require("./index");
+    const client = getDbClient();
+
+    expect(client).toEqual({ __client: "supabase" });
+    expect(mockGetSupabaseClient).toHaveBeenCalledTimes(1);
+  });
+
   it("should memoize the selected client", () => {
     (process.env as Record<string, string>).NODE_ENV = "development";
 
