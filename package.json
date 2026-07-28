@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "cross-env DB_CLIENT=supabase next start",
     "start:prod": "cross-env DB_CLIENT=postgres next start",
     "start:dev": "cross-env DB_CLIENT=supabase next start",
     "format": "prettier . --write",
