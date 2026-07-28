@@ -1,10 +1,18 @@
 import crypto from "node:crypto";
 
+import { serverEnv } from "@/lib/env/server";
+
+// TODO(minio): this service is Cloudinary-specific (signed upload/destroy against
+// api.cloudinary.com). Production uses MinIO, so introduce a storage abstraction
+// mirroring the DatabaseClient pattern in src/lib/db: an ImageStorage interface with
+// uploadImage/deleteImage, a Cloudinary implementation (this file) for dev, a MinIO
+// (S3-compatible, e.g. @aws-sdk/client-s3) implementation for prod, and a selector
+// that picks by NODE_ENV. Keep all MinIO secrets server-side only.
 function getUploadEnv() {
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
-  const apiKey = process.env.CLOUDINARY_API_KEY;
-  const apiSecret = process.env.CLOUDINARY_API_SECRET;
-  const folder = process.env.CLOUDINARY_MEDIA_FOLDER;
+  const cloudName = serverEnv.cloudinary.cloudName;
+  const apiKey = serverEnv.cloudinary.apiKey;
+  const apiSecret = serverEnv.cloudinary.apiSecret;
+  const folder = serverEnv.cloudinary.mediaFolder;
 
   if (!cloudName || !apiKey || !apiSecret || !folder) {
     throw new Error("Не вдалося знайти змінні середовища для сервісу завантаження зображень");

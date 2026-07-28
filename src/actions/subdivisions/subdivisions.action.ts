@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { locales } from "@/constants";
 import { Locale, Subdivision } from "@/types";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import { storedImageSchema } from "@/components/admin/subdivisions-section/config";
 
 const isLocale = (value: string): value is Locale => locales.includes(value as Locale);
@@ -18,15 +18,17 @@ const getLanguageId = async (locale: string): Promise<string | null> => {
     return languageIdCache.get(locale)!;
   }
 
-  const { data, error } = await supabaseServer.from("language").select("id").eq("code", locale).single();
+  const { data, error } = await databaseClient.from("language").select("id").eq("code", locale).single();
 
   if (error || !data?.id) {
     throw new Error(`Language not found for locale: ${locale}`);
   }
 
-  languageIdCache.set(locale, data.id);
+  const languageId = String(data.id);
 
-  return data.id;
+  languageIdCache.set(locale, languageId);
+
+  return languageId;
 };
 
 const mapRow = (row: Record<string, any>, languageCode: Locale): Subdivision => {
@@ -58,7 +60,7 @@ export async function getSubdivisions(locale: Locale): Promise<Subdivision[]> {
     return [];
   }
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await databaseClient
     .from("subdivision")
     .select("*")
     .eq("language_id", languageId)
@@ -79,7 +81,7 @@ export async function getSubdivisionBySlug(slug: string, locale: Locale): Promis
     return null;
   }
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await databaseClient
     .from("subdivision")
     .select("*")
     .eq("language_id", languageId)
@@ -104,7 +106,7 @@ export async function getAllSubdivisions(locale: Locale): Promise<Subdivision[]>
     return [];
   }
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await databaseClient
     .from("subdivision")
     .select("*")
     .eq("language_id", languageId)
@@ -124,7 +126,7 @@ export async function createSubdivision(data: Omit<Subdivision, "id">): Promise<
     throw new Error(`Language not found for locale: ${data.languageCode}`);
   }
 
-  const { data: inserted, error } = await supabaseServer
+  const { data: inserted, error } = await databaseClient
     .from("subdivision")
     .insert({
       name: data.name,
@@ -151,46 +153,52 @@ export async function createSubdivision(data: Omit<Subdivision, "id">): Promise<
   return mapRow(inserted, data.languageCode);
 }
 
-export async function updateSubdivision(id: string, data: Partial<Omit<Subdivision, "id">>): Promise<Subdivision> {
-  const updatePayload: Record<string, unknown> = {};
+const mapSubdivisionToDbPayload = (data: Partial<Omit<Subdivision, "id" | "languageCode" | "languageId">>) => {
+  const payload: Record<string, string | number | boolean | object | null | undefined> = {};
 
   if (data.name !== undefined) {
-    updatePayload.name = data.name;
+    payload.name = data.name;
   }
   if (data.slug !== undefined) {
-    updatePayload.slug = data.slug;
+    payload.slug = data.slug;
   }
   if (data.description !== undefined) {
-    updatePayload.description = data.description;
+    payload.description = data.description;
   }
   if (data.siteUrl !== undefined) {
-    updatePayload.site_url = data.siteUrl;
-  }
-  if (data.imageUrl !== undefined) {
-    updatePayload.image_url = data.imageUrl;
-  }
-  if (data.hoverImageUrl !== undefined) {
-    updatePayload.hover_image_url = data.hoverImageUrl;
+    payload.site_url = data.siteUrl;
   }
   if (data.hoverName !== undefined) {
-    updatePayload.hover_name = data.hoverName;
+    payload.hover_name = data.hoverName;
   }
   if (data.hoverDescription !== undefined) {
-    updatePayload.hover_description = data.hoverDescription;
+    payload.hover_description = data.hoverDescription;
   }
   if (data.isActive !== undefined) {
-    updatePayload.is_active = data.isActive;
+    payload.is_active = data.isActive;
   }
   if (data.sortOrder !== undefined) {
-    updatePayload.sort_order = data.sortOrder;
+    payload.sort_order = data.sortOrder;
   }
   if (data.updatedAt !== undefined) {
-    updatePayload.updated_at = data.updatedAt;
+    payload.updated_at = data.updatedAt;
+  }
+  if (data.imageUrl !== undefined) {
+    payload.image_url = data.imageUrl;
+  }
+  if (data.hoverImageUrl !== undefined) {
+    payload.hover_image_url = data.hoverImageUrl;
   }
 
-  const { data: updated, error } = await supabaseServer
+  return payload;
+};
+
+export async function updateSubdivision(id: string, data: Partial<Omit<Subdivision, "id">>): Promise<Subdivision> {
+  const updatePayload = mapSubdivisionToDbPayload(data);
+
+  const { data: updated, error } = await databaseClient
     .from("subdivision")
-    .update(updatePayload)
+    .update(updatePayload as any)
     .eq("id", id)
     .select()
     .single();
@@ -207,7 +215,7 @@ export async function updateSubdivision(id: string, data: Partial<Omit<Subdivisi
 }
 
 export async function deleteSubdivision(id: string): Promise<void> {
-  const { error } = await supabaseServer.from("subdivision").delete().eq("id", id);
+  const { error } = await databaseClient.from("subdivision").delete().eq("id", id);
 
   if (error) {
     throw new Error(`Failed to delete subdivision ${id}: ${error.message}`);
@@ -218,7 +226,7 @@ export async function deleteSubdivision(id: string): Promise<void> {
 
 export async function updateSubdivisionsOrder(items: { id: string; sortOrder: number }[]): Promise<void> {
   const updates = items.map(({ id, sortOrder }) =>
-    supabaseServer.from("subdivision").update({ sort_order: sortOrder }).eq("id", id),
+    databaseClient.from("subdivision").update({ sort_order: sortOrder }).eq("id", id),
   );
 
   const results = await Promise.all(updates);

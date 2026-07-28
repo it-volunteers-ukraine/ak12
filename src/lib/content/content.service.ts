@@ -3,7 +3,7 @@ import z from "zod";
 import { Locale } from "@/types";
 import { SectionKey } from "@/constants";
 import { logger } from "@/lib/logger/logger";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import { languageService } from "@/lib/language/language.service";
 
 export type ActionResponse<T = void> = { success: true; data?: T } | { success: false; error: string };
@@ -22,7 +22,7 @@ interface SaveParams<Schema extends z.ZodTypeAny> {
 const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) => {
   const languageRow = await languageService.ensure(locale);
 
-  const { data, error } = await supabaseServer
+  const { data, error } = await databaseClient
     .from("site_content")
     .select("id, content, updated_at")
     .eq("section_key", sectionKey)
@@ -49,7 +49,7 @@ const normalizeTimestampToIsoUtc = (value: string | Date): string | null => {
   const trimmed = value.trim();
   const withT = trimmed.includes("T") ? trimmed : trimmed.replaceAll(" ", "T");
 
-  const normalized = /[zZ]|[+-]\d{2}:\d{2}$/.test(withT) ? withT : `${withT}Z`;
+  const normalized = /(?:[zZ]|[+-]\d{2}:\d{2})$/.test(withT) ? withT : `${withT}Z`;
 
   const date = new Date(normalized);
 
@@ -75,7 +75,7 @@ export const contentService = {
     try {
       const languageRow = await languageService.ensure(locale);
 
-      const { data, error } = await supabaseServer
+      const { data, error } = await databaseClient
         .from("site_content")
         .select("section_key, updated_at")
         .eq("is_active", true)
@@ -96,11 +96,14 @@ export const contentService = {
       const timestampMap: Record<string, string> = {};
 
       for (const record of data) {
-        if (record.section_key && record.updated_at && !timestampMap[record.section_key]) {
-          const normalized = normalizeTimestampToIsoUtc(record.updated_at);
+        const sectionKey = record.section_key as string;
+        const updatedAt = record.updated_at as string;
+
+        if (sectionKey && updatedAt && !timestampMap[sectionKey]) {
+          const normalized = normalizeTimestampToIsoUtc(updatedAt);
 
           if (normalized !== null) {
-            timestampMap[record.section_key] = normalized;
+            timestampMap[sectionKey] = normalized;
           }
         }
       }
@@ -120,7 +123,7 @@ export const contentService = {
       return null;
     }
 
-    return normalizeTimestampToIsoUtc(record.updated_at);
+    return normalizeTimestampToIsoUtc(record.updated_at as string);
   },
 
   async get<Schema extends z.ZodTypeAny>({
@@ -165,9 +168,9 @@ export const contentService = {
       const record = await _findContentRecord(sectionKey, locale);
 
       if (record?.id) {
-        const { error } = await supabaseServer
+        const { error } = await databaseClient
           .from("site_content")
-          .update({ content, is_active: true, updated_at: new Date().toISOString() })
+          .update({ content: JSON.stringify(content), is_active: true, updated_at: new Date().toISOString() })
           .eq("id", record?.id);
 
         if (error) {
@@ -176,9 +179,9 @@ export const contentService = {
       } else {
         const languageRow = await languageService.ensure(locale);
 
-        const { error } = await supabaseServer
+        const { error } = await databaseClient
           .from("site_content")
-          .insert({ section_key: sectionKey, content, is_active: true, language_id: languageRow.id });
+          .insert({ section_key: sectionKey, content: JSON.stringify(content), is_active: true, language_id: languageRow.id });
 
         if (error) {
           throw error;

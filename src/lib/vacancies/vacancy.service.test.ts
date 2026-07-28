@@ -2,12 +2,12 @@ import { PostgrestSingleResponse, PostgrestError } from "@supabase/postgrest-js"
 import { UpdateVacancyStatusDto } from "@/schemas/vacancies/update-vacancy-status.schema";
 import { ReorderVacanciesDto } from "@/schemas/vacancies/reorder-vacancy.schema";
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import { vacancyService } from "@/lib/vacancies/vacancy.service";
 import { logger } from "@/lib/logger/logger";
 
-jest.mock("@/lib/supabase-server/supabase-server", () => ({
-  supabaseServer: {
+jest.mock("@/lib/database/database-client", () => ({
+  databaseClient: {
     rpc: jest.fn(),
     from: jest.fn(),
   },
@@ -49,7 +49,7 @@ const rawRow = (overrides: Partial<Record<string, unknown>> = {}) => ({
   ...overrides,
 });
 
-const mockedSupabase = jest.mocked(supabaseServer);
+const mockedSupabase = jest.mocked(databaseClient);
 
 describe("vacancyService", () => {
   afterEach(() => {

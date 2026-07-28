@@ -9,7 +9,7 @@ import { mapVacancy } from "@/utils/vacancies/map-vacancy";
 import { getLanguageMap } from "@/utils/vacancies/get-language-map";
 import { mapCreateVacancy } from "@/utils/vacancies/map-create-vacancy";
 import { buildUpdateVacancyArgs } from "@/utils/vacancies/build-update-vacancy-args";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import { logger } from "@/lib/logger/logger";
 
 interface Params {
@@ -18,7 +18,7 @@ interface Params {
 
 export const vacancyService = {
   async getAll({ locale }: Params): Promise<{ vacancies: VacancyMapped[] }> {
-    const query = supabaseServer
+    const query = databaseClient
       .from("vacancy")
       .select("*, language:language_id!inner(code)")
       .eq("is_active", true)
@@ -38,7 +38,7 @@ export const vacancyService = {
   },
 
   async getAllAdmin(): Promise<{ uk: VacancyMapped[]; en: VacancyMapped[] }> {
-    const { data, error } = await supabaseServer
+    const { data, error } = await databaseClient
       .from("vacancy")
       .select("*, language:language_id!inner(code)")
       .order("sort_order", { ascending: true });
@@ -60,7 +60,7 @@ export const vacancyService = {
 
     const rows = mapCreateVacancy(data, langMap);
 
-    const { data: createdVacancy, error } = await supabaseServer
+    const { data: createdVacancy, error } = await databaseClient
       .from("vacancy")
       .insert(rows)
       .select("*, language:language_id!inner(code)");
@@ -78,7 +78,7 @@ export const vacancyService = {
   async update(data: UpdateVacancyDto): Promise<VacancyMapped[]> {
     const args = buildUpdateVacancyArgs(data);
 
-    const { data: updatedVacancies, error } = await supabaseServer.rpc("update_vacancy_atomic", args);
+    const { data: updatedVacancies, error } = await databaseClient.rpc("update_vacancy_atomic", args);
 
     if (error) {
       logger.error({ error, ids: { ukId: data.ukId, enId: data.enId } }, "Failed to update vacancies");
@@ -91,7 +91,7 @@ export const vacancyService = {
   },
 
   async delete(ids: DeleteVacancyDto): Promise<void> {
-    const { error } = await supabaseServer.rpc("delete_vacancy_atomic", {
+    const { error } = await databaseClient.rpc("delete_vacancy_atomic", {
       uk_id: ids.ukId,
       en_id: ids.enId,
     });
@@ -107,7 +107,7 @@ export const vacancyService = {
   async updateStatus(data: UpdateVacancyStatusDto): Promise<void> {
     const { ukId, enId } = data;
 
-    const { error } = await supabaseServer.rpc("update_vacancy_status_atomic", {
+    const { error } = await databaseClient.rpc("update_vacancy_status_atomic", {
       uk_id: ukId,
       en_id: enId,
       new_status: data.isActive,
@@ -122,7 +122,7 @@ export const vacancyService = {
   },
 
   async reorder(data: ReorderVacanciesDto): Promise<void> {
-    const { error } = await supabaseServer.rpc("reorder_vacancies_atomic", {
+    const { error } = await databaseClient.rpc("reorder_vacancies_atomic", {
       payload: data,
     });
 

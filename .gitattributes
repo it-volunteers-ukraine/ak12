@@ -1,0 +1,4 @@
+# Shell scripts must use LF endings — they run inside Linux containers
+# (e.g. postgres-init scripts mounted into the Postgres image). CRLF would
+# corrupt the shebang and break execution.
+*.sh text eol=lf

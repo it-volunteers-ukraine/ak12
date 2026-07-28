@@ -37,7 +37,7 @@ const mockHero = {
   ],
   backgroundImage: {
     publicId: "ak12/hero-background",
-    secureUrl: "https://res.cloudinary.com/korneiko/image/upload/v1777475167/ak12/hero-background.png",
+    secureUrl: "https://res.cloudinary.com/<cloud-name>/image/upload/v1777475167/ak12/hero-background.png",
   },
 };
 
