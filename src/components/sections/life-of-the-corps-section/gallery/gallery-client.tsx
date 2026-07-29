@@ -34,6 +34,7 @@ type GalleryImage = {
 interface ILifeOfTheCorpsGalleryClientProps {
   cells: Cell[];
   images: GalleryImage[];
+  backgroundImageUrl?: string;
 }
 
 const MOBILE_ORDER_OVERRIDES: Record<number, number> = {
@@ -47,11 +48,14 @@ const MOBILE_ORDER_OVERRIDES: Record<number, number> = {
 
 const MOBILE_HIDDEN_INDEXES = new Set([0, 15]);
 
-const BACKGROUND_IMAGE = "https://res.cloudinary.com/korneiko/image/upload/v1784043457/ak12/Background.png";
-
-export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGalleryClientProps) => {
+export const LifeOfTheCorpsGalleryClient = ({
+  cells,
+  images,
+  backgroundImageUrl,
+}: ILifeOfTheCorpsGalleryClientProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isBackgroundBroken, setIsBackgroundBroken] = useState(false);
 
   const TABLET_HIDE_START_INDEX = cells.length - 1;
 
@@ -100,14 +104,20 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
 
   return (
     <div className="relative">
-      <Image
-        fill
-        priority
-        sizes="100vw"
-        src={BACKGROUND_IMAGE}
-        alt="Background"
-        className="absolute inset-0 z-0 object-cover"
-      />
+      {backgroundImageUrl && !isBackgroundBroken && (
+        <Image
+          fill
+          priority
+          sizes="100vw"
+          src={backgroundImageUrl}
+          alt="Background"
+          className="absolute inset-0 z-0 object-cover"
+          onError={() => {
+            logger.error({ backgroundImageUrl }, "Failed to load gallery background image");
+            setIsBackgroundBroken(true);
+          }}
+        />
+      )}
       <div className="absolute inset-0 z-1 bg-linear-to-r from-black/85 via-black/55 to-transparent" />
       <h2 className="font-ermilov text-accent relative z-10 mb-4 flex justify-center text-[40px] uppercase md:hidden">
         {cells[0]?.text}
@@ -181,7 +191,7 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
                         e.currentTarget.style.display = "none";
                       }}
                     />
-                  ) : (
+                  ) : image.src ? (
                     <Image
                       fill
                       src={image.src}
@@ -189,7 +199,14 @@ export const LifeOfTheCorpsGalleryClient = ({ cells, images }: ILifeOfTheCorpsGa
                       priority={idx === activeImageIndex}
                       alt={image.text || `Image ${idx + 1}`}
                       sizes="(max-width: 768px) 92vw, (max-width: 1200px) 80vw, 1200px"
+                      onError={() => {
+                        logger.error({ src: image.src }, "Failed to load gallery image");
+                      }}
                     />
+                  ) : (
+                    <div className="text-white/60 flex h-full w-full items-center justify-center text-sm">
+                      {image.text || "Зображення недоступне"}
+                    </div>
                   )}
                 </div>
               </SwiperSlide>

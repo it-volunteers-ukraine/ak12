@@ -1,5 +1,5 @@
 services:
-  # Development service
+  # Development service (uses Supabase cloud)
   dev:
     image: node:24-alpine
     working_dir: /workspace
@@ -16,13 +16,10 @@ services:
       - HOSTNAME=0.0.0.0
     env_file:
       - .env
-    depends_on:
-      database:
-        condition: service_healthy
     profiles:
       - dev
 
-  # Production service
+  # Production service (uses local PostgreSQL 17)
   prod:
     build:
       context: .
@@ -41,9 +38,9 @@ services:
       database:
         condition: service_healthy
 
-  # Database service
+  # Production database service (PostgreSQL 17)
   database:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data

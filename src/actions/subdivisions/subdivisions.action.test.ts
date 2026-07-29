@@ -1,5 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import {
   getSubdivisions,
   createSubdivision,
@@ -10,8 +10,8 @@ import {
   deleteSubdivision,
 } from "@/actions/subdivisions/subdivisions.action";
 
-jest.mock("@/lib/supabase-server/supabase-server", () => ({
-  supabaseServer: {
+jest.mock("@/lib/database/database-client", () => ({
+  databaseClient: {
     from: jest.fn(),
   },
 }));
@@ -91,7 +91,7 @@ function createSubdivisionChain(method: "order" | "single", data: any) {
 }
 
 function mockSupabaseFrom(languageChain: any, subdivisionChain?: any, insertChain?: any) {
-  (supabaseServer.from as jest.Mock).mockImplementation((table: string) => {
+  (databaseClient.from as jest.Mock).mockImplementation((table: string) => {
     switch (table) {
       case "language":
         return languageChain;
@@ -104,7 +104,7 @@ function mockSupabaseFrom(languageChain: any, subdivisionChain?: any, insertChai
 }
 
 function mockSupabaseSingleChain(chain: any) {
-  (supabaseServer.from as jest.Mock).mockReturnValue(chain);
+  (databaseClient.from as jest.Mock).mockReturnValue(chain);
 }
 
 describe("subdivisions actions", () => {
@@ -140,8 +140,8 @@ describe("subdivisions actions", () => {
           return subdivisionChain;
         });
 
-        jest.doMock("@/lib/supabase-server/supabase-server", () => ({
-          supabaseServer: {
+        jest.doMock("@/lib/database/database-client", () => ({
+          databaseClient: {
             from: fromMock,
           },
         }));
@@ -238,7 +238,7 @@ describe("subdivisions actions", () => {
 
   describe("updateSubdivisionsOrder", () => {
     it("updates items and calls revalidatePath", async () => {
-      (supabaseServer.from as jest.Mock).mockReturnValue({
+      (databaseClient.from as jest.Mock).mockReturnValue({
         update: jest.fn().mockReturnThis(),
         eq: jest.fn().mockResolvedValue({ error: null }),
       });
@@ -252,7 +252,7 @@ describe("subdivisions actions", () => {
     });
 
     it("throws when updateSubdivisionsOrder fails", async () => {
-      (supabaseServer.from as jest.Mock).mockReturnValue({
+      (databaseClient.from as jest.Mock).mockReturnValue({
         update: jest.fn().mockReturnThis(),
         eq: jest.fn().mockResolvedValue({
           error: { message: "fail" },

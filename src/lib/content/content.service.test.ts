@@ -4,22 +4,22 @@
 import z from "zod";
 import { SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
-import { supabaseServer } from "@/lib/supabase-server/supabase-server";
+import { databaseClient } from "@/lib/database/database-client";
 import { languageService } from "@/lib/language/language.service";
 
 jest.mock("@/lib/logger/logger", () => ({
   logger: { error: jest.fn(), info: jest.fn() },
 }));
 
-jest.mock("@/lib/supabase-server/supabase-server", () => ({
-  supabaseServer: { from: jest.fn() },
+jest.mock("@/lib/database/database-client", () => ({
+  databaseClient: { from: jest.fn() },
 }));
 
 jest.mock("@/lib/language/language.service", () => ({
   languageService: { ensure: jest.fn() },
 }));
 
-const mockedSupabase = jest.mocked(supabaseServer);
+const mockedSupabase = jest.mocked(databaseClient);
 const mockedEnsure = jest.mocked(languageService.ensure);
 
 const testSchema = z.object({
