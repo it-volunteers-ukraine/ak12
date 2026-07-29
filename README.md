@@ -1,36 +1,215 @@
-123This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AK-12 — Лендинг військового підрозділу
 
-## Getting Started
+Багатомовний (українська / англійська) лендинг для рекрутингу та інформування. Сайт містить публічну частину зі секціями про підрозділ, вакансіями, формою зворотного зв'язку та захищену адмін-панель для керування контентом.
 
-First, run the development server:
+## Функціональність
+
+- **Публічний сайт**: секції Hero, Про підрозділ, Життя підрозділу, Підрозділи, Вакансії (frontline/backline), Мобілізація, Контракт 18-24, Переведення, форма зворотного зв'язку
+- **Двомовність**: українська та англійська мови з автоматичним визначенням та перемиканням
+- **Адмін-панель** (`/management-console-12ak/`): двофакторна авторизація, керування всіма секціями сайту, вакансіями та підрозділами через динамічну форму
+- **Drag-and-drop**: сортування вакансій в адмінці
+- **SEO**: robots.txt, мета-теги, семантична верстка
+- **Анімації**: GSAP, плавний скрол, running line
+
+## Технології
+
+| Складова            | Технологія                                |
+| ------------------- | ----------------------------------------- |
+| Фреймворк           | Next.js 16 (App Router, Turbopack)        |
+| Мова                | TypeScript 5 (strict mode)                |
+| UI                  | React 19, Tailwind CSS v4                 |
+| База даних          | PostgreSQL 16                             |
+| Адмін-клієнт БД     | Supabase SDK                              |
+| Валідація           | Zod v4                                    |
+| Інтернаціоналізація | next-intl v4                              |
+| Аутентифікація      | bcryptjs + otplib (2FA TOTP) + HMAC-сесії |
+| Медіа               | Cloudinary (завантаження зображень)       |
+| Drag-and-drop       | @dnd-kit                                  |
+| Анімації            | GSAP                                      |
+| Логування           | Pino                                      |
+| Тестування          | Jest + React Testing Library              |
+| Контейнеризація     | Docker + Docker Compose                   |
+| CI/CD               | GitHub Actions                            |
+
+## Швидкий старт (локальна розробка)
+
+1. Клонуйте репозиторій:
+
+   ```bash
+   git clone <url>
+   cd ak12
+   ```
+
+2. Налаштуйте змінні оточення — скопіюйте `.env.example` у `.env` та заповніть значення.
+
+3. Запустіть PostgreSQL через Docker:
+
+   ```bash
+   docker compose up db -d
+   ```
+
+4. Встановіть залежності:
+
+   ```bash
+   npm install
+   ```
+
+5. Запустіть сервер розробки:
+
+   ```bash
+   npm run dev
+   ```
+
+6. Відкрийте [http://localhost:3000](http://localhost:3000).
+
+## Команди
+
+| Команда                 | Опис                    |
+| ----------------------- | ----------------------- |
+| `npm run dev`           | Запуск сервера розробки |
+| `npm run build`         | Продакшн-збірка         |
+| `npm run start`         | Запуск продакшн-сервера |
+| `npm run lint`          | Перевірка коду ESLint   |
+| `npm run format`        | Форматування Prettier   |
+| `npm test`              | Запуск тестів           |
+| `npm run test:coverage` | Тести з покриттям       |
+
+## Розгортання
+
+Проєкт може бути розгорнутий через Docker:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+docker compose up prod -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Або через Vercel / будь-який хостинг, що підтримує Node.js.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Змінні оточення
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Змінна                                         | Опис                                   |
+| ---------------------------------------------- | -------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`                     | URL проєкту Supabase                   |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY` | Публічний ключ Supabase                |
+| `SUPABASE_SERVICE_ROLE_KEY`                    | Сервісний ключ Supabase (admin)        |
+| `ADMIN_EMAIL`                                  | Email адміністратора                   |
+| `ADMIN_PASSWORD_HASH`                          | Bcrypt хеш пароля адміністратора       |
+| `ADMIN_2FA_SECRET`                             | Секрет для двофакторної аутентифікації |
+| `SESSION_SECRET_KEY`                           | Ключ для підпису сесійних токенів      |
+| `CLOUDINARY_CLOUD_NAME`                        | Cloudinary cloud name                  |
+| `CLOUDINARY_API_KEY`                           | Cloudinary API ключ                    |
+| `CLOUDINARY_API_SECRET`                        | Cloudinary API секрет                  |
+| `CLOUDINARY_MEDIA_FOLDER`                      | Папка для медіафайлів у Cloudinary     |
 
-## Learn More
+## Структура проєкту
 
-To learn more about Next.js, take a look at the following resources:
+Основні директорії:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── actions/          # Server Actions (CRUD, auth, upload)
+├── app/              # Next.js App Router (сторінки та лейаути)
+├── components/       # React компоненти (публічні та адмін)
+├── constants/        # Константи (роути, платформи, локалі)
+├── fonts/            # Локальні шрифти
+├── hooks/            # Кастомні React хуки
+├── i18n/             # Переклади (en.json, uk.json)
+├── lib/              # Служби (auth, content, form-builder, supabase)
+├── schemas/          # Zod схеми валідації
+├── styles/           # Глобальні стилі (Tailwind)
+├── types/            # TypeScript типи
+└── utils/            # Допоміжні функції
+postgres-init/        # SQL скрипти ініціалізації БД
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Адмін-панель
 
-## Deploy on Vercel
+Адмін-панель доступна за шляхом `/management-console-12ak/`. Вхід захищений:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Перший крок**: введення email та пароля (налаштовуються через `ADMIN_EMAIL` та `ADMIN_PASSWORD_HASH`)
+2. **Другий крок**: введення TOTP-коду з Google Authenticator або аналогічного застосунку (секрет задається через `ADMIN_2FA_SECRET`)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Після авторизації адміністратор може редагувати всі секції сайту, керувати вакансіями та підрозділами, завантажувати зображення в Cloudinary.
+
+# Інструкція з налаштування двофакторної автентифікації (2FA)
+
+Ця інструкція допоможе вам згенерувати секретний ключ та QR-код для входу в адмін-панель із захистом 2FA.
+
+## Крок 0. Встановлення залежностей
+
+Перед запуском скриптів потрібно встановити необхідні пакети. Відкрийте термінал у папці проєкту та виконайте:
+
+```bash
+npm install otplib@13.4.1 qrcode dotenv
+```
+
+**Важливо:** пакет `otplib` має бути саме версії **13.x** — новіші версії (14.x і вище) мають іншу структуру API, і наведені нижче скрипти з ними не працюватимуть.
+
+Перевірити встановлену версію можна командою:
+
+```bash
+npm list otplib
+```
+
+## Крок 1. Генерація секретного ключа
+
+Запустіть у терміналі:
+
+```bash
+node generate-secret.js
+```
+
+У консолі з'явиться рядок на кшталт:
+
+```
+ADMIN_2FA_SECRET=NB2W45DFOIZA****************
+```
+
+Скопіюйте цей рядок повністю.
+
+## Крок 2. Додавання секрету у файл `.env`
+
+Відкрийте (або створіть, якщо його ще немає) файл `.env` у корені проєкту та вставте туди скопійований рядок:
+
+```
+ADMIN_2FA_SECRET=NB2W45DFOIZA****************
+```
+
+Збережіть файл.
+
+## Крок 3. Генерація QR-коду
+
+Запустіть у терміналі:
+
+```bash
+node generate-qr.js
+```
+
+Скрипт автоматично зчитає секрет із файлу `.env` і створить файл **`ak12-qr.png`** у поточній папці. У консолі з'явиться повідомлення:
+
+```
+QR-код успішно збережено у файл ak12-qr.png
+```
+
+## Крок 4. Сканування QR-коду
+
+Відкрийте файл `ak12-qr.png` (наприклад, подвійним кліком або через провідник файлів) та відскануйте його за допомогою застосунку-автентифікатора на телефоні. Підійде будь-який із наступних:
+
+- **Google Authenticator** (Android / iOS)
+- **Microsoft Authenticator** (Android / iOS)
+- **Authy** (Android / iOS)
+
+Після сканування застосунок почне показувати одноразовий 6-значний код, який змінюється кожні 30 секунд — його потрібно вводити при вході в адмін-панель.
+
+## Важливо
+
+- Файл `.env` та `ak12-qr.png` містять конфіденційні дані — **не передавайте їх стороннім особам** і не додавайте у публічні репозиторії.
+- Якщо потрібно згенерувати новий секрет (наприклад, доступ до QR-коду був втрачений), просто повторіть кроки 1–4 заново — новий секрет замінить попередній.
+
+## База даних
+
+PostgreSQL 16 з наступними таблицями:
+
+- `language` — мови (uk, en)
+- `site_content` — контент секцій (JSONB, прив'язка до мови та ключа секції)
+- `vacancy` — вакансії (позиція, опис, тип, зарплата, зображення, порядок сортування)
+- `subdivision` — підрозділи (назва, опис, URL, зображення, порядок сортування)
