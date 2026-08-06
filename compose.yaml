@@ -32,11 +32,15 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
       - HOSTNAME=0.0.0.0
       - PORT=3000
+      - POSTGRES_HOST=database
+      - ADMIN_PASSWORD_HASH=$$2b$$10$$z7PziP5O5Rrs4YMaoE2qkuLnnt8fzBlBLghcvWMXYf6DyIsRIQgpK
     env_file:
       - .env
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - default
 
   # Production database service (PostgreSQL 17)
   database:
