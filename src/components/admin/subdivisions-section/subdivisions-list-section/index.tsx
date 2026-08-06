@@ -110,10 +110,10 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white">
-        <div className="grid grid-cols-[40px_40px_1fr_160px_80px] border-b border-gray-200 px-4 py-3 text-sm font-medium text-gray-500">
-          <span />
+        <div className="grid grid-cols-[40px_1fr_120px_160px_80px] border-b border-gray-200 px-4 py-3 text-sm font-medium text-gray-500">
           <span>#</span>
           <span>Назва підрозділу</span>
+          <span />
           <span>Дата оновлення</span>
           <span>Дії</span>
         </div>
@@ -125,10 +125,10 @@ export const SubdivisionsListSection = ({ subdivisionsUk, subdivisionsEn }: ISub
             items={items}
             onReorder={handleReorder}
             renderItem={(subdivision, index) => (
-              <div className="grid grid-cols-[40px_40px_1fr_160px_80px] items-center border-b border-gray-100 py-4 pr-4 last:border-0 hover:bg-gray-50">
-                <span />
+              <div className="grid grid-cols-[40px_1fr_120px_160px_80px] items-center border-b border-gray-100 px-4 py-4 last:border-0 hover:bg-gray-50">
                 <span className="text-sm text-gray-400">{index !== undefined ? index + 1 : ""}</span>
                 <span className="text-sm font-medium">{subdivision.hoverName ?? subdivision.name}</span>
+                <span />
                 <span className="text-sm text-gray-400">
                   {subdivision.updatedAt ? new Date(subdivision.updatedAt).toLocaleDateString("uk-UA") : "—"}
                 </span>
