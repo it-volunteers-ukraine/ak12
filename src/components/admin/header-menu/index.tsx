@@ -25,7 +25,7 @@ export const AdminHeader = ({ contentMenu, sidebarSegment }: IAdminHeaderProps) 
 
   return (
     <header className="sticky top-0 z-50 flex justify-between gap-6 border-b-3 bg-white">
-      <div className="flex w-full items-center justify-between gap-6 bg-[#F8F9FA] pr-3">
+      <div className="flex w-full items-center justify-between gap-6 bg-[#F8F9FA] pr-6">
         <div className="flex overflow-x-auto">
           {contentMenu.map((item: SubmenuItem) => {
             const subId = item.id.toLowerCase();
