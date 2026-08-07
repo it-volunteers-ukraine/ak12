@@ -88,6 +88,36 @@ describe("contentService.get", () => {
 
     expect(result).toBeNull();
   });
+
+  it("parses stringified (double-encoded) content before validating", async () => {
+    mockFindContent({
+      data: { id: "1", content: JSON.stringify({ title: "A", count: 1 }) },
+      error: null,
+    });
+
+    const result = await contentService.get({
+      locale: "uk",
+      schema: testSchema,
+      section: SECTION_KEYS.ABOUT,
+    });
+
+    expect(result).toEqual({ title: "A", count: 1 });
+  });
+
+  it("returns null when content is a non-parseable string", async () => {
+    mockFindContent({
+      data: { id: "1", content: "not-json{{{" },
+      error: null,
+    });
+
+    const result = await contentService.get({
+      locale: "uk",
+      schema: testSchema,
+      section: SECTION_KEYS.ABOUT,
+    });
+
+    expect(result).toBeNull();
+  });
 });
 
 describe("contentService.save", () => {
@@ -110,7 +140,9 @@ describe("contentService.save", () => {
     });
 
     expect(result.success).toBe(true);
-    expect(update).toHaveBeenCalled();
+    expect(update).toHaveBeenCalledWith(
+      expect.objectContaining({ content: { title: "new", count: 2 } }),
+    );
   });
 
   it("handles insert path", async () => {
@@ -128,7 +160,9 @@ describe("contentService.save", () => {
     });
 
     expect(result.success).toBe(true);
-    expect(insert).toHaveBeenCalled();
+    expect(insert).toHaveBeenCalledWith(
+      expect.objectContaining({ content: { title: "x", count: 1 } }),
+    );
   });
 
   it("returns failure for invalid schema", async () => {
