@@ -25,7 +25,7 @@ export const transferSchema = z.object({
   backgroundImage: z
     .object({
       publicId: z.string().optional(),
-      secureUrl: z.string().url("Некоректне посилання"),
+      secureUrl: z.string().min(1),
     })
     .nullable()
     .optional(),

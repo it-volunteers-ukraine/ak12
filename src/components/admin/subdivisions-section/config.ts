@@ -1,9 +1,11 @@
 import { z } from "zod";
 
-export const storedImageSchema = z.object({
-  publicId: z.string(),
-  secureUrl: z.string().url(),
-}).nullable();
+export const storedImageSchema = z
+  .object({
+    publicId: z.string(),
+    secureUrl: z.string().min(1),
+  })
+  .nullable();
 
 export const subdivisionContentSchema = z.object({
   id: z.string().uuid().optional(),
@@ -12,16 +14,20 @@ export const subdivisionContentSchema = z.object({
   description: z.string().min(1, "Опис обов'язковий"),
   hoverName: z.string().nullable(),
   hoverDescription: z.string().nullable(),
-  siteUrl: z.string().url("Невірний формат URL").nullable().or(z.literal("").transform(() => null)),
+  siteUrl: z
+    .string()
+    .url("Невірний формат URL")
+    .nullable()
+    .or(z.literal("").transform(() => null)),
   imageUrl: storedImageSchema,
   hoverImageUrl: storedImageSchema,
-  sortOrder: z.union([z.number(), z.string()]).transform(val => 
-    typeof val === 'string' ? parseInt(val, 10) : val
-  ).pipe(z.number().int().nonnegative()),
+  sortOrder: z
+    .union([z.number(), z.string()])
+    .transform((val) => (typeof val === "string" ? parseInt(val, 10) : val))
+    .pipe(z.number().int().nonnegative()),
   isActive: z.boolean().default(true),
   languageId: z.string().uuid().optional(),
-  updatedAt: z.string().optional(), 
-
+  updatedAt: z.string().optional(),
 });
 
 export const adminSchema = z.object({

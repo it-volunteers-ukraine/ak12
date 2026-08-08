@@ -25,21 +25,21 @@ export const headerContentSchema = z.object({
   logoImg: z
     .object({
       publicId: z.string().optional(),
-      secureUrl: z.string().url(),
+      secureUrl: z.string().min(1),
     })
     .nullable()
     .optional(),
 });
 
 export const footerContentSchema = z.object({
-  title: z.string().min(1, "Заголовок є обов’язковим"),
-  description: z.string().min(1, "Опис є обов’язковим"),
+  title: z.string().min(1, "Заголовок є обов'язковим"),
+  description: z.string().min(1, "Опис є обов'язковим"),
   copyright: z.string().min(1, "Необхідно вказати авторські права"),
   copyrightOwner: z.string().min(1, "Необхідно вказати назву військової частини"),
   logoImg: z
     .object({
       publicId: z.string().optional(),
-      secureUrl: z.string().url(),
+      secureUrl: z.string().min(1),
     })
     .nullable()
     .optional(),

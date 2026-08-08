@@ -69,4 +69,32 @@ export const serverEnv = {
       return process.env.CLOUDINARY_MEDIA_FOLDER;
     },
   },
+  storage: {
+    get client() {
+      return process.env.STORAGE_CLIENT;
+    },
+
+    get endpoint() {
+      return process.env.STORAGE_ENDPOINT;
+    },
+
+    get bucket() {
+      return process.env.STORAGE_BUCKET;
+    },
+
+    get accessKey() {
+      return process.env.STORAGE_ACCESS_KEY;
+    },
+
+    get secretKey() {
+      return process.env.STORAGE_SECRET_KEY;
+    },
+
+    get mediaFolder() {
+      return process.env.STORAGE_MEDIA_FOLDER;
+    },
+    get region() {
+      return process.env.STORAGE_REGION;
+    },
+  },
 } as const;
