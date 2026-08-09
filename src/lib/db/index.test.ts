@@ -14,7 +14,12 @@ describe("getDbClient", () => {
   beforeEach(() => {
     jest.resetModules();
     jest.clearAllMocks();
-    process.env = { ...originalEnv };
+
+    process.env = {
+      ...originalEnv,
+    };
+
+    delete process.env.DB_CLIENT;
   });
 
   afterAll(() => {
@@ -22,7 +27,10 @@ describe("getDbClient", () => {
   });
 
   it("should return the Postgres client in production without constructing Supabase", () => {
-    (process.env as Record<string, string>).NODE_ENV = "production";
+    process.env = {
+      ...process.env,
+      NODE_ENV: "production",
+    };
 
     const { getDbClient } = require("./index");
     const client = getDbClient();
@@ -32,7 +40,12 @@ describe("getDbClient", () => {
   });
 
   it("should return the Supabase client outside of production", () => {
-    (process.env as Record<string, string>).NODE_ENV = "development";
+    process.env = {
+      ...process.env,
+      NODE_ENV: "development",
+    };
+
+    delete process.env.DB_CLIENT;
 
     const { getDbClient } = require("./index");
     const client = getDbClient();
@@ -42,8 +55,11 @@ describe("getDbClient", () => {
   });
 
   it("should honor DB_CLIENT=postgres even when NODE_ENV is development", () => {
-    (process.env as Record<string, string>).NODE_ENV = "development";
-    (process.env as Record<string, string>).DB_CLIENT = "postgres";
+    process.env = {
+      ...process.env,
+      NODE_ENV: "development",
+      DB_CLIENT: "postgres",
+    };
 
     const { getDbClient } = require("./index");
     const client = getDbClient();
@@ -53,8 +69,11 @@ describe("getDbClient", () => {
   });
 
   it("should honor DB_CLIENT=supabase even when NODE_ENV is production", () => {
-    (process.env as Record<string, string>).NODE_ENV = "production";
-    (process.env as Record<string, string>).DB_CLIENT = "supabase";
+    process.env = {
+      ...process.env,
+      NODE_ENV: "production",
+      DB_CLIENT: "supabase",
+    };
 
     const { getDbClient } = require("./index");
     const client = getDbClient();
@@ -64,7 +83,12 @@ describe("getDbClient", () => {
   });
 
   it("should memoize the selected client", () => {
-    (process.env as Record<string, string>).NODE_ENV = "development";
+    process.env = {
+      ...process.env,
+      NODE_ENV: "development",
+    };
+
+    delete process.env.DB_CLIENT;
 
     const { getDbClient } = require("./index");
     const first = getDbClient();
