@@ -1,36 +1,333 @@
-123This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AK-12 — Лендинг військового підрозділу
 
-## Getting Started
+Багатомовний (українська / англійська) лендинг для рекрутингу та інформування. Сайт містить публічну частину зі секціями про підрозділ, вакансіями, формою зворотного зв'язку та захищену адмін-панель для керування контентом.
 
-First, run the development server:
+## Функціональність
+
+- **Публічний сайт**: секції Hero, Про підрозділ, Життя підрозділу, Підрозділи, Вакансії (frontline/backline), Мобілізація, Контракт 18-24, Переведення, форма зворотного зв'язку
+- **Двомовність**: українська та англійська мови з автоматичним визначенням та перемиканням
+- **Адмін-панель** (`/management-console-12ak/`): двофакторна авторизація, керування всіма секціями сайту, вакансіями та підрозділами через динамічну форму
+- **Drag-and-drop**: сортування вакансій в адмінці
+- **SEO**: robots.txt, мета-теги, семантична верстка
+- **Анімації**: GSAP, плавний скрол, running line
+
+## Технології
+
+| Складова            | Технологія                                |
+| ------------------- | ----------------------------------------- |
+| Фреймворк           | Next.js 16 (App Router, Turbopack)        |
+| Мова                | TypeScript 5 (strict mode)                |
+| UI                  | React 19, Tailwind CSS v4                 |
+| База даних          | PostgreSQL 16                             |
+| Адмін-клієнт БД     | Supabase SDK                              |
+| Валідація           | Zod v4                                    |
+| Інтернаціоналізація | next-intl v4                              |
+| Аутентифікація      | bcryptjs + otplib (2FA TOTP) + HMAC-сесії |
+| Медіа               | Cloudinary (завантаження зображень)       |
+| Drag-and-drop       | @dnd-kit                                  |
+| Анімації            | GSAP                                      |
+| Логування           | Pino                                      |
+| Тестування          | Jest + React Testing Library              |
+
+---
+
+# Покрокова інструкція для запуску проєкту
+
+## Крок 1. Встановлення Node.js
+
+Node.js — це рушій, на якому працює сайт. Це перше, що потрібно встановити.
+
+1. Відкрийте браузер і перейдіть на сайт: https://nodejs.org
+2. На головній сторінці побачите дві версії. Завантажте ту, що має позначку **LTS** (рекомендована версія)
+3. Запустіть завантажений файл і встановіть програму, натискаючи кнопку **«Далі» (Next)** — усі налаштування за замовчуванням підходять
+
+**Як перевірити, що Node.js встановлено:** відкрийте термінал (командний рядок):
+
+- **Windows**: натисніть `Win + R`, введіть `cmd`, натисніть Enter
+- **macOS**: натисніть `Cmd + Space`, введіть «Термінал», натисніть Enter
+- **Linux**: натисніть `Ctrl + Alt + T`
+
+У терміналі введіть команду:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+node --version
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ви побачите щось на кшталт `v22.x.x` — це означає, що Node.js працює.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Крок 2. Отримання файлів проєкту
 
-## Learn More
+Завантажте архів із файлами проєкту та розпакуйте його в зручну папку на комп'ютері (наприклад, `C:\ak12` на Windows або `/home/ім'я/ak12` на Linux).
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Крок 3. Підготовка ключів доступу
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Для роботи сайту вам знадобляться два блоки даних: реквізити доступу до вашої бази даних **PostgreSQL 16** та ключі від хмарного сховища зображень **Cloudinary**.
 
-## Deploy on Vercel
+### А. Реквізити вашої бази даних PostgreSQL 16
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Знайдіть та підготуйте такі дані від вашої бази даних:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Хост / Адреса сервера** (наприклад, `localhost` або IP-адреса вашого сервера)
+- **Порт** (зазвичай стандартний порт для PostgreSQL — `5432`)
+- **Назва бази даних** (ім'я вашої БД, наприклад `ak12`)
+- **Користувач** (ім'я користувача бази даних, наприклад `postgres`)
+- **Пароль** (пароль доступу до бази даних)
+
+### Б. Сховище для зображень (Cloudinary)
+
+1. Зареєструйтеся або увійдіть у свій акаунт на https://cloudinary.com
+2. На головній сторінці панелі керування (Dashboard) скопіюйте:
+   - **Cloud name**
+   - **API Key**
+   - **API Secret**
+3. Створіть у своєму акаунті Cloudinary окрему папку для медіафайлів проєкту (наприклад, `ak12-media`)
+
+---
+
+## Крок 4. Налаштування файлу .env
+
+У папці проєкту знайдіть файл `.env.example`.
+
+1. Зробіть його копію та перейменуйте на `.env` (без жодних додаткових розширень у кінці)
+2. Відкрийте файл `.env` у звичайному текстовому редакторі (Блокнот, Notepad++, VS Code)
+3. Заповніть дані:
+
+### PostgreSQL 16
+
+| Змінна              | Що вказати                                                |
+| ------------------- | --------------------------------------------------------- |
+| `POSTGRES_HOST`     | Адреса вашого сервера PostgreSQL (наприклад, `localhost`) |
+| `POSTGRES_PORT`     | Порт (стандартно `5432`)                                  |
+| `POSTGRES_USER`     | Ім'я користувача (наприклад, `postgres`)                  |
+| `POSTGRES_PASSWORD` | Пароль користувача                                        |
+| `POSTGRES_DB`       | Назва вашої бази даних (наприклад, `ak12`)                |
+
+### Cloudinary
+
+| Змінна                    | Що вказати                                      |
+| ------------------------- | ----------------------------------------------- |
+| `CLOUDINARY_CLOUD_NAME`   | Cloud name з Dashboard Cloudinary               |
+| `CLOUDINARY_API_KEY`      | API Key з Dashboard Cloudinary                  |
+| `CLOUDINARY_API_SECRET`   | API Secret з Dashboard Cloudinary               |
+| `CLOUDINARY_MEDIA_FOLDER` | Назва створеної папки (наприклад, `ak12-media`) |
+
+### Адмін-панель
+
+| Змінна                | Що вказати                                                                                                                                                           |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ADMIN_EMAIL`         | Email адміністратора для входу                                                                                                                                       |
+| `ADMIN_PASSWORD_HASH` | Хеш пароля (як згенерувати — у наступному кроці)                                                                                                                     |
+| `ADMIN_2FA_SECRET`    | Секрет для двофакторної аутентифікації (буде згенеровано далі)                                                                                                       |
+| `SESSION_SECRET_KEY`  | Секретний ключ для підпису сесій (HMAC SHA-256). Мінімум 32 символи. Згенеруйте командою: `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"` |
+
+### Вибір підключення до БД
+
+У `.env` додайте рядок:
+
+```
+DB_CLIENT=postgres
+```
+
+Це вкаже сайту підключатися напряму до вашої PostgreSQL 16.
+
+---
+
+## Крок 5. Створення пароля адміністратора (хеш)
+
+Увага! У файлі .env не слід зберігати пароль у відкритому вигляді. Необхідно зберігати лише його bcrypt-хеш.
+
+Як згенерувати bcrypt-хеш:
+
+1. Встановіть пакет bcryptjs, якщо він ще не встановлений:
+
+   ```bash
+   npm install bcryptjs
+   ```
+
+2. Виконайте команду в терміналі:
+
+   ```bash
+   node -e "require('bcryptjs').hash('StrongPassword123!', 10).then(console.log)"
+   ```
+
+   де `StrongPassword123!` — пароль, який буде використовувати адміністратор.
+
+3. Скопіюйте отриманий bcrypt-хеш та додайте його у файл .env:
+   ```
+   ADMIN_PASSWORD_HASH=$2b$10$XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+   ```
+
+Під час входу користувач вводить звичайний пароль, а застосунок автоматично порівнює його із збереженим bcrypt-хешем.
+
+---
+
+## Крок 6. Ініціалізація бази даних
+
+У папці проєкту є підпапка `postgres-init/` з файлом `01-init.sql` — це скрипт, який створює потрібні таблиці у вашій базі даних.
+
+Відкрийте термінал у папці проєкту та виконайте:
+
+```bash
+# Windows (якщо PostgreSQL встановлено в C:\Program Files\PostgreSQL\16\bin):
+"C:\Program Files\PostgreSQL\16\bin\psql" -U postgres -d ak12 -f postgres-init/01-init.sql
+
+# macOS/Linux:
+sudo -u postgres psql -d ak12 -f postgres-init/01-init.sql
+```
+
+Вас попросять ввести пароль. Якщо PostgreSQL на іншому сервері — додайте `-h address_servera`.
+
+**Якщо вийшла помилка «psql не знайдено»:** скрипт psql знаходиться в папці встановлення PostgreSQL. На Windows додайте шлях `C:\Program Files\PostgreSQL\16\bin` до системної змінної PATH.
+
+---
+
+## Крок 7. Встановлення залежностей проєкту
+
+Відкрийте термінал у папці проєкту та виконайте:
+
+```bash
+npm install
+```
+
+Це завантажить усі необхідні бібліотеки. Процес може тривати 1–5 хвилин.
+
+---
+
+## Крок 8. Налаштування двофакторної автентифікації (2FA)
+
+## Крок 1. Встановлення додаткових пакетів
+
+```bash
+npm install qrcode dotenv
+```
+
+## Крок 2. Генерація секретного ключа
+
+```bash
+node generate-secret.js
+```
+
+У терміналі з'явиться рядок на кшталт:
+
+```
+ADMIN_2FA_SECRET=NB2W45DFOIZA****************
+```
+
+Скопіюйте його повністю та вставте у файл `.env`.
+
+## Крок 3. Генерація QR-коду
+
+```bash
+node generate-qr.js
+```
+
+Скрипт створить файл `ak12-qr.png` у папці проєкту. Відкрийте його.
+
+## Крок 4. Сканування QR-коду
+
+1. Встановіть на телефон застосунок-автентифікатор:
+   - **Google Authenticator** (Android / iOS)
+   - **Microsoft Authenticator** (Android / iOS)
+   - **Authy** (Android / iOS)
+2. Відкрийте застосунок і натисніть «Додати код» або «+»
+3. Виберіть «Сканувати QR-код»
+4. Наведіть камеру на QR-код з файлу `ak12-qr.png`
+
+Після сканування застосунок почне показувати 6-значний код, який змінюється кожні 30 секунд — його потрібно вводити при вході в адмін-панель після основного пароля.
+
+## Важливо
+
+- Файли `.env` та `ak12-qr.png` містять конфіденційні дані — **не передавайте їх стороннім особам**.
+- Якщо потрібно згенерувати новий секрет (доступ до QR-коду втрачено), просто повторіть кроки 1–4 заново.
+- Зміна `ADMIN_2FA_SECRET` робить недійсним старий QR-код — згенеруйте новий.
+
+## Крок 9. Запуск сайту (продакшен)
+
+Тепер усе готово для запуску.
+
+**Збірка проєкту:**
+
+```bash
+npm run build
+```
+
+Це створить оптимізовану версію сайту (триває 1–3 хвилини).
+
+**Запуск сервера:**
+
+```bash
+npm run start:prod
+```
+
+Сайт буде доступний за адресою: **http://localhost:3000**
+
+**Адмін-панель:** http://localhost:3000/management-console-12ak/
+
+### Запуск на сервері (постійна робота)
+
+Якщо сайт має працювати постійно (навіть після перезавантаження сервера):
+
+```bash
+npm install -g pm2
+pm2 start npm --name "ak12" -- run start:prod
+pm2 save
+```
+
+---
+
+## Команди
+
+| Команда              | Опис                                              |
+| -------------------- | ------------------------------------------------- |
+| `npm run dev`        | Запуск сервера розробки (з автоперезавантаженням) |
+| `npm run build`      | Продакшн-збірка                                   |
+| `npm run start`      | Запуск продакшн-сервера (Supabase)                |
+| `npm run start:prod` | Запуск продакшн-сервера (PostgreSQL)              |
+| `npm run lint`       | Перевірка коду ESLint                             |
+| `npm run format`     | Форматування коду Prettier                        |
+| `npm test`           | Запуск тестів                                     |
+
+---
+
+## Адмін-панель
+
+Адмін-панель доступна за шляхом `/management-console-12ak/`. Вхід захищений:
+
+1. **Перший крок**: введення email та пароля (налаштовуються через `ADMIN_EMAIL` та `ADMIN_PASSWORD_HASH`)
+2. **Другий крок**: введення TOTP-коду з Google Authenticator (секрет задається через `ADMIN_2FA_SECRET`)
+
+Після авторизації адміністратор може редагувати всі секції сайту, керувати вакансіями та підрозділами, завантажувати зображення в Cloudinary.
+
+---
+
+## Структура проєкту
+
+```
+src/
+├── actions/          # Server Actions (CRUD, auth, upload)
+├── app/              # Next.js App Router (сторінки та лейаути)
+├── components/       # React компоненти (публічні та адмін)
+├── constants/        # Константи (роути, платформи, локалі)
+├── fonts/            # Локальні шрифти
+├── hooks/            # Кастомні React хуки
+├── i18n/             # Переклади (en.json, uk.json)
+├── lib/              # Служби (auth, content, form-builder, db)
+├── schemas/          # Zod схеми валідації
+├── styles/           # Глобальні стилі (Tailwind)
+├── types/            # TypeScript типи
+└── utils/            # Допоміжні функції
+postgres-init/        # SQL скрипти ініціалізації БД
+```
+
+## База даних
+
+PostgreSQL 16 з наступними таблицями:
+
+- `language` — мови (uk, en)
+- `site_content` — контент секцій (JSONB, прив'язка до мови та ключа секції)
+- `vacancy` — вакансії (позиція, опис, тип, зарплата, зображення, порядок сортування)
+- `subdivision` — підрозділи (назва, опис, URL, зображення, порядок сортування)

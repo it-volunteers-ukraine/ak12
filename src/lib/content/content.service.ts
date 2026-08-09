@@ -1,7 +1,10 @@
 import { cache } from "react";
+
 import z from "zod";
+
 import { Locale } from "@/types";
 import { SectionKey } from "@/constants";
+import { QueryValue } from "@/lib/db/types";
 import { logger } from "@/lib/logger/logger";
 import { databaseClient } from "@/lib/database/database-client";
 import { languageService } from "@/lib/language/language.service";
@@ -18,6 +21,14 @@ interface SaveParams<Schema extends z.ZodTypeAny> {
   rawContent: unknown;
   sectionKey: SectionKey;
 }
+
+const safeParseContent = (value: string): unknown => {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+};
 
 const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) => {
   const languageRow = await languageService.ensure(locale);
@@ -137,7 +148,13 @@ export const contentService = {
       return null;
     }
 
-    const parsed = schema.safeParse(record.content);
+    const rawContent = typeof record.content === "string" ? safeParseContent(record.content) : record.content;
+
+    if (!rawContent) {
+      return null;
+    }
+
+    const parsed = schema.safeParse(rawContent);
 
     if (!parsed.success) {
       logger.error({ section, error: z.flattenError(parsed.error) }, "Invalid section content");
@@ -170,7 +187,7 @@ export const contentService = {
       if (record?.id) {
         const { error } = await databaseClient
           .from("site_content")
-          .update({ content: JSON.stringify(content), is_active: true, updated_at: new Date().toISOString() })
+          .update({ content: content as QueryValue, is_active: true, updated_at: new Date().toISOString() })
           .eq("id", record?.id);
 
         if (error) {
@@ -181,7 +198,7 @@ export const contentService = {
 
         const { error } = await databaseClient.from("site_content").insert({
           section_key: sectionKey,
-          content: JSON.stringify(content),
+          content: content as QueryValue,
           is_active: true,
           language_id: languageRow.id,
         });
