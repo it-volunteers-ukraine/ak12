@@ -1,8 +1,9 @@
 import crypto from "node:crypto";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
-import { authenticator } from "otplib";
+import { verifySync } from "otplib";
 import { serverEnv } from "@/lib/env/server";
+import { logger } from "@/lib/logger/logger";
 import {
   SESSION_COOKIE_NAME,
   SESSION_INACTIVITY_TTL,
@@ -18,9 +19,7 @@ type SessionPayload = {
   lastActivityAt: number;
 };
 
-authenticator.options = {
-  window: 1,
-};
+const OTP_EPOCH_TOLERANCE_SECONDS = 30;
 
 function sign(value: string) {
   const secret = serverEnv.auth.sessionSecretKey;
@@ -64,6 +63,7 @@ export async function createSession() {
     const cookieStore = await cookies();
 
     cookieStore.set(SESSION_COOKIE_NAME, token, getSessionCookieOptions(SESSION_TTL));
+    logger.info("Admin session created");
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Failed to create session");
   }
@@ -75,6 +75,7 @@ export async function createPreAuthSession() {
     const cookieStore = await cookies();
 
     cookieStore.set(PRE_AUTH_COOKIE_NAME, token, getSessionCookieOptions(PRE_AUTH_TTL));
+    logger.info("Admin pre-auth session created");
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Failed to create pre-auth session");
   }
@@ -111,6 +112,7 @@ export async function deleteSession() {
     const cookieStore = await cookies();
 
     cookieStore.delete(SESSION_COOKIE_NAME);
+    logger.info("Admin session deleted");
   } catch (error) {
     throw new Error(error instanceof Error ? error.message : "Failed to delete session");
   }
@@ -191,25 +193,42 @@ export async function validateAdmin(email: string, password: string): Promise<bo
   const expectedPasswordHash = serverEnv.auth.adminPasswordHash;
 
   if (!expectedEmail || !expectedPasswordHash) {
+    logger.error({ hasAdminEmail: Boolean(expectedEmail), hasAdminPasswordHash: Boolean(expectedPasswordHash) }, "Admin authentication is not configured");
+
     return false;
   }
 
-  return email === expectedEmail && (await bcrypt.compare(password, expectedPasswordHash));
+  const emailMatches = email === expectedEmail;
+  const passwordMatches = await bcrypt.compare(password, expectedPasswordHash);
+
+  logger.info({ emailMatches, passwordMatches }, "Admin credentials validated");
+
+  return emailMatches && passwordMatches;
 }
 
 export function validateTwoFactor(token: string): boolean {
   const secret = serverEnv.auth.admin2faSecret;
 
   if (!secret) {
+    logger.error("Admin two-factor authentication is not configured");
+
     return false;
   }
 
   try {
-    return authenticator.verify({
+    const result = verifySync({
       token: token.trim(),
       secret,
+      epochTolerance: OTP_EPOCH_TOLERANCE_SECONDS,
     });
+    const valid = result.valid;
+
+    logger.info({ valid }, "Admin two-factor code validated");
+
+    return valid;
   } catch {
+    logger.warn("Admin two-factor code validation failed");
+
     return false;
   }
 }

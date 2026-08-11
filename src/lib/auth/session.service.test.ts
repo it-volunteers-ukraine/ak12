@@ -24,10 +24,7 @@ jest.mock("bcryptjs", () => ({
 }));
 
 jest.mock("otplib", () => ({
-  authenticator: {
-    verify: jest.fn(),
-    options: {},
-  },
+  verifySync: jest.fn(),
 }));
 
 const TEST_SECRET = "a".repeat(32);
@@ -555,32 +552,32 @@ describe("session.service", () => {
 
       jest.resetModules();
 
-      const { authenticator } = require("otplib");
+      const { verifySync } = require("otplib");
       const { validateTwoFactor } = require("./session.service");
 
-      return { authenticator, validateTwoFactor };
+      return { verifySync, validateTwoFactor };
     };
 
     it("should return true for a valid code", () => {
-      const { authenticator, validateTwoFactor } = setup();
+      const { verifySync, validateTwoFactor } = setup();
 
-      authenticator.verify.mockReturnValue(true);
+      verifySync.mockReturnValue({ valid: true });
 
       expect(validateTwoFactor("123456")).toBe(true);
     });
 
     it("should trim user input", () => {
-      const { authenticator, validateTwoFactor } = setup();
+      const { verifySync, validateTwoFactor } = setup();
 
-      authenticator.verify.mockReturnValue(true);
+      verifySync.mockReturnValue({ valid: true });
 
       expect(validateTwoFactor(" 123456 ")).toBe(true);
     });
 
     it("should return false for invalid code", () => {
-      const { authenticator, validateTwoFactor } = setup();
+      const { verifySync, validateTwoFactor } = setup();
 
-      authenticator.verify.mockReturnValue(false);
+      verifySync.mockReturnValue({ valid: false });
 
       expect(validateTwoFactor("123456")).toBe(false);
     });
@@ -602,9 +599,9 @@ describe("session.service", () => {
     });
 
     it("should return false when otplib throws", () => {
-      const { authenticator, validateTwoFactor } = setup();
+      const { verifySync, validateTwoFactor } = setup();
 
-      authenticator.verify.mockImplementation(() => {
+      verifySync.mockImplementation(() => {
         throw new Error();
       });
 
@@ -612,9 +609,9 @@ describe("session.service", () => {
     });
 
     it("should handle whitespace-only input safely", () => {
-      const { authenticator, validateTwoFactor } = setup();
+      const { verifySync, validateTwoFactor } = setup();
 
-      authenticator.verify.mockReturnValue(true);
+      verifySync.mockReturnValue({ valid: true });
 
       expect(validateTwoFactor("   123456   ")).toBe(true);
     });
