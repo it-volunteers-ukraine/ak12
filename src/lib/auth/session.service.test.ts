@@ -304,8 +304,11 @@ describe("session.service", () => {
       const { shouldRefreshSession } = loadService();
 
       const now = Date.now();
+      const nowSpy = jest.spyOn(Date, "now").mockReturnValue(now);
 
       expect(shouldRefreshSession(now - SESSION_REFRESH_DEBOUNCE_MS)).toBe(false);
+
+      nowSpy.mockRestore();
     });
   });
 
