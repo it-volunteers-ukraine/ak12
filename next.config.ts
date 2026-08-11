@@ -1,15 +1,14 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "5mb",
-    },
-  },
+  output: "standalone",
   images: {
     remotePatterns: [
       {
@@ -29,14 +28,11 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         port: "",
         pathname: `/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/**`,
-      },
-      // TODO(minio): add the production MinIO host here so next/image will serve
-      // its assets, e.g. { protocol: "https", hostname: process.env.MINIO_PUBLIC_HOST,
-      // pathname: `/${process.env.MINIO_BUCKET}/**` }. remotePatterns is evaluated at
-      // build time in Node, so reading the (non-public) env vars here is safe.
+      }
     ],
   },
   turbopack: {
+    root: projectRoot,
     rules: {
       "*.svg": {
         loaders: ["@svgr/webpack"],
