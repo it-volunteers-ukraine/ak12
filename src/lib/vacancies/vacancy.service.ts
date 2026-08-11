@@ -66,7 +66,7 @@ export const vacancyService = {
       .select("*, language:language_id!inner(code)");
 
     if (error) {
-      logger.error({ error, data }, "Failed to create vacancy");
+      logger.error({ error, rowCount: rows.length }, "Failed to create vacancy");
       throw new Error(error.message);
     }
 
@@ -81,11 +81,11 @@ export const vacancyService = {
     const { data: updatedVacancies, error } = await databaseClient.rpc("update_vacancy_atomic", args);
 
     if (error) {
-      logger.error({ error, ids: { ukId: data.ukId, enId: data.enId } }, "Failed to update vacancies");
+      logger.error({ error }, "Failed to update vacancies");
       throw new Error(error.message);
     }
 
-    logger.info(`Vacancies '${data.ukId}' and '${data.enId}' successfully updated`);
+    logger.info("Vacancies successfully updated");
 
     return updatedVacancies.map(mapVacancy);
   },
@@ -97,11 +97,11 @@ export const vacancyService = {
     });
 
     if (error) {
-      logger.error({ error, ids }, "Failed to delete vacancies");
+      logger.error({ error }, "Failed to delete vacancies");
       throw new Error(error.message);
     }
 
-    logger.info(`Vacancies '${ids.ukId}' and '${ids.enId}' successfully deleted`);
+    logger.info("Vacancies successfully deleted");
   },
 
   async updateStatus(data: UpdateVacancyStatusDto): Promise<void> {
@@ -114,11 +114,11 @@ export const vacancyService = {
     });
 
     if (error) {
-      logger.error({ error, ids: { ukId, enId } }, "Failed to update status of vacancies");
+      logger.error({ error }, "Failed to update vacancy status");
       throw new Error(error.message);
     }
 
-    logger.info(`Status of vacancies '${ukId}' and '${enId}' successfully updated`);
+    logger.info({ isActive: data.isActive }, "Vacancy status successfully updated");
   },
 
   async reorder(data: ReorderVacanciesDto): Promise<void> {
@@ -127,7 +127,7 @@ export const vacancyService = {
     });
 
     if (error) {
-      logger.error({ error, data }, "Failed to reorder vacancies");
+      logger.error({ error }, "Failed to reorder vacancies");
       throw new Error(error.message);
     }
 

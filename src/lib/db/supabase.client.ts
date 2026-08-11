@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { serverEnv } from "@/lib/env/server";
 import { publicEnv } from "@/lib/env/public";
 import { DatabaseClient, QueryBuilder } from "./types";
+import { logger } from "@/lib/logger/logger";
 
 /**
  * Builds a Supabase-backed DatabaseClient, validating the required environment
@@ -38,6 +39,8 @@ export function createSupabaseClient(): DatabaseClient {
       persistSession: false,
     },
   });
+
+  logger.info("Supabase database client initialized");
 
   return {
     from: <T = any>(table: string) => client.from(table) as unknown as QueryBuilder<T>,

@@ -1,6 +1,7 @@
 import { DatabaseClient } from "./types";
 import { getSupabaseClient } from "./supabase.client";
 import { postgresClient } from "./postgres.client";
+import { logger } from "@/lib/logger/logger";
 
 let dbClient: DatabaseClient | null = null;
 
@@ -17,6 +18,7 @@ export function getDbClient(): DatabaseClient {
     // The non-selected client is never constructed, so its env vars are not
     // required (e.g. Postgres doesn't need Supabase configured, and vice versa).
     dbClient = useSupabase ? getSupabaseClient() : postgresClient;
+    logger.info({ driver: useSupabase ? "supabase" : "postgres" }, "Database client selected");
   }
 
   return dbClient;

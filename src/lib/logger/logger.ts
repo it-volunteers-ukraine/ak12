@@ -35,6 +35,19 @@ const createClientLogger = (): pino.Logger => {
 export const logger: pino.Logger = isServer
   ? pino({
       level: process.env.NODE_ENV === "production" ? "info" : "debug",
+      redact: [
+        "password",
+        "passwordHash",
+        "hash",
+        "token",
+        "secret",
+        "apiKey",
+        "apiSecret",
+        "serviceRoleKey",
+        "authorization",
+        "cookie",
+        "email",
+      ],
       ...transport,
     })
   : createClientLogger();
