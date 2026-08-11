@@ -60,7 +60,7 @@ jobs:
             src/
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: next-build-${{ github.ref_name }}-${{ github.sha }}
           path: build-artifact-${{ github.sha }}.tar.gz
