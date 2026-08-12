@@ -93,8 +93,5 @@ export const serverEnv = {
     get mediaFolder() {
       return process.env.STORAGE_MEDIA_FOLDER;
     },
-    get region() {
-      return process.env.STORAGE_REGION;
-    },
   },
 } as const;

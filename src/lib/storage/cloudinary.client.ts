@@ -1,3 +1,5 @@
+import "server-only";
+
 import crypto from "node:crypto";
 import { ImageStorage, StoredImage } from "./types";
 import { serverEnv } from "@/lib/env/server";
@@ -42,7 +44,7 @@ function createSignature(params: SignatureParams) {
     .digest("hex");
 }
 
-export async function uploadImage(params: { file: File; fileName: string }): Promise<StoredImage> {
+async function uploadImage(params: { file: File; fileName: string }): Promise<StoredImage> {
   const { cloudName, apiKey, folder } = getUploadEnv();
   const { file, fileName } = params;
 
@@ -88,7 +90,7 @@ export async function uploadImage(params: { file: File; fileName: string }): Pro
   };
 }
 
-export async function deleteImage(publicId: string): Promise<void> {
+async function deleteImage(publicId: string): Promise<void> {
   const { cloudName, apiKey } = getUploadEnv();
   const timestamp = Math.floor(Date.now() / 1000);
   const signature = createSignature({

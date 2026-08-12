@@ -1,9 +1,9 @@
 import "server-only";
 
-import { GetObjectCommand } from "@aws-sdk/client-s3";
+import { Readable } from "node:stream";
 import { NextRequest, NextResponse } from "next/server";
+import { getMinioClient } from "@/lib/storage/minio.client";
 import { serverEnv } from "@/lib/env/server";
-import { getS3Client } from "@/lib/storage/s3-client";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ key: string[] }> }) {
   const { key } = await params;
@@ -18,16 +18,14 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
   const objectKey = key.join("/");
 
   try {
-    const result = await getS3Client().send(
-      new GetObjectCommand({
-        Bucket: bucket,
-        Key: objectKey,
-      }),
-    );
+    const client = getMinioClient();
+    const metadata = await client.statObject(bucket, objectKey);
+    const objectStream = await client.getObject(bucket, objectKey);
+    const webStream = Readable.toWeb(objectStream);
 
-    return new NextResponse(result.Body?.transformToWebStream(), {
+    return new NextResponse(webStream as ReadableStream, {
       headers: {
-        "Content-Type": result.ContentType ?? "application/octet-stream",
+        "Content-Type": metadata.metaData?.["content-type"] ?? "application/octet-stream",
         "Cache-Control": "no-store",
       },
     });

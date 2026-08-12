@@ -2,346 +2,300 @@
  * @jest-environment node
  */
 const ORIGINAL_ENV = { ...process.env };
+const putObjectMock = jest.fn();
+const removeObjectMock = jest.fn();
+
+jest.mock("minio", () => ({
+  Client: jest.fn().mockImplementation(() => ({
+    putObject: putObjectMock,
+    removeObject: removeObjectMock,
+  })),
+}));
+
+const makeFile = (overrides: Partial<{ type: string; size: number }> = {}, content = "fake-image-bytes") => {
+  const base = new File([content], "photo.png", {
+    type: "image/png",
+  });
+
+  return Object.defineProperties(base, {
+    type: {
+      value: overrides.type ?? base.type,
+      configurable: true,
+    },
+    size: {
+      value: overrides.size ?? content.length,
+      configurable: true,
+    },
+  }) as File;
+};
 
 beforeEach(() => {
-  process.env = { ...ORIGINAL_ENV };
-  jest.clearAllMocks();
+  process.env = {
+    ...ORIGINAL_ENV,
+    STORAGE_ENDPOINT: "http://localhost:9000",
+    STORAGE_ACCESS_KEY: "minioadmin",
+    STORAGE_SECRET_KEY: "minioadmin",
+    STORAGE_BUCKET: "test-bucket",
+    STORAGE_MEDIA_FOLDER: "media",
+  };
+
+  putObjectMock.mockReset();
+  removeObjectMock.mockReset();
 });
 
 afterAll(() => {
   process.env = ORIGINAL_ENV;
 });
 
-jest.mock("@aws-sdk/client-s3");
-
-let sendMock: jest.Mock;
-
-const makeFile = (overrides: Partial<File> = {}, content = "fake-image-bytes") => {
-  const baseSize = content.length;
-  const base = new File([content], "photo.png", { type: "image/png" });
-
-  return Object.defineProperties(base, {
-    type: { value: overrides.type ?? base.type, configurable: true },
-    size: { value: overrides.size ?? baseSize, configurable: true },
-  }) as File;
-};
-
 describe("minioStorage", () => {
-  beforeEach(() => {
-    sendMock = jest.fn().mockResolvedValue({});
-    jest.doMock("@/lib/storage/s3-client", () => ({
-      getS3Client: () => ({ send: sendMock }),
-    }));
-  });
-
   describe("uploadImage", () => {
-    it("uploads image and returns publicId and secureUrl", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      process.env.STORAGE_MEDIA_FOLDER = "media";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+    it("uploads image to MinIO and returns stored image data", async () => {
+      const { minioStorage } = await import("./minio.client");
 
       const result = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "test-photo",
+        file: makeFile({ type: "image/png" }),
+        fileName: "hero-background",
       });
 
-      expect(result).toHaveProperty("publicId");
-      expect(result).toHaveProperty("secureUrl");
-      expect(typeof result.publicId).toBe("string");
-      expect(typeof result.secureUrl).toBe("string");
-    });
-
-    it("generates unique publicId with UUID for same filename", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      process.env.STORAGE_MEDIA_FOLDER = "media";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const result1 = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "photo",
-      });
-
-      const result2 = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "photo",
-      });
-
-      expect(result1.publicId).not.toBe(result2.publicId);
-    });
-
-    it("includes media folder in publicId when configured", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      process.env.STORAGE_MEDIA_FOLDER = "uploads";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const result = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "photo",
-      });
-
-      expect(result.publicId).toMatch(/^uploads\//);
-    });
-
-    it("omits folder from publicId when STORAGE_MEDIA_FOLDER not set", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      delete process.env.STORAGE_MEDIA_FOLDER;
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const result = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "photo",
-      });
-
-      expect(result.publicId).not.toMatch(/\//);
-    });
-
-    it("adds correct file extension based on MIME type for all supported formats", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      delete process.env.STORAGE_MEDIA_FOLDER;
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const testCases = [
-        { type: "image/png" as const, ext: "png" },
-        { type: "image/jpeg" as const, ext: "jpg" },
-        { type: "image/jpg" as const, ext: "jpg" },
-        { type: "image/webp" as const, ext: "webp" },
-      ];
-
-      for (const { type, ext } of testCases) {
-        const result = await minioStorage.uploadImage({
-          file: makeFile({ type, size: 2048 }),
-          fileName: "photo",
-        });
-
-        expect(result.publicId).toMatch(new RegExp(`\\.${ext}$`));
-      }
-    });
-
-    it("sanitizes fileName in publicId", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      delete process.env.STORAGE_MEDIA_FOLDER;
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const result = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "My Photo! @#$%",
-      });
-
-      expect(result.publicId).toMatch(/My-Photo/);
-    });
-
-    it("returns secureUrl with /api/media/ prefix and publicId", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      process.env.STORAGE_MEDIA_FOLDER = "uploads";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const result = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "photo",
-      });
-
-      expect(result.secureUrl).toMatch(/^\/api\/media\//);
+      expect(putObjectMock).toHaveBeenCalledTimes(1);
+      expect(result.publicId).toMatch(/^media\/hero-background-[0-9a-f-]+\.png$/);
       expect(result.secureUrl).toBe(`/api/media/${result.publicId}`);
     });
 
-    it("validates file before uploading", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
+    it("passes correct bucket, object key, file content and content type to MinIO", async () => {
+      const { minioStorage } = await import("./minio.client");
 
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+      const file = makeFile({ type: "image/png" }, "image-content");
+
+      await minioStorage.uploadImage({
+        file,
+        fileName: "hero-background",
+      });
+
+      const [bucket, objectKey, body, size, metadata] = putObjectMock.mock.calls[0];
+
+      expect(bucket).toBe("test-bucket");
+      expect(objectKey).toMatch(/^media\/hero-background-[0-9a-f-]+\.png$/);
+      expect(body).toEqual(Buffer.from("image-content"));
+      expect(size).toBe(Buffer.byteLength("image-content"));
+      expect(metadata).toEqual({
+        "Content-Type": "image/png",
+      });
+    });
+
+    it("generates different object keys for repeated uploads of the same file name", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      const file = makeFile({ type: "image/jpeg" });
+
+      const first = await minioStorage.uploadImage({
+        file,
+        fileName: "hero-background",
+      });
+
+      const second = await minioStorage.uploadImage({
+        file,
+        fileName: "hero-background",
+      });
+
+      expect(first.publicId).not.toBe(second.publicId);
+      expect(putObjectMock).toHaveBeenCalledTimes(2);
+    });
+
+    it("uses the configured media folder in the object key", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      const result = await minioStorage.uploadImage({
+        file: makeFile({ type: "image/png" }),
+        fileName: "photo",
+      });
+
+      expect(result.publicId).toMatch(/^media\/photo-/);
+    });
+
+    it("uploads an image without media folder when it is not configured", async () => {
+      delete process.env.STORAGE_MEDIA_FOLDER;
+
+      const { minioStorage } = await import("./minio.client");
+
+      const result = await minioStorage.uploadImage({
+        file: makeFile({ type: "image/png" }),
+        fileName: "photo",
+      });
+
+      expect(result.publicId).toMatch(/^photo-[0-9a-f-]+\.png$/);
+      expect(result.publicId).not.toContain("/");
+    });
+
+    it.each([
+      ["image/png", "png"],
+      ["image/jpeg", "jpg"],
+      ["image/jpg", "jpg"],
+      ["image/webp", "webp"],
+    ])("uses %s MIME type with .%s extension", async (type, extension) => {
+      const { minioStorage } = await import("./minio.client");
+
+      const result = await minioStorage.uploadImage({
+        file: makeFile({ type }),
+        fileName: "photo",
+      });
+
+      expect(result.publicId).toMatch(new RegExp(`\\.${extension}$`));
+    });
+
+    it("sanitizes the file name before creating the object key", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      const result = await minioStorage.uploadImage({
+        file: makeFile({ type: "image/png" }),
+        fileName: "My Photo! @#$%",
+      });
+
+      expect(result.publicId).toMatch(/^media\/My-Photo-/);
+    });
+
+    it("rejects unsupported file type before calling MinIO", async () => {
+      const { minioStorage } = await import("./minio.client");
 
       await expect(
         minioStorage.uploadImage({
-          file: makeFile({ type: "application/pdf", size: 2048 }),
+          file: makeFile({ type: "application/pdf" }),
           fileName: "document",
         }),
-      ).rejects.toThrow(/JPG, JPEG, PNG, WEBP/);
+      ).rejects.toThrow("Допустимі формати: JPG, JPEG, PNG, WEBP");
 
-      expect(sendMock).not.toHaveBeenCalled();
+      expect(putObjectMock).not.toHaveBeenCalled();
     });
 
-    it("rejects file larger than 5 MB", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+    it("rejects files larger than 5 MB before calling MinIO", async () => {
+      const { minioStorage } = await import("./minio.client");
 
       await expect(
         minioStorage.uploadImage({
-          file: makeFile({ type: "image/png", size: 5 * 1024 * 1024 + 1 }),
-          fileName: "large",
+          file: makeFile({
+            type: "image/png",
+            size: 5 * 1024 * 1024 + 1,
+          }),
+          fileName: "large-image",
         }),
-      ).rejects.toThrow(/5 MB/);
+      ).rejects.toThrow("Максимальна вага файлу — 5 MB");
 
-      expect(sendMock).not.toHaveBeenCalled();
+      expect(putObjectMock).not.toHaveBeenCalled();
     });
 
-    it("throws when STORAGE_BUCKET is missing", async () => {
-      delete process.env.STORAGE_BUCKET;
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+    it("rejects empty file name before calling MinIO", async () => {
+      const { minioStorage } = await import("./minio.client");
 
       await expect(
         minioStorage.uploadImage({
-          file: makeFile({ type: "image/png", size: 2048 }),
-          fileName: "photo",
-        }),
-      ).rejects.toThrow("Missing STORAGE_BUCKET");
-
-      expect(sendMock).not.toHaveBeenCalled();
-    });
-
-    it("throws when fileName is empty/whitespace only", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      await expect(
-        minioStorage.uploadImage({
-          file: makeFile({ type: "image/png", size: 2048 }),
+          file: makeFile({ type: "image/png" }),
           fileName: "   ",
         }),
-      ).rejects.toThrow(/Назва файлу/);
+      ).rejects.toThrow("Назва файлу є обов'язковою");
 
-      expect(sendMock).not.toHaveBeenCalled();
+      expect(putObjectMock).not.toHaveBeenCalled();
     });
 
-    it("throws when unsupported MIME type provided", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
+    it("throws when storage bucket is not configured", async () => {
+      delete process.env.STORAGE_BUCKET;
+
+      const { minioStorage } = await import("./minio.client");
+
+      await expect(
+        minioStorage.uploadImage({
+          file: makeFile({ type: "image/png" }),
+          fileName: "photo",
+        }),
+      ).rejects.toThrow("Не налаштовано STORAGE_BUCKET");
+
+      expect(putObjectMock).not.toHaveBeenCalled();
+    });
+
+    it("throws when MinIO upload fails", async () => {
+      putObjectMock.mockRejectedValueOnce(new Error("MinIO upload failed"));
+
+      const { minioStorage } = await import("./minio.client");
+
+      await expect(
+        minioStorage.uploadImage({
+          file: makeFile({ type: "image/png" }),
+          fileName: "photo",
+        }),
+      ).rejects.toThrow("MinIO upload failed");
+    });
+
+    it("throws when MinIO storage configuration is incomplete", async () => {
+      process.env.STORAGE_ENDPOINT = "http://localhost:9000";
+      process.env.STORAGE_ACCESS_KEY = "test-access-key";
+      process.env.STORAGE_SECRET_KEY = "test-secret-key";
+
+      delete process.env.STORAGE_ENDPOINT;
 
       jest.resetModules();
+
       const { minioStorage } = require("./minio.client");
 
       await expect(
         minioStorage.uploadImage({
-          file: makeFile({ type: "image/bmp", size: 2048 }),
+          file: makeFile({
+            type: "image/png",
+            size: 2048,
+          }),
           fileName: "photo",
         }),
-      ).rejects.toThrow(/JPG, JPEG, PNG, WEBP/);
+      ).rejects.toThrow(
+        "Не налаштовано сховище. Необхідні STORAGE_ENDPOINT, STORAGE_ACCESS_KEY та STORAGE_SECRET_KEY.",
+      );
 
-      expect(sendMock).not.toHaveBeenCalled();
+      expect(putObjectMock).not.toHaveBeenCalled();
     });
 
-    it("throws when S3 client send fails", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      sendMock.mockRejectedValueOnce(new Error("Connection failed"));
+    it("throws when MIME type has no supported extension", async () => {
+      jest.doMock("./file-validation", () => ({
+        validateImageFile: jest.fn().mockResolvedValue(undefined),
+      }));
 
       jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+
+      const { minioStorage } = await import("./minio.client");
 
       await expect(
         minioStorage.uploadImage({
-          file: makeFile({ type: "image/png", size: 2048 }),
+          file: makeFile({ type: "image/bmp" }),
           fileName: "photo",
         }),
-      ).rejects.toThrow("Connection failed");
+      ).rejects.toThrow("Непідтримуваний формат зображення.");
+
+      expect(putObjectMock).not.toHaveBeenCalled();
     });
   });
 
   describe("deleteImage", () => {
-    it("deletes image from S3", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
+    it("removes image from MinIO using its publicId", async () => {
+      const { minioStorage } = await import("./minio.client");
 
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+      await minioStorage.deleteImage("media/hero-background-123.png");
 
-      await expect(minioStorage.deleteImage("uploads/photo-uuid.png")).resolves.toBeUndefined();
-
-      expect(sendMock).toHaveBeenCalledTimes(1);
+      expect(removeObjectMock).toHaveBeenCalledTimes(1);
+      expect(removeObjectMock).toHaveBeenCalledWith("test-bucket", "media/hero-background-123.png");
     });
 
-    it("throws when STORAGE_BUCKET is missing", async () => {
+    it("throws when storage bucket is not configured", async () => {
       delete process.env.STORAGE_BUCKET;
 
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+      const { minioStorage } = await import("./minio.client");
 
-      await expect(minioStorage.deleteImage("photo.png")).rejects.toThrow("Missing STORAGE_BUCKET");
+      await expect(minioStorage.deleteImage("media/photo.png")).rejects.toThrow("Не налаштовано STORAGE_BUCKET");
 
-      expect(sendMock).not.toHaveBeenCalled();
+      expect(removeObjectMock).not.toHaveBeenCalled();
     });
 
-    it("throws when S3 client send fails", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-      sendMock.mockRejectedValueOnce(new Error("S3 error"));
+    it("propagates MinIO delete errors", async () => {
+      removeObjectMock.mockRejectedValueOnce(new Error("MinIO delete failed"));
 
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
+      const { minioStorage } = await import("./minio.client");
 
-      await expect(minioStorage.deleteImage("photo.png")).rejects.toThrow("S3 error");
-    });
-
-    it("handles empty publicId without throwing", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      await minioStorage.deleteImage("");
-
-      expect(sendMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("minioStorage interface contract", () => {
-    it("exports storage object implementing ImageStorage interface", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      expect(minioStorage).toBeDefined();
-      expect(typeof minioStorage.uploadImage).toBe("function");
-      expect(typeof minioStorage.deleteImage).toBe("function");
-    });
-
-    it("uploadImage returns StoredImage with publicId and secureUrl", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const result = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "photo",
-      });
-
-      expect(result).toHaveProperty("publicId");
-      expect(result).toHaveProperty("secureUrl");
-      expect(typeof result.publicId).toBe("string");
-      expect(typeof result.secureUrl).toBe("string");
-    });
-
-    it("uploadImage and deleteImage follow ImageStorage contract", async () => {
-      process.env.STORAGE_BUCKET = "test-bucket";
-
-      jest.resetModules();
-      const { minioStorage } = require("./minio.client");
-
-      const params = {
-        file: makeFile({ type: "image/png", size: 2048 }),
-        fileName: "photo",
-      };
-
-      const uploadResult = await minioStorage.uploadImage(params);
-
-      await expect(minioStorage.deleteImage(uploadResult.publicId)).resolves.toBeUndefined();
+      await expect(minioStorage.deleteImage("media/photo.png")).rejects.toThrow("MinIO delete failed");
     });
   });
 });

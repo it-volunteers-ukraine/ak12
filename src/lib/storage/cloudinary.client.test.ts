@@ -1,18 +1,18 @@
 /**
  * @jest-environment node
  */
-const cloudinaryTestOriginalEnv = { ...process.env };
-const cloudinaryFetchMock = jest.fn();
+const ORIGINAL_ENV = { ...process.env };
+const fetchMock = jest.fn();
 
 beforeAll(() => {
-  global.fetch = cloudinaryFetchMock as unknown as typeof fetch;
+  global.fetch = fetchMock as unknown as typeof fetch;
 });
 
 beforeEach(() => {
-  cloudinaryFetchMock.mockReset();
+  fetchMock.mockReset();
 
   process.env = {
-    ...cloudinaryTestOriginalEnv,
+    ...ORIGINAL_ENV,
     CLOUDINARY_CLOUD_NAME: "cloud-test",
     CLOUDINARY_API_KEY: "key-123",
     CLOUDINARY_API_SECRET: "supersecret",
@@ -23,10 +23,10 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  process.env = cloudinaryTestOriginalEnv;
+  process.env = ORIGINAL_ENV;
 });
 
-const createCloudinaryTestFile = (overrides: Partial<File> = {}, content = "fake-image-bytes"): File => {
+const makeFile = (overrides: Partial<File> = {}, content = "fake-image-bytes"): File => {
   const baseSize = content.length;
 
   const base = new File([content], "photo.png", {
@@ -45,21 +45,34 @@ const createCloudinaryTestFile = (overrides: Partial<File> = {}, content = "fake
   }) as File;
 };
 
+const mockSuccessfulUpload = () => {
+  fetchMock.mockResolvedValue({
+    ok: true,
+    json: async () => ({
+      public_id: "ak12/my-photo",
+      secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/my-photo.png",
+    }),
+  });
+};
+
+const mockSuccessfulDelete = () => {
+  fetchMock.mockResolvedValue({
+    ok: true,
+    json: async () => ({
+      result: "ok",
+    }),
+  });
+};
+
 describe("cloudinaryStorage", () => {
   describe("uploadImage", () => {
-    it("successfully uploads image to Cloudinary", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("uploads an image and returns stored image data", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/my-photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/my-photo.png",
-        }),
-      });
+      mockSuccessfulUpload();
 
-      const result = await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
+      const result = await cloudinaryStorage.uploadImage({
+        file: makeFile({
           type: "image/png",
           size: 2048,
         }),
@@ -70,165 +83,105 @@ describe("cloudinaryStorage", () => {
         publicId: "ak12/my-photo",
         secureUrl: "https://res.cloudinary.com/cloud-test/image/upload/ak12/my-photo.png",
       });
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
-    it("makes POST request to correct Cloudinary endpoint", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("sends upload request to the correct Cloudinary endpoint", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/photo.png",
-        }),
-      });
+      mockSuccessfulUpload();
 
-      await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
+      await cloudinaryStorage.uploadImage({
+        file: makeFile(),
         fileName: "photo",
       });
 
-      expect(cloudinaryFetchMock).toHaveBeenCalledTimes(1);
-
-      const [url] = cloudinaryFetchMock.mock.calls[0];
+      const [url, options] = fetchMock.mock.calls[0];
 
       expect(url).toBe("https://api.cloudinary.com/v1_1/cloud-test/image/upload");
+      expect(options.method).toBe("POST");
+      expect(options.cache).toBe("no-store");
     });
 
-    it("sends FormData with file and required metadata", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("sends required upload parameters", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/photo.png",
-        }),
+      mockSuccessfulUpload();
+
+      await cloudinaryStorage.uploadImage({
+        file: makeFile(),
+        fileName: "My Photo!",
       });
 
-      await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
-        fileName: "photo",
-      });
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-      const formData = init.body as FormData;
+      const [, options] = fetchMock.mock.calls[0];
+      const formData = options.body as FormData;
 
       expect(formData.get("file")).toBeDefined();
       expect(formData.get("api_key")).toBe("key-123");
       expect(formData.get("folder")).toBe("ak12");
+      expect(formData.get("public_id")).toBe("My-Photo");
       expect(formData.get("overwrite")).toBe("true");
       expect(formData.get("invalidate")).toBe("true");
     });
 
-    it("includes sanitized public_id in FormData", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("generates a valid signature and timestamp", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/my-photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/my-photo.png",
-        }),
+      mockSuccessfulUpload();
+
+      await cloudinaryStorage.uploadImage({
+        file: makeFile(),
+        fileName: "photo",
       });
 
-      await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
-        fileName: "My Photo! @#$",
+      const [, options] = fetchMock.mock.calls[0];
+      const formData = options.body as FormData;
+
+      const signature = formData.get("signature");
+      const timestamp = formData.get("timestamp");
+
+      expect(signature).toMatch(/^[a-f0-9]{64}$/);
+      expect(timestamp).toMatch(/^\d+$/);
+    });
+
+    it("sanitizes the file name before sending public_id", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      mockSuccessfulUpload();
+
+      await cloudinaryStorage.uploadImage({
+        file: makeFile(),
+        fileName: "My Photo! @#$%",
       });
 
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-      const formData = init.body as FormData;
+      const [, options] = fetchMock.mock.calls[0];
+      const formData = options.body as FormData;
 
       expect(formData.get("public_id")).toBe("My-Photo");
     });
 
-    it("includes signature with correct format", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/photo.png",
-        }),
-      });
-
-      await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
-        fileName: "photo",
-      });
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-      const formData = init.body as FormData;
-      const signature = formData.get("signature");
-
-      expect(typeof signature).toBe("string");
-      expect((signature as string).length).toBe(64);
-      expect(/^[a-f0-9]{64}$/.test(signature as string)).toBe(true);
-    });
-
-    it("includes timestamp in FormData", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/photo.png",
-        }),
-      });
-
-      await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
-        fileName: "photo",
-      });
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-      const formData = init.body as FormData;
-      const timestamp = formData.get("timestamp");
-
-      expect(typeof timestamp).toBe("string");
-      expect(/^\d+$/.test(timestamp as string)).toBe(true);
-    });
-
-    it("validates file before uploading", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("rejects unsupported file types before making a request", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
       await expect(
-        cloudMod.uploadImage({
-          file: createCloudinaryTestFile({
+        cloudinaryStorage.uploadImage({
+          file: makeFile({
             type: "application/pdf",
-            size: 2048,
           }),
           fileName: "document",
         }),
       ).rejects.toThrow(/JPG, JPEG, PNG, WEBP/);
 
-      expect(cloudinaryFetchMock).not.toHaveBeenCalled();
+      expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    it("rejects file larger than 5 MB before making request", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("rejects files larger than 5 MB before making a request", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
       await expect(
-        cloudMod.uploadImage({
-          file: createCloudinaryTestFile({
+        cloudinaryStorage.uploadImage({
+          file: makeFile({
             type: "image/png",
             size: 5 * 1024 * 1024 + 1,
           }),
@@ -236,13 +189,26 @@ describe("cloudinaryStorage", () => {
         }),
       ).rejects.toThrow(/5 MB/);
 
-      expect(cloudinaryFetchMock).not.toHaveBeenCalled();
+      expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    it("throws when API returns error response", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("rejects empty file names before making a request", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
+      await expect(
+        cloudinaryStorage.uploadImage({
+          file: makeFile(),
+          fileName: "   ",
+        }),
+      ).rejects.toThrow(/Назва файлу/);
+
+      expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("throws when Cloudinary returns an error", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      fetchMock.mockResolvedValue({
         ok: false,
         json: async () => ({
           error: {
@@ -252,20 +218,17 @@ describe("cloudinaryStorage", () => {
       });
 
       await expect(
-        cloudMod.uploadImage({
-          file: createCloudinaryTestFile({
-            type: "image/png",
-            size: 2048,
-          }),
+        cloudinaryStorage.uploadImage({
+          file: makeFile(),
           fileName: "photo",
         }),
       ).rejects.toThrow("Invalid signature");
     });
 
-    it("throws with generic message when error has no message property", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("throws a generic error when Cloudinary does not provide an error message", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
+      fetchMock.mockResolvedValue({
         ok: false,
         json: async () => ({
           error: {},
@@ -273,206 +236,77 @@ describe("cloudinaryStorage", () => {
       });
 
       await expect(
-        cloudMod.uploadImage({
-          file: createCloudinaryTestFile({
-            type: "image/png",
-            size: 2048,
-          }),
+        cloudinaryStorage.uploadImage({
+          file: makeFile(),
           fileName: "photo",
         }),
-      ).rejects.toThrow(/Не вдалося завантажити зображення/);
+      ).rejects.toThrow("Не вдалося завантажити зображення");
     });
 
-    it("throws when required env vars are missing", async () => {
-      process.env = {
-        ...cloudinaryTestOriginalEnv,
-      };
-
-      delete process.env.CLOUDINARY_CLOUD_NAME;
+    it("throws when Cloudinary configuration is incomplete", async () => {
+      delete process.env.CLOUDINARY_API_KEY;
 
       jest.resetModules();
 
-      const cloudMod = require("./cloudinary.client");
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
       await expect(
-        cloudMod.uploadImage({
-          file: createCloudinaryTestFile({
-            type: "image/png",
-            size: 2048,
-          }),
+        cloudinaryStorage.uploadImage({
+          file: makeFile(),
           fileName: "photo",
         }),
       ).rejects.toThrow(/змінні середовища/);
 
-      expect(cloudinaryFetchMock).not.toHaveBeenCalled();
-    });
-
-    it("throws when CLOUDINARY_MEDIA_FOLDER is missing", async () => {
-      process.env = {
-        ...cloudinaryTestOriginalEnv,
-        CLOUDINARY_CLOUD_NAME: "cloud-test",
-        CLOUDINARY_API_KEY: "key-123",
-        CLOUDINARY_API_SECRET: "supersecret",
-      };
-
-      delete process.env.CLOUDINARY_MEDIA_FOLDER;
-
-      jest.resetModules();
-
-      const cloudMod = require("./cloudinary.client");
-
-      await expect(
-        cloudMod.uploadImage({
-          file: createCloudinaryTestFile({
-            type: "image/png",
-            size: 2048,
-          }),
-          fileName: "photo",
-        }),
-      ).rejects.toThrow(/змінні середовища/);
-    });
-
-    it("sets cache: no-store in fetch request", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/photo.png",
-        }),
-      });
-
-      await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
-        fileName: "photo",
-      });
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-
-      expect(init.cache).toBe("no-store");
-    });
-
-    it("uses POST method", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/photo.png",
-        }),
-      });
-
-      await cloudMod.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
-        fileName: "photo",
-      });
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-
-      expect(init.method).toBe("POST");
+      expect(fetchMock).not.toHaveBeenCalled();
     });
   });
 
   describe("deleteImage", () => {
-    it("successfully deletes image from Cloudinary", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("deletes an image from Cloudinary", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
+      mockSuccessfulDelete();
 
-      await expect(cloudMod.deleteImage("ak12/photo")).resolves.toBeUndefined();
+      await expect(cloudinaryStorage.deleteImage("ak12/photo")).resolves.toBeUndefined();
+
+      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
-    it("makes POST request to correct delete endpoint", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("sends delete request to the correct Cloudinary endpoint", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
+      mockSuccessfulDelete();
 
-      await cloudMod.deleteImage("ak12/photo");
+      await cloudinaryStorage.deleteImage("ak12/photo");
 
-      expect(cloudinaryFetchMock).toHaveBeenCalledTimes(1);
-
-      const [url] = cloudinaryFetchMock.mock.calls[0];
+      const [url, options] = fetchMock.mock.calls[0];
 
       expect(url).toBe("https://api.cloudinary.com/v1_1/cloud-test/image/destroy");
+      expect(options.method).toBe("POST");
+      expect(options.cache).toBe("no-store");
     });
 
-    it("includes publicId in FormData", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("sends required delete parameters", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
+      mockSuccessfulDelete();
 
-      await cloudMod.deleteImage("ak12/my-photo");
+      await cloudinaryStorage.deleteImage("ak12/my-photo");
 
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-      const formData = init.body as FormData;
+      const [, options] = fetchMock.mock.calls[0];
+      const formData = options.body as FormData;
 
       expect(formData.get("public_id")).toBe("ak12/my-photo");
-    });
-
-    it("includes api_key and signature", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
-
-      await cloudMod.deleteImage("ak12/photo");
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-      const formData = init.body as FormData;
-
       expect(formData.get("api_key")).toBe("key-123");
-      expect(formData.get("signature")).toBeDefined();
-    });
-
-    it("includes invalidate: true", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
-
-      await cloudMod.deleteImage("ak12/photo");
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-      const formData = init.body as FormData;
-
       expect(formData.get("invalidate")).toBe("true");
+      expect(formData.get("signature")).toMatch(/^[a-f0-9]{64}$/);
+      expect(formData.get("timestamp")).toMatch(/^\d+$/);
     });
 
-    it("throws when API returns error response", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("throws when Cloudinary returns an error", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
+      fetchMock.mockResolvedValue({
         ok: false,
         json: async () => ({
           error: {
@@ -481,125 +315,42 @@ describe("cloudinaryStorage", () => {
         }),
       });
 
-      await expect(cloudMod.deleteImage("ak12/nonexistent")).rejects.toThrow("Not found");
+      await expect(cloudinaryStorage.deleteImage("ak12/nonexistent")).rejects.toThrow("Not found");
     });
 
-    it("throws with generic message on API error without message", async () => {
-      const cloudMod = require("./cloudinary.client");
+    it("throws a generic error when Cloudinary does not provide an error message", async () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      cloudinaryFetchMock.mockResolvedValue({
+      fetchMock.mockResolvedValue({
         ok: false,
         json: async () => ({
           error: {},
         }),
       });
 
-      await expect(cloudMod.deleteImage("ak12/photo")).rejects.toThrow(/Не вдалося видалити/);
+      await expect(cloudinaryStorage.deleteImage("ak12/photo")).rejects.toThrow("Не вдалося видалити зображення");
     });
 
-    it("throws when required env vars are missing", async () => {
-      process.env = {
-        ...cloudinaryTestOriginalEnv,
-        CLOUDINARY_CLOUD_NAME: "cloud-test",
-        CLOUDINARY_API_SECRET: "supersecret",
-        CLOUDINARY_MEDIA_FOLDER: "ak12",
-      };
-
+    it("throws when Cloudinary configuration is incomplete", async () => {
       delete process.env.CLOUDINARY_API_KEY;
 
       jest.resetModules();
 
-      const cloudMod = require("./cloudinary.client");
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      await expect(cloudMod.deleteImage("ak12/photo")).rejects.toThrow(/змінні середовища/);
+      await expect(cloudinaryStorage.deleteImage("ak12/photo")).rejects.toThrow(/змінні середовища/);
 
-      expect(cloudinaryFetchMock).not.toHaveBeenCalled();
-    });
-
-    it("sets cache: no-store in fetch request", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
-
-      await cloudMod.deleteImage("ak12/photo");
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-
-      expect(init.cache).toBe("no-store");
-    });
-
-    it("uses POST method", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
-
-      await cloudMod.deleteImage("ak12/photo");
-
-      const [, init] = cloudinaryFetchMock.mock.calls[0];
-
-      expect(init.method).toBe("POST");
+      expect(fetchMock).not.toHaveBeenCalled();
     });
   });
 
-  describe("cloudinaryStorage interface", () => {
-    it("exports storage object with uploadImage method", () => {
-      const cloudMod = require("./cloudinary.client");
+  describe("ImageStorage interface", () => {
+    it("exposes uploadImage and deleteImage methods", () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
 
-      expect(cloudMod.cloudinaryStorage).toBeDefined();
-      expect(typeof cloudMod.cloudinaryStorage.uploadImage).toBe("function");
-    });
-
-    it("exports storage object with deleteImage method", () => {
-      const cloudMod = require("./cloudinary.client");
-
-      expect(cloudMod.cloudinaryStorage).toBeDefined();
-      expect(typeof cloudMod.cloudinaryStorage.deleteImage).toBe("function");
-    });
-
-    it("uploadImage method delegates to uploadImage function", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          public_id: "ak12/photo",
-          secure_url: "https://res.cloudinary.com/cloud-test/image/upload/ak12/photo.png",
-        }),
-      });
-
-      const result = await cloudMod.cloudinaryStorage.uploadImage({
-        file: createCloudinaryTestFile({
-          type: "image/png",
-          size: 2048,
-        }),
-        fileName: "photo",
-      });
-
-      expect(result).toHaveProperty("publicId");
-      expect(result).toHaveProperty("secureUrl");
-    });
-
-    it("deleteImage method delegates to deleteImage function", async () => {
-      const cloudMod = require("./cloudinary.client");
-
-      cloudinaryFetchMock.mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          result: "ok",
-        }),
-      });
-
-      await expect(cloudMod.cloudinaryStorage.deleteImage("ak12/photo")).resolves.toBeUndefined();
+      expect(cloudinaryStorage).toBeDefined();
+      expect(typeof cloudinaryStorage.uploadImage).toBe("function");
+      expect(typeof cloudinaryStorage.deleteImage).toBe("function");
     });
   });
 });
