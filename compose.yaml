@@ -33,7 +33,7 @@ services:
       - HOSTNAME=0.0.0.0
       - PORT=3000
       - POSTGRES_HOST=database
-      - ADMIN_PASSWORD_HASH=$$2b$$10$$z7PziP5O5Rrs4YMaoE2qkuLnnt8fzBlBLghcvWMXYf6DyIsRIQgpK
+      - ADMIN_PASSWORD_HASH=${ADMIN_PASSWORD_HASH}
     env_file:
       - .env
     depends_on:
