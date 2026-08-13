@@ -298,4 +298,62 @@ describe("minioStorage", () => {
       await expect(minioStorage.deleteImage("media/photo.png")).rejects.toThrow("MinIO delete failed");
     });
   });
+
+  describe("getImageUrl", () => {
+    it("returns the media API URL for an image", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      const result = minioStorage.getImageUrl("Background.png");
+
+      expect(result).toBe("/api/media/media/Background.png");
+    });
+
+    it("returns undefined when the file name is empty", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      expect(minioStorage.getImageUrl("")).toBeUndefined();
+    });
+
+    it("returns undefined when the file name is missing", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      expect(minioStorage.getImageUrl(undefined as unknown as string)).toBeUndefined();
+    });
+
+    it("uses the configured media folder in the URL", async () => {
+      process.env.STORAGE_MEDIA_FOLDER = "custom-folder";
+
+      const { minioStorage } = await import("./minio.client");
+
+      expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/custom-folder/Background.png");
+    });
+
+    it("returns URL without folder when media folder is not configured", async () => {
+      delete process.env.STORAGE_MEDIA_FOLDER;
+
+      const { minioStorage } = await import("./minio.client");
+
+      expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/Background.png");
+    });
+
+    it("does not require MinIO client credentials to generate the URL", async () => {
+      delete process.env.STORAGE_ACCESS_KEY;
+      delete process.env.STORAGE_SECRET_KEY;
+
+      const { minioStorage } = await import("./minio.client");
+
+      expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/media/Background.png");
+    });
+  });
+
+  describe("ImageStorage interface", () => {
+    it("exposes uploadImage, deleteImage and getImageUrl methods", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      expect(minioStorage).toBeDefined();
+      expect(typeof minioStorage.uploadImage).toBe("function");
+      expect(typeof minioStorage.deleteImage).toBe("function");
+      expect(typeof minioStorage.getImageUrl).toBe("function");
+    });
+  });
 });

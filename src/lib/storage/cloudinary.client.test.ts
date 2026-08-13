@@ -344,13 +344,58 @@ describe("cloudinaryStorage", () => {
     });
   });
 
+  describe("getImageUrl", () => {
+    it("returns the Cloudinary URL for an image", () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      const result = cloudinaryStorage.getImageUrl("Background.png");
+
+      expect(result).toBe("https://res.cloudinary.com/cloud-test/image/upload/ak12/Background.png");
+    });
+
+    it("returns undefined when the file name is empty", () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      expect(cloudinaryStorage.getImageUrl("")).toBeUndefined();
+    });
+
+    it("returns undefined when the file name is missing", () => {
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      expect(cloudinaryStorage.getImageUrl(undefined as unknown as string)).toBeUndefined();
+    });
+
+    it("uses the configured Cloudinary folder", () => {
+      process.env.CLOUDINARY_MEDIA_FOLDER = "custom-folder";
+
+      jest.resetModules();
+
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      expect(cloudinaryStorage.getImageUrl("Background.png")).toBe(
+        "https://res.cloudinary.com/cloud-test/image/upload/custom-folder/Background.png",
+      );
+    });
+
+    it("throws when Cloudinary configuration is incomplete", () => {
+      delete process.env.CLOUDINARY_API_KEY;
+
+      jest.resetModules();
+
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      expect(() => cloudinaryStorage.getImageUrl("Background.png")).toThrow(/змінні середовища/);
+    });
+  });
+
   describe("ImageStorage interface", () => {
-    it("exposes uploadImage and deleteImage methods", () => {
+    it("exposes uploadImage, deleteImage and getImageUrl methods", () => {
       const { cloudinaryStorage } = require("./cloudinary.client");
 
       expect(cloudinaryStorage).toBeDefined();
       expect(typeof cloudinaryStorage.uploadImage).toBe("function");
       expect(typeof cloudinaryStorage.deleteImage).toBe("function");
+      expect(typeof cloudinaryStorage.getImageUrl).toBe("function");
     });
   });
 });

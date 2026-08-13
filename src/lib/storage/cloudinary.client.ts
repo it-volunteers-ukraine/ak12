@@ -120,7 +120,18 @@ async function deleteImage(publicId: string): Promise<void> {
   }
 }
 
+function getImageUrl(fileName: string): string | undefined {
+  const { cloudName, folder } = getUploadEnv();
+
+  if (!cloudName || !folder || !fileName) {
+    return undefined;
+  }
+
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${folder}/${fileName}`;
+}
+
 export const cloudinaryStorage: ImageStorage = {
   uploadImage,
   deleteImage,
+  getImageUrl,
 };

@@ -31,10 +31,6 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: `/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/**`,
       },
-      // TODO(minio): add the production MinIO host here so next/image will serve
-      // its assets, e.g. { protocol: "https", hostname: process.env.MINIO_PUBLIC_HOST,
-      // pathname: `/${process.env.MINIO_BUCKET}/**` }. remotePatterns is evaluated at
-      // build time in Node, so reading the (non-public) env vars here is safe.
     ],
   },
   turbopack: {

@@ -41,14 +41,20 @@ describe("ImageStorage interface contract", () => {
           secureUrl: "https://example.com/image",
         }),
         deleteImage: jest.fn().mockResolvedValue(undefined),
+        getImageUrl: jest.fn().mockReturnValue("https://example.com/image"),
       };
     });
 
     describe("uploadImage method", () => {
       it("accepts params object with file and fileName", async () => {
-        const file = new File(["content"], "test.png", { type: "image/png" });
+        const file = new File(["content"], "test.png", {
+          type: "image/png",
+        });
 
-        await mockStorage.uploadImage({ file, fileName: "test" });
+        await mockStorage.uploadImage({
+          file,
+          fileName: "test",
+        });
 
         expect(mockStorage.uploadImage).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -60,7 +66,9 @@ describe("ImageStorage interface contract", () => {
 
       it("returns Promise<StoredImage>", async () => {
         const result = await mockStorage.uploadImage({
-          file: new File(["content"], "test.png", { type: "image/png" }),
+          file: new File(["content"], "test.png", {
+            type: "image/png",
+          }),
           fileName: "test",
         });
 
@@ -70,7 +78,9 @@ describe("ImageStorage interface contract", () => {
 
       it("returns object with publicId as string", async () => {
         const result = await mockStorage.uploadImage({
-          file: new File(["content"], "test.png", { type: "image/png" }),
+          file: new File(["content"], "test.png", {
+            type: "image/png",
+          }),
           fileName: "test",
         });
 
@@ -79,7 +89,9 @@ describe("ImageStorage interface contract", () => {
 
       it("returns object with secureUrl as string", async () => {
         const result = await mockStorage.uploadImage({
-          file: new File(["content"], "test.png", { type: "image/png" }),
+          file: new File(["content"], "test.png", {
+            type: "image/png",
+          }),
           fileName: "test",
         });
 
@@ -88,7 +100,9 @@ describe("ImageStorage interface contract", () => {
 
       it("returns non-empty publicId", async () => {
         const result = await mockStorage.uploadImage({
-          file: new File(["content"], "test.png", { type: "image/png" }),
+          file: new File(["content"], "test.png", {
+            type: "image/png",
+          }),
           fileName: "test",
         });
 
@@ -97,7 +111,9 @@ describe("ImageStorage interface contract", () => {
 
       it("returns non-empty secureUrl", async () => {
         const result = await mockStorage.uploadImage({
-          file: new File(["content"], "test.png", { type: "image/png" }),
+          file: new File(["content"], "test.png", {
+            type: "image/png",
+          }),
           fileName: "test",
         });
 
@@ -111,7 +127,9 @@ describe("ImageStorage interface contract", () => {
 
         await expect(
           mockStorage.uploadImage({
-            file: new File(["content"], "test.pdf", { type: "application/pdf" }),
+            file: new File(["content"], "test.pdf", {
+              type: "application/pdf",
+            }),
             fileName: "test",
           }),
         ).rejects.toThrow("Invalid file");
@@ -147,21 +165,63 @@ describe("ImageStorage interface contract", () => {
       });
     });
 
+    describe("getImageUrl method", () => {
+      it("accepts fileName as string parameter", () => {
+        const result = mockStorage.getImageUrl("photo.png");
+
+        expect(mockStorage.getImageUrl).toHaveBeenCalledWith("photo.png");
+        expect(result).toBe("https://example.com/image");
+      });
+
+      it("returns image URL when image exists", () => {
+        const result = mockStorage.getImageUrl("photo.png");
+
+        expect(result).toBe("https://example.com/image");
+      });
+
+      it("can return undefined when image URL is unavailable", () => {
+        (mockStorage.getImageUrl as jest.Mock).mockReturnValueOnce(undefined);
+
+        const result = mockStorage.getImageUrl("missing.png");
+
+        expect(result).toBeUndefined();
+      });
+
+      it("can be called multiple times", () => {
+        const getImageUrlMock = jest.fn().mockReturnValue("https://example.com/image");
+
+        mockStorage.getImageUrl = getImageUrlMock;
+
+        mockStorage.getImageUrl("image-1.png");
+        mockStorage.getImageUrl("image-2.png");
+
+        expect(getImageUrlMock).toHaveBeenCalledTimes(2);
+        expect(getImageUrlMock).toHaveBeenNthCalledWith(1, "image-1.png");
+        expect(getImageUrlMock).toHaveBeenNthCalledWith(2, "image-2.png");
+      });
+    });
+
     describe("interface completeness", () => {
-      it("has exactly two methods: uploadImage and deleteImage", () => {
+      it("has exactly three methods: uploadImage, deleteImage and getImageUrl", () => {
         const methods = Object.keys(mockStorage).filter(
           (key) => typeof mockStorage[key as keyof ImageStorage] === "function",
         );
 
-        expect(methods).toHaveLength(2);
+        expect(methods).toHaveLength(3);
         expect(methods).toContain("uploadImage");
         expect(methods).toContain("deleteImage");
+        expect(methods).toContain("getImageUrl");
       });
 
       it("uploadImage method is callable with required parameters", async () => {
-        const file = new File(["content"], "test.png", { type: "image/png" });
+        const file = new File(["content"], "test.png", {
+          type: "image/png",
+        });
 
-        await mockStorage.uploadImage({ file, fileName: "test" });
+        await mockStorage.uploadImage({
+          file,
+          fileName: "test",
+        });
 
         expect(mockStorage.uploadImage).toHaveBeenCalled();
       });
@@ -171,6 +231,13 @@ describe("ImageStorage interface contract", () => {
 
         expect(mockStorage.deleteImage).toHaveBeenCalled();
       });
+
+      it("getImageUrl method is callable with required parameters", () => {
+        const result = mockStorage.getImageUrl("test.png");
+
+        expect(mockStorage.getImageUrl).toHaveBeenCalledWith("test.png");
+        expect(result).toBe("https://example.com/image");
+      });
     });
   });
 
@@ -179,15 +246,31 @@ describe("ImageStorage interface contract", () => {
       const mockStorage: ImageStorage = {
         uploadImage: jest
           .fn()
-          .mockResolvedValueOnce({ publicId: "id-1", secureUrl: "url-1" })
-          .mockResolvedValueOnce({ publicId: "id-2", secureUrl: "url-2" }),
+          .mockResolvedValueOnce({
+            publicId: "id-1",
+            secureUrl: "url-1",
+          })
+          .mockResolvedValueOnce({
+            publicId: "id-2",
+            secureUrl: "url-2",
+          }),
         deleteImage: jest.fn().mockResolvedValue(undefined),
+        getImageUrl: jest.fn().mockReturnValue("https://example.com/image"),
       };
 
-      const file = new File(["content"], "test.png", { type: "image/png" });
+      const file = new File(["content"], "test.png", {
+        type: "image/png",
+      });
 
-      const result1 = await mockStorage.uploadImage({ file, fileName: "test" });
-      const result2 = await mockStorage.uploadImage({ file, fileName: "test" });
+      const result1 = await mockStorage.uploadImage({
+        file,
+        fileName: "test",
+      });
+
+      const result2 = await mockStorage.uploadImage({
+        file,
+        fileName: "test",
+      });
 
       expect(result1.publicId).not.toBe(result2.publicId);
     });

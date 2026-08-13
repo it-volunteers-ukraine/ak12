@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { Locale } from "@/types";
-import { serverEnv } from "@/lib/env/server";
+import { getStorage } from "@/lib/storage";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
 import { AboutSection } from "@/components/about";
@@ -109,17 +109,7 @@ export default async function Home({
 
   const vacancies = allVacancies.filter((v) => v.isActive);
   const vacanciesTitleList = vacancies.map((item) => item.position);
-
-  const cloudinaryCloudName = serverEnv.cloudinary.cloudName;
-  // Storage backend is chosen server-side (Cloudinary in dev, MinIO in prod), so
-  // the full URL is built here and the section stays storage-agnostic. When the
-  // env var is absent, no URL is passed and the background is simply not rendered.
-  // TODO(minio): in production the asset lives in MinIO — resolve the background
-  // URL from the MinIO bucket (public base URL + object key) instead of Cloudinary,
-  // e.g. branch on NODE_ENV or a shared getPublicAssetUrl() storage helper.
-  const galleryBackgroundUrl = cloudinaryCloudName
-    ? `https://res.cloudinary.com/${cloudinaryCloudName}/image/upload/v1784043457/ak12/Background.png`
-    : undefined;
+  const galleryBackgroundUrl = getStorage().getImageUrl("Background.png");
 
   return (
     <>

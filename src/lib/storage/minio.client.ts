@@ -87,7 +87,21 @@ async function deleteImage(publicId: string): Promise<void> {
   await client.removeObject(bucket, publicId);
 }
 
+function getImageUrl(fileName: string): string | undefined {
+  const endpoint = serverEnv.storage.endpoint;
+  const folder = serverEnv.storage.mediaFolder;
+
+  if (!endpoint || !fileName) {
+    return undefined;
+  }
+
+  const objectKey = folder ? `${folder}/${fileName}` : fileName;
+
+  return `/api/media/${objectKey}`;
+}
+
 export const minioStorage: ImageStorage = {
   uploadImage,
   deleteImage,
+  getImageUrl,
 };
