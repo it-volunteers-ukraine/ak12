@@ -1,9 +1,11 @@
 "use client";
 
 import { FieldValues, useFormContext } from "react-hook-form";
+
 import { cn } from "@/utils";
 import { FormImg } from "@/components/form-elements";
 import { BtnGroup } from "@/components/admin/admin-form-elements";
+
 import { FormBuilderConfig } from "../types";
 import { LocaleSection } from "./LocaleSection";
 
@@ -164,7 +166,7 @@ export const FormBuilder = ({
     <div className={config.className || "form-builder"}>
       <div
         className={cn(
-          `sticky top-22 z-30 mb-6 border-b border-gray-200 bg-white/95 px-2 backdrop-blur supports-backdrop-filter:bg-white/80 ${
+          `sticky top-22 z-30 mb-6 border-b border-gray-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80 ${
             config.buttonsClassName || ""
           }`,
         )}
