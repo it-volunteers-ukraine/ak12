@@ -1,0 +1,38 @@
+default:
+  image: node:24
+  interruptible: true
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+  CI: "true"
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"
+
+stages:
+  - validate
+
+validate:
+  stage: validate
+  timeout: 15m
+  variables:
+    NODE_ENV: "production"
+  script:
+    - npm ci
+    - npx tsc --noEmit
+    - npm run lint
+    - npm run test:coverage -- --ci
+    - npm run build
+  artifacts:
+    when: always
+    paths:
+      - coverage/
+    expire_in: 7 days
