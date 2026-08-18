@@ -18,6 +18,9 @@ jest.mock("@/lib/content/content.service", () => ({
 
 jest.mock("@/lib/logger/logger", () => ({
   logger: {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
     error: jest.fn(),
   },
 }));
@@ -120,7 +123,7 @@ describe("updateContentMultiLang", () => {
       error: "Помилка збереження. Дані для деяких мов могли не оновитися.",
     });
 
-    expect(logger.error).toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalled();
   });
 
   it("returns error when one promise rejects", async () => {
@@ -139,6 +142,6 @@ describe("updateContentMultiLang", () => {
       error: "Помилка збереження. Дані для деяких мов могли не оновитися.",
     });
 
-    expect(logger.error).toHaveBeenCalled();
+    expect(logger.warn).toHaveBeenCalled();
   });
 });

@@ -41,8 +41,12 @@ export const saveContentAction = async ({ locale, sectionKey, rawContent }: Save
   const schema = schemasMap[sectionKey];
 
   if (!schema) {
+    logger.warn({ locale, sectionKey }, "Content save rejected: unknown section");
+
     return { success: false, error: `Schema for section ${sectionKey} not found` };
   }
+
+  logger.debug({ locale, sectionKey }, "Content save started");
 
   const result = await contentService.save({
     locale,
@@ -54,6 +58,7 @@ export const saveContentAction = async ({ locale, sectionKey, rawContent }: Save
   if (result.success) {
     revalidatePath("/");
     revalidatePath(routes.admin.home);
+    logger.info({ locale, sectionKey }, "Content saved successfully");
   }
 
   return result;
@@ -62,6 +67,8 @@ export const saveContentAction = async ({ locale, sectionKey, rawContent }: Save
 export const updateContentMultiLang = async <K extends AdminSectionKey>(section: K, values: AdminDataMap[K]) => {
   try {
     const languages = Object.keys(values) as Locale[];
+
+    logger.debug({ localeCount: languages.length, section }, "Multi-language content update started");
 
     const savePromises = languages.map((locale) => {
       const rawContent = values[locale];
@@ -80,13 +87,15 @@ export const updateContentMultiLang = async <K extends AdminSectionKey>(section:
     );
 
     if (failures.length > 0) {
-      logger.error({ failures, section }, "Multi-lang partial failure – data may be inconsistent across locales");
+      logger.warn({ failureCount: failures.length, localeCount: languages.length, section }, "Multi-lang content update partially failed");
 
       return {
         success: false,
         error: "Помилка збереження. Дані для деяких мов могли не оновитися.",
       };
     }
+
+    logger.info({ localeCount: languages.length, section }, "Multi-language content update completed");
 
     return { success: true };
   } catch (error) {

@@ -1,13 +1,8 @@
 import crypto from "node:crypto";
 
 import { serverEnv } from "@/lib/env/server";
+import { logger } from "@/lib/logger/logger";
 
-// TODO(minio): this service is Cloudinary-specific (signed upload/destroy against
-// api.cloudinary.com). Production uses MinIO, so introduce a storage abstraction
-// mirroring the DatabaseClient pattern in src/lib/db: an ImageStorage interface with
-// uploadImage/deleteImage, a Cloudinary implementation (this file) for dev, a MinIO
-// (S3-compatible, e.g. @aws-sdk/client-s3) implementation for prod, and a selector
-// that picks by NODE_ENV. Keep all MinIO secrets server-side only.
 function getUploadEnv() {
   const cloudName = serverEnv.cloudinary.cloudName;
   const apiKey = serverEnv.cloudinary.apiKey;
@@ -89,6 +84,7 @@ export async function uploadImage(params: { file: File; fileName: string }): Pro
   const { file, fileName } = params;
 
   await validateImageFile(file);
+  logger.info({ contentType: file.type, sizeBytes: file.size }, "Image upload started");
 
   const safeFileName = sanitizeFileName(fileName);
   const timestamp = Math.floor(Date.now() / 1000);
@@ -121,8 +117,11 @@ export async function uploadImage(params: { file: File; fileName: string }): Pro
   const data: UploadResult & { error?: { message?: string } } = await response.json();
 
   if (!response.ok) {
+    logger.error({ status: response.status }, "Image upload provider rejected request");
     throw new Error(data?.error?.message || "Не вдалося завантажити зображення");
   }
+
+  logger.info("Image upload completed");
 
   return {
     publicId: data.public_id,
@@ -156,8 +155,11 @@ export async function deleteImage(publicId: string) {
   const data = await response.json();
 
   if (!response.ok) {
+    logger.error({ status: response.status }, "Image deletion provider rejected request");
     throw new Error(data?.error?.message || "Не вдалося видалити зображення");
   }
+
+  logger.info("Image deletion completed");
 
   return data;
 }

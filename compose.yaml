@@ -32,11 +32,14 @@ services:
       - NEXT_TELEMETRY_DISABLED=1
       - HOSTNAME=0.0.0.0
       - PORT=3000
+      - POSTGRES_HOST=database
     env_file:
       - .env
     depends_on:
       database:
         condition: service_healthy
+    networks:
+      - default
 
   # Production database service (PostgreSQL 17)
   database:
@@ -51,8 +54,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-admin}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
       - POSTGRES_DB=${POSTGRES_DB:-ak12}
-    env_file:
-      - .env
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-admin} -d ${POSTGRES_DB:-ak12}"]
       interval: 10s
@@ -62,9 +63,26 @@ services:
     networks:
       - default
 
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
+      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME:-mybucket}
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - default
+
 volumes:
   postgres_data:
   node_modules:
+  minio_data:
 
 networks:
   default:
