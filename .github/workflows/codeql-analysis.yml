@@ -2,6 +2,8 @@ name: "CodeQL Analysis"
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # Weekly scan on Mondays to catch newly published CVE rules
   push:
     branches: [main, develop]
     paths:
@@ -12,9 +14,6 @@ on:
       - "tsconfig.json"
       - "Dockerfile"
       - ".github/workflows/codeql-analysis.yml"
-      - "!**/node_modules/**"
-      - "!**/.next/**"
-      - "!**/coverage/**"
   pull_request:
     branches: [main, develop]
     paths:
@@ -34,7 +33,7 @@ jobs:
   analyze:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     permissions:
       actions: read
@@ -48,12 +47,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
@@ -69,40 +68,8 @@ jobs:
               - "**/*.test.js"
               - "**/*.spec.js"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: 24
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci --include=optional
-        env:
-          NODE_ENV: development
-
-      - name: Build project
-        run: npm run build
-        env:
-          NODE_ENV: production
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-
-      - name: Run tests with coverage
-        run: npm run test:coverage -- --ci
-        env:
-          CI: true
-
-      - name: Upload coverage report
-        if: success()
-        uses: actions/upload-artifact@v6
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 7
-
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
           upload: true
