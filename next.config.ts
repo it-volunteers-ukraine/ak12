@@ -8,7 +8,12 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
-  output: "standalone",
+  output: process.env.NEXT_OUTPUT_STANDALONE === "true" ? "standalone" : undefined,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
+  },
   images: {
     remotePatterns: [
       {

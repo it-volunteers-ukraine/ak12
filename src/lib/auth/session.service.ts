@@ -97,7 +97,7 @@ export async function verifyPreAuthSession() {
     const token = cookieStore.get(PRE_AUTH_COOKIE_NAME)?.value;
     const payload = getSessionPayload(token);
 
-    if (!payload || payload.type !== "pre-auth") {
+    if (payload?.type !== "pre-auth") {
       return false;
     }
 
@@ -177,7 +177,7 @@ function isSessionExpired(lastActivityAt: number, ttl: number) {
 export function verifySession(token?: string) {
   const data = getSessionPayload(token);
 
-  if (!data || data.type !== "session") {
+  if (data?.type !== "session") {
     return false;
   }
 
@@ -200,10 +200,11 @@ export async function validateAdmin(email: string, password: string): Promise<bo
 
   const emailMatches = email === expectedEmail;
   const passwordMatches = await bcrypt.compare(password, expectedPasswordHash);
+  const isValid = emailMatches && passwordMatches;
 
-  logger.info({ emailMatches, passwordMatches }, "Admin credentials validated");
+  logger.info({ success: isValid }, "Admin credentials validated");
 
-  return emailMatches && passwordMatches;
+  return isValid;
 }
 
 export function validateTwoFactor(token: string): boolean {
@@ -226,8 +227,8 @@ export function validateTwoFactor(token: string): boolean {
     logger.info({ valid }, "Admin two-factor code validated");
 
     return valid;
-  } catch {
-    logger.warn("Admin two-factor code validation failed");
+  } catch (error) {
+    logger.warn({ err: error }, "Admin two-factor code validation failed");
 
     return false;
   }
