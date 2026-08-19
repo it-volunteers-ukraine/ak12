@@ -15,6 +15,7 @@ describe("getDbClient", () => {
     jest.resetModules();
     jest.clearAllMocks();
     process.env = { ...originalEnv };
+    delete process.env.DB_CLIENT;
   });
 
   afterAll(() => {
