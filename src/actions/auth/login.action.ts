@@ -13,6 +13,7 @@ import {
   verifyPreAuthSession,
   deletePreAuthSession,
 } from "@/lib/auth/session.service";
+import { logger } from "@/lib/logger/logger";
 
 export async function adminLogin(_prevState: State, formData: FormData): Promise<State> {
   const data = {
@@ -24,6 +25,7 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
   const parsed = loginSchema.safeParse(data);
 
   if (!parsed.success) {
+    logger.warn({ locale }, "Admin login rejected: invalid form data");
     const tree = z.treeifyError(parsed.error);
     const fieldErrors: FieldErrors = {
       email: tree.properties?.email?.errors ?? [],
@@ -39,6 +41,8 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
   const isValid = await validateAdmin(data.email, data.password);
 
   if (!isValid) {
+    logger.warn({ locale }, "Admin login rejected: invalid credentials");
+
     return {
       fieldErrors: {
         password: ["Невірний email або пароль"],
@@ -48,6 +52,7 @@ export async function adminLogin(_prevState: State, formData: FormData): Promise
   }
 
   await createPreAuthSession();
+  logger.info({ locale }, "Admin credentials accepted; two-factor verification required");
 
   return {
     fieldErrors: {},

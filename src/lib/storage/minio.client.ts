@@ -6,6 +6,7 @@ import { ImageStorage } from "./types";
 import { serverEnv } from "@/lib/env/server";
 import { sanitizeFileName } from "./file-name";
 import { validateImageFile } from "./file-validation";
+import { logger } from "@/lib/logger/logger";
 
 let client: Client | null = null;
 
@@ -43,6 +44,16 @@ function getStorageBucket(): string {
   return bucket;
 }
 
+function getMediaFolder(): string {
+  const folder = serverEnv.storage.mediaFolder;
+
+  if (!folder) {
+    throw new Error("Не налаштовано STORAGE_MEDIA_FOLDER.");
+  }
+
+  return folder;
+}
+
 const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/jpg": "jpg",
@@ -53,12 +64,12 @@ const EXTENSION_BY_MIME_TYPE: Record<string, string> = {
 async function uploadImage({ file, fileName }: { file: File; fileName: string }) {
   const client = getMinioClient();
   const bucket = getStorageBucket();
+  const folder = getMediaFolder();
 
   await validateImageFile(file);
 
   const body = Buffer.from(await file.arrayBuffer());
   const safeFileName = sanitizeFileName(fileName);
-  const folder = serverEnv.storage.mediaFolder;
   const extension = EXTENSION_BY_MIME_TYPE[file.type];
 
   if (!extension) {
@@ -66,13 +77,13 @@ async function uploadImage({ file, fileName }: { file: File; fileName: string })
   }
 
   const uniqueId = crypto.randomUUID();
-  const objectKey = folder
-    ? `${folder}/${safeFileName}-${uniqueId}.${extension}`
-    : `${safeFileName}-${uniqueId}.${extension}`;
+  const objectKey = `${folder}/${safeFileName}-${uniqueId}.${extension}`;
 
   await client.putObject(bucket, objectKey, body, body.length, {
     "Content-Type": file.type,
   });
+
+  logger.info("Image upload completed");
 
   return {
     publicId: objectKey,
@@ -85,19 +96,19 @@ async function deleteImage(publicId: string): Promise<void> {
   const bucket = getStorageBucket();
 
   await client.removeObject(bucket, publicId);
+
+  logger.info("Image deletion completed");
 }
 
 function getImageUrl(fileName: string): string | undefined {
   const endpoint = serverEnv.storage.endpoint;
-  const folder = serverEnv.storage.mediaFolder;
+  const folder = getMediaFolder();
 
   if (!endpoint || !fileName) {
     return undefined;
   }
 
-  const objectKey = folder ? `${folder}/${fileName}` : fileName;
-
-  return `/api/media/${objectKey}`;
+  return `/api/media/${folder}/${fileName}`;
 }
 
 export const minioStorage: ImageStorage = {

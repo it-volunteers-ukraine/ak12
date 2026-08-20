@@ -5,6 +5,7 @@ import { ImageStorage, StoredImage } from "./types";
 import { serverEnv } from "@/lib/env/server";
 import { sanitizeFileName } from "./file-name";
 import { validateImageFile } from "./file-validation";
+import { logger } from "@/lib/logger/logger";
 
 function getUploadEnv() {
   const cloudName = serverEnv.cloudinary.cloudName;
@@ -84,6 +85,8 @@ async function uploadImage(params: { file: File; fileName: string }): Promise<St
     throw new Error(data?.error?.message || "Не вдалося завантажити зображення");
   }
 
+  logger.info("Image upload completed");
+
   return {
     publicId: data.public_id,
     secureUrl: data.secure_url,
@@ -118,6 +121,8 @@ async function deleteImage(publicId: string): Promise<void> {
   if (!response.ok) {
     throw new Error(data?.error?.message || "Не вдалося видалити зображення");
   }
+
+  logger.info("Image deletion completed");
 }
 
 function getImageUrl(fileName: string): string | undefined {

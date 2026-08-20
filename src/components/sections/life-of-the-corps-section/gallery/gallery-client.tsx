@@ -113,7 +113,7 @@ export const LifeOfTheCorpsGalleryClient = ({
           alt="Background"
           className="absolute inset-0 z-0 object-cover"
           onError={() => {
-            logger.error({ backgroundImageUrl }, "Failed to load gallery background image");
+            logger.error("Failed to load gallery background image");
             setIsBackgroundBroken(true);
           }}
         />
@@ -187,7 +187,7 @@ export const LifeOfTheCorpsGalleryClient = ({
                       allowFullScreen
                       className="h-full w-full"
                       onError={(e) => {
-                        logger.error({ embedUrl }, "Failed to load YouTube iframe");
+                        logger.error("Failed to load YouTube iframe");
                         e.currentTarget.style.display = "none";
                       }}
                     />
@@ -200,7 +200,7 @@ export const LifeOfTheCorpsGalleryClient = ({
                       alt={image.text || `Image ${idx + 1}`}
                       sizes="(max-width: 768px) 92vw, (max-width: 1200px) 80vw, 1200px"
                       onError={() => {
-                        logger.error({ src: image.src }, "Failed to load gallery image");
+                        logger.error("Failed to load gallery image");
                       }}
                     />
                   ) : (

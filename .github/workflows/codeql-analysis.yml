@@ -1,27 +1,39 @@
 name: "CodeQL Analysis"
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # Weekly scan on Mondays to catch newly published CVE rules
   push:
     branches: [main, develop]
     paths:
       - "src/**"
       - "package.json"
       - "package-lock.json"
-      - "!**/node_modules/**"
-      - "!**/.next/**"
-      - "!**/coverage/**"
+      - "next.config.ts"
+      - "tsconfig.json"
+      - "Dockerfile"
+      - ".github/workflows/codeql-analysis.yml"
   pull_request:
     branches: [main, develop]
     paths:
       - "src/**"
       - "package.json"
       - "package-lock.json"
+      - "next.config.ts"
+      - "tsconfig.json"
+      - "Dockerfile"
+      - ".github/workflows/codeql-analysis.yml"
+
+concurrency:
+  group: codeql-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   analyze:
     name: CodeQL Analysis
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     permissions:
       actions: read
@@ -40,7 +52,7 @@ jobs:
           fetch-depth: 0
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
           queries: security-and-quality
@@ -56,51 +68,8 @@ jobs:
               - "**/*.test.js"
               - "**/*.spec.js"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: "npm"
-
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: ${{ runner.os }}-node-24-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-24-
-            ${{ runner.os }}-node-
-
-      - name: Install dependencies
-        run: npm ci --include=optional
-        env:
-          NODE_ENV: development
-
-      - name: Build project
-        run: npm run build
-        env:
-          NODE_ENV: production
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-
-      - name: Run tests with coverage
-        run: npm run test:coverage -- --ci
-        env:
-          CI: true
-
-      - name: Upload coverage report
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-          retention-days: 7
-
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{ matrix.language }}"
           upload: true

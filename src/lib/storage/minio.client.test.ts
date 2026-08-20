@@ -113,18 +113,19 @@ describe("minioStorage", () => {
       expect(result.publicId).toMatch(/^media\/photo-/);
     });
 
-    it("uploads an image without media folder when it is not configured", async () => {
+    it("throws when media folder is not configured", async () => {
       delete process.env.STORAGE_MEDIA_FOLDER;
 
       const { minioStorage } = await import("./minio.client");
 
-      const result = await minioStorage.uploadImage({
-        file: makeFile({ type: "image/png" }),
-        fileName: "photo",
-      });
+      await expect(
+        minioStorage.uploadImage({
+          file: makeFile({ type: "image/png" }),
+          fileName: "photo",
+        }),
+      ).rejects.toThrow("Не налаштовано STORAGE_MEDIA_FOLDER.");
 
-      expect(result.publicId).toMatch(/^photo-[0-9a-f-]+\.png$/);
-      expect(result.publicId).not.toContain("/");
+      expect(putObjectMock).not.toHaveBeenCalled();
     });
 
     it.each([
@@ -328,12 +329,12 @@ describe("minioStorage", () => {
       expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/custom-folder/Background.png");
     });
 
-    it("returns URL without folder when media folder is not configured", async () => {
+    it("throws when media folder is not configured", async () => {
       delete process.env.STORAGE_MEDIA_FOLDER;
 
       const { minioStorage } = await import("./minio.client");
 
-      expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/Background.png");
+      expect(() => minioStorage.getImageUrl("Background.png")).toThrow("Не налаштовано STORAGE_MEDIA_FOLDER.");
     });
 
     it("does not require MinIO client credentials to generate the URL", async () => {

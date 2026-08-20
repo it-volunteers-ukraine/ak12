@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { serverEnv } from "@/lib/env/server";
 import { DatabaseClient, DeleteQuery, InsertQuery, QueryBuilder, SelectQuery, UpdateQuery, RowData, QueryError, QueryValue } from "./types";
+import { logger } from "@/lib/logger/logger";
 
 let pool: Pool;
 
@@ -20,6 +21,11 @@ function getPool(): Pool {
       password,
       database: serverEnv.postgres.database || "ak12",
     });
+    logger.info({
+      host: serverEnv.postgres.host || "localhost",
+      port: Number.parseInt(serverEnv.postgres.port || "5432"),
+      database: serverEnv.postgres.database || "ak12",
+    }, "Postgres connection pool initialized");
   }
 
   return pool;

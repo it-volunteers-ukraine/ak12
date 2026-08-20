@@ -1,5 +1,12 @@
 import "server-only";
 
+// Use an indirect lookup so Next.js does not replace individual environment
+// references with build-time values. These secrets must be read by the Node
+// process when the container starts.
+function runtimeEnv(name: string): string | undefined {
+  return process.env[name];
+}
+
 /**
  * Canonical catalog of every server-side environment variable (secrets and
  * backend config). This is the single place to audit what secrets the app reads.
@@ -15,41 +22,41 @@ import "server-only";
 export const serverEnv = {
   auth: {
     get sessionSecretKey() {
-      return process.env.SESSION_SECRET_KEY;
+      return runtimeEnv("SESSION_SECRET_KEY");
     },
     get adminEmail() {
-      return process.env.ADMIN_EMAIL;
+      return runtimeEnv("ADMIN_EMAIL");
     },
     get adminPasswordHash() {
-      return process.env.ADMIN_PASSWORD_HASH;
+      return runtimeEnv("ADMIN_PASSWORD_HASH");
     },
     get admin2faSecret() {
-      return process.env.ADMIN_2FA_SECRET;
+      return runtimeEnv("ADMIN_2FA_SECRET");
     },
   },
   postgres: {
     get user() {
-      return process.env.POSTGRES_USER;
+      return runtimeEnv("POSTGRES_USER");
     },
     get password() {
-      return process.env.POSTGRES_PASSWORD;
+      return runtimeEnv("POSTGRES_PASSWORD");
     },
     get host() {
-      return process.env.POSTGRES_HOST;
+      return runtimeEnv("POSTGRES_HOST");
     },
     get port() {
-      return process.env.POSTGRES_PORT;
+      return runtimeEnv("POSTGRES_PORT");
     },
     get database() {
-      return process.env.POSTGRES_DB;
+      return runtimeEnv("POSTGRES_DB");
     },
   },
   supabase: {
     get serviceRoleKey() {
-      return process.env.SUPABASE_SERVICE_ROLE_KEY;
+      return runtimeEnv("SUPABASE_SERVICE_ROLE_KEY");
     },
     get serviceKey() {
-      return process.env.SUPABASE_SERVICE_KEY;
+      return runtimeEnv("SUPABASE_SERVICE_KEY");
     },
   },
   // CLOUDINARY_CLOUD_NAME is public in value but is NOT NEXT_PUBLIC_-prefixed, so it is
@@ -57,16 +64,16 @@ export const serverEnv = {
   // needed in the browser, rename it with the NEXT_PUBLIC_ prefix and move it to public.ts.
   cloudinary: {
     get cloudName() {
-      return process.env.CLOUDINARY_CLOUD_NAME;
+      return runtimeEnv("CLOUDINARY_CLOUD_NAME");
     },
     get apiKey() {
-      return process.env.CLOUDINARY_API_KEY;
+      return runtimeEnv("CLOUDINARY_API_KEY");
     },
     get apiSecret() {
-      return process.env.CLOUDINARY_API_SECRET;
+      return runtimeEnv("CLOUDINARY_API_SECRET");
     },
     get mediaFolder() {
-      return process.env.CLOUDINARY_MEDIA_FOLDER;
+      return runtimeEnv("CLOUDINARY_MEDIA_FOLDER");
     },
   },
   storage: {

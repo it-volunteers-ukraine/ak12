@@ -53,6 +53,7 @@ describe("logger", () => {
     Object.defineProperty(global, "window", {
       value: {},
       writable: true,
+      configurable: true,
     });
 
     const { logger } = load();
@@ -73,6 +74,7 @@ describe("logger", () => {
     Object.defineProperty(global, "window", {
       value: {},
       writable: true,
+      configurable: true,
     });
 
     const { logger } = load();

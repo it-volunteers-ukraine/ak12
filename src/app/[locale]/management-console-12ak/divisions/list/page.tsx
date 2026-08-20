@@ -5,7 +5,7 @@ export default async function SubdivisionsListPage() {
   const [subdivisionsUk, subdivisionsEn] = await Promise.all([getAllSubdivisions("uk"), getAllSubdivisions("en")]);
 
   return (
-    <div className="px-4 py-6">
+    <div className="py-6 pr-4">
       <SubdivisionsListSection subdivisionsUk={subdivisionsUk} subdivisionsEn={subdivisionsEn} />
     </div>
   );

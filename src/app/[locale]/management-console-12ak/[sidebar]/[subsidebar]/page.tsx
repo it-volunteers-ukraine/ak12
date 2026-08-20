@@ -32,7 +32,7 @@ async function renderAdminSection<K extends AdminSectionKey>(sectionKey: K, subs
   const data = { uk: contentUk, en: contentEn } as AdminDataMap[K];
 
   return (
-    <div className="px-4 py-6">
+    <div className="py-6 pr-4">
       <Component data={data} />
     </div>
   );

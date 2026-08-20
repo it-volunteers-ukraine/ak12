@@ -5,6 +5,7 @@ import { SESSION_COOKIE_NAME } from "@/constants";
 import { verifySession } from "@/lib/auth/session.service";
 import { uploadImage, deleteImage } from "@/lib/admin/upload-image.service";
 import type { StoredImage } from "@/lib/storage/types";
+import { logger } from "@/lib/logger/logger";
 
 type UploadImageResult = { success: true; data: StoredImage } | { success: false; error: string };
 type DeleteImageResult = { success: true } | { success: false; error: string };
@@ -15,6 +16,7 @@ async function requireAdminSession() {
   const isValid = verifySession(token);
 
   if (!isValid) {
+    logger.warn("Image upload rejected: missing or invalid admin session");
     throw new Error("Сесію адміністратора не знайдено або її термін дії минув");
   }
 }
@@ -33,6 +35,8 @@ export async function uploadImageAction(params: { file: File; fileName: string }
       data: uploaded,
     };
   } catch (error) {
+    logger.error({ error }, "Image upload action failed");
+
     return {
       success: false,
       error: error instanceof Error ? error.message : "Не вдалося завантажити зображення",
@@ -49,6 +53,8 @@ export async function deleteImageAction(publicId: string): Promise<DeleteImageRe
       success: true,
     };
   } catch (error) {
+    logger.error({ error }, "Image deletion action failed");
+
     return {
       success: false,
       error: error instanceof Error ? error.message : "Не вдалося видалити зображення",
