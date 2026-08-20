@@ -3,7 +3,7 @@ import { z } from "zod";
 export const storedImageSchema = z
   .object({
     publicId: z.string(),
-    secureUrl: z.string().min(1),
+    secureUrl: z.union([z.url(), z.string().startsWith("/api/media/")]),
   })
   .nullable();
 

@@ -4,6 +4,7 @@ node_modules/
 .next/
 
 # Local env files
+.env
 .env.example
 
 # Logs

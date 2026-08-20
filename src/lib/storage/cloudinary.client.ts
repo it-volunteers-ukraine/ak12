@@ -121,7 +121,8 @@ async function deleteImage(publicId: string): Promise<void> {
 }
 
 function getImageUrl(fileName: string): string | undefined {
-  const { cloudName, folder } = getUploadEnv();
+  const cloudName = serverEnv.cloudinary.cloudName;
+  const folder = serverEnv.cloudinary.mediaFolder;
 
   if (!cloudName || !folder || !fileName) {
     return undefined;

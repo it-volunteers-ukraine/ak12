@@ -1,10 +1,12 @@
 /**
  * @jest-environment node
  */
+
 import { Readable } from "node:stream";
 import { NextRequest } from "next/server";
 
 const originalEnv = { ...process.env };
+
 const mockGetMinioClient = jest.fn();
 
 jest.mock("@/lib/storage/minio.client", () => ({
@@ -15,6 +17,7 @@ beforeEach(() => {
   process.env = {
     ...originalEnv,
     STORAGE_BUCKET: "test-bucket",
+    STORAGE_MEDIA_FOLDER: "ak12",
   };
 
   jest.clearAllMocks();
@@ -25,6 +28,24 @@ afterAll(() => {
 });
 
 describe("GET /api/media/[...key]", () => {
+  it("returns 404 when object key is outside the media folder", async () => {
+    const { GET } = await import("./route");
+
+    const request = new NextRequest("http://localhost:3000/api/media/private/secret.jpg", {
+      method: "GET",
+    });
+
+    const response = await GET(request, {
+      params: Promise.resolve({
+        key: ["private", "secret.jpg"],
+      }),
+    });
+
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe("Not found");
+    expect(mockGetMinioClient).not.toHaveBeenCalled();
+  });
+
   it("returns 500 when STORAGE_BUCKET is not configured", async () => {
     delete process.env.STORAGE_BUCKET;
 
@@ -41,8 +62,7 @@ describe("GET /api/media/[...key]", () => {
     });
 
     expect(response.status).toBe(500);
-    expect(await response.text()).toBe("Bucket is not configured");
-
+    expect(await response.text()).toBe("Storage is not configured");
     expect(mockGetMinioClient).not.toHaveBeenCalled();
   });
 
@@ -64,23 +84,21 @@ describe("GET /api/media/[...key]", () => {
 
     const { GET } = await import("./route");
 
-    const request = new NextRequest("http://localhost:3000/api/media/photo.jpg", {
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/photo.jpg", {
       method: "GET",
     });
 
     const response = await GET(request, {
       params: Promise.resolve({
-        key: ["photo.jpg"],
+        key: ["ak12", "photo.jpg"],
       }),
     });
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("image/jpeg");
-    expect(response.headers.get("Cache-Control")).toBe("no-store");
-
-    expect(statObjectMock).toHaveBeenCalledWith("test-bucket", "photo.jpg");
-
-    expect(getObjectMock).toHaveBeenCalledWith("test-bucket", "photo.jpg");
+    expect(response.headers.get("Cache-Control")).toBe("public, max-age=31536000, immutable");
+    expect(statObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/photo.jpg");
+    expect(getObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/photo.jpg");
   });
 
   it("joins multi-segment key with forward slashes", async () => {
@@ -99,21 +117,19 @@ describe("GET /api/media/[...key]", () => {
 
     const { GET } = await import("./route");
 
-    const request = new NextRequest("http://localhost:3000/api/media/uploads/2024/photo.png", {
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/uploads/2024/photo.png", {
       method: "GET",
     });
 
     const response = await GET(request, {
       params: Promise.resolve({
-        key: ["uploads", "2024", "photo.png"],
+        key: ["ak12", "uploads", "2024", "photo.png"],
       }),
     });
 
     expect(response.status).toBe(200);
-
-    expect(statObjectMock).toHaveBeenCalledWith("test-bucket", "uploads/2024/photo.png");
-
-    expect(getObjectMock).toHaveBeenCalledWith("test-bucket", "uploads/2024/photo.png");
+    expect(statObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/uploads/2024/photo.png");
+    expect(getObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/uploads/2024/photo.png");
   });
 
   it("uses application/octet-stream when Content-Type is missing", async () => {
@@ -130,13 +146,13 @@ describe("GET /api/media/[...key]", () => {
 
     const { GET } = await import("./route");
 
-    const request = new NextRequest("http://localhost:3000/api/media/file.bin", {
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/file.bin", {
       method: "GET",
     });
 
     const response = await GET(request, {
       params: Promise.resolve({
-        key: ["file.bin"],
+        key: ["ak12", "file.bin"],
       }),
     });
 
@@ -145,8 +161,11 @@ describe("GET /api/media/[...key]", () => {
   });
 
   it("returns 404 when object does not exist", async () => {
-    const statObjectMock = jest.fn().mockRejectedValue(new Error("Not found"));
+    const notFoundError = Object.assign(new Error("Not found"), {
+      code: "NotFound",
+    });
 
+    const statObjectMock = jest.fn().mockRejectedValue(notFoundError);
     const getObjectMock = jest.fn();
 
     mockGetMinioClient.mockReturnValue({
@@ -156,24 +175,25 @@ describe("GET /api/media/[...key]", () => {
 
     const { GET } = await import("./route");
 
-    const request = new NextRequest("http://localhost:3000/api/media/nonexistent.jpg", {
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/nonexistent.jpg", {
       method: "GET",
     });
 
     const response = await GET(request, {
       params: Promise.resolve({
-        key: ["nonexistent.jpg"],
+        key: ["ak12", "nonexistent.jpg"],
       }),
     });
 
     expect(response.status).toBe(404);
     expect(await response.text()).toBe("Not found");
-
     expect(getObjectMock).not.toHaveBeenCalled();
   });
 
-  it("returns 404 when MinIO returns an error", async () => {
-    const statObjectMock = jest.fn().mockRejectedValue(new Error("Access denied"));
+  it("throws when MinIO returns an unexpected error", async () => {
+    const error = new Error("Access denied");
+
+    const statObjectMock = jest.fn().mockRejectedValue(error);
 
     mockGetMinioClient.mockReturnValue({
       statObject: statObjectMock,
@@ -182,18 +202,17 @@ describe("GET /api/media/[...key]", () => {
 
     const { GET } = await import("./route");
 
-    const request = new NextRequest("http://localhost:3000/api/media/forbidden.jpg", {
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/forbidden.jpg", {
       method: "GET",
     });
 
-    const response = await GET(request, {
-      params: Promise.resolve({
-        key: ["forbidden.jpg"],
+    await expect(
+      GET(request, {
+        params: Promise.resolve({
+          key: ["ak12", "forbidden.jpg"],
+        }),
       }),
-    });
-
-    expect(response.status).toBe(404);
-    expect(await response.text()).toBe("Not found");
+    ).rejects.toThrow("Access denied");
   });
 
   it("preserves Content-Type from MinIO metadata", async () => {
@@ -217,13 +236,13 @@ describe("GET /api/media/[...key]", () => {
 
       const { GET } = await import("./route");
 
-      const request = new NextRequest("http://localhost:3000/api/media/file", {
+      const request = new NextRequest("http://localhost:3000/api/media/ak12/file", {
         method: "GET",
       });
 
       const response = await GET(request, {
         params: Promise.resolve({
-          key: ["file"],
+          key: ["ak12", "file"],
         }),
       });
 
@@ -248,13 +267,13 @@ describe("GET /api/media/[...key]", () => {
 
     const { GET } = await import("./route");
 
-    const request = new NextRequest("http://localhost:3000/api/media/photo.jpg", {
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/photo.jpg", {
       method: "GET",
     });
 
     const response = await GET(request, {
       params: Promise.resolve({
-        key: ["photo.jpg"],
+        key: ["ak12", "photo.jpg"],
       }),
     });
 

@@ -24,7 +24,7 @@ export const contract1824Schema = z.object({
     backgroundImage: z
       .object({
         publicId: z.string().optional(),
-        secureUrl: z.string().min(1),
+        secureUrl: z.union([z.url(), z.string().startsWith("/api/media/")]),
       })
       .nullable()
       .optional(),

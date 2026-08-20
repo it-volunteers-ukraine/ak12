@@ -377,14 +377,17 @@ describe("cloudinaryStorage", () => {
       );
     });
 
-    it("throws when Cloudinary configuration is incomplete", () => {
-      delete process.env.CLOUDINARY_API_KEY;
+    it("returns undefined when Cloudinary configuration is incomplete", () => {
+      process.env.CLOUDINARY_CLOUD_NAME = "";
+      process.env.CLOUDINARY_API_KEY = "";
+      process.env.CLOUDINARY_API_SECRET = "";
+      process.env.CLOUDINARY_MEDIA_FOLDER = "";
 
       jest.resetModules();
 
       const { cloudinaryStorage } = require("./cloudinary.client");
 
-      expect(() => cloudinaryStorage.getImageUrl("Background.png")).toThrow(/змінні середовища/);
+      expect(cloudinaryStorage.getImageUrl("Background.png")).toBeUndefined();
     });
   });
 
