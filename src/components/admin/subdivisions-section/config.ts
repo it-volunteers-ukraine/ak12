@@ -1,27 +1,33 @@
 import { z } from "zod";
 
-export const storedImageSchema = z.object({
-  publicId: z.string(),
-  secureUrl: z.string().url(),
-}).nullable();
+export const storedImageSchema = z
+  .object({
+    publicId: z.string(),
+    secureUrl: z.union([z.url(), z.string().startsWith("/api/media/")]),
+  })
+  .nullable();
 
 export const subdivisionContentSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: z.uuid().optional(),
   name: z.string().min(1, "Назва обов'язкова"),
   slug: z.string().optional().default(""),
   description: z.string().min(1, "Опис обов'язковий"),
   hoverName: z.string().nullable(),
   hoverDescription: z.string().nullable(),
-  siteUrl: z.string().url("Невірний формат URL").nullable().or(z.literal("").transform(() => null)),
+  siteUrl: z
+    .string()
+    .pipe(z.url("Невірний формат URL"))
+    .nullable()
+    .or(z.literal("").transform(() => null)),
   imageUrl: storedImageSchema,
   hoverImageUrl: storedImageSchema,
-  sortOrder: z.union([z.number(), z.string()]).transform(val => 
-    typeof val === 'string' ? parseInt(val, 10) : val
-  ).pipe(z.number().int().nonnegative()),
+  sortOrder: z
+    .union([z.number(), z.string()])
+    .transform((val) => (typeof val === "string" ? Number.parseInt(val, 10) : val))
+    .pipe(z.number().int().nonnegative()),
   isActive: z.boolean().default(true),
-  languageId: z.string().uuid().optional(),
-  updatedAt: z.string().optional(), 
-
+  languageId: z.uuid().optional(),
+  updatedAt: z.string().optional(),
 });
 
 export const adminSchema = z.object({

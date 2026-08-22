@@ -9,7 +9,7 @@ import { showMessage } from "@/components/toastify";
 import { FormImg } from "@/components/form-elements";
 import { BtnGroup } from "@/components/admin/admin-form-elements";
 import { LocaleSection } from "@/lib/form-builder/components/LocaleSection";
-import { StoredImage } from "@/lib/admin/upload-image.service";
+import { StoredImage } from "@/lib/storage/types";
 import { ConfirmModal } from "@/components/connfirm-modal";
 import { uploadImageAction, deleteImageAction } from "@/actions/admin/upload-image.action";
 import { createSubdivision, updateSubdivision } from "@/actions/subdivisions/subdivisions.action";

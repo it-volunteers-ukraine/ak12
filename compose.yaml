@@ -38,6 +38,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
     networks:
       - default
 
@@ -66,16 +68,35 @@ services:
   minio:
     image: minio/minio:latest
     restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY}
+    volumes:
+      - minio_data:/data
     ports:
       - "9000:9000"
       - "9001:9001"
+    networks:
+      - default
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_started
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER:-minioadmin}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD:-minioadmin}
-      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME:-mybucket}
-    command: server /data --console-address ":9001"
-    volumes:
-      - minio_data:/data
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY}
+      STORAGE_BUCKET: ${STORAGE_BUCKET}
+    entrypoint: >
+      /bin/sh -c "
+      until mc alias set minio http://minio:9000
+      $$STORAGE_ACCESS_KEY $$STORAGE_SECRET_KEY; do
+        echo 'Waiting for MinIO...';
+        sleep 2;
+      done;
+      mc mb --ignore-existing minio/$$STORAGE_BUCKET;
+      "
     networks:
       - default
 

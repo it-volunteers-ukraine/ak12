@@ -196,14 +196,12 @@ export const contentService = {
       } else {
         const languageRow = await languageService.ensure(locale);
 
-        const { error } = await databaseClient
-          .from("site_content")
-          .insert({
-            section_key: sectionKey,
-            content: content as QueryValue,
-            is_active: true,
-            language_id: languageRow.id,
-          });
+        const { error } = await databaseClient.from("site_content").insert({
+          section_key: sectionKey,
+          content: content as QueryValue,
+          is_active: true,
+          language_id: languageRow.id,
+        });
 
         if (error) {
           throw error;

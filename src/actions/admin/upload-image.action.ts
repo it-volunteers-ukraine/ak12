@@ -3,7 +3,8 @@
 import { cookies } from "next/headers";
 import { SESSION_COOKIE_NAME } from "@/constants";
 import { verifySession } from "@/lib/auth/session.service";
-import { uploadImage, deleteImage, type StoredImage } from "@/lib/admin/upload-image.service";
+import { uploadImage, deleteImage } from "@/lib/admin/upload-image.service";
+import type { StoredImage } from "@/lib/storage/types";
 import { logger } from "@/lib/logger/logger";
 
 type UploadImageResult = { success: true; data: StoredImage } | { success: false; error: string };

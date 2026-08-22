@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { Locale } from "@/types";
-import { serverEnv } from "@/lib/env/server";
+import { getStorage } from "@/lib/storage";
 import { SECTION_KEYS } from "@/constants";
 import { VacancyType } from "@/types/vacancy";
 import { AboutSection } from "@/components/about";
@@ -109,11 +109,7 @@ export default async function Home({
 
   const vacancies = allVacancies.filter((v) => v.isActive);
   const vacanciesTitleList = vacancies.map((item) => item.position);
-
-  const cloudinaryCloudName = serverEnv.cloudinary.cloudName;
-  const galleryBackgroundUrl = cloudinaryCloudName
-    ? `https://res.cloudinary.com/${cloudinaryCloudName}/image/upload/v1784043457/ak12/Background.png`
-    : undefined;
+  const galleryBackgroundUrl = getStorage().getImageUrl("Background.png");
 
   return (
     <>
