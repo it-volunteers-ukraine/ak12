@@ -42,7 +42,7 @@ describe("GET /api/media/[...key]", () => {
     });
 
     expect(response.status).toBe(404);
-    expect(await response.text()).toBe("Not found");
+    expect(await response.text()).toBe("Requested media file was not found");
     expect(mockGetMinioClient).not.toHaveBeenCalled();
   });
 
@@ -186,7 +186,7 @@ describe("GET /api/media/[...key]", () => {
     });
 
     expect(response.status).toBe(404);
-    expect(await response.text()).toBe("Not found");
+    expect(await response.text()).toBe("Requested media file was not found");
     expect(getObjectMock).not.toHaveBeenCalled();
   });
 

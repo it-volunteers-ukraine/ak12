@@ -7,9 +7,10 @@ export function sanitizeFileName(fileName: string) {
 
   const safeName = normalized
     .replace(/\s+/g, "-")
-    .replace(/[^a-zA-Z0-9_-]/g, "-")
+    .replace(/[^a-zA-Z0-9\_-]/g, "-")
     .replace(/-+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 
   if (!safeName) {
     throw new Error("Не вдалося сформувати коректну назву файлу");

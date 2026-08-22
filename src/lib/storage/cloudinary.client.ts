@@ -35,7 +35,7 @@ type SignatureParams = Record<string, string | number | boolean>;
 function createSignature(params: SignatureParams) {
   const { apiSecret } = getUploadEnv();
   const serializedParams = Object.keys(params)
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .map((key) => `${key}=${String(params[key])}`)
     .join("&");
 
@@ -85,7 +85,7 @@ async function uploadImage(params: { file: File; fileName: string }): Promise<St
     throw new Error(data?.error?.message || "Не вдалося завантажити зображення");
   }
 
-  logger.info("Image upload completed");
+  logger.info(`Image upload completed: ${data.public_id} in folder ${folder}`);
 
   return {
     publicId: data.public_id,
@@ -122,7 +122,7 @@ async function deleteImage(publicId: string): Promise<void> {
     throw new Error(data?.error?.message || "Не вдалося видалити зображення");
   }
 
-  logger.info("Image deletion completed");
+  logger.info(`Image deletion completed: ${publicId}`);
 }
 
 function getImageUrl(fileName: string): string | undefined {

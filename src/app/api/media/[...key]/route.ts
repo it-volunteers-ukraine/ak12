@@ -20,7 +20,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
   const prefix = `${mediaFolder}/`;
 
   if (!objectKey.startsWith(prefix)) {
-    return new NextResponse("Not found", {
+    return new NextResponse("Requested media file was not found", {
       status: 404,
     });
   }
@@ -39,7 +39,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     });
   } catch (error) {
     if (hasErrorCode(error, "NotFound") || hasErrorCode(error, "NoSuchKey")) {
-      return new NextResponse("Not found", {
+      return new NextResponse("Requested media file was not found", {
         status: 404,
       });
     }

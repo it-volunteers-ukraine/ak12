@@ -8,7 +8,7 @@ export const storedImageSchema = z
   .nullable();
 
 export const subdivisionContentSchema = z.object({
-  id: z.string().uuid().optional(),
+  id: z.uuid().optional(),
   name: z.string().min(1, "Назва обов'язкова"),
   slug: z.string().optional().default(""),
   description: z.string().min(1, "Опис обов'язковий"),
@@ -16,17 +16,17 @@ export const subdivisionContentSchema = z.object({
   hoverDescription: z.string().nullable(),
   siteUrl: z
     .string()
-    .url("Невірний формат URL")
+    .pipe(z.url("Невірний формат URL"))
     .nullable()
     .or(z.literal("").transform(() => null)),
   imageUrl: storedImageSchema,
   hoverImageUrl: storedImageSchema,
   sortOrder: z
     .union([z.number(), z.string()])
-    .transform((val) => (typeof val === "string" ? parseInt(val, 10) : val))
+    .transform((val) => (typeof val === "string" ? Number.parseInt(val, 10) : val))
     .pipe(z.number().int().nonnegative()),
   isActive: z.boolean().default(true),
-  languageId: z.string().uuid().optional(),
+  languageId: z.uuid().optional(),
   updatedAt: z.string().optional(),
 });
 

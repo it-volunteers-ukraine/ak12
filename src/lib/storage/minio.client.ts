@@ -83,7 +83,7 @@ async function uploadImage({ file, fileName }: { file: File; fileName: string })
     "Content-Type": file.type,
   });
 
-  logger.info("Image upload completed");
+  logger.info(`Image upload completed: ${objectKey} in bucket ${bucket}`);
 
   return {
     publicId: objectKey,
@@ -97,7 +97,7 @@ async function deleteImage(publicId: string): Promise<void> {
 
   await client.removeObject(bucket, publicId);
 
-  logger.info("Image deletion completed");
+  logger.info(`Image deletion completed: ${publicId} from bucket ${bucket}`);
 }
 
 function getImageUrl(fileName: string): string | undefined {

@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+
 import { routes } from "@/constants/routes";
 
 describe("robots", () => {
@@ -12,35 +13,35 @@ describe("robots", () => {
     expect(result.rules).toBeDefined();
   });
 
-  it("should have userAgent set to wildcard", () => {
+  it.each([
+    ["userAgent", "*"],
+    ["allow", "/"],
+  ])("should have %s set correctly", (property, expected) => {
     const robots = require("./robots").default;
     const result = robots();
 
-    expect(result.rules.userAgent).toBe("*");
+    expect(result.rules[property]).toBe(expected);
   });
 
-  it("should allow root path", () => {
-    const robots = require("./robots").default;
-    const result = robots();
-
-    expect(result.rules.allow).toBe("/");
-  });
-
-  it("should disallow admin paths for all locales", () => {
+  it.each([
+    ["uk", `/uk${routes.admin.home}/`],
+    ["en", `/en${routes.admin.home}/`],
+  ])("should disallow admin path for %s locale", (_, path) => {
     const robots = require("./robots").default;
     const result = robots();
 
     expect(Array.isArray(result.rules.disallow)).toBe(true);
-    expect(result.rules.disallow).toContain(`/uk${routes.admin.home}/`);
-    expect(result.rules.disallow).toContain(`/en${routes.admin.home}/`);
+    expect(result.rules.disallow).toContain(path);
   });
 
-  it("should disallow login paths for all locales", () => {
+  it.each([
+    ["uk", "/uk/login/"],
+    ["en", "/en/login/"],
+  ])("should disallow login path for %s locale", (_, path) => {
     const robots = require("./robots").default;
     const result = robots();
 
-    expect(result.rules.disallow).toContain("/uk/login/");
-    expect(result.rules.disallow).toContain("/en/login/");
+    expect(result.rules.disallow).toContain(path);
   });
 
   it("should have disallow list as array", () => {
@@ -53,6 +54,7 @@ describe("robots", () => {
 
   it("should return the same result on multiple calls", () => {
     const robots = require("./robots").default;
+
     const result1 = robots();
     const result2 = robots();
 
