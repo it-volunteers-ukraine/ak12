@@ -19,7 +19,10 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
   const objectKey = key.join("/");
   const prefix = `${mediaFolder}/`;
 
-  if (!objectKey.startsWith(prefix)) {
+  if (
+    !objectKey.startsWith(prefix) ||
+    key.some((segment) => segment === "." || segment === ".." || segment.includes("\\"))
+  ) {
     return new NextResponse("Requested media file was not found", {
       status: 404,
     });
@@ -34,7 +37,7 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     return new NextResponse(webStream as ReadableStream, {
       headers: {
         "Content-Type": metadata.metaData?.["content-type"] ?? "application/octet-stream",
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": "public, max-age=3600",
       },
     });
   } catch (error) {

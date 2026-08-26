@@ -78,27 +78,27 @@ export const serverEnv = {
   },
   storage: {
     get client() {
-      return process.env.STORAGE_CLIENT;
+      return runtimeEnv("STORAGE_CLIENT");
     },
 
     get endpoint() {
-      return process.env.STORAGE_ENDPOINT;
+      return runtimeEnv("STORAGE_ENDPOINT");
     },
 
     get bucket() {
-      return process.env.STORAGE_BUCKET;
+      return runtimeEnv("STORAGE_BUCKET");
     },
 
     get accessKey() {
-      return process.env.STORAGE_ACCESS_KEY;
+      return runtimeEnv("STORAGE_ACCESS_KEY");
     },
 
     get secretKey() {
-      return process.env.STORAGE_SECRET_KEY;
+      return runtimeEnv("STORAGE_SECRET_KEY");
     },
 
     get mediaFolder() {
-      return process.env.STORAGE_MEDIA_FOLDER;
+      return runtimeEnv("STORAGE_MEDIA_FOLDER");
     },
   },
 } as const;

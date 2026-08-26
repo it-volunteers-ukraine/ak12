@@ -1,7 +1,9 @@
 /**
  * @jest-environment node
  */
+
 const ORIGINAL_ENV = { ...process.env };
+
 const putObjectMock = jest.fn();
 const removeObjectMock = jest.fn();
 
@@ -12,7 +14,7 @@ jest.mock("minio", () => ({
   })),
 }));
 
-const makeFile = (overrides: Partial<{ type: string; size: number }> = {}, content = "fake-image-bytes") => {
+const makeFile = (overrides: Partial<{ type: string; size: number }> = {}, content = "fake-image-bytes"): File => {
   const base = new File([content], "photo.png", {
     type: "image/png",
   });
@@ -36,11 +38,13 @@ beforeEach(() => {
     STORAGE_ACCESS_KEY: "minioadmin",
     STORAGE_SECRET_KEY: "minioadmin",
     STORAGE_BUCKET: "test-bucket",
-    STORAGE_MEDIA_FOLDER: "media",
+    STORAGE_MEDIA_FOLDER: "ak12",
   };
 
   putObjectMock.mockReset();
   removeObjectMock.mockReset();
+
+  jest.resetModules();
 });
 
 afterAll(() => {
@@ -48,6 +52,49 @@ afterAll(() => {
 });
 
 describe("minioStorage", () => {
+  describe("getMinioClient", () => {
+    it("creates MinIO client with configured endpoint and credentials", async () => {
+      const { getMinioClient } = await import("./minio.client");
+      const { Client } = await import("minio");
+
+      getMinioClient();
+
+      expect(Client).toHaveBeenCalledWith({
+        endPoint: "localhost",
+        port: 9000,
+        useSSL: false,
+        accessKey: "minioadmin",
+        secretKey: "minioadmin",
+      });
+    });
+
+    it("reuses the same MinIO client instance", async () => {
+      const { getMinioClient } = await import("./minio.client");
+
+      const first = getMinioClient();
+      const second = getMinioClient();
+
+      expect(first).toBe(second);
+    });
+
+    it("throws when MinIO storage configuration is incomplete", async () => {
+      delete process.env.STORAGE_ENDPOINT;
+
+      const { minioStorage } = await import("./minio.client");
+
+      await expect(
+        minioStorage.uploadImage({
+          file: makeFile(),
+          fileName: "photo",
+        }),
+      ).rejects.toThrow(
+        "Не налаштовано сховище. Необхідні STORAGE_ENDPOINT, STORAGE_ACCESS_KEY та STORAGE_SECRET_KEY.",
+      );
+
+      expect(putObjectMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe("uploadImage", () => {
     it("uploads image to MinIO and returns stored image data", async () => {
       const { minioStorage } = await import("./minio.client");
@@ -58,7 +105,7 @@ describe("minioStorage", () => {
       });
 
       expect(putObjectMock).toHaveBeenCalledTimes(1);
-      expect(result.publicId).toMatch(/^media\/hero-background-[0-9a-f-]+\.png$/);
+      expect(result.publicId).toMatch(/^ak12\/hero-background-[0-9a-f-]+\.png$/);
       expect(result.secureUrl).toBe(`/api/media/${result.publicId}`);
     });
 
@@ -75,7 +122,7 @@ describe("minioStorage", () => {
       const [bucket, objectKey, body, size, metadata] = putObjectMock.mock.calls[0];
 
       expect(bucket).toBe("test-bucket");
-      expect(objectKey).toMatch(/^media\/hero-background-[0-9a-f-]+\.png$/);
+      expect(objectKey).toMatch(/^ak12\/hero-background-[0-9a-f-]+\.png$/);
       expect(body).toEqual(Buffer.from("image-content"));
       expect(size).toBe(Buffer.byteLength("image-content"));
       expect(metadata).toEqual({
@@ -110,22 +157,7 @@ describe("minioStorage", () => {
         fileName: "photo",
       });
 
-      expect(result.publicId).toMatch(/^media\/photo-/);
-    });
-
-    it("throws when media folder is not configured", async () => {
-      delete process.env.STORAGE_MEDIA_FOLDER;
-
-      const { minioStorage } = await import("./minio.client");
-
-      await expect(
-        minioStorage.uploadImage({
-          file: makeFile({ type: "image/png" }),
-          fileName: "photo",
-        }),
-      ).rejects.toThrow("Не налаштовано STORAGE_MEDIA_FOLDER.");
-
-      expect(putObjectMock).not.toHaveBeenCalled();
+      expect(result.publicId).toMatch(/^ak12\/photo-[0-9a-f-]+\.png$/);
     });
 
     it.each([
@@ -152,7 +184,7 @@ describe("minioStorage", () => {
         fileName: "My Photo! @#$%",
       });
 
-      expect(result.publicId).toMatch(/^media\/My-Photo-/);
+      expect(result.publicId).toMatch(/^ak12\/My-Photo-[0-9a-f-]+\.png$/);
     });
 
     it("rejects unsupported file type before calling MinIO", async () => {
@@ -225,38 +257,10 @@ describe("minioStorage", () => {
       ).rejects.toThrow("MinIO upload failed");
     });
 
-    it("throws when MinIO storage configuration is incomplete", async () => {
-      process.env.STORAGE_ENDPOINT = "http://localhost:9000";
-      process.env.STORAGE_ACCESS_KEY = "test-access-key";
-      process.env.STORAGE_SECRET_KEY = "test-secret-key";
-
-      delete process.env.STORAGE_ENDPOINT;
-
-      jest.resetModules();
-
-      const { minioStorage } = require("./minio.client");
-
-      await expect(
-        minioStorage.uploadImage({
-          file: makeFile({
-            type: "image/png",
-            size: 2048,
-          }),
-          fileName: "photo",
-        }),
-      ).rejects.toThrow(
-        "Не налаштовано сховище. Необхідні STORAGE_ENDPOINT, STORAGE_ACCESS_KEY та STORAGE_SECRET_KEY.",
-      );
-
-      expect(putObjectMock).not.toHaveBeenCalled();
-    });
-
     it("throws when MIME type has no supported extension", async () => {
       jest.doMock("./file-validation", () => ({
         validateImageFile: jest.fn().mockResolvedValue(undefined),
       }));
-
-      jest.resetModules();
 
       const { minioStorage } = await import("./minio.client");
 
@@ -268,6 +272,8 @@ describe("minioStorage", () => {
       ).rejects.toThrow("Непідтримуваний формат зображення.");
 
       expect(putObjectMock).not.toHaveBeenCalled();
+
+      jest.dontMock("./file-validation");
     });
   });
 
@@ -275,10 +281,20 @@ describe("minioStorage", () => {
     it("removes image from MinIO using its publicId", async () => {
       const { minioStorage } = await import("./minio.client");
 
-      await minioStorage.deleteImage("media/hero-background-123.png");
+      await minioStorage.deleteImage("ak12/hero-background-123.png");
 
       expect(removeObjectMock).toHaveBeenCalledTimes(1);
-      expect(removeObjectMock).toHaveBeenCalledWith("test-bucket", "media/hero-background-123.png");
+      expect(removeObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/hero-background-123.png");
+    });
+
+    it("throws when image does not belong to the configured media folder", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      await expect(minioStorage.deleteImage("legacy-cloudinary-image-id")).rejects.toThrow(
+        "Image does not belong to the configured storage folder: legacy-cloudinary-image-id",
+      );
+
+      expect(removeObjectMock).not.toHaveBeenCalled();
     });
 
     it("throws when storage bucket is not configured", async () => {
@@ -286,7 +302,7 @@ describe("minioStorage", () => {
 
       const { minioStorage } = await import("./minio.client");
 
-      await expect(minioStorage.deleteImage("media/photo.png")).rejects.toThrow("Не налаштовано STORAGE_BUCKET");
+      await expect(minioStorage.deleteImage("ak12/photo.png")).rejects.toThrow("Не налаштовано STORAGE_BUCKET");
 
       expect(removeObjectMock).not.toHaveBeenCalled();
     });
@@ -296,17 +312,25 @@ describe("minioStorage", () => {
 
       const { minioStorage } = await import("./minio.client");
 
-      await expect(minioStorage.deleteImage("media/photo.png")).rejects.toThrow("MinIO delete failed");
+      await expect(minioStorage.deleteImage("ak12/photo.png")).rejects.toThrow("MinIO delete failed");
+    });
+
+    it("does not remove an image outside the configured folder", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      await expect(minioStorage.deleteImage("other-folder/photo.png")).rejects.toThrow(
+        "Image does not belong to the configured storage folder: other-folder/photo.png",
+      );
+
+      expect(removeObjectMock).not.toHaveBeenCalled();
     });
   });
 
   describe("getImageUrl", () => {
-    it("returns the media API URL for an image", async () => {
+    it("returns the media API URL for Background.png in the configured folder", async () => {
       const { minioStorage } = await import("./minio.client");
 
-      const result = minioStorage.getImageUrl("Background.png");
-
-      expect(result).toBe("/api/media/media/Background.png");
+      expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/ak12/Background.png");
     });
 
     it("returns undefined when the file name is empty", async () => {
@@ -329,21 +353,28 @@ describe("minioStorage", () => {
       expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/custom-folder/Background.png");
     });
 
-    it("throws when media folder is not configured", async () => {
+    it("returns undefined when media folder is not configured", async () => {
       delete process.env.STORAGE_MEDIA_FOLDER;
 
       const { minioStorage } = await import("./minio.client");
 
-      expect(() => minioStorage.getImageUrl("Background.png")).toThrow("Не налаштовано STORAGE_MEDIA_FOLDER.");
+      expect(minioStorage.getImageUrl("Background.png")).toBeUndefined();
     });
 
-    it("does not require MinIO client credentials to generate the URL", async () => {
+    it("does not require MinIO endpoint or credentials to generate the URL", async () => {
+      delete process.env.STORAGE_ENDPOINT;
       delete process.env.STORAGE_ACCESS_KEY;
       delete process.env.STORAGE_SECRET_KEY;
 
       const { minioStorage } = await import("./minio.client");
 
-      expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/media/Background.png");
+      expect(minioStorage.getImageUrl("Background.png")).toBe("/api/media/ak12/Background.png");
+    });
+
+    it("preserves nested file paths", async () => {
+      const { minioStorage } = await import("./minio.client");
+
+      expect(minioStorage.getImageUrl("uploads/2024/photo.png")).toBe("/api/media/ak12/uploads/2024/photo.png");
     });
   });
 

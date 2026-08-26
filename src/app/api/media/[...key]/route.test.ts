@@ -1,12 +1,10 @@
 /**
  * @jest-environment node
  */
-
 import { Readable } from "node:stream";
 import { NextRequest } from "next/server";
 
 const originalEnv = { ...process.env };
-
 const mockGetMinioClient = jest.fn();
 
 jest.mock("@/lib/storage/minio.client", () => ({
@@ -38,6 +36,42 @@ describe("GET /api/media/[...key]", () => {
     const response = await GET(request, {
       params: Promise.resolve({
         key: ["private", "secret.jpg"],
+      }),
+    });
+
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe("Requested media file was not found");
+    expect(mockGetMinioClient).not.toHaveBeenCalled();
+  });
+
+  it("returns 404 for path traversal attempts", async () => {
+    const { GET } = await import("./route");
+
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/../secret.jpg", {
+      method: "GET",
+    });
+
+    const response = await GET(request, {
+      params: Promise.resolve({
+        key: ["ak12", "..", "secret.jpg"],
+      }),
+    });
+
+    expect(response.status).toBe(404);
+    expect(await response.text()).toBe("Requested media file was not found");
+    expect(mockGetMinioClient).not.toHaveBeenCalled();
+  });
+
+  it("returns 404 for backslash path traversal attempts", async () => {
+    const { GET } = await import("./route");
+
+    const request = new NextRequest("http://localhost:3000/api/media/ak12/..%5Csecret.jpg", {
+      method: "GET",
+    });
+
+    const response = await GET(request, {
+      params: Promise.resolve({
+        key: ["ak12", "..\\secret.jpg"],
       }),
     });
 
@@ -96,8 +130,10 @@ describe("GET /api/media/[...key]", () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("image/jpeg");
-    expect(response.headers.get("Cache-Control")).toBe("public, max-age=31536000, immutable");
+    expect(response.headers.get("Cache-Control")).toBe("public, max-age=3600");
+
     expect(statObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/photo.jpg");
+
     expect(getObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/photo.jpg");
   });
 
@@ -128,7 +164,9 @@ describe("GET /api/media/[...key]", () => {
     });
 
     expect(response.status).toBe(200);
+
     expect(statObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/uploads/2024/photo.png");
+
     expect(getObjectMock).toHaveBeenCalledWith("test-bucket", "ak12/uploads/2024/photo.png");
   });
 

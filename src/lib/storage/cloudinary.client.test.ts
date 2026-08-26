@@ -161,6 +161,24 @@ describe("cloudinaryStorage", () => {
       expect(formData.get("public_id")).toBe("My-Photo");
     });
 
+    it("uses the configured Cloudinary media folder", async () => {
+      process.env.CLOUDINARY_MEDIA_FOLDER = "custom-folder";
+
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      mockSuccessfulUpload();
+
+      await cloudinaryStorage.uploadImage({
+        file: makeFile(),
+        fileName: "photo",
+      });
+
+      const [, options] = fetchMock.mock.calls[0];
+      const formData = options.body as FormData;
+
+      expect(formData.get("folder")).toBe("custom-folder");
+    });
+
     it("rejects unsupported file types before making a request", async () => {
       const { cloudinaryStorage } = require("./cloudinary.client");
 
@@ -245,8 +263,6 @@ describe("cloudinaryStorage", () => {
 
     it("throws when Cloudinary configuration is incomplete", async () => {
       delete process.env.CLOUDINARY_API_KEY;
-
-      jest.resetModules();
 
       const { cloudinaryStorage } = require("./cloudinary.client");
 
@@ -334,8 +350,6 @@ describe("cloudinaryStorage", () => {
     it("throws when Cloudinary configuration is incomplete", async () => {
       delete process.env.CLOUDINARY_API_KEY;
 
-      jest.resetModules();
-
       const { cloudinaryStorage } = require("./cloudinary.client");
 
       await expect(cloudinaryStorage.deleteImage("ak12/photo")).rejects.toThrow(/змінні середовища/);
@@ -345,12 +359,12 @@ describe("cloudinaryStorage", () => {
   });
 
   describe("getImageUrl", () => {
-    it("returns the Cloudinary URL for an image", () => {
+    it("returns the Cloudinary URL for an image in the configured media folder", () => {
       const { cloudinaryStorage } = require("./cloudinary.client");
 
-      const result = cloudinaryStorage.getImageUrl("Background.png");
-
-      expect(result).toBe("https://res.cloudinary.com/cloud-test/image/upload/ak12/Background.png");
+      expect(cloudinaryStorage.getImageUrl("Background.png")).toBe(
+        "https://res.cloudinary.com/cloud-test/image/upload/ak12/Background.png",
+      );
     });
 
     it("returns undefined when the file name is empty", () => {
@@ -368,8 +382,6 @@ describe("cloudinaryStorage", () => {
     it("uses the configured Cloudinary folder", () => {
       process.env.CLOUDINARY_MEDIA_FOLDER = "custom-folder";
 
-      jest.resetModules();
-
       const { cloudinaryStorage } = require("./cloudinary.client");
 
       expect(cloudinaryStorage.getImageUrl("Background.png")).toBe(
@@ -377,13 +389,16 @@ describe("cloudinaryStorage", () => {
       );
     });
 
-    it("returns undefined when Cloudinary configuration is incomplete", () => {
+    it("returns undefined when Cloudinary cloud name is missing", () => {
       process.env.CLOUDINARY_CLOUD_NAME = "";
-      process.env.CLOUDINARY_API_KEY = "";
-      process.env.CLOUDINARY_API_SECRET = "";
-      process.env.CLOUDINARY_MEDIA_FOLDER = "";
 
-      jest.resetModules();
+      const { cloudinaryStorage } = require("./cloudinary.client");
+
+      expect(cloudinaryStorage.getImageUrl("Background.png")).toBeUndefined();
+    });
+
+    it("returns undefined when Cloudinary media folder is missing", () => {
+      process.env.CLOUDINARY_MEDIA_FOLDER = "";
 
       const { cloudinaryStorage } = require("./cloudinary.client");
 

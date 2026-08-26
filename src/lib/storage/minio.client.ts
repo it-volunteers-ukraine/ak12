@@ -94,6 +94,11 @@ async function uploadImage({ file, fileName }: { file: File; fileName: string })
 async function deleteImage(publicId: string): Promise<void> {
   const client = getMinioClient();
   const bucket = getStorageBucket();
+  const folder = getMediaFolder();
+
+  if (!publicId.startsWith(`${folder}/`)) {
+    throw new Error(`Image does not belong to the configured storage folder: ${publicId}`);
+  }
 
   await client.removeObject(bucket, publicId);
 
@@ -101,10 +106,9 @@ async function deleteImage(publicId: string): Promise<void> {
 }
 
 function getImageUrl(fileName: string): string | undefined {
-  const endpoint = serverEnv.storage.endpoint;
-  const folder = getMediaFolder();
+  const folder = serverEnv.storage.mediaFolder;
 
-  if (!endpoint || !fileName) {
+  if (!folder || !fileName) {
     return undefined;
   }
 
