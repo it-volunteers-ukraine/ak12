@@ -76,4 +76,29 @@ export const serverEnv = {
       return runtimeEnv("CLOUDINARY_MEDIA_FOLDER");
     },
   },
+  storage: {
+    get client() {
+      return runtimeEnv("STORAGE_CLIENT");
+    },
+
+    get endpoint() {
+      return runtimeEnv("STORAGE_ENDPOINT");
+    },
+
+    get bucket() {
+      return runtimeEnv("STORAGE_BUCKET");
+    },
+
+    get accessKey() {
+      return runtimeEnv("STORAGE_ACCESS_KEY");
+    },
+
+    get secretKey() {
+      return runtimeEnv("STORAGE_SECRET_KEY");
+    },
+
+    get mediaFolder() {
+      return runtimeEnv("STORAGE_MEDIA_FOLDER");
+    },
+  },
 } as const;

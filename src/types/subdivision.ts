@@ -1,5 +1,5 @@
 import { Locale } from "@/types/locale";
-import { StoredImage } from "@/lib/admin/upload-image.service";
+import { StoredImage } from "@/lib/storage/types";
 
 export interface Subdivision {
   id: string;

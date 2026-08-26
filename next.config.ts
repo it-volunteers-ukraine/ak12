@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         port: "",
         pathname: `/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/**`,
-      }
+      },
     ],
   },
   turbopack: {
