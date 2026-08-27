@@ -24,7 +24,7 @@ export const AdminHeader = ({ contentMenu, sidebarSegment }: IAdminHeaderProps) 
   const KYIV_TIMEZONE = "Europe/Kyiv";
 
   return (
-    <header className="sticky top-0 z-50 flex justify-between gap-6 border-b-3 bg-white">
+    <header className="sticky top-0 z-50 flex h-22.5 justify-between gap-6 border-b-3 bg-white">
       <div className="flex w-full items-center justify-between gap-6 bg-[#F8F9FA] pr-4">
         <div className="flex overflow-x-auto">
           {contentMenu.map((item: SubmenuItem) => {
