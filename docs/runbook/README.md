@@ -9,14 +9,14 @@
 | `dev` | Supabase | Cloudinary | `npm run dev` або `podman compose --profile dev up dev` |
 | `prod` | PostgreSQL 17 | MinIO | `podman compose up --build prod` |
 
-Production-ціль — PostgreSQL + MinIO. На момент написання поточний upload-код ще використовує Cloudinary; перехід на MinIO є запланованою зміною. До її злиття не видаляйте Cloudinary-змінні.
+Production-ціль — PostgreSQL + MinIO, але поточний upload-путь ще використовує Cloudinary за замовчуванням. MinIO налаштований для production, а міграцію сховища ще не завершено; Cloudinary-змінні треба залишити до злиття та перевірки перемикача сховища.
 
 ## 2. Вимоги
 
 - Node.js 24 LTS;
 - npm;
 - Podman Desktop або Docker Desktop для контейнерного запуску;
-- доступ до Supabase, Cloudinary і PostgreSQL-реквізитів.
+- доступ до Supabase, Cloudinary, MinIO і PostgreSQL-реквізитів.
 
 Перевірка:
 
@@ -83,11 +83,14 @@ cp .env.example .env
 
 | Змінна | Призначення |
 | --- | --- |
-| `MINIO_ROOT_USER` | Користувач MinIO. |
-| `MINIO_ROOT_PASSWORD` | Пароль MinIO. |
-| `MINIO_BUCKET_NAME` | Назва bucket. |
+| `STORAGE_ENDPOINT` | URL MinIO endpoint для app. |
+| `STORAGE_ACCESS_KEY` | Користувач MinIO / access key. |
+| `STORAGE_SECRET_KEY` | Пароль MinIO / secret key. |
+| `STORAGE_BUCKET` | Назва bucket. |
+| `STORAGE_MEDIA_FOLDER` | Папка для медіа у bucket. |
+| `STORAGE_CLIENT` | `minio` для production; `cloudinary` залишається активним до завершення міграції. |
 
-`.env.example` містить конфігурацію Cloudinary для dev. Production-конфігурація має містити MinIO-змінні; після злиття MinIO-адаптера саме він буде використовуватися для production-завантажень.
+Файл `.env.example` все ще містить Cloudinary-конфігурацію для dev, а MinIO-змінні також передбачені для production. Активний upload-код усе ще використовує Cloudinary за замовчуванням, доки MinIO-перемикач не буде злитий і перевірений.
 
 ### SMTP (відправка пошти)
 
@@ -289,7 +292,7 @@ npm run start:prod
 
 ### Не працює завантаження зображень
 
-Для dev перевірте Cloudinary-змінні. Для prod перевірте MinIO-контейнер, bucket і доступи. Після злиття MinIO-адаптера перевірте відповідні server-side змінні та сценарії завантаження.
+Для dev перевірте Cloudinary-змінні. Для prod перевірте MinIO-контейнер, bucket і доступи, але не видаляйте Cloudinary-конфігурацію, поки upload-перемикач не буде злитий і перевірений.
 
 ### Не надсилаються листи (SMTP)
 
