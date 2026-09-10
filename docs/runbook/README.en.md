@@ -56,6 +56,17 @@ The `.env` file is local-only. Compose reads it through `env_file` and passes va
 
 The current `.env.example` contains Cloudinary settings for dev. Production configuration should also contain the MinIO settings. After the MinIO adapter is merged, production uploads will use them.
 
+### SMTP email service
+
+| Variable | Purpose |
+| --- | --- |
+| `SMTP_HOST` | SMTP server host (e.g., `smtp.example.com`). |
+| `SMTP_PORT` | SMTP port, normally `587` (STARTTLS) or `465` (TLS). |
+| `SMTP_USER` | SMTP username / account for authentication. |
+| `SMTP_PASSWORD` | SMTP password / app password for authentication. |
+| `SMTP_TO` | Recipient email address for feedback form submissions. |
+| `SMTP_SECURE` | Set to `true` for TLS (port 465) or `false` for STARTTLS / non-SSL (port 587). |
+
 ### Admin panel
 
 `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, `ADMIN_2FA_SECRET`, and `SESSION_SECRET_KEY`.
@@ -207,3 +218,7 @@ Verify `ADMIN_EMAIL`, the bcrypt hash, a 32-character minimum `SESSION_SECRET_KE
 ### Image upload fails
 
 For dev, verify Cloudinary variables. For prod, verify the MinIO container, bucket, and credentials. After the MinIO adapter is merged, verify its server-side configuration and upload flows.
+
+### Email delivery fails
+
+Verify that `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, and `SMTP_TO` are configured in `.env`. Check that `SMTP_SECURE` matches the port (`true` for 465, `false` for 587) and that the SMTP provider allows connections with the provided credentials.

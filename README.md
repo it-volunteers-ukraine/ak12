@@ -8,6 +8,7 @@
 
 - двомовний сайт українською та англійською;
 - редагування контенту, вакансій і підрозділів через адмін-панель;
+- надсилання форми зворотного зв'язку через SMTP;
 - Supabase + Cloudinary для dev;
 - PostgreSQL 17 + MinIO для production;
 - двофакторна автентифікація TOTP;
@@ -37,6 +38,7 @@ A bilingual military unit website with a public-facing site and a protected admi
 
 - Ukrainian and English public site;
 - content, vacancy, and subdivision management through the admin panel;
+- feedback form submissions delivered via SMTP email service;
 - Supabase + Cloudinary for development;
 - PostgreSQL 17 + MinIO for production;
 - TOTP two-factor authentication;
@@ -60,7 +62,7 @@ See the [English Runbook](docs/runbook/README.en.md) for detailed instructions.
 
 ## Technology
 
-Next.js 16, React 19, TypeScript 5.9, Node.js 24, PostgreSQL 17, Supabase, Cloudinary, MinIO, Zod, Pino, and Jest.
+Next.js 16, React 19, TypeScript 5.9, Node.js 24, PostgreSQL 17, Supabase, Cloudinary, MinIO, Nodemailer, Zod, Pino, and Jest.
 
 ## Security
 
