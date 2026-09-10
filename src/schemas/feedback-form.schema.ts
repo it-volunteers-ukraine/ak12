@@ -1,15 +1,17 @@
 import { z } from "zod";
-import { TranslationValues } from "next-intl";
+import type { TranslationValues } from "next-intl";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 export const getFeedbackFormSchema = (error: (key: string, params?: TranslationValues) => string) => {
   return z.object({
     firstName: z
-      .string(error("required"))
+      .string()
+      .min(1, error("required"))
       .min(2, error("minLength", { min: 2 }))
       .max(100, error("maxLength", { max: 100 })),
     lastName: z
-      .string(error("required"))
+      .string()
+      .min(1, error("required"))
       .min(2, error("minLength", { min: 2 }))
       .max(100, error("maxLength", { max: 100 })),
     phone: z
@@ -25,14 +27,20 @@ export const getFeedbackFormSchema = (error: (key: string, params?: TranslationV
 
         return phoneNumber!.number;
       }),
-    email: z.string().min(1, error("required")).email(error("email")),
+    email: z
+      .string()
+      .min(1, error("required"))
+      .pipe(z.email(error("email"))),
     description: z
-      .string(error("required"))
+      .string()
+      .min(1, error("required"))
       .min(10, error("minLength", { min: 10 }))
       .max(500, error("maxLength", { max: 500 })),
-    subject: z.string(error("required")).min(1, error("required")),
+    subject: z.string().min(1, error("required")),
   });
 };
+
+export const feedbackFormSchema = getFeedbackFormSchema((key) => key);
 
 export type IFeedbackForm = z.infer<ReturnType<typeof getFeedbackFormSchema>>;
 export type TFeedbackFormInput = z.input<ReturnType<typeof getFeedbackFormSchema>>;
