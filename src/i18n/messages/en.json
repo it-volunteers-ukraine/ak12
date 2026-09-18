@@ -43,7 +43,9 @@
     "firstName": "Name",
     "lastName": "Last Name",
     "email": "Email",
-    "phone": "Phone Number"
+    "phone": "Phone Number",
+    "successMessage": "Your message has been sent successfully!",
+    "errorMessage": "Failed to send message. Please try again later."
   },
   "contractSection": {
     "altPhotoText": "Background image"

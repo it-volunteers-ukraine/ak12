@@ -101,4 +101,24 @@ export const serverEnv = {
       return runtimeEnv("STORAGE_MEDIA_FOLDER");
     },
   },
+  smtp: {
+    get host() {
+      return runtimeEnv("SMTP_HOST");
+    },
+    get port() {
+      return runtimeEnv("SMTP_PORT");
+    },
+    get user() {
+      return runtimeEnv("SMTP_USER");
+    },
+    get password() {
+      return runtimeEnv("SMTP_PASSWORD") || runtimeEnv("SMTP_PASS");
+    },
+    get to() {
+      return runtimeEnv("SMTP_TO") || runtimeEnv("ADMIN_EMAIL");
+    },
+    get secure() {
+      return runtimeEnv("SMTP_SECURE");
+    },
+  },
 } as const;

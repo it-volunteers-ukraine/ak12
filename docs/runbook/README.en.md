@@ -9,14 +9,14 @@ Operational guide for developers and operators who configure, run, and maintain 
 | `dev` | Supabase | Cloudinary | `npm run dev` or `podman compose --profile dev up dev` |
 | `prod` | PostgreSQL 17 | MinIO | `podman compose up --build prod` |
 
-The target production architecture is PostgreSQL + MinIO. The current upload implementation still uses Cloudinary, and the MinIO migration is planned for the near term. Keep the Cloudinary variables until that change is merged and verified.
+The target production architecture is PostgreSQL + MinIO, but the current upload path still defaults to Cloudinary. MinIO is provisioned in production and the storage layer is being migrated, yet the application still keeps the Cloudinary variables until the storage switch is merged and verified.
 
 ## Requirements and setup
 
 - Node.js 24 LTS;
 - npm;
 - Podman Desktop or Docker Desktop;
-- access to Supabase, Cloudinary, and PostgreSQL credentials.
+- access to Supabase, Cloudinary, MinIO, and PostgreSQL credentials.
 
 ```bash
 git clone <repository-url>
@@ -52,9 +52,20 @@ The `.env` file is local-only. Compose reads it through `env_file` and passes va
 
 ### MinIO — prod
 
-`MINIO_ROOT_USER`, `MINIO_ROOT_PASSWORD`, and `MINIO_BUCKET_NAME`.
+`STORAGE_ENDPOINT`, `STORAGE_ACCESS_KEY`, `STORAGE_SECRET_KEY`, `STORAGE_BUCKET`, `STORAGE_MEDIA_FOLDER`, and `STORAGE_CLIENT`.
 
-The current `.env.example` contains Cloudinary settings for dev. Production configuration should also contain the MinIO settings. After the MinIO adapter is merged, production uploads will use them.
+The current `.env.example` still contains the Cloudinary settings for dev, while the storage variables for MinIO are also defined for production. The active upload implementation still defaults to Cloudinary until the MinIO switch is merged and verified.
+
+### SMTP email service
+
+| Variable | Purpose |
+| --- | --- |
+| `SMTP_HOST` | SMTP server host (e.g., `smtp.example.com`). |
+| `SMTP_PORT` | SMTP port, normally `587` (STARTTLS) or `465` (TLS). |
+| `SMTP_USER` | SMTP username / account for authentication. |
+| `SMTP_PASSWORD` | SMTP password / app password for authentication. |
+| `SMTP_TO` | Recipient email address for feedback form submissions. |
+| `SMTP_SECURE` | Set to `true` for TLS (port 465) or `false` for STARTTLS / non-SSL (port 587). |
 
 ### Admin panel
 
@@ -206,4 +217,8 @@ Verify `ADMIN_EMAIL`, the bcrypt hash, a 32-character minimum `SESSION_SECRET_KE
 
 ### Image upload fails
 
-For dev, verify Cloudinary variables. For prod, verify the MinIO container, bucket, and credentials. After the MinIO adapter is merged, verify its server-side configuration and upload flows.
+For dev, verify the Cloudinary variables. For prod, verify the MinIO container, bucket, and credentials, but keep the Cloudinary settings in place until the upload adapter switch is merged and validated.
+
+### Email delivery fails
+
+Verify that `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, and `SMTP_TO` are configured in `.env`. Check that `SMTP_SECURE` matches the port (`true` for 465, `false` for 587) and that the SMTP provider allows connections with the provided credentials.

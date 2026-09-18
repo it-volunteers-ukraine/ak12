@@ -1,25 +1,35 @@
 "use client";
 
-import z from "zod";
 import { useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 
 import { FormInput } from "../input";
 import { PolicyButton } from "../policy-modal";
 import { SubmitIcon } from "../../../public/icons";
-import { FeedbackFormContentWithMessage, getFeedbackFormSchema, IFeedbackForm, PrivacyPolicyContent } from "@/schemas";
+import {
+  type FeedbackFormContentWithMessage,
+  getFeedbackFormSchema,
+  type IFeedbackForm,
+  type PrivacyPolicyContent,
+  type TFeedbackFormInput,
+  type TFeedbackFormOutput,
+} from "@/schemas";
 import { cn } from "@/utils";
+import { sendFeedbackAction } from "@/actions/feedback";
+import { showMessage } from "@/components/toastify";
 
 export const FeedbackForm = ({
   content,
   isModal,
   privacyPolicyContent,
+  onSuccessAction,
 }: {
   isModal?: boolean;
   content: FeedbackFormContentWithMessage;
   privacyPolicyContent: PrivacyPolicyContent | null;
+  onSuccessAction?: () => void | Promise<void>;
 }) => {
   const errorMessages = useTranslations("validation");
   const text = useTranslations("form");
@@ -31,7 +41,7 @@ export const FeedbackForm = ({
     control,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<z.input<typeof schema>, any, z.output<typeof schema>>({
+  } = useForm<TFeedbackFormInput, unknown, TFeedbackFormOutput>({
     resolver: zodResolver(schema),
     mode: "onTouched",
     defaultValues: {
@@ -44,10 +54,20 @@ export const FeedbackForm = ({
     },
   });
 
-  const onSubmit: SubmitHandler<IFeedbackForm> = async (_data) => {
-    // TODO: implement feedback form submission
+  const onSubmit: SubmitHandler<IFeedbackForm> = async (data) => {
+    try {
+      const response = await sendFeedbackAction(data);
 
-    reset();
+      if (response.success) {
+        showMessage.success(text("successMessage"));
+        reset();
+        await onSuccessAction?.();
+      } else {
+        showMessage.error(text("errorMessage"));
+      }
+    } catch {
+      showMessage.error(text("errorMessage"));
+    }
   };
 
   return (
