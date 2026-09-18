@@ -207,7 +207,7 @@ export const VacanciesListSection = ({ vacanciesUk, vacanciesEn }: Props) => {
                   <span className="text-sm text-gray-400">{updatedAt}</span>
 
                   {/* Дії */}
-                  <div className="flex gap-1">
+                  <div className="flex gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
