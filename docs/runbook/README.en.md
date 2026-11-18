@@ -56,6 +56,8 @@ The `.env` file is local-only. Compose reads it through `env_file` and passes va
 
 The current `.env.example` still contains the Cloudinary settings for dev, while the storage variables for MinIO are also defined for production. The active upload implementation still defaults to Cloudinary until the MinIO switch is merged and verified.
 
+Compose connects the app to MinIO at the internal address `http://minio:9000`, creates the bucket before starting the app, and binds the API and console to `127.0.0.1` only. It uses a digest-pinned public Elestio image because upstream no longer publishes an anonymously pullable community image. Local runs use `minioadmin` credentials; for shared or production deployments, set your own `STORAGE_ACCESS_KEY` and `STORAGE_SECRET_KEY` in `.env` and review the image provenance.
+
 ### SMTP email service
 
 | Variable | Purpose |
@@ -157,6 +159,7 @@ podman compose logs database
 Important files:
 
 - `postgres-init/01-init.sql` — main schema;
+- `postgres-init/02-seed-data.sql` — initial site content and sample vacancies and subdivisions;
 - `postgres-init/02-examples.sql.template` — example data template;
 - `postgres-init/02-examples.sh` — helper example.
 

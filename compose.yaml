@@ -33,6 +33,12 @@ services:
       - HOSTNAME=0.0.0.0
       - PORT=3000
       - POSTGRES_HOST=database
+      - STORAGE_CLIENT=minio
+      - STORAGE_ENDPOINT=http://minio:9000
+      - STORAGE_ACCESS_KEY=${STORAGE_ACCESS_KEY:-minioadmin}
+      - STORAGE_SECRET_KEY=${STORAGE_SECRET_KEY:-minioadmin}
+      - STORAGE_BUCKET=${STORAGE_BUCKET:-ak12}
+      - STORAGE_MEDIA_FOLDER=${STORAGE_MEDIA_FOLDER:-ak12}
     env_file:
       - .env
     depends_on:
@@ -66,64 +72,43 @@ services:
       - default
 
   minio:
-    image: minio/minio:latest
+    image: docker.io/elestio/minio@sha256:25348a257f1ece1b192f25f6cd9854618fa86422ac87b494b5d4e629c556d4bd
     restart: unless-stopped
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY}
+      MINIO_ROOT_USER: ${STORAGE_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${STORAGE_SECRET_KEY:-minioadmin}
     volumes:
       - minio_data:/data
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
     networks:
       - default
   minio-init:
-    image: minio/mc:latest
+    image: docker.io/rancher/mirrored-minio-mc:RELEASE.2023-06-28T21-54-17Z
     depends_on:
       minio:
         condition: service_started
     environment:
-      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY}
-      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY}
-      STORAGE_BUCKET: ${STORAGE_BUCKET}
-    entrypoint: >
-      /bin/sh -c "
-      if [ -z \"$$STORAGE_ACCESS_KEY\" ]; then
-        echo 'STORAGE_ACCESS_KEY is required.';
-        exit 1;
-      fi;
-
-      if [ -z \"$$STORAGE_SECRET_KEY\" ]; then
-        echo 'STORAGE_SECRET_KEY is required.';
-        exit 1;
-      fi;
-
-      if [ $${#STORAGE_SECRET_KEY} -lt 8 ]; then
-        echo 'STORAGE_SECRET_KEY must be at least 8 characters long.';
-        exit 1;
-      fi;
-
-      if [ -z \"$$STORAGE_BUCKET\" ]; then
-        echo 'STORAGE_BUCKET is required.';
-        exit 1;
-      fi;
-
-      for i in $$(seq 1 30); do
-        if mc alias set minio http://minio:9000
-        $$STORAGE_ACCESS_KEY $$STORAGE_SECRET_KEY; then
-          mc mb --ignore-existing minio/$$STORAGE_BUCKET;
-          exit 0;
-        fi;
-
-        echo 'Waiting for MinIO...';
-        sleep 2;
-      done;
-
-      echo 'Failed to connect to MinIO after 60 seconds.';
-      exit 1;
-      "
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-minioadmin}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY:-minioadmin}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-ak12}
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        set -u
+        i=0
+        until mc alias set minio http://minio:9000 "$$STORAGE_ACCESS_KEY" "$$STORAGE_SECRET_KEY" >/dev/null 2>&1; do
+          i=$$((i + 1))
+          if [ "$$i" -ge 30 ]; then
+            echo "Failed to connect to MinIO after 60 seconds."
+            exit 1
+          fi
+          echo "Waiting for MinIO..."
+          sleep 2
+        done
+        mc mb --ignore-existing "minio/$$STORAGE_BUCKET"
     networks:
       - default
 
@@ -134,4 +119,4 @@ volumes:
 
 networks:
   default:
-    name: ak12-network
+    name: ${COMPOSE_PROJECT_NAME:-ak12}-network
