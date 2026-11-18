@@ -92,6 +92,8 @@ cp .env.example .env
 
 Файл `.env.example` все ще містить Cloudinary-конфігурацію для dev, а MinIO-змінні також передбачені для production. Активний upload-код усе ще використовує Cloudinary за замовчуванням, доки MinIO-перемикач не буде злитий і перевірений.
 
+Compose підключає застосунок до MinIO за внутрішньою адресою `http://minio:9000`, створює bucket перед запуском застосунку та публікує API й консоль лише на `127.0.0.1`. Використовується зафіксований за digest публічний образ Elestio, оскільки upstream більше не публікує доступний без авторизації community-образ. Для локального запуску використовуються облікові дані `minioadmin`; для спільного або production-середовища задайте власні `STORAGE_ACCESS_KEY` і `STORAGE_SECRET_KEY` та перевірте походження образу.
+
 ### SMTP (відправка пошти)
 
 | Змінна | Призначення |
@@ -215,6 +217,7 @@ podman compose logs database
 Схема:
 
 - `postgres-init/01-init.sql` — основна схема;
+- `postgres-init/02-seed-data.sql` — початкові дані сайту та приклади вакансій і підрозділів;
 - `postgres-init/02-examples.sql.template` — шаблон прикладових даних;
 - `postgres-init/02-examples.sh` — допоміжний приклад.
 

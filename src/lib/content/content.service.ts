@@ -8,14 +8,15 @@ import { QueryValue } from "@/lib/db/types";
 import { logger } from "@/lib/logger/logger";
 import { databaseClient } from "@/lib/database/database-client";
 import { languageService } from "@/lib/language/language.service";
+import { getDefaultContent } from "@/lib/content/content.defaults";
 
 export type ActionResponse<T = void> = { success: true; data?: T } | { success: false; error: string };
-interface GetSafeParams<Schema extends z.ZodTypeAny> {
+interface GetSafeParams<Schema extends z.ZodType> {
   locale: Locale;
   schema: Schema;
   section: SectionKey;
 }
-interface SaveParams<Schema extends z.ZodTypeAny> {
+interface SaveParams<Schema extends z.ZodType> {
   locale: Locale;
   schema: Schema;
   rawContent: unknown;
@@ -46,7 +47,7 @@ const _findContentRecord = cache(async (sectionKey: SectionKey, locale: Locale) 
   if (error) {
     logger.error({ sectionKey, locale, error }, "Failed to find content record");
 
-    return null;
+    return undefined;
   }
 
   return data;
@@ -137,20 +138,28 @@ export const contentService = {
     return normalizeTimestampToIsoUtc(record.updated_at as string);
   },
 
-  async get<Schema extends z.ZodTypeAny>({
+  async get<Schema extends z.ZodType>({
     locale,
     schema,
     section,
   }: GetSafeParams<Schema>): Promise<z.infer<Schema> | null> {
     const record = await _findContentRecord(section, locale);
 
-    if (!record?.content) {
+    if (record === undefined) {
       return null;
     }
 
-    const rawContent = typeof record.content === "string" ? safeParseContent(record.content) : record.content;
+    let rawContent: unknown;
 
-    if (!rawContent) {
+    if (record === null) {
+      rawContent = getDefaultContent(section, locale);
+    } else if (!record.content) {
+      return null;
+    } else {
+      rawContent = typeof record.content === "string" ? safeParseContent(record.content) : record.content;
+    }
+
+    if (rawContent === null) {
       return null;
     }
 
@@ -165,7 +174,7 @@ export const contentService = {
     return parsed.data;
   },
 
-  async save<Schema extends z.ZodTypeAny>({
+  async save<Schema extends z.ZodType>({
     locale,
     schema,
     sectionKey,
@@ -184,6 +193,10 @@ export const contentService = {
 
       const record = await _findContentRecord(sectionKey, locale);
 
+      if (record === undefined) {
+        return { success: false, error: `Error finding section ${sectionKey}` };
+      }
+
       if (record?.id) {
         const { error } = await databaseClient
           .from("site_content")
@@ -191,7 +204,9 @@ export const contentService = {
           .eq("id", record?.id);
 
         if (error) {
-          throw error;
+          logger.error({ sectionKey, error }, "Failed to update section content");
+
+          return { success: false, error: `Error saving section ${sectionKey}` };
         }
       } else {
         const languageRow = await languageService.ensure(locale);
@@ -204,7 +219,9 @@ export const contentService = {
         });
 
         if (error) {
-          throw error;
+          logger.error({ sectionKey, error }, "Failed to insert section content");
+
+          return { success: false, error: `Error saving section ${sectionKey}` };
         }
       }
 

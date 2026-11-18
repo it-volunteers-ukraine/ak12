@@ -6,6 +6,7 @@ import { SECTION_KEYS } from "@/constants";
 import { contentService } from "@/lib/content/content.service";
 import { databaseClient } from "@/lib/database/database-client";
 import { languageService } from "@/lib/language/language.service";
+import { feedbackContentSchema, headerAndFooterContentSchema } from "@/schemas";
 
 jest.mock("@/lib/logger/logger", () => ({
   logger: { error: jest.fn(), info: jest.fn() },
@@ -84,6 +85,57 @@ describe("contentService.get", () => {
       locale: "uk",
       schema: testSchema,
       section: SECTION_KEYS.ABOUT,
+    });
+
+    expect(result).toBeNull();
+  });
+
+  it("returns default feedback content when no record exists", async () => {
+    mockFindContent({ data: null, error: null });
+
+    const result = await contentService.get({
+      locale: "uk",
+      schema: feedbackContentSchema,
+      section: SECTION_KEYS.FEEDBACK,
+    });
+
+    expect(result).toMatchObject({
+      form: {
+        title: "Зворотний зв’язок",
+        buttonSubmit: "Надіслати",
+      },
+      contacts: { info: [], socialLinks: [] },
+    });
+  });
+
+  it("returns default header and footer content when no record exists", async () => {
+    mockFindContent({ data: null, error: null });
+
+    const result = await contentService.get({
+      locale: "en",
+      schema: headerAndFooterContentSchema,
+      section: SECTION_KEYS.HEADER,
+    });
+
+    expect(result).toMatchObject({
+      header: {
+        logoText: "12th Army Corps",
+      },
+      footer: {
+        title: "12th Army Corps",
+        copyright: "© 12 AC",
+      },
+    });
+    expect(result?.header.links).toContainEqual({ idSection: "about", label: "About the Corps" });
+  });
+
+  it("does not return defaults when the content lookup fails", async () => {
+    mockFindContent({ data: null, error: { message: "database unavailable" } });
+
+    const result = await contentService.get({
+      locale: "en",
+      schema: feedbackContentSchema,
+      section: SECTION_KEYS.FEEDBACK,
     });
 
     expect(result).toBeNull();
@@ -177,7 +229,7 @@ describe("contentService.save", () => {
     expect(mockedSupabase.from).not.toHaveBeenCalled();
   });
 
-  it("handles thrown error in update", async () => {
+  it("returns failure when update reports a database error", async () => {
     mockFindContent({
       data: { id: "1", content: { title: "old", count: 1 } },
       error: null,
@@ -198,7 +250,7 @@ describe("contentService.save", () => {
     expect(result.success).toBe(false);
   });
 
-  it("handles thrown error in insert", async () => {
+  it("returns failure when insert reports a database error", async () => {
     mockFindContent({ data: null, error: null });
 
     const insert = jest.fn().mockResolvedValue({ error: { message: "fail" } });
